@@ -4,8 +4,8 @@ import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from '../middlewares/promise-middleware';
 import DevTools from '../tools/ReduxDevTools';
 
-import login from '../components/login/reducers/login-reducer';
-import menu from '../components/sidebar/reducers/menu-reducer';
+import login from '../containers/login/reducers/login-reducer';
+import menu from '../containers/sidebar/reducers/menu-reducer';
 
 
 const reducer = combineReducers({login, menu});

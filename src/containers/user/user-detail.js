@@ -16,7 +16,7 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 
-class UserEdit extends React.Component {
+class UserDetail extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -146,13 +146,13 @@ class UserEdit extends React.Component {
 
 }
 
-UserEdit.contextTypes = {
+UserDetail.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
 
-UserEdit = Form.create()(UserEdit);
+UserDetail = Form.create()(UserDetail);
 
-export default UserEdit;
+export default UserDetail;

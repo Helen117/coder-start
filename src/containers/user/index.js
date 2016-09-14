@@ -8,4 +8,4 @@
  */
 
 export UserList from './user-list';
-export UserEdit from './user-edit';
+export UserDetail from './user-detail';
