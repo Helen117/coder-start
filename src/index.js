@@ -15,12 +15,16 @@ import {createHistory} from 'history';
 import configureStore from './store/configure-store';
 //import {syncHistoryWithStore} from "react-router-redux";
 
-import App from './components/app';
-import Home from './components/home';
-import Login from './components/login';
-import {UserList, UserEdit} from './components/user';
+import App from './containers/app';
+import Home from './containers/home';
+import Login from './containers/login';
+import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
+<<<<<<< HEAD
 import TableTest from './components/table/table-test';
+=======
+import {ProjectMgr, GroupDetail} from './containers/project-mgr';
+>>>>>>> devops-web/master
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -48,9 +52,15 @@ ReactDOM.render(
                     <Route component={App}>
                         <Route name="home" breadcrumbName="首页" path="home" component={Home}/>
                         <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
-                            <Route name="userEdit" breadcrumbName="用户编辑" path="edit" component={UserEdit}/>
+                            <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
                         </Route>
+<<<<<<< HEAD
                         <Route name="table" breadcrumbName="table测试" path="table" component={TableTest}/>
+=======
+                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
+                        </Route>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
+>>>>>>> devops-web/master
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>

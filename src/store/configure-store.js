@@ -4,9 +4,14 @@ import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from '../middlewares/promise-middleware';
 import DevTools from '../tools/ReduxDevTools';
 
+<<<<<<< HEAD
 import login from '../components/login/reducers/login-reducer';
 import menu from '../components/sidebar/reducers/menu-reducer';
 import projectList from '../components/project-list/reducers/project-list-reducer';
+=======
+import login from '../containers/login/reducers/login-reducer';
+import menu from '../containers/sidebar/reducers/menu-reducer';
+>>>>>>> devops-web/master
 
 
 const reducer = combineReducers({login, menu, projectList});

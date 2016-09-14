@@ -5,8 +5,8 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import NavPath from '../../components/nav-path';
-import Sidebar from '../../components/sidebar';
+import NavPath from '../../containers/nav-path';
+import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile} from '../login/actions/login-action';

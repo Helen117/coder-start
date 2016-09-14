@@ -21,6 +21,7 @@ module.exports.menu = [{
         name: '测试',
         link: '/test'
     }]
+<<<<<<< HEAD
 },{
     id:3,
     cname:'路由测试',
@@ -28,6 +29,15 @@ module.exports.menu = [{
         id:23,
         name:'table路由',
         link:'/table'
+=======
+}, {
+    id: 3,
+    cname: '项目管理',
+    subMenu: [{
+        id: 31,
+        name: '项目管理',
+        link: '/project-mgr'
+>>>>>>> devops-web/master
     }]
 }];
 
