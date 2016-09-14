@@ -60,6 +60,10 @@ class Login extends React.Component {
         actions.login(data.user, data.password);
     }
 
+    register(){
+        this.context.router.replace('/register');
+    }
+
     render() {
         const {getFieldProps} = this.props.form;
         return (
@@ -75,7 +79,9 @@ class Login extends React.Component {
                         <Row>
                             <Col span='16' offset='6'>
                                 <Button type='primary' htmlType='submit'>确定</Button>
+                                <Button type='primary' onClick={this.register.bind(this)}>注册</Button>
                             </Col>
+
                         </Row>
                     </Form>
                 </Col>

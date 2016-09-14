@@ -18,6 +18,7 @@ import configureStore from './store/configure-store';
 import App from './components/app';
 import Home from './components/home';
 import Login from './components/login';
+import Register from './components/register'
 import {UserList, UserEdit} from './components/user';
 import NotFound from './components/page/not-found';
 
@@ -51,6 +52,7 @@ ReactDOM.render(
                         </Route>
                     </Route>
                     <Route path="login" component={Login}/>
+                    <Route path="register" component={Register}/>
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
