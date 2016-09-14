@@ -6,9 +6,9 @@ import DevTools from '../tools/ReduxDevTools';
 
 import login from '../components/login/reducers/login-reducer';
 import menu from '../components/sidebar/reducers/menu-reducer';
+import milestones from '../components/milestones/reducers/milestones-reducer';
 
-
-const reducer = combineReducers({login, menu});
+const reducer = combineReducers({login, menu, milestones});
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,

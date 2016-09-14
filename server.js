@@ -17,6 +17,8 @@ var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+const milestones_ = require('./mockdata/milestones');
+var milestones = milestones_.milestone;
 
 const app = express();
 
@@ -55,6 +57,10 @@ app.get('/api/user/1', function (req, res) {
 
 app.get('/api/user/1/menu', function (req, res) {
     res.json(menu);
+});
+
+app.get('/api/milestones', function (req, res) {
+    res.json(milestones);
 });
 
 app.get('*', function (req, res) {

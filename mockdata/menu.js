@@ -21,5 +21,15 @@ module.exports.menu = [{
         name: '测试',
         link: '/test'
     }]
-}];
+}, {
+    id: 3,
+    cname: '里程碑',
+    subMenu: [{
+        id: 31,
+        name: '里程碑',
+        link: '/milestones'
+    }]
+}
+
+];
 

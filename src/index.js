@@ -18,7 +18,11 @@ import configureStore from './store/configure-store';
 import App from './components/app';
 import Home from './components/home';
 import Login from './components/login';
+import Milestones from './components/milestones';
 import {UserList, UserEdit} from './components/user';
+
+
+
 import NotFound from './components/page/not-found';
 
 //import authUtils from './utils/auth';
@@ -49,6 +53,7 @@ ReactDOM.render(
                         <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
                             <Route name="userEdit" breadcrumbName="用户编辑" path="edit" component={UserEdit}/>
                         </Route>
+                        <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>
