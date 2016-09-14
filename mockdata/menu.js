@@ -21,5 +21,13 @@ module.exports.menu = [{
         name: '测试',
         link: '/test'
     }]
+},{
+    id:3,
+    cname:'路由测试',
+    subMenu:[{
+        id:23,
+        name:'table路由',
+        link:'/table'
+    }]
 }];
 

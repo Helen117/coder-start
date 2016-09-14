@@ -20,6 +20,7 @@ import Home from './components/home';
 import Login from './components/login';
 import {UserList, UserEdit} from './components/user';
 import NotFound from './components/page/not-found';
+import TableTest from './components/table/table-test';
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -49,6 +50,7 @@ ReactDOM.render(
                         <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
                             <Route name="userEdit" breadcrumbName="用户编辑" path="edit" component={UserEdit}/>
                         </Route>
+                        <Route name="table" breadcrumbName="table测试" path="table" component={TableTest}/>
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>

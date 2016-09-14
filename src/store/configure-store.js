@@ -6,9 +6,10 @@ import DevTools from '../tools/ReduxDevTools';
 
 import login from '../components/login/reducers/login-reducer';
 import menu from '../components/sidebar/reducers/menu-reducer';
+import projectList from '../components/project-list/reducers/project-list-reducer';
 
 
-const reducer = combineReducers({login, menu});
+const reducer = combineReducers({login, menu, projectList});
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,

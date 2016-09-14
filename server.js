@@ -10,13 +10,16 @@ const config = require('./webpack.config');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDeveloping = !isProduction;
 
-// const {menu} = require('./mockdata/menu');
-// const {login, user} = require('./mockdata/user');
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+//const project_ = require('./mockdata/project');
+//var project = project_.project;
+const table_ = require('./mockdata/project');
+var column = table_.column;
+var dataSource = table_.datasource;
 
 const app = express();
 
@@ -47,6 +50,10 @@ app.post('/api/login', function (req, res) {
     } else {
         res.status('500').send({'message': 'Invalid user/password'});
     }
+});
+
+app.post('/api/project', function (req, res) {
+    res.json(project);
 });
 
 app.get('/api/user/1', function (req, res) {
