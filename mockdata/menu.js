@@ -23,7 +23,7 @@ module.exports.menu = [{
     }]
 <<<<<<< HEAD
 },{
-    id:3,
+    id:4,
     cname:'路由测试',
     subMenu:[{
         id:23,
