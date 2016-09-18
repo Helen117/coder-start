@@ -15,12 +15,12 @@ import {createHistory} from 'history';
 import configureStore from './store/configure-store';
 //import {syncHistoryWithStore} from "react-router-redux";
 
-import App from './components/app';
-import Home from './components/home';
-import Login from './components/login';
-import Register from './components/register'
-import {UserList, UserEdit} from './components/user';
+import App from './containers/app';
+import Home from './containers/home';
+import Login from './containers/login';
+import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
+import {ProjectMgr, GroupDetail} from './containers/project-mgr';
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -48,11 +48,13 @@ ReactDOM.render(
                     <Route component={App}>
                         <Route name="home" breadcrumbName="首页" path="home" component={Home}/>
                         <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
-                            <Route name="userEdit" breadcrumbName="用户编辑" path="edit" component={UserEdit}/>
+                            <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
                         </Route>
+                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
+                        </Route>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
                     </Route>
                     <Route path="login" component={Login}/>
-                    <Route path="register" component={Register}/>
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
