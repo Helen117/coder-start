@@ -8,14 +8,15 @@
  */
 import React, {PropTypes} from 'react';
 import { Tree, Input } from 'antd';
+import 'PubSub-js';
 
 const TreeNode = Tree.TreeNode;
 const gData = [{
     title: '项目组1',
-    key: 'group1',
+    key: 'devops_shkf_dev',
     children: [{
         title: '项目11',
-        key: 'project11'
+        key: 'devops_shkf'
     },{
         title: '项目12',
         key: 'project12'
@@ -44,6 +45,11 @@ const gData = [{
 export default class TreeFilter extends React.Component {
     constructor(props){
         super(props);
+        this.onSelect = this.onSelect.bind(this);
+    }
+
+    onSelect(selectedKeys,e){
+        PubSub.publish("evtTreeFilterClick",{selectedKeys:selectedKeys[0]});
     }
 
     render(){
@@ -62,7 +68,7 @@ export default class TreeFilter extends React.Component {
         return(
             <div style={{border: "1px solid #e5e5e5", padding:10}}>
                 <Input placeholder="快速查询项目" />
-                <Tree>
+                <Tree onSelect={this.onSelect}>
                     {loop(gData)}
                 </Tree>
             </div>

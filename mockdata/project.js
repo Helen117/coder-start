@@ -1,42 +1,86 @@
 /**
  * Created by Administrator on 2016-09-13.
  */
-module.exports.column = [
-    {title: "名称", dataIndex: "name", key: "name"},
-    {title: "颜色", dataIndex: "color", key: "color"
-    },
-    {title: "价格", dataIndex: "price", key: "price"}
-],
-
-module.exports.datasource = [
-    {key: "1", name: "thinkpad", color: "黑色", price: "5000"},
-    {key: "2", name: "asus", color: "红色", price: "4000"},
-    {key: "3", name: "apple", color: "白色", price: "10000"},
-    {key: "4", name: "del", color: "黑色", price: "4800"},
-    {key: "5", name: "thinkpad-1", color: "黑色", price: "5000"},
-    {key: "6", name: "asus-1", color: "红色", price: "4000"},
-    {key: "7", name: "apple-1", color: "白色", price: "10000"},
-]
-/*
-module.exports.project = [{
+module.exports.projectList = {group:[{
+    group_id:"group1",
+    group_name:"group1",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理"
+},{
+    group_id:"group2",
+    group_name:"group2",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理2"
+},{
+    group_id:"group3",
+    group_name:"group3",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理3"
+}],project:[{
     project_id:"p1",
-    project_name:"devops代码管理1",
+    project_name:"project11",
     manager:"wip1",
     member_num:3,
     owner:"wip",
-    group_id:"g1"
+    create_time:"2016-09-13",
+    group_name:"group1"
 },{
     project_id:"p2",
-    project_name:"devops代码管理2",
+    project_name:"project12",
     manager:"wip2",
     member_num:4,
     owner:"wip2",
-    group_id:"g1"
+    create_time:"2016-09-13",
+    group_name:"group1"
 },{
     project_id:"p3",
-    project_name:"devops代码管理3",
+    project_name:"project13",
     manager:"wip3",
     member_num:5,
     owner:"wip3",
-    group_id:"g1"
-}]*/
+    create_time:"2016-09-13",
+    group_name:"group1"
+},{
+    project_id:"p4",
+    project_name:"project14",
+    manager:"wip3",
+    member_num:5,
+    owner:"wip3",
+    create_time:"2016-09-13",
+    group_name:"group2"
+}],member: [{
+    userName:"admin",
+    role_id:"r1",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"in"
+},{
+    userName:"admin2",
+    role_id:"r2",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"in"
+},{
+    userName:"admin3",
+    role_id:"r3",
+    join_time:"2016-09-15",
+    project_name:"project12",
+    status:"in"
+},{
+    userName:"admin4",
+    role_id:"r4",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"out"
+}],treeGroup:{
+    id:"group1",
+    name:"group1",
+    isLeaf:false
+},treeProject:{
+    id:"p1",
+    name:"project11",
+    isLeaf:false
+}}

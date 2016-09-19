@@ -15,11 +15,8 @@ var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
-//const project_ = require('./mockdata/project');
-//var project = project_.project;
-const table_ = require('./mockdata/project');
-var column = table_.column;
-var dataSource = table_.datasource;
+//const projectList = require('./mockdata/project');
+const group = require('./mockdata/group.json');
 
 const app = express();
 
@@ -52,8 +49,11 @@ app.post('/api/login', function (req, res) {
     }
 });
 
-app.post('/api/project', function (req, res) {
-    res.json(project);
+/*app.post('/api/project', function (req, res) {
+    res.json(projectList);
+});*/
+app.post('/api/group', function (req, res) {
+    res.json(group);
 });
 
 app.get('/api/user/1', function (req, res) {

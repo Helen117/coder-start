@@ -1,3 +1,6 @@
 /**
  * Created by Administrator on 2016-09-19.
  */
+export const PROJECT_MEMBER = 'PROJECT_MEMBER';
+export const PROJECT_MEMBER_SUCCESS = 'PROJECT_MEMBER_SUCCESS';
+export const PROJECT_MEMBER_ERROR = 'PROJECT_MEMBER_ERROR';

@@ -9,6 +9,8 @@
 import React, {PropTypes} from 'react';
 import { Button, Row, Col } from 'antd';
 import TreeFilter from '../../components/tree-filter';
+import ProjectList from '../project-list';
+import ProjectItem from '../project-item';
 
 export GroupDetail from './group-detail';
 
@@ -16,6 +18,7 @@ export class ProjectMgr extends React.Component{
     constructor(props){
         super(props);
     }
+
     editGroup(type, selectedRow) {
         this.context.router.push({
             //pathname: window.location.pathname + '/edit',
@@ -23,6 +26,7 @@ export class ProjectMgr extends React.Component{
             state: {editType: type, selectedRow}
         });
     }
+
     render(){
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -39,7 +43,8 @@ export class ProjectMgr extends React.Component{
                         </Button>
                     </Row>
                     <Row>
-                        {this.props.children}
+                        <ProjectList />
+                        <ProjectItem />
                     </Row>
                 </Col>
 

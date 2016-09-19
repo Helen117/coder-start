@@ -20,11 +20,9 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
-<<<<<<< HEAD
-import TableTest from './components/table/table-test';
-=======
 import {ProjectMgr, GroupDetail} from './containers/project-mgr';
->>>>>>> devops-web/master
+import ProjectList from './containers/project-list';
+import ProjectItem from './containers/project-item';
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -54,13 +52,13 @@ ReactDOM.render(
                         <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
                             <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
                         </Route>
-<<<<<<< HEAD
-                        <Route name="table" breadcrumbName="table测试" path="table" component={TableTest}/>
-=======
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
                         </Route>
+                        <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
+                        </Route>
+                        <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
+                        </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
->>>>>>> devops-web/master
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>
