@@ -7,7 +7,12 @@ module.exports.login = {
 };
 
 module.exports.user = {
-    'userName': 'admin',
-    'role': 'ADMIN',
-    'uid': 1
+    success: true,
+    errorCode: null,
+    errorMsg: null,
+    result:{
+        'userName': 'admin',
+        'role': 'ADMIN',
+        'uid': 1
+    }
 };

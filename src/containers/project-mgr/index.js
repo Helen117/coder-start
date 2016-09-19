@@ -7,15 +7,24 @@
  * Created by william.xu on 2016/9/14
  */
 import React, {PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import { Button, Row, Col } from 'antd';
 import TreeFilter from '../../components/tree-filter';
+import {getGroupTree} from './actions/group-tree-action';
+
 
 export GroupDetail from './group-detail';
 
-export class ProjectMgr extends React.Component{
+class ProjectMgr extends React.Component{
     constructor(props){
         super(props);
     }
+
+    componentDidMount() {
+        this.props.getGroupTree();
+    }
+
     editGroup(type, selectedRow) {
         this.context.router.push({
             //pathname: window.location.pathname + '/edit',
@@ -23,11 +32,17 @@ export class ProjectMgr extends React.Component{
             state: {editType: type, selectedRow}
         });
     }
+
+    onSelectNode(node){
+        console.info(node);
+    }
+
     render(){
+        const {treeData} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
-                    <TreeFilter />
+                    <TreeFilter nodesData={treeData} onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
                     <Row>
@@ -54,3 +69,17 @@ ProjectMgr.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
+
+function mapStateToProps(state) {
+    return {
+        treeData: state.getGroupTree.treeData
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getGroupTree: bindActionCreators(getGroupTree, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectMgr);
