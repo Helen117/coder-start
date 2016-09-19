@@ -28,12 +28,12 @@ class ProjectList extends Component {
         const {listActions} = this.props;
         listActions.projectList();
         //在此处注册对其他控件发送的消息的响应
-        PubSub.subscribe("evtTreeFilterClick",this.showProjectList.bind(this) );
+        PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
-        PubSub.unsubscribe("evtTreeFilterClick");
+        PubSub.unsubscribe("evtTreeClick");
     }
 
     showProjectList(msg,data){

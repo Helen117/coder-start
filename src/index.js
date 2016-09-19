@@ -20,9 +20,12 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
-import {ProjectMgr, GroupDetail} from './containers/project-mgr';
+
 import ProjectList from './containers/project-list';
-import ProjectItem from './containers/project-item';
+import ProjectItem from './containers/project-member';
+
+import ProjectMgr, {GroupDetail} from './containers/project-mgr';
+
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
