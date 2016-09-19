@@ -14,11 +14,16 @@ const isDeveloping = !isProduction;
 // const {login, user} = require('./mockdata/user');
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
+
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+
 const milestones_ = require('./mockdata/milestones');
 var milestones = milestones_.milestone;
+
+const milestones_detail_ = require('./mockdata/milestonesDetail');
+var milestoneDetail = milestones_detail_.milestoneDetail;
 
 const app = express();
 
@@ -61,6 +66,10 @@ app.get('/api/user/1/menu', function (req, res) {
 
 app.get('/api/milestones', function (req, res) {
     res.json(milestones);
+});
+
+app.get('/api/milestoneDetail', function (req, res) {
+    res.json(milestoneDetail);
 });
 
 app.get('*', function (req, res) {

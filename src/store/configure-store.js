@@ -6,7 +6,7 @@ import DevTools from '../tools/ReduxDevTools';
 
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
-import milestones from '../components/milestones/reducers/milestones-reducer';
+import milestones from '../containers/milestones/reducers/milestones-reducer';
 
 const reducer = combineReducers({login, menu, milestones});
 
