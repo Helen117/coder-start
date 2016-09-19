@@ -30,7 +30,7 @@ export default function auth(state = initialState, action = {}) {
                 ...state,
                 loggingIn: false,
                 uid: null,
-                loginErrors: action.payload.message
+                loginErrors: action.payload.errorMsg
             };
         case LOGOUT:
             authUtils.logout();

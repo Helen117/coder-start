@@ -17,6 +17,8 @@ var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+const projectMgr = require('./mockdata/project-mgr');
+const groupTree = projectMgr.groupTree;
 
 const app = express();
 
@@ -45,7 +47,7 @@ app.post('/api/login', function (req, res) {
         res.cookie('uid', '1', {domain: '127.0.0.1'});
         res.json(user);
     } else {
-        res.status('500').send({'message': 'Invalid user/password'});
+        res.json({success: false, errorMsg:'用户名或者密码错误！'});
     }
 });
 
@@ -56,6 +58,11 @@ app.get('/api/user/1', function (req, res) {
 app.get('/api/user/1/menu', function (req, res) {
     res.json(menu);
 });
+
+app.post('/api/project-mgr/groupTree', function (req, res) {
+    res.json(groupTree);
+});
+
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
