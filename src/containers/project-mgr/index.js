@@ -28,13 +28,13 @@ class ProjectMgr extends React.Component{
 
     editGroup(type, selectedRow) {
         this.context.router.push({
-            pathname: '/group-detail',
+            pathname: '/group-detail.html',
             state: {editType: type, selectedRow}
         });
     }
     editProject(type, selectedRow) {
         this.context.router.push({
-            pathname: '/project-detail',
+            pathname: '/project-detail.html',
             state: {editType: type, selectedRow}
         });
     }
