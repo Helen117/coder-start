@@ -23,7 +23,7 @@ import NotFound from './components/page/not-found';
 
 import ProjectList from './containers/project-list';
 
-import ProjectMgr, {GroupDetail} from './containers/project-mgr';
+import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 
 //import authUtils from './utils/auth';
@@ -59,6 +59,8 @@ ReactDOM.render(
                         <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
+                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>

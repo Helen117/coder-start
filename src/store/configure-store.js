@@ -8,13 +8,17 @@ import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 import projectList from '../containers/project-list/reducers/priject-list-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
+import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
+import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 
 
 const reducer = combineReducers({
     login,
     menu,
     getGroupTree,
-	projectList
+	projectList,
+    createGroup,
+    createProject,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
