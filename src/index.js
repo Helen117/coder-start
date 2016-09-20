@@ -18,7 +18,7 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
-import {Milestones,MilestoneDetail} from './containers/milestones';
+import {Milestones,MilestoneDetail,MilestoneCreate} from './containers/milestones';
 import {UserList, UserDetail} from './containers/user';
 
 
@@ -55,6 +55,7 @@ ReactDOM.render(
                             </Route>
                         <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="moreMilestones" breadcrumbName="查看更多" path="milestones/moreMilestones" component={MilestoneDetail}/>
+
                     </Route>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>

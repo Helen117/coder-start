@@ -19,11 +19,11 @@ const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
 
-const milestones_ = require('./mockdata/milestones');
-var milestones = milestones_.milestone;
+const milestones_ = require('./mockdata/milestones_new.json');
+var milestones = milestones_.result;
 
-const milestones_detail_ = require('./mockdata/milestonesDetail');
-var milestoneDetail = milestones_detail_.milestoneDetail;
+const milestones_detail_ = require('./mockdata/milestonesDetail_new.json');
+var milestoneDetail = milestones_detail_.result;
 
 const app = express();
 

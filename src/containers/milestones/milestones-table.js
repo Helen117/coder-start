@@ -28,12 +28,36 @@ class MilestoneDetail extends React.Component {
         }
     }
 
+    //时间戳转换成日期
+    getTime(date) {
+        return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    }
+
+    //获取表格的数据源
+    getDataSource(){
+        const milestoneDetail = this.props.milestoneDetail;
+        console.log('获取表格数据：',milestoneDetail);
+        const data = [];
+        if(milestoneDetail !=null){
+            for (let i = 0; i < milestoneDetail.length; i++) {
+                data.push({
+                    title: milestoneDetail[i].title,
+                    author_name: milestoneDetail[i].author.name,
+                    assignee_name: milestoneDetail[i].assignee.name,
+                    created_at:  this.getTime(milestoneDetail[i].created_at),
+                    labels: milestoneDetail[i].labels,
+                    state: milestoneDetail[i].state,
+                });
+            }
+        }
+        return data;
+    }
+
     render(){
-        const milestoneDetail = this.props;
-        console.log('获取到的表格内容：',milestoneDetail.milestoneDetail);
+
         return(
             <Box title="里程碑详细信息">
-            <Table columns={this.milestoneListColumns(this)} dataSource={milestoneDetail.milestoneDetail}
+            <Table columns={this.milestoneListColumns(this)} dataSource={this.getDataSource()}
                 bordered={false}
                    showHeader={true}
                    size="middle">
@@ -57,25 +81,33 @@ MilestoneDetail.contextTypes = {
 
 
 MilestoneDetail.prototype.milestoneListColumns = (self)=>[{
-    title: '所属项目组',
-    dataIndex: 'projectGroup',
-    width: '20%'
-}, {
-    title: '所属项目',
-    dataIndex: 'project',
-    width: '15%',
-}, {
-    title: '里程碑名称',
-    dataIndex: 'name',
-    width: '15%'
+    title: '问题名称',
+    dataIndex: 'title',
+    width: '12.5%'
 }, {
     title: '创建人',
-    dataIndex: 'creator',
-    width: '15%'
+    dataIndex: 'author_name',
+    width: '12.5%'
+},{
+    title: '修复人',
+    dataIndex: 'assignee_name',
+    width: '12.5%'
+},{
+    title: '问题标签',
+    dataIndex: 'labels',
+    width: '12.5%'
 }, {
-    title: '计划发布时间',
+    title: '问题创建时间',
+    dataIndex: 'created_at',
+    width: '12.5%'
+}, {
+    title: '计划完成时间',
     dataIndex: 'releaseTime',
-    width: '15%'
+    width: '12.5%'
+},{
+    title: '状态',
+        dataIndex: 'state',
+        width: '12.5%'
 }];
 
 

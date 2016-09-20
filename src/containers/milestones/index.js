@@ -4,3 +4,4 @@
 
 export Milestones from './milestones-timeline';
 export MilestoneDetail from './milestones-table';
+export MilestoneCreate from './milestones-create';
