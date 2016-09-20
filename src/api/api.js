@@ -43,6 +43,9 @@ class _Api {
                 }
                 fetch(url, opts).then(function (res) {
                     if(res.ok){
+                        if (callback) {
+                            callback();
+                        }
                         return res.json().then(function(json) {
                             if (json.success == undefined){
                                 return resolve(json);

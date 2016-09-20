@@ -4,19 +4,19 @@
  */
 
 /**
- * Created by william.xu on 2016/9/14
+ * Created by william.xu on 2016/9/20
  */
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification} from 'antd';
 import Box from '../../components/Box';
-import {createGroup} from './actions/create-group-action';
+import {createProject} from './actions/create-project-action';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 
-class GroupDetail extends React.Component {
+class ProjectDetail extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -30,7 +30,7 @@ class GroupDetail extends React.Component {
             } else {
                 const formData = form.getFieldsValue();
                 console.log('收到表单值：', formData);
-                actions.createGroup(formData);
+                actions.createProject(formData);
             }
         })
     }
@@ -85,12 +85,12 @@ class GroupDetail extends React.Component {
             wrapperCol: {span: 14},
         };
         return (
-            <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
+            <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="项目组名称">
+                    <FormItem {...formItemLayout} label="项目名称">
                         <Input type="text" {...getFieldProps('name', {initialValue: '', rules:[{ required:true}]})} placeholder="请输入项目名称"/>
                     </FormItem>
-                    <FormItem {...formItemLayout} label="项目组路径">
+                    <FormItem {...formItemLayout} label="项目路径">
                         <Input type="text" {...getFieldProps('path ', {initialValue: '', rules:[{ required:true}]})} placeholder="请输入项目路径"/>
                     </FormItem>
                     <FormItem {...formItemLayout} label="描述">
@@ -108,25 +108,25 @@ class GroupDetail extends React.Component {
 
 }
 
-GroupDetail.contextTypes = {
+ProjectDetail.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
 
-GroupDetail = Form.create()(GroupDetail);
+ProjectDetail = Form.create()(ProjectDetail);
 
 function mapStateToProps(state) {
     return {
-        inserted: state.createGroup.result
+        inserted: state.createProject.result
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createGroup}, dispatch)
+        actions: bindActionCreators({createProject}, dispatch)
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetail);

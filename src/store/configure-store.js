@@ -7,11 +7,15 @@ import DevTools from '../tools/ReduxDevTools';
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
+import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
+import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 
 const reducer = combineReducers({
     login,
     menu,
-    getGroupTree
+    getGroupTree,
+    createGroup,
+    createProject
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
