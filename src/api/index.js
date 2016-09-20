@@ -1,12 +1,14 @@
 import Api from './api';
 
 const api = new Api({
-    //baseURI: 'http://10.10.156.110:11000',
-    baseURI: '/api',
+    baseURI: 'http://10.10.156.110:11000/gitlab',
+    //baseURI: '/gitlab',
     headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-        'x-access-token': window.localStorage.getItem('token')
+        //'Accept': 'application/json',
+        'Accept': '*/*',
+        //'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json; charset=utf-8'
+        //'x-access-token': window.localStorage.getItem('token')
     }
 });
 

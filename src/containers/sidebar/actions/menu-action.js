@@ -16,12 +16,16 @@ export function updateNavPath(path, key) {
     }
 }
 
-export function getAllMenu(id) {
-    var path = '/user/' + id + '/menu';
+export function getAllMenu(userId) {
+    let path = '/menu';
     return {
         type: GET_ALL_MENU,
         payload: {
-            promise: api.get(path)
+            promise: api.post(path, {
+                params:{
+                    userId: userId
+                }
+            })
         }
     }
 }
