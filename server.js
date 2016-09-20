@@ -63,6 +63,14 @@ app.post('/api/project-mgr/groupTree', function (req, res) {
     res.json(groupTree);
 });
 
+app.post('/api/project-mgr/createProject', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
+});
+
+app.post('/api/project-mgr/createGroup', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
+});
+
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))

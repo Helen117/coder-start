@@ -15,6 +15,7 @@ import {getGroupTree} from './actions/group-tree-action';
 
 
 export GroupDetail from './group-detail';
+export ProjectDetail from './project-detail';
 
 class ProjectMgr extends React.Component{
     constructor(props){
@@ -27,8 +28,13 @@ class ProjectMgr extends React.Component{
 
     editGroup(type, selectedRow) {
         this.context.router.push({
-            //pathname: window.location.pathname + '/edit',
-            pathname: '/project-group',
+            pathname: '/group-detail',
+            state: {editType: type, selectedRow}
+        });
+    }
+    editProject(type, selectedRow) {
+        this.context.router.push({
+            pathname: '/project-detail',
             state: {editType: type, selectedRow}
         });
     }
@@ -49,7 +55,7 @@ class ProjectMgr extends React.Component{
                         <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
                             新建项目组
                         </Button>
-                        <Button className="pull-right" type="primary">
+                        <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
                             新建项目
                         </Button>
                     </Row>
