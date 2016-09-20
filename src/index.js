@@ -22,7 +22,6 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 import ProjectList from './containers/project-list';
-import ProjectItem from './containers/project-member';
 
 import ProjectMgr, {GroupDetail} from './containers/project-mgr';
 
@@ -58,8 +57,6 @@ ReactDOM.render(
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
                         </Route>
                         <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
-                        </Route>
-                        <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
                     </Route>

@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import { Button, Row, Col } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import ProjectList from '../project-list';
-import ProjectItem from '../project-item';
 import {getGroupTree} from './actions/group-tree-action';
 import 'PubSub-js';
 
@@ -60,7 +59,6 @@ class ProjectMgr extends React.Component{
                     </Row>
                     <Row>
                         <ProjectList />
-                        <ProjectItem />
                     </Row>
                 </Col>
 

@@ -50,5 +50,15 @@ module.exports.groupTree = {
             id: 'project35',
             name: '项目35'
         }]
+    },{
+        id: '9',
+        name: 'devops',
+        children: [{
+            id: '58',
+            name: 'devops-scm'
+        },{
+            id: '57',
+            name: 'devops-web'
+        }]
     }]
 };

@@ -75,8 +75,8 @@ class GroupDetail extends React.Component {
     }
 
     nameExists(rule, value, callback){
-        const {list} = this.props;
-        var project =  list.projectList.project;
+
+        /*var project =  list.projectList.project;
         if (!value) {
             callback();
         } else {
@@ -91,7 +91,7 @@ class GroupDetail extends React.Component {
                     callback();
                 }
             }
-        }
+        }*/
     }
 
 
@@ -114,7 +114,7 @@ class GroupDetail extends React.Component {
                     min:2,
                     message: '用户名至少为 5 个字符'
                 },{
-                    validator:this.nameExists
+                    //validator:this.nameExists
                 }
             ]
         });
