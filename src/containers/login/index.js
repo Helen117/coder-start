@@ -25,7 +25,6 @@ class Login extends React.Component {
         const error = nextProps.loginErrors;
         const isLoggingIn = nextProps.loggingIn;
         const uid = nextProps.uid;
-
         if (error && error.indexOf('offline') > 0) {
             notification.error({
                 message: '登录失败',

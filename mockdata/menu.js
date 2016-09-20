@@ -29,5 +29,13 @@ module.exports.menu = [{
         name: '项目管理',
         link: '/project-mgr'
     }]
+},{
+    id: 6,
+    cname: '问题管理',
+    subMenu: [{
+        id: 61,
+        name: '问题管理',
+        link: '/issue'
+    }]
 }];
 

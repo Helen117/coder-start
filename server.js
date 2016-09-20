@@ -18,6 +18,10 @@ const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
 
+const group_ = require('./mockdata/group');
+var group = group_.group;
+var issueNotes = group_.notes;
+
 const app = express();
 
 // Webpack developer
@@ -41,11 +45,53 @@ const port = isProduction ? (process.env.PORT || 80) : 8080;
 //以下是模拟服务端请求数据
 app.post('/api/login', function (req, res) {
     const credentials = req.body;
+    console.log('username:',credentials.username);
     if (credentials.username === login.username && credentials.password === login.password) {
         res.cookie('uid', '1', {domain: '127.0.0.1'});
         res.json(user);
     } else {
         res.status('500').send({'message': 'Invalid user/password'});
+    }
+});
+
+app.post('/api/register', function (req, res) {
+    const credentials = req.body;
+    if (credentials) {
+        res.status('200').send({"success":"true"});
+    } else {
+        res.status('500').send({'errorMsg': 'failed'});
+    }
+});
+
+app.get('/api/userExists', function (req, res) {
+    res.json(user);
+});
+
+app.get('/api/fetchData', function (req, res) {
+    const credentials = req.body;
+    console.log('projectId:',credentials.projectId);
+    if (credentials) {
+        res.json(group);
+    } else {
+        res.status('500').send({'errorMsg': 'Invalid projectId'});
+    }
+});
+
+app.post('/api/addIssue', function (req, res) {
+    const credentials = req.body;
+    if (credentials) {
+        res.status('200').send({"success":"true"});
+    } else {
+        res.status('500').send({'errorMsg': 'failed'});
+    }
+});
+
+app.get('/api/issueNotes', function (req, res) {
+    const credentials = req.body;
+    if (credentials) {
+        res.json(issueNotes);
+    } else {
+        res.status('500').send({'errorMsg': 'failed'});
     }
 });
 
