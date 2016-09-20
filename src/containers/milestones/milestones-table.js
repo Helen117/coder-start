@@ -45,6 +45,7 @@ class MilestoneDetail extends React.Component {
                     author_name: milestoneDetail[i].author.name,
                     assignee_name: milestoneDetail[i].assignee.name,
                     created_at:  this.getTime(milestoneDetail[i].created_at),
+                    due_date: this.getTime(milestoneDetail[i].due_date),
                     labels: milestoneDetail[i].labels,
                     state: milestoneDetail[i].state,
                 });
@@ -102,7 +103,7 @@ MilestoneDetail.prototype.milestoneListColumns = (self)=>[{
     width: '12.5%'
 }, {
     title: '计划完成时间',
-    dataIndex: 'releaseTime',
+    dataIndex: 'due_date',
     width: '12.5%'
 },{
     title: '状态',

@@ -3,5 +3,18 @@
  */
 
 import React from 'react';
+import InputPage from '../../components/input-page'
 
-class MilestoneCreate extends React.Component {}
+class MilestoneCreate extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render(){
+        return(
+            <InputPage></InputPage>
+        );
+    }
+}
+
+export default (MilestoneCreate);
