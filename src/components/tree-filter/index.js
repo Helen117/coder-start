@@ -17,7 +17,9 @@ export default class TreeFilter extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            filterValue: ''
+            filterValue: '',
+            _expandedKeys: [],
+            fireOnExpand: false
         }
     }
 
@@ -57,6 +59,13 @@ export default class TreeFilter extends React.Component {
         const value = treeNode.props[labelCompatible('title')];
         const {filterValue} = this.state;
         return filterValue && value.indexOf(filterValue) > -1;
+    }
+
+    onExpand(expandedKeys) {
+        this.setState({
+            _expandedKeys: expandedKeys,
+            fireOnExpand: true,
+        });
     }
 
     getTreeNodes(data, filterValue) {
@@ -127,8 +136,14 @@ export default class TreeFilter extends React.Component {
             defaultExpandAll: true,
             filterTreeNode: this.highlightTreeNode.bind(this),
         };
+        trProps.autoExpandParent = true;
+        trProps.onExpand = this.onExpand.bind(this);
         if (this._expandedKeys && this._expandedKeys.length) {
             trProps.expandedKeys = this._expandedKeys;
+        }
+        if (this.state.fireOnExpand) {
+            trProps.expandedKeys = this.state._expandedKeys;
+            trProps.autoExpandParent = false;
         }
         return(
             <div style={{border: "1px solid #e5e5e5", padding:10}}>
