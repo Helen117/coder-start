@@ -7,7 +7,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
 
-const RangePicker = DatePicker.RangePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -83,16 +82,16 @@ class AddIssue extends Component{
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="日期" >
-                    <RangePicker style={{ width: 184 }} {...getFieldProps('data')} />
+                    <DatePicker style={{ width: 184 }} {...getFieldProps('due_data')} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="指派给" >
-                    <Select id="solver" size="large"  style={{ width: 200 }} {...getFieldProps('solver',{rules:[{required:true,message:'请选择指派的人'}]})} >
+                    <Select id="assignee_id" size="large"  style={{ width: 200 }} {...getFieldProps('assignee_id',{rules:[{required:true,message:'请选择指派的人'}]})} >
                         {options}
                     </Select>
                 </FormItem>
                 <FormItem {...formItemLayout} label="里程碑" >
-                    <Select id="milestone" size="large"  style={{ width: 200 }} {...getFieldProps('milestone')} >
+                    <Select id="milestone_id" size="large"  style={{ width: 200 }} {...getFieldProps('milestone_id')} >
                         {mileStoneOptions}
                     </Select>
                 </FormItem>
