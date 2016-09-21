@@ -77,6 +77,10 @@ class ProjectList extends Component {
         }
     }
 
+    onSelectRow(record){
+        PubSub.publish("evtRowClick",{record:record});
+    }
+
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,fetchStatus,loginInfo} = this.props;
@@ -125,7 +129,6 @@ class ProjectList extends Component {
                         owner:groupInfo.childern[i].gitlabProject.owner
                     });
                 }
-//onSelect={this.onRowClick.bind(this)}
                 return (
                     <div className ={styles.project_list_div}>
                         <div>
@@ -133,7 +136,7 @@ class ProjectList extends Component {
                         </div>
                         <TableView columns={columns}
                                    dataSource={dataSource}
-
+                                   onSelectRow={this.onSelectRow.bind(this)}
                         ></TableView>
                     </div>
                 )

@@ -15,9 +15,10 @@ export default class TableView extends Component{
     }
 
     selectRow(record, index){
-        console.log("record:",record);
-        console.log("index:",index);
-        PubSub.publish("evtRowClick",{record:record});
+        const {onSelectRow} = this.props;
+        if (onSelectRow){
+            onSelectRow(record);
+        }
     }
 
     render(){
@@ -39,7 +40,7 @@ export default class TableView extends Component{
                        bordered
                        size="middle"
                        pagination={pagination}
-                       onRowClick={this.selectRow}/>
+                       onRowClick={this.selectRow.bind(this)}/>
             </div>
         )
     }

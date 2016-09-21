@@ -18,23 +18,31 @@ class ProjectMember extends Component {
             selectRow:null,
         };
         this.showProjectMember = this.showProjectMember.bind(this);
+        this.notShowMember = this.notShowMember.bind(this);
     }
 
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
-        console.log("11111");
         PubSub.subscribe("evtRowClick",this.showProjectMember.bind(this) );
+        PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
         PubSub.unsubscribe("evtRowClick");
+        PubSub.unsubscribe("evtTreeClick");
     }
 
     showProjectMember(msg,data){
         this.setState({
             memberType:true,
             selectRow:data.record.projectName
+        })
+    }
+
+    notShowMember(msg,data){
+        this.setState({
+            memberType:false,
         })
     }
 
@@ -52,7 +60,6 @@ class ProjectMember extends Component {
     }
 
     render(){
-        console.log("this.state.memberType:",this.state.memberType);
         if(this.state.memberType == true){
             const {list,fetchStatus} = this.props;
             if (fetchStatus || false) {
