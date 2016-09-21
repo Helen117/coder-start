@@ -40,7 +40,7 @@ class Sidebar extends React.Component {
         const menu = items.map((    item) => {
             openKey.push('sub' + item.id);
             return (
-                <SubMenu key={'sub' + item.id} title={<span><Icon type='user'/>{item.cname}</span>}>
+                <SubMenu key={'sub' + item.id} title={<span><Icon type='user'/>{item.name}</span>}>
                     {item.subMenu.map((node) => {
                         return (
                             <Menu.Item key={'menu' + node.id}>

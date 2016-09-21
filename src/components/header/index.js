@@ -30,7 +30,7 @@ export default class Header extends React.Component {
         return (
             <Row className='ant-layout-header'>
                 <Col span={6}>
-                    <img src="/src/static/images/logo.png"/>
+                    <img src="/assets/images/logo.png"/>
                 </Col>
                 <Col span={16} className="pending-item">
                     <p>

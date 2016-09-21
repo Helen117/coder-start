@@ -8,7 +8,7 @@ export function getMilestones(projectId) {
     return {
         type: ACQUIRE_MILESTONES,
         payload: {
-            promise: api.get('/milestones', {
+            promise: api.post('/milestones', {
                 data: {
                     projectId:projectId
                 }
@@ -21,7 +21,7 @@ export function getMilestonesDetail(milestonesId) {
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {
-            promise: api.get('/milestoneDetail', {
+            promise: api.post('/milestoneDetail', {
                 data: {
                     milestonesId:milestonesId
                 }

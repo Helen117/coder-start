@@ -31,14 +31,14 @@ class Milestones extends React.Component {
 
     moreMilestones(milestonesId){
         this.context.router.push({
-            pathname: window.location.pathname + '/moreMilestones',
+            pathname: '/moreMilestones.html',
             state: {milestonesId}
         });
     }
 
     createMilestones(){
         this.context.router.push({
-            pathname: window.location.pathname + '/createMilestones',
+            pathname: '/createMilestones.html',
             //state: {}
         });
     }

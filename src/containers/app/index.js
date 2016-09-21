@@ -31,7 +31,7 @@ class App extends React.Component {
 
     logout() {
         this.props.actions.logout();
-        this.context.router.replace('/login');
+        this.context.router.replace('/login.html');
     }
 
     render() {

@@ -23,14 +23,14 @@ export default function auth(state = initialState, action = {}) {
         case LOGIN_PENDING:
             return Object.assign({}, initialState, {loggingIn: true});
         case LOGIN_SUCCESS:
-            authUtils.login(action.payload.token, action.payload.uid);
-            return Object.assign({}, initialState, {uid: action.payload.uid, loggingIn: false, loginErrors: null});
+            //authUtils.login(action.payload.token, action.payload.userId);
+            return Object.assign({}, initialState, {uid: action.payload.userId, loggingIn: false, loginErrors: null});
         case LOGIN_ERROR:
             return {
                 ...state,
                 loggingIn: false,
                 uid: null,
-                loginErrors: action.payload.message
+                loginErrors: action.payload.errorMsg
             };
         case LOGOUT:
             authUtils.logout();

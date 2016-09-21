@@ -80,7 +80,7 @@ export default class UserList extends React.Component {
 
     editUser(type, selectedRow) {
         this.context.router.push({
-            pathname: window.location.pathname + '/edit',
+            pathname: window.location.pathname + '/edit.html',
             state: {editType: type, selectedRow}
         });
     }
