@@ -54,9 +54,6 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
-/*app.post('/api/project', function (req, res) {
-    res.json(projectList);
-});*/
 app.post('/gitlab/group', function (req, res) {
     res.json(group);
 });
@@ -67,11 +64,12 @@ app.get('/gitlab/user/1', function (req, res) {
     res.json(user);
 });
 
+
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
 });
 
-app.post('/gitlab/project-mgr/groupTree', function (req, res) {
+app.post('/gitlab/groups/all', function (req, res) {
     res.json(groupTree);
 });
 
