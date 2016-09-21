@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var HTMLWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     devtool: 'eval-source-map',
@@ -10,9 +11,14 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js',
-        publicPath: '/dist'
+        publicPath: '/'
     },
     plugins: [
+        //生成html文件
+        new HTMLWebpackPlugin({
+            //title: '上海移动开发管理系统',
+            template: './index.html'
+        }),
         //new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),

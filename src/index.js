@@ -39,6 +39,9 @@ const validate = function (next, replace, callback) {
     callback();
 };
 
+const root = document.createElement('div');
+document.body.appendChild(root);
+
 ReactDOM.render(
     <div>
         <Provider store={store}>
@@ -62,5 +65,5 @@ ReactDOM.render(
         </Provider>
         {/*<DevTools store={store}/>*/}
     </div>,
-    document.getElementById('root')
+    root
 );
