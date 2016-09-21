@@ -44,11 +44,11 @@ class ProjectMgr extends React.Component{
     }
 
     render(){
-        const {treeData} = this.props;
+        const {treeData, loading} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
-                    <TreeFilter nodesData={treeData} onSelect={this.onSelectNode.bind(this)}/>
+                    <TreeFilter loading={loading} nodesData={treeData} onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
                     <Row>
@@ -78,6 +78,7 @@ ProjectMgr.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        loading : state.getGroupTree.loading,
         treeData: state.getGroupTree.treeData
     }
 }
