@@ -67,7 +67,7 @@ class _Api {
                     } else {
                         return reject({
                             errorCode: res.status,
-                            errorMsg: res.statusText
+                            errorMsg: res.status + " - " + res.statusText + ", url=" + res.url
                         });
                     }
                 }).catch(function (error) {

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha tests/.setup.js tests/**/*-test.js --compilers css:mocha-compiler.js",
-    "start": "node server"
+    "start": "node server",
+    "build": "gulp dist"
   },
   "author": "xuwz",
   "license": "WTFPL",
@@ -27,7 +28,9 @@
     "redux-thunk": "^1.0.3",
     "redux-react-fetch": "^0.0.4",
     "superagent": "^2.2.0",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "js-cookie": "^2.1.3",
+    "pubsub-js": "^1.5.3"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
@@ -60,6 +63,12 @@
     "redux-devtools-log-monitor": "^1.0.11",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.12.2"
+    "webpack-hot-middleware": "^2.12.2",
+    "gulp": "^3.9.1",
+    "gulp-hot-reload": "^1.2.4",
+    "gulp-util": "^3.0.7",
+    "html-webpack-plugin": "^1.7.0",
+    "webpack-stream": "^3.2.0",
+    "del": "^2.2.2"
   }
 }
