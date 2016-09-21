@@ -7,10 +7,17 @@ import React,{
 } from 'react';
 import {Table} from 'antd';
 import styles from './index.css';
+import 'PubSub-js';
 
 export default class TableView extends Component{
     constructor(props){
         super(props);
+    }
+
+    selectRow(record, index){
+        console.log("record:",record);
+        console.log("index:",index);
+        PubSub.publish("evtRowClick",{record:record});
     }
 
     render(){
@@ -31,7 +38,8 @@ export default class TableView extends Component{
                        dataSource={this.props.dataSource}
                        bordered
                        size="middle"
-                       pagination={pagination}/>
+                       pagination={pagination}
+                       onRowClick={this.selectRow}/>
             </div>
         )
     }
