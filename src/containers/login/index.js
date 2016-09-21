@@ -30,7 +30,7 @@ class Login extends React.Component {
             notification.error({
                 message: '登录失败',
                 description: error,
-                duration: 1
+                duration: 5
             });
         }
 
@@ -42,7 +42,7 @@ class Login extends React.Component {
             });
         }
         if (uid) {
-            this.context.router.replace('/home');
+            this.context.router.replace('/home.html');
         }
     }
 
@@ -68,7 +68,7 @@ class Login extends React.Component {
                         </FormItem>
                         <Row>
                             <Col span='16' offset='6'>
-                                <Button type='primary' htmlType='submit'>确定</Button>
+                                <Button type='primary' htmlType='submit' loading={this.props.loggingIn}>确定</Button>
                             </Col>
                         </Row>
                     </Form>

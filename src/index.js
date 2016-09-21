@@ -37,37 +37,39 @@ const store = configureStore();
 const validate = function (next, replace, callback) {
     //const isLoggedIn = authUtils.getToken()
     const isLoggedIn = getCookie('uid');
-    if (!isLoggedIn && next.location.pathname != '/login') {
-        replace('/login')
+    if (!isLoggedIn && next.location.pathname != '/login.html') {
+        replace('/login.html')
     }
     callback();
 };
+
+const root = document.createElement('div');
+document.body.appendChild(root);
 
 ReactDOM.render(
     <div>
         <Provider store={store}>
             <Router history={history}>
                 <Route path="/" onEnter={validate}>
-                    <IndexRedirect to="home"/>
+                    <IndexRedirect to="home.html"/>
                     <Route component={App}>
-                        <Route name="home" breadcrumbName="首页" path="home" component={Home}/>
-                        <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
-                            <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
+                        <Route name="home" breadcrumbName="首页" path="home.html" component={Home}/>
+                        <Route name="userMgr" breadcrumbName="用户列表" path="user.html" component={UserList}>
+                            <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
                         </Route>
-                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
+                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
                         </Route>
-                        <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
+                        <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
                         </Route>
-                        <Route name="groupDetail" breadcrumbName="项目组明细" path="project-group" component={GroupDetail}/>
-                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
-                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
+                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                     </Route>
-                    <Route path="login" component={Login}/>
+                    <Route path="login.html" component={Login}/>
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
         </Provider>
-        <DevTools store={store}/>
+        {/*<DevTools store={store}/>*/}
     </div>,
-    document.getElementById('root')
+    root
 );

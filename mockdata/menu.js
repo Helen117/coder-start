@@ -7,19 +7,19 @@ module.exports.menu = {
     errorMsg: null,
     result: [{
         id: 1,
-        cname: 'dashboard',
+        name: 'dashboard',
         subMenu: [{
             id: 11,
             name: '首页',
-            link: '/home'
+            link: '/home.html'
         }]
     }, {
         id: 2,
-        cname: '用户管理',
+        name: '用户管理',
         subMenu: [{
             id: 21,
             name: '用户管理',
-            link: '/user'
+            link: '/user.html'
         }, {
             id: 22,
             name: '测试',
@@ -27,11 +27,11 @@ module.exports.menu = {
         }]
     }, {
         id: 3,
-        cname: '项目管理',
+        name: '项目管理',
         subMenu: [{
             id: 31,
             name: '项目管理',
-            link: '/project-mgr'
+            link: '/project-mgr.html'
         }]
     }]
 };

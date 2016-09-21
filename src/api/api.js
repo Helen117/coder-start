@@ -26,11 +26,10 @@ class _Api {
                     url = path;
                 }
 
-
                 const opts = {
                     method: method,
                     mode: 'cors', // same-origin|no-cors（默认）|cors(允许不同域的请求，但要求有正确的CORs应答头信息，比如Access-Control-Allow-Origin)
-                    credentials: 'include'//omit（默认，不带cookie）|same-origin(同源带cookie)|include(总是带cookie)
+                    credentials: 'omit'//omit（默认，不带cookie）|same-origin(同源带cookie)|include(总是带cookie)
                 };
                 if (this.opts.headers) {
                     opts.headers = this.opts.headers;
@@ -39,7 +38,12 @@ class _Api {
                     opts.body = JSON.stringify(data);
                 }
                 if (params) {
-                    opts.body = params;
+                    opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    let queryString = '';
+                    for (let param in params){
+                        queryString += (param+'='+params[param]+'&');
+                    }
+                    opts.body = queryString;
                 }
                 fetch(url, opts).then(function (res) {
                     if(res.ok){
@@ -63,11 +67,15 @@ class _Api {
                     } else {
                         return reject({
                             errorCode: res.status,
-                            errorMsg: res.statusText
+                            errorMsg: res.status + " - " + res.statusText + ", url=" + res.url
                         });
                     }
                 }).catch(function (error) {
                     console.log(error);
+                    return reject({
+                        errorCode: -999,
+                        errorMsg: '连接远程服务器失败，url='+url
+                    });
                 });
 
 
