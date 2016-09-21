@@ -5,6 +5,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
+import {Switch} from 'antd';
 import 'PubSub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -77,7 +78,7 @@ class ProjectList extends Component {
     }
 
     render() {
-        if(this.state.listType == true){//展示项目列表
+        if(this.state.listType == true){//展示项目组信息
             const {list,fetchStatus,loginInfo} = this.props;
             if (fetchStatus || false) {
                 var groupName = this.state.listNode;
@@ -97,7 +98,7 @@ class ProjectList extends Component {
                                     count++;
                                     for(var j=0;j<groupInfo.childern.length;j++){
                                         if(record.projectName == groupInfo.childern[j].gitlabProject.name){
-                                            if(loginInfo.userName == groupInfo.childern){
+                                            if(loginInfo.userName == groupInfo.childern[j].gitlabProjectMember.name){
                                                 count2++;
                                             }
                                         }
@@ -105,11 +106,11 @@ class ProjectList extends Component {
                                 }
                             }
                             if(count == 0){
-                                return <a>关注</a>
+                                return <Switch checkedChildren="是" unCheckedChildren="否" />
                             }else if(count2 == 0){
-                                return <a >取消关注</a>
+                                return <Switch checkedChildren="否" unCheckedChildren="是" />
                             }else{
-                                return <a disabled="true">取消关注</a>
+                                return <Switch disabled checkedChildren="否" unCheckedChildren="是" />
                             }
                         }
                     }
@@ -124,7 +125,7 @@ class ProjectList extends Component {
                         owner:groupInfo.childern[i].gitlabProject.owner
                     });
                 }
-
+//onSelect={this.onRowClick.bind(this)}
                 return (
                     <div className ={styles.project_list_div}>
                         <div>
@@ -132,49 +133,68 @@ class ProjectList extends Component {
                         </div>
                         <TableView columns={columns}
                                    dataSource={dataSource}
+
                         ></TableView>
                     </div>
                 )
             }
             return null;
-        }else if(this.state.itemType == true){//展示项目成员信息
-            const {list,fetchStatus} = this.props;
-            if (fetchStatus || false) {
-                var projectName = this.state.itemNode;
-                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
+        }else if(this.state.itemType == true){//展示项目信息
+            const {list,fetchStatus,loginInfo} = this.props;
+             if (fetchStatus || false) {
+             var projectName = this.state.itemNode;
+             var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
 
-                const columns = [
-                    {title: "项目人员", dataIndex: "name", key: "name"},
-                    {title: "角色", dataIndex: "role", key: "role"},
-                    {title: "进入项目时间", dataIndex: "join_time", key: "join_time"},
-                    {title: "人员状态", dataIndex: "state", key: "state"}
-                ];
-                const dataSource = [];
-                for(var i=0;i<projectInfo.gitlabProjectMember.length;i++){
-                    if(projectName == projectInfo.gitlabProject.name){
-                        dataSource.push({
-                            key:i+1,
-                            name:projectInfo.gitlabProjectMember[i].name,
-                            role:projectInfo.gitlabProjectMember[i].is_admin?"admin":"非admin",
-                            join_time:projectInfo.gitlabProjectMember[i].created_at,
-                            state:projectInfo.gitlabProjectMember[i].state
-                        });
-                    }
-                }
+             const columns = [
+             {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+             {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+             {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+             {title: "是否关注", dataIndex: "consern", key: "consern"},
+             {title: "项目状态", dataIndex: "state", key: "state"},
+             {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+             {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+             ];
+             var count1=0;var count2=0;
+             for(var i=0;i<list.star.length;i++){
+             if(projectName == list.star[i].projectName){
+             count1++;
+             for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
+             console.log("loginInfo.userName:",loginInfo.userName);
+             console.log("projectInfo.gitlabProjectMember[j].name:",projectInfo.gitlabProjectMember[j].name);
+             if(loginInfo.userName == projectInfo.gitlabProjectMember[j].name){
+             count2++;
+             }
+             console.log("count2:",count2);
+             }
+             }
+             }
+             if(count1 == 0){
+             var consern_desc = "尚未关注此项目";
+             }else if(count2 == 0){
+             var consern_desc = "我关注了这个项目";
+             }else if(count2 != 0){
+             var consern_desc = "我是项目成员";
+             }
+             const dataSource = [{
+             group_name:groupInfo.name,
+             project_name:projectName,
+             //next_milestom:
+             consern:consern_desc,
+             //state:
+             //tech_debt:
+             //test_cover:
+             }];
 
-                return (
-                    <div className={styles.project_list_div}>
-                        <div>
-                            <p>项目创建时间:{projectInfo.gitlabProject.created_at}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}</p>
-                        </div>
-                        <TableView columns={columns}
-                                   dataSource={dataSource}
-                        ></TableView>
+             return (
+             <div className={styles.project_list_div}>
+             <TableView columns={columns}
+             dataSource={dataSource}
+             ></TableView>
 
-                    </div>
-                )
-            }
-            return null;
+             </div>
+             )
+             }
+             return null;
         }else {
             return null;
         }
