@@ -116,7 +116,7 @@ export default class TreeFilter extends React.Component {
 
     render(){
         const {filterValue} = this.state;
-        const {nodesData, loading} = this.props;
+        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg} = this.props;
         let nodes = this.getTreeNodes(nodesData, filterValue);
         if (filterValue) {
             nodes = this.processTreeNode(nodes, filterValue);
@@ -132,14 +132,14 @@ export default class TreeFilter extends React.Component {
         }
         return(
             <div style={{border: "1px solid #e5e5e5", padding:10}}>
-                <Input placeholder="快速查询项目" onChange={this.onInputChange.bind(this)}/>
+                <Input placeholder={inputPlaceholder} onChange={this.onInputChange.bind(this)}/>
                 {loading?(
                     <span className="filter-not-found">
-                        <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>正在加载...</span></i>
+                        <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>{loadingMsg?loadingMsg:'正在加载数据...'}</span></i>
                     </span>
                 ):(
                     nodes.length==0?
-                        (<span className="filter-not-found">找不到项目</span>)
+                        (<span className="filter-not-found">{notFoundMsg?notFoundMsg:'没有数据'}</span>)
                         :(<Tree {...trProps}>{nodes}</Tree>)
                 )}
 
@@ -151,6 +151,9 @@ export default class TreeFilter extends React.Component {
 }
 
 TreeFilter.propTypes = {
+    inputPlaceholder: PropTypes.string,
+    loadingMsg: PropTypes.string,
+    notFoundMsg: PropTypes.string,
     loading: PropTypes.bool,
     nodesData: PropTypes.array,
     onSelect: PropTypes.func
