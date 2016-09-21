@@ -56,9 +56,9 @@ class ProjectList extends Component {
 
     searchGroupByGroupName(groupName,list){
         var groupInfo;
-        for(var i=0;i<list.group.length;i++){
-            if(groupName == list.group[i].name){
-                groupInfo = list.group[i];
+        for(var i=0;i<list.length;i++){
+            if(groupName == list[i].name){
+                groupInfo = list[i];
                 return groupInfo;
             }
         }
@@ -66,11 +66,11 @@ class ProjectList extends Component {
 
     searchGroupByProjectName(projectName,list){
         var projectInfo,groupInfo;
-        for(var i=0;i<list.group.length;i++){
-            for(var j=0;j<list.group[i].childern.length;j++){
-                if(projectName == list.group[i].childern[j].gitlabProject.name){
-                    groupInfo = list.group[i];
-                    projectInfo = list.group[i].childern[j];
+        for(var i=0;i<list.length;i++){
+            for(var j=0;j<list[i].children.length;j++){
+                if(projectName == list[i].children[j].gitlabProject.name){
+                    groupInfo = list[i];
+                    projectInfo = list[i].children[j];
                     return {projectInfo,groupInfo}
                 }
             }
@@ -87,7 +87,7 @@ class ProjectList extends Component {
             if (fetchStatus || false) {
                 var groupName = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupName,list);
-                var starInfo = list.star;
+                var starInfo = groupInfo.star;
 
                 const columns = [
                     {title: "项目名称", dataIndex: "projectName", key: "projectName"},
@@ -96,13 +96,13 @@ class ProjectList extends Component {
                     {title: "owner", dataIndex: "owner", key: "owner"},
                     {title: "是否关注", dataIndex: "consern", key: "consern",
                         render(text,record){
-                            var count = 0;var count2 = 0;
+                            var count = 0, count2 = 0;
                             for(var i=0;i<starInfo.length;i++){
                                 if(record.projectName == starInfo[i].projectName){
                                     count++;
-                                    for(var j=0;j<groupInfo.childern.length;j++){
-                                        if(record.projectName == groupInfo.childern[j].gitlabProject.name){
-                                            if(loginInfo.userName == groupInfo.childern[j].gitlabProjectMember.name){
+                                    for(var j=0;j<groupInfo.children.length;j++){
+                                        if(record.projectName == groupInfo.children[j].gitlabProject.name){
+                                            if(loginInfo.userName == groupInfo.children[j].gitlabProjectMember.name){
                                                 count2++;
                                             }
                                         }
@@ -120,19 +120,19 @@ class ProjectList extends Component {
                     }
                 ];
                 const dataSource = [];
-                for(var i=0;i<groupInfo.childern.length;i++){
+                for(var i=0;i<groupInfo.children.length;i++){
                     dataSource.push({
                         key:i+1,
-                        projectName:groupInfo.childern[i].gitlabProject.name,
-                        manager:groupInfo.childern[i].gitlabProject.creator_id,
-                        memberNum:groupInfo.childern[i].gitlabProjectMember.length,
-                        owner:groupInfo.childern[i].gitlabProject.owner
+                        projectName:groupInfo.children[i].gitlabProject.name,
+                        manager:groupInfo.children[i].gitlabProject.creator_id,
+                        memberNum:groupInfo.children[i].gitlabProjectMember.length,
+                        owner:groupInfo.children[i].gitlabProject.owner
                     });
                 }
                 return (
                     <div className ={styles.project_list_div}>
                         <div>
-                            <p>项目组名称:{groupInfo.name}</p>
+                            <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                         </div>
                         <TableView columns={columns}
                                    dataSource={dataSource}
@@ -147,7 +147,7 @@ class ProjectList extends Component {
              if (fetchStatus || false) {
              var projectName = this.state.itemNode;
              var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
-
+　　　　　　 var starInfo = groupInfo.star;
              const columns = [
              {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
              {title: "项目名称", dataIndex: "project_name", key: "project_name"},
@@ -157,26 +157,26 @@ class ProjectList extends Component {
              {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
              {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
              ];
-             var count1=0;var count2=0;
-             for(var i=0;i<list.star.length;i++){
-             if(projectName == list.star[i].projectName){
-             count1++;
-             for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
-             console.log("loginInfo.userName:",loginInfo.userName);
-             console.log("projectInfo.gitlabProjectMember[j].name:",projectInfo.gitlabProjectMember[j].name);
-             if(loginInfo.userName == projectInfo.gitlabProjectMember[j].name){
-             count2++;
-             }
-             console.log("count2:",count2);
-             }
-             }
+             var count1=0, count2=0;
+             for(var i=0;i<starInfo.length;i++){
+                if(projectName == starInfo[i].projectName){
+                    count1++;
+                    for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
+                        console.log("loginInfo.userName:",loginInfo.userName);
+                        console.log("projectInfo.gitlabProjectMember[j].name:",projectInfo.gitlabProjectMember[j].name);
+                        if(loginInfo.userName == projectInfo.gitlabProjectMember[j].name){
+                            count2++;
+                         }
+                         console.log("count2:",count2);
+                    }
+                }
              }
              if(count1 == 0){
-             var consern_desc = "尚未关注此项目";
+                 var consern_desc = "尚未关注此项目";
              }else if(count2 == 0){
-             var consern_desc = "我关注了这个项目";
+                 var consern_desc = "我关注了这个项目";
              }else if(count2 != 0){
-             var consern_desc = "我是项目成员";
+                 var consern_desc = "我是项目成员";
              }
              const dataSource = [{
              group_name:groupInfo.name,
@@ -189,11 +189,10 @@ class ProjectList extends Component {
              }];
 
              return (
-             <div className={styles.project_list_div}>
-             <TableView columns={columns}
-             dataSource={dataSource}
-             ></TableView>
-
+                <div className={styles.project_list_div}>
+                <TableView columns={columns}
+                dataSource={dataSource}
+                ></TableView>
              </div>
              )
              }

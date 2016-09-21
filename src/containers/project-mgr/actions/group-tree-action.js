@@ -10,8 +10,9 @@ import api from '../../../api';
 import {GET_GROUP_TREE} from '../constants/group-tree-types';
 
 export function getGroupTree(userId) {
-    var path = '/project-mgr/groupTree';
+    //var path = '/project-mgr/groupTree';
     //var path = 'http://10.10.156.110:11000/gitlab/groups/all';
+    var path = '/groups/all';
     return {
         type: GET_GROUP_TREE,
         payload: {

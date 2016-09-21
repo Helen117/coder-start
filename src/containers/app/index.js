@@ -26,7 +26,7 @@ class App extends React.Component {
         const {actions, uid} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         //actions.fetchProfile(realUid);
-        actions.fetchProfile(uid);
+        //actions.fetchProfile(uid);
     }
 
     logout() {
