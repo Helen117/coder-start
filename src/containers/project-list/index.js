@@ -5,7 +5,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch} from 'antd';
+import {Switch,Icon} from 'antd';
 import 'PubSub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -20,6 +20,7 @@ class ProjectList extends Component {
         this.state = {
             listType:false,
             itemType:false,
+            nullType:false,
             listNode:null,
             itemNode:null,
         };
@@ -39,17 +40,30 @@ class ProjectList extends Component {
 
     showProjectList(msg,data){
         //将list和item的展示放到一个contain中
-        if(data.node.isLeaf == true){
+        const {list} = this.props;
+        var count=0;
+        for(var i=0;i<list.length;i++){
+            if(data.node.name == list[i].name){
+                count++;
+            }
+        }
+        if(data.node.isLeaf == true && count == 0){
             this.setState({
                 listType:false,
                 itemType:true,
                 itemNode:data.node.name,
             });
-        }else{
+        }else if(data.node.isLeaf == false && count != 0){
             this.setState({
                 listType:true,
                 itemType:false,
                 listNode:data.node.name,
+            });
+        }else if(data.node.isLeaf == true && count != 0){
+            this.setState({
+                listType:false,
+                itemType:false,
+                nullType:true,
             });
         }
     }
@@ -197,7 +211,13 @@ class ProjectList extends Component {
              )
              }
              return null;
-        }else {
+        }else if(this.state.nullType == true){
+            return(
+                <div className={styles.null_type_div}>
+                    <span><Icon type="frown-circle" />&nbsp;&nbsp;&nbsp;当前项目组下没有项目！</span>
+                </div>
+            )
+        }else{
             return null;
         }
     }

@@ -9,12 +9,13 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification} from 'antd';
+import {Form, Input, Button, Modal, notification,Radio} from 'antd';
 import Box from '../../components/Box';
 import {createGroup} from './actions/create-group-action';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 class GroupDetail extends React.Component {
     constructor(props) {
@@ -95,6 +96,13 @@ class GroupDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="描述">
                         <Input type="textarea" {...getFieldProps('description', {initialValue: ''})} />
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="可见级别">
+                        <RadioGroup {...getFieldProps('visibely', {initialValue: ''})}>
+                            <Radio value="Private">Private</Radio>
+                            <Radio value="Intenal">Intenal</Radio>
+                            <Radio value="Public">Public</Radio>
+                        </RadioGroup>
                     </FormItem>
                     <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit">确定</Button>
