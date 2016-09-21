@@ -56,20 +56,15 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
-app.post('/api/register', function (req, res) {
-    const credentials = req.body;
-    if (credentials) {
-        res.status('200').send({"success":"true"});
-    } else {
-        res.status('500').send({'errorMsg': 'failed'});
-    }
+app.post('/gitlab/register', function (req, res) {
+        res.json({success: true,errorCode: null,errorMsg: null});
 });
 
-app.get('/api/userExists', function (req, res) {
+app.get('/gitlab/userExists', function (req, res) {
     res.json(user);
 });
 
-app.get('/api/fetchData', function (req, res) {
+app.post('/gitlab/fetchData', function (req, res) {
     const credentials = req.body;
     console.log('projectId:',credentials.projectId);
     if (credentials) {
@@ -79,25 +74,14 @@ app.get('/api/fetchData', function (req, res) {
     }
 });
 
-app.post('/api/addIssue', function (req, res) {
-    const credentials = req.body;
-    if (credentials) {
-        res.status('200').send({"success":"true"});
-    } else {
-        res.status('500').send({'errorMsg': 'failed'});
-    }
+app.post('/gitlab/addIssue', function (req, res) {
+        res.json({success: true,errorCode: null,errorMsg: null});
 });
 
-app.get('/api/issueNotes', function (req, res) {
-    const credentials = req.body;
-    if (credentials) {
+app.post('/gitlab/issueNotes', function (req, res) {
         res.json(issueNotes);
-    } else {
-        res.status('500').send({'errorMsg': 'failed'});
-    }
 });
 
-app.get('/api/user/1', function (req, res) {
 app.get('/gitlab/user/1', function (req, res) {
     res.json(user);
 });

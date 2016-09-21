@@ -34,7 +34,7 @@ class Register extends Component{
         const userExists = nextProps.auth.userExists;
 
         if(userExists && this.props.auth.userExists==null) {
-            userName.push(nextProps.auth.userExists.userName);
+            userName.push(nextProps.auth.userExists.username);
         }
 
         if(error){
@@ -45,7 +45,7 @@ class Register extends Component{
         }
 
         if (result) {
-            this.context.router.replace('/login');
+            this.context.router.replace('/login.html');
         }
     }
 
@@ -109,7 +109,7 @@ class Register extends Component{
         return (
             <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem {...formItemLayout}  label="用户名" >
-                    <Input placeholder="userName" {...getFieldProps('userName',{rules:[{ required:true,min:4,message:'用户名至少为4个字符'},{validator:this.userExists}]})} />
+                    <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,min:4,message:'用户名至少为4个字符'},{validator:this.userExists}]})} />
                 </FormItem>
                 <FormItem {...formItemLayout}  label="中文名" >
                     <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'}]})} />

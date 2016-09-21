@@ -7,7 +7,7 @@ export function fetchDataSource(projectId) {
     return {
         type: 'FETCH_DATA',
         payload: {
-            promise: api.get('/fetchData', {
+            promise: api.post('/fetchData', {
                 data: {
                     projectId: projectId,
                     type:'0'
@@ -35,7 +35,7 @@ export function issueNotes(id,issue_id) {
     return {
         type: 'ISSUE_NOTES',
         payload: {
-            promise: api.get('/issueNotes', {
+            promise: api.post('/issueNotes', {
                 data: {
                     id: id,
                     issue_id:issue_id

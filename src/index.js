@@ -63,15 +63,13 @@ ReactDOM.render(
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                     </Route>
-                <Route path="register" component={Register}/>
+                    <Route path="register" component={Register}/>
                     <Route path="login.html" component={Login}/>
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
         </Provider>
-        {/*<DevTools store={store}/>*/}
+        {<DevTools store={store}/>}
     </div>,
-
-    document.getElementById('root')
+    root
 );
-

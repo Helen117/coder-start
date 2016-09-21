@@ -65,10 +65,10 @@ class Login extends React.Component {
             <Row className="login-row" type="flex" justify="space-around" align="middle">
                 <Col span="8">
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} className="login-form">
-                        <FormItem label='用户名： labelCol={{span: 6}} wrapperCol={{span: 14}}>
+                        <FormItem label='用户名：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
                             <Input placeholder='请输入账号' {...getFieldProps('user')} />
                         </FormItem>
-                        <FormItem label='密码： labelCol={{span: 6}} wrapperCol={{span: 14}}>
+                        <FormItem label='密码：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
                             <Input type='password' placeholder='请输入密码' {...getFieldProps('password')} />
                         </FormItem>
                         <Row>

@@ -20,9 +20,9 @@ export default function issue(state = initialState, action = {}) {
             return Object.assign({}, initialState, {members: null,mileStones:null, fetchErrors: action.payload.errorMsg});
 
         case 'ADD_ISSUE_SUCCESS':
-            return Object.assign({}, initialState, {addIssue: action.payload.success, addIssueError: null});
+            return Object.assign({}, initialState, {addIssue: action.payload, addIssueError: null});
         case 'ADD_ISSUE_ERROR':
-            return Object.assign({}, initialState, {addIssueError: action.payload.errorMsg,addIssue:action.payload.success});
+            return Object.assign({}, initialState, {addIssueError: action.payload.errorMsg,addIssue:action.payload});
 
         case 'ISSUE_NOTES_SUCCESS':
             return Object.assign({}, initialState, {issueNotes: action.payload, issueNotesError: null});
