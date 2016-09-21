@@ -35,6 +35,7 @@ class _Api {
                     opts.headers = this.opts.headers;
                 }
                 if (data){
+                    opts.headers['Content-Type'] = 'application/json; charset=utf-8';
                     opts.body = JSON.stringify(data);
                 }
                 if (params) {
