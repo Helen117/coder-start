@@ -35,7 +35,7 @@ class MilestoneDetail extends React.Component {
 
     //获取表格的数据源
     getDataSource(){
-        const milestoneDetail = this.props.milestoneDetail;
+        const milestoneDetail = this.props.milestoneDetail.result;
         console.log('获取表格数据：',milestoneDetail);
         const data = [];
         if(milestoneDetail !=null){

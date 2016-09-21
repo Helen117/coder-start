@@ -1,7 +1,7 @@
 import Api from './api';
 
 const api = new Api({
-//  baseURI: 'http://localhost:9090',
+    //baseURI: 'http://10.10.156.110:11000',
     baseURI: '/api',
     headers: {
         'Accept': 'application/json',

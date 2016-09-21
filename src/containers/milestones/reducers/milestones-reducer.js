@@ -4,6 +4,7 @@
 import _ from 'lodash';
 import {
     ACQUIRE_MILESTONES_SUCCESS,
+    ACQUIRE_MILESTONES_PENDING,
     ACQUIRE_MILESTONES_ERROR,
     ACQUIRE_MILESTONES_DETAIL_SUCCESS,
     ACQUIRE_MILESTONES_DETAIL_ERROR
@@ -17,7 +18,7 @@ export default function milestones(state = initialState, action = {}) {
     console.log('action.type:',action.type);
     switch (action.type) {
         //获取里程碑
-        case ACQUIRE_MILESTONES_SUCCESS:
+        case ACQUIRE_MILESTONES_PENDING:
             return Object.assign({}, initialState, {items: action.payload});
 
         case ACQUIRE_MILESTONES_ERROR:

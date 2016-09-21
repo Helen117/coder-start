@@ -1,41 +1,45 @@
-/**
- * Created by zhaojp on 2016/9/14.
- */
 
-module.exports.milestone=
- [{
-    "milestonesId": "3.3.0",
-    "planTime": "2016-07-01",
-    "creator":"AA",
-    "demand":"需求3.3.0",
-    "defect":"缺陷3.3.0",
-    "bug":"缺陷3.3.0",
-     "moreDataUrl": "/milestones30"
-},
+module.exports.milestones ={
+    "success":  true,
+    "errorCode": null,
+    "errorMsg": null,
+    "result": [
     {
-        "milestonesId": "3.3.1",
-        "planTime": "2016-08-01",
-        "creator":"BB",
-        "demand":"需求3.3.1",
-        "defect":"缺陷3.3.1",
-        "bug":"缺陷3.3.1",
-        "moreDataUrl": "/milestones31"
+        "id": 3,
+        "iid": 2,
+        "title": "3.3.0",
+        "description": "- [ ] devops涉及gitlab功能梳理",
+        "state": "active",
+        "project_id": 17,
+        "due_date": 1473033600000,
+        "issues":["1 ","2 ","3 "],
+        "updated_date": null,
+        "created_date": null
     },
     {
-        "milestonesId": "3.3.2",
-        "planTime": "2016-09-01",
-        "creator":"CC",
-        "demand":"需求3.3.2",
-        "defect":"缺陷3.3.2",
-        "bug":"缺陷3.3.2",
-        "moreDataUrl": "/milestones32"
+        "id": 4,
+        "iid": 2,
+        "title": "3.3.1",
+        "description": "- [ ] devops涉及gitlab功能梳理222",
+        "state": "active",
+        "project_id": 17,
+        "due_date": 1473033600000,
+        "updated_date": null,
+        "created_date": null,
+        "issues":["1 ","2 ","3 "]
+
     },
     {
-        "milestonesId": "3.3.3",
-        "planTime": "2016-10-01",
-        "creator":"DD",
-        "demand":"需求3.3.3",
-        "defect":"缺陷3.3.3",
-        "bug":"缺陷3.3.3",
-        "moreDataUrl": "/milestones33"
-    }]
+        "id": 5,
+        "iid": 2,
+        "title": "3.3.2",
+        "description": "- [ ] devops涉及gitlab功能梳理333",
+        "state": "active",
+        "project_id": 17,
+        "due_date": 1473033600000,
+        "updated_date": null,
+        "created_date": null,"issues":["1 ","2 ","3 "]
+
+    }
+]
+}
