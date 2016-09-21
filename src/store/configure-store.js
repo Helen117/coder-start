@@ -6,10 +6,22 @@ import DevTools from '../tools/ReduxDevTools';
 
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
+
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';
+import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
+import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
+import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 
-const reducer = combineReducers({login, menu,register,issue});
+const reducer = combineReducers({
+    login,
+    menu,
+    getGroupTree,
+    createGroup,
+    createProject,
+    register,
+    issue
+});
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,

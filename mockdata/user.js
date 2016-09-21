@@ -3,11 +3,15 @@
  */
 module.exports.login = {
     username: 'admin',
-    password: '123456'
+    password: 'admin'
 };
 
 module.exports.user = {
-    'userName': 'admin',
-    'role': 'ADMIN',
-    'uid': 1
+    success: true,
+    errorCode: null,
+    errorMsg: null,
+    result:{
+        'username': 'admin',
+        'userId': 1
+    }
 };

@@ -25,17 +25,13 @@ class Login extends React.Component {
         const error = nextProps.loginErrors;
         const isLoggingIn = nextProps.loggingIn;
         const uid = nextProps.uid;
-        if (error && error.indexOf('offline') > 0) {
+
+        if (error != this.props.loginErrors && error) {
+
             notification.error({
                 message: '登录失败',
-                description: '网络问题',
-                duration: 1
-            });
-        } else if (error != this.props.loginErrors && error) {
-            notification.error({
-                message: '登录失败',
-                description: '错误的用户名或者密码',
-                duration: 1
+                description: error,
+                duration: 5
             });
         }
 
@@ -47,7 +43,7 @@ class Login extends React.Component {
             });
         }
         if (uid) {
-            this.context.router.replace('/home');
+            this.context.router.replace('/home.html');
         }
     }
 
@@ -69,16 +65,17 @@ class Login extends React.Component {
             <Row className="login-row" type="flex" justify="space-around" align="middle">
                 <Col span="8">
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} className="login-form">
-                        <FormItem label='用户名：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
+                        <FormItem label='用户名： labelCol={{span: 6}} wrapperCol={{span: 14}}>
                             <Input placeholder='请输入账号' {...getFieldProps('user')} />
                         </FormItem>
-                        <FormItem label='密码：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
+                        <FormItem label='密码： labelCol={{span: 6}} wrapperCol={{span: 14}}>
                             <Input type='password' placeholder='请输入密码' {...getFieldProps('password')} />
                         </FormItem>
                         <Row>
                             <Col span='16' offset='6'>
-                                <Button type='primary' htmlType='submit'>确定</Button>
+                                <Button type='primary' htmlType='submit' loading={this.props.loggingIn}>确定</Button>
                                 <Button type='primary' onClick={this.register.bind(this)}>注册</Button>
+
                             </Col>
 
                         </Row>

@@ -17,6 +17,8 @@ var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+const projectMgr = require('./mockdata/project-mgr');
+const groupTree = projectMgr.groupTree;
 
 const group_ = require('./mockdata/group');
 var group = group_.group;
@@ -43,14 +45,14 @@ app.use(express.static(publicPath));
 const port = isProduction ? (process.env.PORT || 80) : 8080;
 
 //以下是模拟服务端请求数据
-app.post('/api/login', function (req, res) {
+app.post('/gitlab/login', function (req, res) {
     const credentials = req.body;
     console.log('username:',credentials.username);
     if (credentials.username === login.username && credentials.password === login.password) {
-        res.cookie('uid', '1', {domain: '127.0.0.1'});
+        //res.cookie('uid', '1', {domain: '127.0.0.1'});
         res.json(user);
     } else {
-        res.status('500').send({'message': 'Invalid user/password'});
+        res.json({success: false, errorMsg:'用户名或者密码错误！'});
     }
 });
 
@@ -96,17 +98,32 @@ app.get('/api/issueNotes', function (req, res) {
 });
 
 app.get('/api/user/1', function (req, res) {
+app.get('/gitlab/user/1', function (req, res) {
     res.json(user);
 });
 
-app.get('/api/user/1/menu', function (req, res) {
+app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
 });
+
+app.post('/gitlab/project-mgr/groupTree', function (req, res) {
+    res.json(groupTree);
+});
+
+app.post('/gitlab/project-mgr/createProject', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
+});
+
+app.post('/gitlab/project-mgr/createGroup', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
+});
+
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
 });
 
+// app.use('/*', express.static(path.resolve(__dirname, '', 'index.html')));
 
 app.listen(port, function (err, result) {
     if (err) {
