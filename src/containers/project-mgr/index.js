@@ -48,7 +48,13 @@ class ProjectMgr extends React.Component{
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
-                    <TreeFilter loading={loading} nodesData={treeData} onSelect={this.onSelectNode.bind(this)}/>
+                    <TreeFilter
+                        loading={loading}
+                        notFoundMsg='找不到项目'
+                        inputPlaceholder="快速查询项目"
+                        loadingMsg="正在加载项目信息..."
+                        nodesData={treeData}
+                        onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
                     <Row>
