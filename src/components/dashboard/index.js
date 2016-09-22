@@ -8,7 +8,7 @@
  */
 import React, {PropTypes} from 'react';
 import {Timeline, Progress, Icon, Row, Col, Steps} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import ThumbnailView from '../../components/thumbnail-view';
 
 import './index.less'
