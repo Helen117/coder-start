@@ -15,7 +15,6 @@ import {createProject} from './actions/create-project-action';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 
 class ProjectDetail extends React.Component {
     constructor(props) {
