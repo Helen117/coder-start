@@ -10,7 +10,7 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import {createGroup} from './actions/create-group-action';
 
 const confirm = Modal.confirm;
