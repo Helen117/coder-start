@@ -9,7 +9,7 @@
 
 import React, {PropTypes} from 'react';
 import {Table, Button} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 
 import './index.less';
 

@@ -9,8 +9,8 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification,Radio} from 'antd';
-import Box from '../../components/Box';
+import {Form, Input, Button, Modal, notification} from 'antd';
+import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
 
 const confirm = Modal.confirm;
