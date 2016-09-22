@@ -138,7 +138,7 @@ class ProjectDetail extends React.Component {
                     </FormItem>
 
                     <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit">确定</Button>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
@@ -159,10 +159,12 @@ ProjectDetail.contextTypes = {
 ProjectDetail = Form.create()(ProjectDetail);
 
 function mapStateToProps(state) {
+    console.log("state.createProject.result:",state.createProject.result);
     return {
         inserted: state.createProject.result,
         loginInfo:state.login.profile,
         list: state.projectList.projectList,
+        loading:state.createProject.loading,
     }
 }
 
