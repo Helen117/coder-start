@@ -5,7 +5,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import 'PubSub-js';
+import 'pubsub-js';
 import {connect} from 'react-redux';
 import TableView from '../../components/table';
 import styles from './index.css';

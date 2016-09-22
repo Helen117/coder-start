@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import {Switch,Icon} from 'antd';
-import 'PubSub-js';
+import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as listActions from './actions/project-list-actions';
