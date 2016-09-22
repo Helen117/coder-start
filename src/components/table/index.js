@@ -7,7 +7,6 @@ import React,{
 } from 'react';
 import {Table} from 'antd';
 import styles from './index.css';
-import 'PubSub-js';
 
 export default class TableView extends Component{
     constructor(props){

@@ -14,7 +14,7 @@ import TreeFilter from '../../components/tree-filter';
 import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
-import 'PubSub-js';
+import 'pubsub-js';
 
 
 export GroupDetail from './group-detail';
