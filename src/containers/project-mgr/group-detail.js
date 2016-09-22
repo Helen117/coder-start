@@ -60,10 +60,20 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
+    errCallback(){
+        notification.error({
+            message: '创建失败',
+            description: '项目组名称或者路径已被占用!',
+            duration: 1
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
         const { inserted } = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
+        }else{
+            this.errCallback();
         }
     }
 
@@ -75,13 +85,39 @@ class GroupDetail extends React.Component {
         }
     }
 
-    /*groupNameExists(rule, value, callback){
+    groupNameExists(rule, value, callback){
+        const {list} = this.props;
         if(!value){
             callback();
         }else{
-
+            var count = 0;
+            for(var i=0;i<list.length;i++){
+                if(value == list[i].name){
+                    count++;
+                }
+            }
+            if(count != 0){
+                callback([new Error('项目组名称已被占用')]);
+            }else {
+                callback();
+            }
         }
-    }*/
+    }
+
+    groupPathExists(rule, value, callback){
+        const {list} = this.props;
+        if(!value){
+            callback();
+        }else{
+            for(var i=0;i<list.length;i++){
+                if(value == list[i].path){
+                    callback([new Error('项目组路径已被占用')]);
+                }else{
+                    callback();
+                }
+            }
+        }
+    }
 
 
     render() {
@@ -94,9 +130,13 @@ class GroupDetail extends React.Component {
         const nameProps = getFieldProps('name',
             {rules:[
                 {required:true},
-                //{validator:this.groupNameExists},
+                {validator:this.groupNameExists.bind(this)},
             ]});
-        const pathProps = getFieldProps('path',{rules:[{ required:true}]});
+        const pathProps = getFieldProps('path',
+            {rules: [
+                { required:true},
+                {validator:this.groupPathExists.bind(this)},
+            ]});
         const descriptionProps = getFieldProps('description',);
         const visibilityProps = getFieldProps('visibility_level',);
 
@@ -143,7 +183,9 @@ GroupDetail = Form.create()(GroupDetail);
 function mapStateToProps(state) {
     return {
         inserted: state.createGroup.result,
+        errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
+        list: state.projectList.projectList,
     }
 }
 

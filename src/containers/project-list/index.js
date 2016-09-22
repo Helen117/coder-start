@@ -40,7 +40,6 @@ class ProjectList extends Component {
 
     showProjectList(msg,data){
         //将list和item的展示放到一个contain中
-        console.log("data:",data);
         if(data.isLeaf == true && (data.id.indexOf("_p") > 0)){
             this.setState({
                 listType:false,
@@ -140,7 +139,7 @@ class ProjectList extends Component {
                 return (
                     <div className ={styles.project_list_div}>
                         <div>
-                            <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                            <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                         </div>
                         <TableView columns={columns}
                                    dataSource={dataSource}
@@ -216,7 +215,6 @@ class ProjectList extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log("state.login.profile:",state.login.profile);
     return {
         list: state.projectList.projectList,
         fetchStatus:state.projectList.fetchStatus,
