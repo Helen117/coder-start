@@ -22,7 +22,7 @@ import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
-import  {AddIssue,IssueNotes} from './containers/issues'
+import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 //import authUtils from './utils/auth';
@@ -58,12 +58,14 @@ ReactDOM.render(
                         </Route>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
                         </Route>
-                        <Route name="addIssue" breadcrumbName="问题管理" path="issue" component={AddIssue}/>
-                        <Route name="issueNotes" breadcrumbName="测试" path="test" component={IssueNotes}/>
+                        <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
+                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
+                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
+                        <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={IssueList}/>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                     </Route>
-                    <Route path="register" component={Register}/>
+                    <Route path="register.html" component={Register}/>
                     <Route path="login.html" component={Login}/>
                     <Route path="*" component={NotFound}/>
                 </Route>

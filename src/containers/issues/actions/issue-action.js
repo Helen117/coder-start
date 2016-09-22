@@ -44,3 +44,24 @@ export function issueNotes(id,issue_id) {
         }
     }
 }
+
+export function getIssueList() {
+    return {
+        type: 'GET_ISSUE_LIST',
+        payload: {
+            promise: api.post('/issue/query')
+        }
+    }
+}
+
+export function comment(notes) {
+    console.log('notes:',notes);
+    return {
+        type: 'COMMENT',
+        payload: {
+            promise: api.post('/comment',{
+                data:notes
+            })
+        }
+    }
+}

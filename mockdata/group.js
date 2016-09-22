@@ -25,18 +25,48 @@ module.exports.group = [{'members':[{
 }]}];
 
 
-module.exports.notes=[
-    {"id": 302,
+module.exports.notes={
+    "success": true,
+    "errorCode": null,
+    "errorMsg": null,
+    "result": [{
+        "id": 302,
         "body": "Status changed to closed",
-        "username": "pipin",
-        "created_at": "2016-10-02T09:22:45Z"},
+        "attachment": null,
+        "author": {
+            "id": 1,
+            "username": "pipin",
+            "email": "admin@example.com",
+            "name": "Pip",
+            "state": "active",
+            "created_at": "2013-09-30T13:46:01Z"
+        },
+        "created_at": "2013-10-02T09:22:45Z",
+        "updated_at": "2013-10-02T10:22:45Z",
+        "system": true,
+        "upvote": false,
+        "downvote": false,
+        "noteable_id": 377,
+        "noteable_type": "Issue"
+    },
     {
-        "id": 303,
-        "body": "Status changed to closed",
-        "username": "pipin",
-        "created_at": "2016-9-02T09:22:45Z"},
-    {"id": 304,
-        "body": "Status changed to closed",
-        "username": "pipin",
-        "created_at": "2016-11-02T09:22:45Z"}
-];
+        "id": 305,
+        "body": "Text of the comment\r\n",
+        "attachment": null,
+        "author": {
+            "id": 1,
+            "username": "pipin",
+            "email": "admin@example.com",
+            "name": "Pip",
+            "state": "active",
+            "created_at": "2013-09-30T13:46:01Z"
+        },
+        "created_at": "2013-10-02T09:56:03Z",
+        "updated_at": "2013-10-02T09:56:03Z",
+        "system": true,
+        "upvote": false,
+        "downvote": false,
+        "noteable_id": 121,
+        "noteable_type": "Issue"
+    }
+]};

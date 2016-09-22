@@ -23,7 +23,7 @@ module.exports.menu = {
         }, {
             id: 22,
             name: '测试',
-            link: '/test'
+            link: '/test.html'
         }]
     }, {
         id: 3,
@@ -35,11 +35,11 @@ module.exports.menu = {
         }]
     },{
     id: 6,
-    cname: '问题管理',
+    name: '问题管理',
     subMenu: [{
         id: 61,
         name: '问题管理',
-        link: '/issue'
+        link: '/issue.html'
     }]
 }]
 };

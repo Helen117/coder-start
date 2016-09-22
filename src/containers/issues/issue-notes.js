@@ -10,7 +10,7 @@ import * as issue from './actions/issue-action';
  class IssueNotes extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {'hasValue':false};
     }
 
      componentWillMount() {
@@ -18,17 +18,45 @@ import * as issue from './actions/issue-action';
          actions.issueNotes(1,2);
      }
 
+     componentWillReceiveProps(nextProps) {
+         const result = nextProps.issue.comment;
+         console.log('result:',result);
+         if(result){
+             document.getElementById("body").value="";
+             const {actions} = this.props;
+             actions.issueNotes(1,2);
+         }
+     }
+
     handleSubmit(e) {
         e.preventDefault();
-
+        var body = document.getElementById("body").value;
+        const {actions} = this.props;
+        var notes = {
+            id:1,
+            issue_id:2,
+            body:body,
+            create_at:Date.now()
+        };
+        if(notes){
+            actions.comment(notes);
+        }
     }
 
+    change(){
+        var body = document.getElementById("body").value;
+        if(body.length>0){
+            this.setState({'hasValue':true});
+        }else{
+            this.setState({'hasValue':false});
+        }
+
+    }
     render() {
         const { issue } = this.props;
         console.log('issue:',issue.issueNotes);
         const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>{data.body}</li>):[];
-        console.log(list);
-
+        const hasBody=this.state.hasValue;
         return(
             <div>
                 <ul>
@@ -36,11 +64,12 @@ import * as issue from './actions/issue-action';
                 </ul>
                 <ul>
                     <li>
-                        <form>
-                                <textarea placeholder="Write a comment" rows="10" cols="50"/>
+                        <Form onSubmit={this.handleSubmit.bind(this)}>
+                                <Input type="textarea" placeholder="Write a comment"
+                                       rows="10" id="body" onChange={this.change.bind(this)}/>
                             <br/>
-                                <button type="submit" value="submit">提交</button>
-                        </form>
+                            <Button type='primary' htmlType='submit' disabled={!hasBody}>确定</Button>
+                        </Form>
                     </li>
                 </ul>
 

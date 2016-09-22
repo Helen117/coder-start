@@ -24,6 +24,9 @@ const group_ = require('./mockdata/group');
 var group = group_.group;
 var issueNotes = group_.notes;
 
+const issueList_ =require('./mockdata/issueList');
+var issueList = issueList_.issueList;
+
 const app = express();
 
 // Webpack developer
@@ -56,7 +59,7 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
-app.post('/gitlab/register', function (req, res) {
+app.post('/gitlab/user/add', function (req, res) {
         res.json({success: true,errorCode: null,errorMsg: null});
 });
 
@@ -80,6 +83,14 @@ app.post('/gitlab/addIssue', function (req, res) {
 
 app.post('/gitlab/issueNotes', function (req, res) {
         res.json(issueNotes);
+});
+
+app.post('/gitlab/issue/query', function (req, res) {
+    res.json(issueList);
+});
+
+app.post('/gitlab/comment', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
 });
 
 // app.get('/gitlab/user/1', function (req, res) {

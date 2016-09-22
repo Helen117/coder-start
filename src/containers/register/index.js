@@ -28,23 +28,20 @@ class Register extends Component{
         actions.userExists();
     }
     componentWillReceiveProps(nextProps) {
-        const result = nextProps.auth.registerResult;
-        const error = nextProps.auth.registerErrors;
-        const registering = nextProps.auth.registering;
-        const userExists = nextProps.auth.userExists;
+        const result = nextProps.registerState.registerResult;
+        const error = nextProps.registerState.errors;
+        const registering = nextProps.registerState.registering;
+        const userExists = nextProps.registerState.userExists;
 
-        if(userExists && this.props.auth.userExists==null) {
-            userName.push(nextProps.auth.userExists.username);
+        if(userExists && this.props.registerState.userExists==null) {
+            userName.push(nextProps.registerState.userExists.username);
         }
 
-        if(error){
-            message.error('注册失败');
+        if(error&& error != this.props.registerState.errors){
+            message.error('注册失败！'+error);
         }
         if (!registering && !error && result) {
-            message.success('注册成功');
-        }
-
-        if (result) {
+            message.success('注册成功！');
             this.context.router.replace('/login.html');
         }
     }
@@ -119,11 +116,11 @@ class Register extends Component{
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="密码" >
-                    <Input type="password" {...getFieldProps('pass',{rules:[{required:true,min:6,max:18,message:'密码为6-18个字符'}]})} placeholder="password" />
+                    <Input type="password" {...getFieldProps('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})} placeholder="password" />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="ssh key" >
-                    <Input type="textarea" placeholder="ssh key" rows="3" {...getFieldProps('sshkey',{rules:[{required:true,message:'不能为空'}]})} />
+                    <Input type="textarea" placeholder="ssh key" rows="3" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="申请角色" >
@@ -155,7 +152,7 @@ Register = Form.create()(Register);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        auth:state.register
+        registerState:state.register
     };
 }
 

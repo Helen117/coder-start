@@ -56,7 +56,7 @@ class Login extends React.Component {
     }
 
     register(){
-        this.context.router.replace('/register');
+        this.context.router.replace('/register.html');
     }
 
     render() {

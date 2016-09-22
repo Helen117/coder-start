@@ -2,131 +2,82 @@
  * Created by helen on 2016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
-import {Table, Button} from 'antd';
+import { Table ,Button} from 'antd';
 import Box from '../../components/Box';
-
-import './index.less';
-
-
-const data = [];
-for (let i = 0; i < 46; i++) {
-    data.push({
-        key: i,
-        title: `李大嘴${i}`,
-        gender: '男',
-        age: 32,
-        address: `西湖区湖底公园${i}号`,
-        description: `我是李大嘴${i}，今年32岁，住在西湖区湖底公园${i}号`
-    });
-}
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as issue from './actions/issue-action';
 
 class IssueList extends Component {
+
     constructor(props) {
         super(props);
-        this.state = {
-            selectedRowKeys: [],  // 这里配置默认勾选列
-            loading: false,
-        };
-        this.clickBtn = this.clickBtn.bind(this);
-        this.onSelectChange = this.onSelectChange.bind(this);
     }
 
     componentWillMount() {
-
     }
 
-    toggleLoading() {
-        this.setState({
-            loading: !this.state.loading
-        });
+    componentDidMount() {
+        console.info('componentDidMount');
+        const {actions} = this.props;
+        actions.getIssueList();
     }
 
-    clickBtn() {
-        this.setState({loading: true});
-        let self = this;
-        //模拟 ajax 请求，完成后清空
-        setTimeout(() => {
-            self.setState({
-                selectedRowKeys: [],
-                loading: false,
-            });
-        }, 1000);
+    editIssue() {
+        this.context.router.replace('/issueEdit.html');
     }
 
-    onSelectChange(selectedRowKeys) {
-        this.setState({selectedRowKeys});
+    issueNotes(record) {
+        this.context.router.replace('/issueNotes.html');
     }
 
-    rowClassName(record, index) {
-        if (index == 1) {
-            return 'success';
+
+    //时间戳转换成日期
+    getTime(date) {
+        return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    }
+
+    //获取表格的数据源
+    getDataSource(){
+        const {issueList} = this.props;
+        console.log('获取表格数据：',issueList);
+        const data = [];
+        if(issueList){
+            for (let i = 0; i < issueList.length; i++) {
+                data.push({
+                    project_id:issueList[i].project_id,
+                    title: issueList[i].title,
+                    description:issueList[i].description,
+                    author_name: issueList[i].author.name,
+                    assignee_name: issueList[i].assignee.name,
+                    created_at:  this.getTime(issueList[i].created_at),
+                    due_date:this.getTime(issueList[i].due_date),
+                    labels: issueList[i].labels,
+                    state: issueList[i].state,
+                });
+            }
         }
-        if (index == 4) {
-            return 'info';
-        }
-        if (index == 6) {
-            return 'warning';
-        }
-        if (index == 8) {
-            return 'danger';
-        }
-    }
-
-    editUser(type, selectedRow) {
-        this.context.router.push({
-            pathname: window.location.pathname + '/edit',
-            state: {editType: type, selectedRow}
-        });
+        return data;
     }
 
     render() {
-        const pagination = {
-            total: data.length,
-            showSizeChanger: true,
-            onShowSizeChange(current, pageSize) {
-                console.log('Current: ', current, '; PageSize: ', pageSize);
-            },
-            onChange(current) {
-                console.log('Current: ', current);
-            },
-        };
-        const {loading, selectedRowKeys} = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
-        const hasSelected = selectedRowKeys.length > 0;
-        if (this.props.children) {
-            return React.cloneElement(this.props.children, {hello: 1});
-        } else {
-            return (
-                <Box title="问题列表">
-                    <div style={{marginBottom: 16}}>
-                        <Button onClick={this.editUser.bind(this, 'add', null)}>添加</Button>
-                        <Button type="primary" onClick={this.clickBtn} disabled={!hasSelected} loading={loading}>
-                            删除
-                        </Button>
-                        <span style={{marginLeft: 8}}>{hasSelected ? `选择了 ${selectedRowKeys.length} 条记录` : ''}</span>
-                        <Button className="pull-right" type="primary" onClick={this.toggleLoading.bind(this)}>
-                            切换loading状态
-                        </Button>
-                    </div>
-                    {/*columns={this.userListColumns.bind(this,this)()}*/}
-                    <Table rowSelection={rowSelection} columns={this.userListColumns(this)} dataSource={data}
-                           bordered={false}
-                           showHeader={true}
-                           size="middle"
-                           pagination={pagination}
-                           expandedRowRender={record=><p>{record.description}</p>}
-                           loading={this.state.loading}
-                           rowClassName={this.rowClassName}
-                    />
-                </Box>
-            );
-        }
+
+        return (
+            <Box title="问题列表信息">
+                <Button onClick={this.editIssue.bind(this)}>新增问题</Button>
+                <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource()}
+                       bordered
+                       showHeader={true}
+                >
+                </Table>
+            </Box>
+
+        )
 
     }
+
 }
+
 
 IssueList.contextTypes = {
     history: PropTypes.object.isRequired,
@@ -135,38 +86,67 @@ IssueList.contextTypes = {
 };
 
 
-IssueList.prototype.userListColumns = (self)=>[{
+IssueList.prototype.issueListColumns = (self)=>[{
+    title: '所属项目组',
+    dataIndex: 'group_id',
+    width: '12.5%'
+},{
+    title: '所属项目',
+    dataIndex: 'project_id',
+    width: '12.5%'
+},{
     title: '问题名称',
     dataIndex: 'title',
-    width: '20%'
-}, {
+    width: '12.5%'
+},{
     title: '问题描述',
-    dataIndex: 'gender',
-    width: '15%',
+    dataIndex: 'description',
+    width: '12.5%'
 }, {
-    title: '年龄',
-    dataIndex: 'age',
-    width: '15%'
+    title: '创建人',
+    dataIndex: 'author_name',
+    width: '12.5%'
+},{
+    title: '修复人',
+    dataIndex: 'assignee_name',
+    width: '12.5%'
+},{
+    title: '问题标签',
+    dataIndex: 'labels',
+    width: '12.5%'
 }, {
-    title: '住址',
-    dataIndex: 'address',
-    width: '30%',
-    //className: 'warning',
-    render(text, record, index){
-        const style = {};
-        if (index == 2) {
-            style.color = 'red';
-            style.backgroundColor = 'yellow';
-        }
-        return <span style={style}>{text}</span>;
-    }
+    title: '问题创建时间',
+    dataIndex: 'created_at',
+    width: '12.5%'
 }, {
+    title: '计划完成时间',
+    dataIndex: 'due_date',
+    width: '12.5%'
+},{
+    title: '状态',
+    dataIndex: 'state',
+    width: '12.5%'
+},{
     title: '操作',
     dataIndex: 'key',
     width: '20%',
     render: (text, record, index)=> {
-        return <Button type="ghost" onClick={self.editUser.bind(self, 'modify', record)}>修改</Button>;
+        return <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>;
     }
 }];
 
-export default IssueList;
+
+
+function mapStateToProps(state) {
+    return {
+        issueList: state.issue.issueList
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(issue, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(IssueList);

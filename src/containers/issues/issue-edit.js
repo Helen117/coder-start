@@ -2,13 +2,14 @@
  * Created by helen on 2016/9/19.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Upload,DatePicker,Icon} from 'antd';
+import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 class AddIssue extends Component{
     constructor(props){
@@ -32,7 +33,7 @@ class AddIssue extends Component{
         const result = nextProps.issue.addIssue;
         const error = nextProps.issue.addIssueError;
 
-        if(error){
+        if(error && error!= this.props.issue.addIssueError){
             message.error('新增失败');
         }
         if (!error && result) {
@@ -55,10 +56,30 @@ class AddIssue extends Component{
         })
     }
 
-    handleReset(e) {
-        e.preventDefault();
-        this.props.form.resetFields();
+    checkDueDay(rule, value, callback) {
+        if (value && value.getTime() <= Date.now()) {
+            callback(new Error('时间得大于现在吧!'));
+        } else {
+            callback();
+        }
     }
+
+    handleCancel() {
+        const {form} = this.props;
+        const {router} = this.context;
+
+        confirm({
+            title: '您是否确定要取消表单的编辑',
+            content: '取消之后表单内未提交的修改将会被丢弃',
+            onOk() {
+                router.goBack();
+                form.resetFields();
+            },
+            onCancel() {
+            }
+        })
+    }
+
     render() {
         const { getFieldProps } = this.props.form;
         const formItemLayout = {
@@ -81,8 +102,8 @@ class AddIssue extends Component{
                     <Input type="textarea" placeholder="description" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'不能为空'}]})} />
                 </FormItem>
 
-                <FormItem {...formItemLayout} label="日期" >
-                    <DatePicker style={{ width: 184 }} {...getFieldProps('due_data')} />
+                <FormItem {...formItemLayout} label="计划完成时间" >
+                    <DatePicker style={{ width: 184 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="指派给" >
@@ -106,7 +127,7 @@ class AddIssue extends Component{
 
                 <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit">提交</Button>
-                    <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
+                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                 </FormItem>
             </Form>
         );

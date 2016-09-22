@@ -6,10 +6,8 @@ export function register(message) {
     return {
         type: 'REGISTER',
         payload: {
-            promise: api.post('/register', {
-                data: {
-                    message: message
-                }
+            promise: api.post('/user/add', {
+                data: message
             })
         }
     }
