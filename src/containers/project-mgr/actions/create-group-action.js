@@ -16,7 +16,7 @@ export function createGroup(groupData) {
         type: CREATE_GROUP,
         payload: {
             promise: api.post(path, {
-                params: groupData
+                data: groupData
             })
         }
     }

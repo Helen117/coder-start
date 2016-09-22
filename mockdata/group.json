@@ -2,15 +2,17 @@
   "success": true,
   "errorCode": null,
   "errorMsg": null,
-  "result":[
+  "result": [
     {
       "id": 53,
       "name": "tt",
       "path": "tt",
       "description": "tt",
+      "children": [],
+      "star": [],
+      "owner": null,
       "visibility_level": 20,
       "avatar_url": null,
-      "children": [],
       "web_url": "http://10.10.152.146:10080/groups/tt"
     },
     {
@@ -18,9 +20,11 @@
       "name": "test_group",
       "path": "test_group",
       "description": "这是一个测试组",
+      "children": [],
+      "star": [],
+      "owner": null,
       "visibility_level": 20,
       "avatar_url": null,
-      "children": [],
       "web_url": "http://10.10.152.146:10080/groups/test_group"
     },
     {
@@ -28,9 +32,11 @@
       "name": "shkf_group",
       "path": "shkf_group",
       "description": "shkf_group",
+      "children": [],
+      "star": [],
+      "owner": null,
       "visibility_level": 0,
       "avatar_url": null,
-      "children": [],
       "web_url": "http://10.10.152.146:10080/groups/shkf_group"
     },
     {
@@ -38,10 +44,10 @@
       "name": "devops_shkf_dev",
       "path": "devops_test_user_devops_shkf_dev",
       "description": "",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "53_p",
+          "name": "devops_shkf",
           "username": null,
           "gitlabProject": {
             "id": 53,
@@ -88,6 +94,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/devops_test_user_devops_shkf_dev"
     },
     {
@@ -95,10 +105,10 @@
       "name": "devops_shkf_release",
       "path": "devops_test_user_devops_shkf_release",
       "description": "",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "52_p",
+          "name": "devops_shkf",
           "username": null,
           "gitlabProject": {
             "id": 52,
@@ -145,6 +155,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/devops_test_user_devops_shkf_release"
     },
     {
@@ -152,10 +166,10 @@
       "name": "devops_shkf_master",
       "path": "devops_test_user_devops_shkf_master",
       "description": "",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "51_p",
+          "name": "devops_shkf",
           "username": null,
           "gitlabProject": {
             "id": 51,
@@ -202,6 +216,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/devops_test_user_devops_shkf_master"
     },
     {
@@ -209,10 +227,10 @@
       "name": "dev",
       "path": "dev",
       "description": "this is a develop fork",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "26_p",
+          "name": "devops_demo",
           "username": null,
           "gitlabProject": {
             "id": 26,
@@ -261,10 +279,11 @@
               "name": "赵婧萍",
               "id": 10,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "zhaojp",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -274,16 +293,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://www.gravatar.com/avatar/ba0584c0cdb61625fcdc5cc380370e1e?s=80&d=identicon",
               "private_token": null,
               "color_scheme_id": null,
@@ -305,6 +323,10 @@
           ]
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/dev"
     },
     {
@@ -312,10 +334,10 @@
       "name": "release",
       "path": "release",
       "description": "this is a release fork",
-      "visibility_level": 0,
-      "avatar_url": null,
       "children": [
         {
+          "id": "25_p",
+          "name": "devops_demo",
           "username": null,
           "gitlabProject": {
             "id": 25,
@@ -362,6 +384,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 0,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/release"
     },
     {
@@ -369,10 +395,10 @@
       "name": "stable",
       "path": "stable",
       "description": "this is a stable fork",
-      "visibility_level": 0,
-      "avatar_url": null,
       "children": [
         {
+          "id": "24_p",
+          "name": "devops_demo",
           "username": null,
           "gitlabProject": {
             "id": 24,
@@ -419,6 +445,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 0,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/stable"
     },
     {
@@ -426,10 +456,10 @@
       "name": "devops",
       "path": "devops",
       "description": "devops项目组",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "58_p",
+          "name": "devops-scm",
           "username": null,
           "gitlabProject": {
             "id": 58,
@@ -464,7 +494,7 @@
             "ssh_url_to_repo": "ssh://git@10.10.152.146:10022/devops/devops-scm.git",
             "web_url": "http://10.10.152.146:10080/devops/devops-scm",
             "http_url_to_repo": "http://10.10.152.146:10080/devops/devops-scm.git",
-            "last_activity_at": 1473758858000,
+            "last_activity_at": 1474371968000,
             "archived": false,
             "permissions": null,
             "avatar_url": null,
@@ -478,10 +508,11 @@
               "name": "张亚军",
               "id": 8,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "digimonster",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -491,16 +522,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://10.10.152.146:10080/uploads/user/avatar/8/avatar.png",
               "private_token": null,
               "color_scheme_id": null,
@@ -522,6 +552,8 @@
           ]
         },
         {
+          "id": "57_p",
+          "name": "devops-web",
           "username": null,
           "gitlabProject": {
             "id": 57,
@@ -556,12 +588,12 @@
             "ssh_url_to_repo": "ssh://git@10.10.152.146:10022/devops/devops-web.git",
             "web_url": "http://10.10.152.146:10080/devops/devops-web",
             "http_url_to_repo": "http://10.10.152.146:10080/devops/devops-web.git",
-            "last_activity_at": 1474278913000,
+            "last_activity_at": 1474451335000,
             "archived": false,
             "permissions": null,
             "avatar_url": null,
             "creator_id": 3,
-            "star_count": 0,
+            "star_count": 1,
             "forks_count": 5,
             "tag_list": []
           },
@@ -570,10 +602,11 @@
               "name": "赵婧萍",
               "id": 10,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "zhaojp",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -583,16 +616,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://www.gravatar.com/avatar/ba0584c0cdb61625fcdc5cc380370e1e?s=80&d=identicon",
               "private_token": null,
               "color_scheme_id": null,
@@ -615,10 +647,11 @@
               "name": "孙磊",
               "id": 9,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "sunlei",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -628,16 +661,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://www.gravatar.com/avatar/0201c34545ee15888d7effb255fdf3c4?s=80&d=identicon",
               "private_token": null,
               "color_scheme_id": null,
@@ -660,10 +692,11 @@
               "name": "毕佩珊",
               "id": 12,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "bips",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -673,16 +706,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://www.gravatar.com/avatar/1e2e30b65781c9722ca01a717ab7765b?s=80&d=identicon",
               "private_token": null,
               "color_scheme_id": null,
@@ -705,10 +737,11 @@
               "name": "徐卫忠",
               "id": 14,
               "state": "active",
-              "provider": null,
               "email": null,
               "username": "xuwz",
+              "provider": null,
               "bio": null,
+              "admin": false,
               "skype": null,
               "blocked": false,
               "linkedin": null,
@@ -718,16 +751,15 @@
               "externUid": null,
               "externProviderName": null,
               "websiteUrl": null,
-              "admin": false,
               "canCreateGroup": false,
               "canCreateProject": false,
               "canCreateTeam": false,
               "colorSchemeId": null,
               "privateToken": null,
-              "lastSignInAt": null,
-              "currentSignInAt": null,
               "projectsLimit": null,
               "createdAt": null,
+              "currentSignInAt": null,
+              "lastSignInAt": null,
               "avatarUrl": "http://www.gravatar.com/avatar/df4f36ddf49580e8a1e0dc7dbafcd76b?s=80&d=identicon",
               "private_token": null,
               "color_scheme_id": null,
@@ -749,6 +781,8 @@
           ]
         },
         {
+          "id": "12_p",
+          "name": "unitdocprocessor",
           "username": null,
           "gitlabProject": {
             "id": 12,
@@ -795,6 +829,8 @@
           "gitlabProjectMember": []
         },
         {
+          "id": "3_p",
+          "name": "unitdocAnnotation",
           "username": null,
           "gitlabProject": {
             "id": 3,
@@ -841,6 +877,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/devops"
     },
     {
@@ -848,10 +888,10 @@
       "name": "opendoc",
       "path": "opendoc",
       "description": "开发api相关文档",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "2_p",
+          "name": "gitlabApi",
           "username": null,
           "gitlabProject": {
             "id": 2,
@@ -892,12 +932,16 @@
             "avatar_url": null,
             "creator_id": 3,
             "star_count": 0,
-            "forks_count": 2,
+            "forks_count": 3,
             "tag_list": []
           },
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/opendoc"
     },
     {
@@ -905,10 +949,10 @@
       "name": "demo",
       "path": "demo",
       "description": "此项目组下存放一些开发所需的demo信息",
-      "visibility_level": 20,
-      "avatar_url": null,
       "children": [
         {
+          "id": "5_p",
+          "name": "projectTest",
           "username": null,
           "gitlabProject": {
             "id": 5,
@@ -955,6 +999,8 @@
           "gitlabProjectMember": []
         },
         {
+          "id": "1_p",
+          "name": "reactDemo",
           "username": null,
           "gitlabProject": {
             "id": 1,
@@ -1001,6 +1047,10 @@
           "gitlabProjectMember": []
         }
       ],
+      "star": [],
+      "owner": null,
+      "visibility_level": 20,
+      "avatar_url": null,
       "web_url": "http://10.10.152.146:10080/groups/demo"
     }
   ]

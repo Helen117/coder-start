@@ -30,8 +30,7 @@ class GroupDetail extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                console.log('收到表单值：', formData);
-                formData.owner=loginInfo.userName;
+                formData.owner=loginInfo.username;
                 actions.createGroup(formData);
             }
         })
@@ -76,13 +75,13 @@ class GroupDetail extends React.Component {
         }
     }
 
-    groupNameExists(rule, value, callback){
+    /*groupNameExists(rule, value, callback){
         if(!value){
             callback();
         }else{
 
         }
-    }
+    }*/
 
 
     render() {
@@ -95,7 +94,7 @@ class GroupDetail extends React.Component {
         const nameProps = getFieldProps('name',
             {rules:[
                 {required:true},
-                {validator:this.groupNameExists},
+                //{validator:this.groupNameExists},
             ]});
         const pathProps = getFieldProps('path',{rules:[{ required:true}]});
         const descriptionProps = getFieldProps('description',);
@@ -115,9 +114,9 @@ class GroupDetail extends React.Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="可见级别">
                         <RadioGroup {...visibilityProps}>
-                            <Radio value="Private">Private</Radio>
-                            <Radio value="Intenal">Intenal</Radio>
-                            <Radio value="Public">Public</Radio>
+                            <Radio value="0">Private</Radio>
+                            <Radio value="10">Intenal</Radio>
+                            <Radio value="20">Public</Radio>
                         </RadioGroup>
                     </FormItem>
                     <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>

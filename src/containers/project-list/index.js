@@ -28,7 +28,7 @@ class ProjectList extends Component {
 
     componentDidMount() {
         const {listActions,loginInfo} = this.props;
-        listActions.projectList(loginInfo.userName);
+        listActions.projectList(loginInfo.username);
         //在此处注册对其他控件发送的消息的响应
         PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
     }
@@ -110,7 +110,7 @@ class ProjectList extends Component {
                                     count++;
                                     for(var j=0;j<groupInfo.children.length;j++){
                                         if(record.projectName == groupInfo.children[j].gitlabProject.name){
-                                            if(loginInfo.userName == groupInfo.children[j].gitlabProjectMember.name){
+                                            if(loginInfo.username == groupInfo.children[j].gitlabProjectMember.name){
                                                 count2++;
                                             }
                                         }
@@ -170,9 +170,7 @@ class ProjectList extends Component {
                 if(projectName == starInfo[i].name){
                     count1++;
                     for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
-                        console.log("loginInfo.userName:",loginInfo.userName);
-                        console.log("projectInfo.gitlabProjectMember[j].name:",projectInfo.gitlabProjectMember[j].name);
-                        if(loginInfo.userName == projectInfo.gitlabProjectMember[j].name){
+                        if(loginInfo.username == projectInfo.gitlabProjectMember[j].name){
                             count2++;
                          }
                          console.log("count2:",count2);
@@ -218,6 +216,7 @@ class ProjectList extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log("state.login.profile:",state.login.profile);
     return {
         list: state.projectList.projectList,
         fetchStatus:state.projectList.fetchStatus,
