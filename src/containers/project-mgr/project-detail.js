@@ -72,6 +72,7 @@ class ProjectDetail extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted } = nextProps;
+        console.log("inserted:",inserted);
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }
@@ -118,7 +119,7 @@ class ProjectDetail extends React.Component {
         };
         const nameProps = getFieldProps('name',
             {rules:[
-                { required:true},
+                { required:true, message:'请输入项目名称!'},
                 {validator:this.projectNameExists.bind(this)},
                 ]
             });

@@ -60,21 +60,22 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    errCallback(){
+    /*errCallback(){
         notification.error({
             message: '创建失败',
             description: '项目组名称或者路径已被占用!',
             duration: 1
         });
-    }
+    }*/
 
     componentWillReceiveProps(nextProps) {
         const { inserted } = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
-        }else{
-            this.errCallback();
         }
+        /*else{
+            this.errCallback();
+        }*/
     }
 
     componentDidMount() {
@@ -129,12 +130,12 @@ class GroupDetail extends React.Component {
         };
         const nameProps = getFieldProps('name',
             {rules:[
-                {required:true},
+                {required:true, message:'请输入项目组名称！'},
                 {validator:this.groupNameExists.bind(this)},
             ]});
         const pathProps = getFieldProps('path',
             {rules: [
-                { required:true},
+                { required:true, message:'请输入项目组路径！'},
                 {validator:this.groupPathExists.bind(this)},
             ]});
         const descriptionProps = getFieldProps('description',);
