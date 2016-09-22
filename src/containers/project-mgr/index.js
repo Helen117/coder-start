@@ -45,7 +45,7 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         console.info(node);
-        PubSub.publish("evtTreeClick",{node:node});
+        PubSub.publish("evtTreeClick",node);
     }
 
     render(){

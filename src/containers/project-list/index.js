@@ -40,26 +40,20 @@ class ProjectList extends Component {
 
     showProjectList(msg,data){
         //将list和item的展示放到一个contain中
-        const {list} = this.props;
-        var count=0;
-        for(var i=0;i<list.length;i++){
-            if(data.node.name == list[i].name){
-                count++;
-            }
-        }
-        if(data.node.isLeaf == true && count == 0){
+        console.log("data:",data);
+        if(data.isLeaf == true && (data.id.indexOf("_p") > 0)){
             this.setState({
                 listType:false,
                 itemType:true,
-                itemNode:data.node.name,
+                itemNode:data.name,
             });
-        }else if(data.node.isLeaf == false && count != 0){
+        }else if(data.isLeaf == false && (data.id.indexOf("_p") < 0)){
             this.setState({
                 listType:true,
                 itemType:false,
-                listNode:data.node.name,
+                listNode:data.name,
             });
-        }else if(data.node.isLeaf == true && count != 0){
+        }else if(data.isLeaf == true && (data.id.indexOf("_p") < 0)){
             this.setState({
                 listType:false,
                 itemType:false,
@@ -112,7 +106,7 @@ class ProjectList extends Component {
                         render(text,record){
                             var count = 0, count2 = 0;
                             for(var i=0;i<starInfo.length;i++){
-                                if(record.projectName == starInfo[i].projectName){
+                                if(record.projectName == starInfo[i].name){
                                     count++;
                                     for(var j=0;j<groupInfo.children.length;j++){
                                         if(record.projectName == groupInfo.children[j].gitlabProject.name){
@@ -173,7 +167,7 @@ class ProjectList extends Component {
              ];
              var count1=0, count2=0;
              for(var i=0;i<starInfo.length;i++){
-                if(projectName == starInfo[i].projectName){
+                if(projectName == starInfo[i].name){
                     count1++;
                     for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
                         console.log("loginInfo.userName:",loginInfo.userName);

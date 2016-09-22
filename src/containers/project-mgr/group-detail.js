@@ -24,13 +24,14 @@ class GroupDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form } = this.props;
+        const { actions, form, loginInfo } = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
                 console.log('收到表单值：', formData);
+                formData.owner=loginInfo.userName;
                 actions.createGroup(formData);
             }
         })
@@ -98,7 +99,7 @@ class GroupDetail extends React.Component {
                         <Input type="textarea" {...getFieldProps('description', {initialValue: ''})} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="可见级别">
-                        <RadioGroup {...getFieldProps('visibely', {initialValue: ''})}>
+                        <RadioGroup {...getFieldProps('visibility_level', {initialValue: ''})}>
                             <Radio value="Private">Private</Radio>
                             <Radio value="Intenal">Intenal</Radio>
                             <Radio value="Public">Public</Radio>
@@ -127,7 +128,8 @@ GroupDetail = Form.create()(GroupDetail);
 
 function mapStateToProps(state) {
     return {
-        inserted: state.createGroup.result
+        inserted: state.createGroup.result,
+        loginInfo:state.login.profile,
     }
 }
 
