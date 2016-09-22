@@ -68,13 +68,19 @@ class GroupDetail extends React.Component {
         }
     }
 
-    componentWillMount() {
-    }
     componentDidMount() {
         const {selectedRow} = this.props.location.state;
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
+        }
+    }
+
+    groupNameExists(rule, value, callback){
+        if(!value){
+            callback();
+        }else{
+
         }
     }
 
@@ -86,20 +92,29 @@ class GroupDetail extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
+        const nameProps = getFieldProps('name',
+            {rules:[
+                {required:true},
+                {validator:this.groupNameExists},
+            ]});
+        const pathProps = getFieldProps('path',{rules:[{ required:true}]});
+        const descriptionProps = getFieldProps('description',);
+        const visibilityProps = getFieldProps('visibility_level',);
+
         return (
             <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="项目组名称">
-                        <Input type="text" {...getFieldProps('name', {initialValue: '', rules:[{ required:true}]})} placeholder="请输入项目名称"/>
+                        <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
                     </FormItem>
                     <FormItem {...formItemLayout} label="项目组路径">
-                        <Input type="text" {...getFieldProps('path ', {initialValue: '', rules:[{ required:true}]})} placeholder="请输入项目路径"/>
+                        <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
                     </FormItem>
                     <FormItem {...formItemLayout} label="描述">
-                        <Input type="textarea" {...getFieldProps('description', {initialValue: ''})} />
+                        <Input type="textarea" {...descriptionProps} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="可见级别">
-                        <RadioGroup {...getFieldProps('visibility_level', {initialValue: ''})}>
+                        <RadioGroup {...visibilityProps}>
                             <Radio value="Private">Private</Radio>
                             <Radio value="Intenal">Intenal</Radio>
                             <Radio value="Public">Public</Radio>
