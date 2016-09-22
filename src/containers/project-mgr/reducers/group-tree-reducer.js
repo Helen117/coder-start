@@ -18,13 +18,13 @@ const initialState = {
 export default function getGroupTree(state = initialState, action = {}) {
     switch (action.type) {
         case GET_GROUP_TREE_PENDING:
-            return Object.assign({}, initialState, {});
+            return Object.assign({}, initialState, {loading: true});
         case GET_GROUP_TREE_SUCCESS:
-            return Object.assign({}, initialState, {treeData: action.payload});
+            return Object.assign({}, initialState, {loading: false, treeData: action.payload});
         case GET_GROUP_TREE_ERROR:
             return {
                 ...state,
-                errors: action.payload.message
+                errors: action.payload.message, loading: false
             };
         default:
             return state;
