@@ -11,6 +11,8 @@ module.exports.user = {
     errorCode: null,
     errorMsg: null,
     result:{
+        'id':1,
+        'name':'admin',
         'username': 'admin',
         'userId': 1
     }

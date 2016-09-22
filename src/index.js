@@ -20,7 +20,11 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
+
+import ProjectList from './containers/project-list';
+
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
+
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -54,6 +58,8 @@ ReactDOM.render(
                             <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
                         </Route>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
+                        </Route>
+                        <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>

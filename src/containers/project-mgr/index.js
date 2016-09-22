@@ -11,7 +11,10 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col } from 'antd';
 import TreeFilter from '../../components/tree-filter';
+import ProjectList from '../project-list';
+import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
+import 'PubSub-js';
 
 
 export GroupDetail from './group-detail';
@@ -39,8 +42,10 @@ class ProjectMgr extends React.Component{
         });
     }
 
+
     onSelectNode(node){
         console.info(node);
+        PubSub.publish("evtTreeClick",node);
     }
 
     render(){
@@ -66,7 +71,8 @@ class ProjectMgr extends React.Component{
                         </Button>
                     </Row>
                     <Row>
-                        {this.props.children}
+                        <ProjectList />
+                        <ProjectMember />
                     </Row>
                 </Col>
 

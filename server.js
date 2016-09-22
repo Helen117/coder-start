@@ -10,15 +10,18 @@ const config = require('./webpack.config');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDeveloping = !isProduction;
 
-// const {menu} = require('./mockdata/menu');
-// const {login, user} = require('./mockdata/user');
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+
+//const projectList = require('./mockdata/project');
+const group = require('./mockdata/group.json');
+
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
+
 
 const app = express();
 
@@ -51,9 +54,16 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
-// app.get('/gitlab/user/1', function (req, res) {
-//     res.json(user);
-// });
+app.post('/gitlab/group', function (req, res) {
+    res.json(group);
+});
+
+
+app.get('/gitlab/user/1', function (req, res) {
+
+    res.json(user);
+});
+
 
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);

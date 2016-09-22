@@ -10,7 +10,9 @@ import api from '../../../api';
 import {CREATE_GROUP} from '../constants/create-group-types';
 
 export function createGroup(groupData) {
-    var path = '/project-mgr/createGroup';
+    //var path = '/project-mgr/createGroup';
+    var path = '/groups/create';
+    console.log("groupData:",groupData);
     return {
         type: CREATE_GROUP,
         payload: {

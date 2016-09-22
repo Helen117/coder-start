@@ -26,7 +26,7 @@ export default class Header extends React.Component {
 
     render() {
         const {profile} = this.props;
-        const username = profile ? profile.userName : 'loading';
+        const username = profile ? profile.username : 'loading';
         return (
             <Row className='ant-layout-header'>
                 <Col span={6}>

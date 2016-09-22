@@ -1,0 +1,86 @@
+/**
+ * Created by Administrator on 2016-09-13.
+ */
+module.exports.projectList = {group:[{
+    group_id:"group1",
+    group_name:"group1",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理"
+},{
+    group_id:"group2",
+    group_name:"group2",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理2"
+},{
+    group_id:"group3",
+    group_name:"group3",
+    create_time:"2016-09-13",
+    creator:"wip",
+    create_for:"devops项目管理3"
+}],project:[{
+    project_id:"p1",
+    project_name:"project11",
+    manager:"wip1",
+    member_num:3,
+    owner:"wip",
+    create_time:"2016-09-13",
+    group_name:"group1"
+},{
+    project_id:"p2",
+    project_name:"project12",
+    manager:"wip2",
+    member_num:4,
+    owner:"wip2",
+    create_time:"2016-09-13",
+    group_name:"group1"
+},{
+    project_id:"p3",
+    project_name:"project13",
+    manager:"wip3",
+    member_num:5,
+    owner:"wip3",
+    create_time:"2016-09-13",
+    group_name:"group1"
+},{
+    project_id:"p4",
+    project_name:"project14",
+    manager:"wip3",
+    member_num:5,
+    owner:"wip3",
+    create_time:"2016-09-13",
+    group_name:"group2"
+}],member: [{
+    userName:"admin",
+    role_id:"r1",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"in"
+},{
+    userName:"admin2",
+    role_id:"r2",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"in"
+},{
+    userName:"admin3",
+    role_id:"r3",
+    join_time:"2016-09-15",
+    project_name:"project12",
+    status:"in"
+},{
+    userName:"admin4",
+    role_id:"r4",
+    join_time:"2016-09-15",
+    project_name:"project11",
+    status:"out"
+}],treeGroup:{
+    id:"group1",
+    name:"group1",
+    isLeaf:false
+},treeProject:{
+    id:"p1",
+    name:"project11",
+    isLeaf:false
+}}
