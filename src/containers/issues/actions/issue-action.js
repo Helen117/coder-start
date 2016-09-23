@@ -29,14 +29,14 @@ export function addIssues(issues) {
     }
 }
 
-export function issueNotes(id,issue_id) {
+export function issueNotes(projectId,issueId) {
     return {
         type: 'ISSUE_NOTES',
         payload: {
-            promise: api.post('/issueNotes', {
+            promise: api.post('/issue/notes', {
                 params: {
-                    id: id,
-                    issue_id:issue_id
+                    projectId: projectId,
+                    issueId:issueId
                 }
             })
         }

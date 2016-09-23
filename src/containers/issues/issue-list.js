@@ -3,7 +3,7 @@
  */
 import React, {PropTypes,Component} from 'react';
 import { Table ,Button} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
