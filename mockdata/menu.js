@@ -23,7 +23,7 @@ module.exports.menu = {
         }, {
             id: 22,
             name: '测试',
-            link: '/test'
+            link: '/test.html'
         }]
     }, {
         id: 3,
@@ -33,6 +33,14 @@ module.exports.menu = {
             name: '项目管理',
             link: '/project-mgr.html'
         }]
+    },{
+    id: 6,
+    name: '问题管理',
+    subMenu: [{
+        id: 61,
+        name: '问题管理',
+        link: '/issue.html'
     }]
+}]
 };
 
