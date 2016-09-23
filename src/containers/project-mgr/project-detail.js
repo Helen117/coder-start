@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
+import styles from './index.css';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -179,7 +180,7 @@ class ProjectDetail extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
                             <Dropdown overlay={menu}>
-                                <Input {...groupProps} style={{ marginLeft: 8 }} placeholder="请选择项目组" icon="down"/>
+                                <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
                             </Dropdown>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
