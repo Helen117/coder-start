@@ -15,6 +15,7 @@ import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
 import {getMyGroup} from './actions/acquire_mygroup_action';
+import {getGroupMembers} from './actions/group_members_action';
 import 'pubsub-js';
 
 
@@ -48,6 +49,7 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         console.info(node);
+        this.props.getGroupMembers(node.id);
         PubSub.publish("evtTreeClick",node);
     }
 
@@ -103,6 +105,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
         getMyGroup:bindActionCreators(getMyGroup, dispatch),
+        getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
     }
 }
 

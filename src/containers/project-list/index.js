@@ -85,15 +85,14 @@ class ProjectList extends Component {
     }
 
     onSelectRow(groupInfo,record){
-        console.log("groupInfo-test:",groupInfo);
-        console.log("record-test:",record);
         PubSub.publish("evtRowClick",{record:record, groupInfo:groupInfo});
     }
 
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,fetchStatus,loginInfo} = this.props;
-            if (fetchStatus || false) {
+            const {list,fetchStatus,loginInfo,groupMembers,fetchGroupMembers} = this.props;
+            console.log("groupMembers:",groupMembers);
+            if ((fetchStatus || false) ) {
                 var groupName = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupName,list);
                 var starInfo = groupInfo.star;
@@ -130,6 +129,11 @@ class ProjectList extends Component {
                 ];
                 const dataSource = [];
                 for(var i=0;i<groupInfo.children.length;i++){
+                    /*for(var j=0;j<groupMembers.length;j++){
+                        if(groupInfo.children[i].gitlabProject.creator_id == groupMembers[j].id){
+                            const manager = groupMembers[j].name;
+                        }
+                    }*/
                     dataSource.push({
                         key:i+1,
                         projectName:groupInfo.children[i].gitlabProject.name,
@@ -153,7 +157,7 @@ class ProjectList extends Component {
             return null;
         }else if(this.state.itemType == true){//展示项目信息
             const {list,fetchStatus,loginInfo} = this.props;
-             if (fetchStatus || false) {
+             if ((fetchStatus || false)) {
              var projectName = this.state.itemNode;
              var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
 　　　　　　 var starInfo = groupInfo.star;
@@ -217,10 +221,13 @@ class ProjectList extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log("state.getGroupMembers.groupMembers:",state.getGroupMembers.groupMembers);
     return {
         list: state.projectList.projectList,
         fetchStatus:state.projectList.fetchStatus,
         loginInfo:state.login.profile,
+        groupMembers:state.getGroupMembers.groupMembers,
+        fetchGroupMembers:state.getGroupMembers.fetchStatus,
     }
 }
 
