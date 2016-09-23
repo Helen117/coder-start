@@ -83,7 +83,7 @@ app.post('/gitlab/project/add-issue', function (req, res) {
         res.json({success: true,errorCode: null,errorMsg: null});
 });
 
-app.post('/gitlab/issueNotes', function (req, res) {
+app.post('/gitlab/issue/notes', function (req, res) {
         res.json(issueNotes);
 });
 

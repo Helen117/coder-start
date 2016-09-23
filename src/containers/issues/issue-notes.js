@@ -15,7 +15,7 @@ import * as issue from './actions/issue-action';
 
      componentWillMount() {
          const {actions} = this.props;
-         actions.issueNotes(1,2);
+         actions.issueNotes(17,2);
      }
 
      componentWillReceiveProps(nextProps) {
@@ -24,7 +24,7 @@ import * as issue from './actions/issue-action';
          if(result){
              document.getElementById("body").value="";
              const {actions} = this.props;
-             actions.issueNotes(1,2);
+             actions.issueNotes(17,2);
          }
      }
 
