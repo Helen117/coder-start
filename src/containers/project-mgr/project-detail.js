@@ -9,7 +9,7 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification} from 'antd';
+import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
 
@@ -19,6 +19,9 @@ const FormItem = Form.Item;
 class ProjectDetail extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            selectGroupId:null,
+        };
     }
 
     handleSubmit(e) {
@@ -30,7 +33,6 @@ class ProjectDetail extends React.Component {
             } else {
                 const formData = form.getFieldsValue();
                 console.log('收到表单值：', formData);
-                console.log("loginInfo:",loginInfo);
                 var data={
                     username:'',
                     gitlabProject:{
@@ -39,8 +41,10 @@ class ProjectDetail extends React.Component {
                     }
                 };
                 data.username=loginInfo.username;
+                data.userId = loginInfo.userId;
                 data.gitlabProject.name = formData.name;
                 data.gitlabProject.description = formData.description;
+                data.groupId = this.state.selectGroupId;
                 actions.createProject(data);
             }
         })
@@ -70,18 +74,28 @@ class ProjectDetail extends React.Component {
         this.context.router.goBack();
     }
 
+    errCallback(){
+        notification.error({
+            message: '创建失败',
+            description: '项目名称已被占用!',
+            //description:{errMessage},
+            duration: 1
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
-        const { inserted } = nextProps;
-        console.log("inserted:",inserted);
+        const { inserted, errMessage } = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
+        }else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback();
         }
     }
 
     componentWillMount() {
     }
     componentDidMount() {
-        const {selectedRow} = this.props.location.state;
+        const {selectedRow, } = this.props.location.state;
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
@@ -109,6 +123,21 @@ class ProjectDetail extends React.Component {
         }
     }
 
+    handleMenuClick(e){
+        console.log('click left button', e);
+        const {setFieldsValue} = this.props.form;
+        const {getMyGroup} = this.props;
+        for(var i=0;i<getMyGroup.myGroup.length;i++){
+            if(e.key == getMyGroup.myGroup[i].id){
+               const groupName = getMyGroup.myGroup[i].name;
+               setFieldsValue({groupid:groupName});
+                this.setState({
+                    selectGroupId:getMyGroup.myGroup[i].id
+                });
+            }
+        }
+    }
+
 
     render() {
         const {editType} = this.props.location.state;
@@ -117,34 +146,50 @@ class ProjectDetail extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
+
         const nameProps = getFieldProps('name',
             {rules:[
                 { required:true, message:'请输入项目名称!'},
                 {validator:this.projectNameExists.bind(this)},
                 ]
             });
-        //const pathProps = getFieldProps('path',{rules:[{ required:true}]});
         const descriptionProps = getFieldProps('description',);
-        //const visibilityProps = getFieldProps('visibility_level',);
+        const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
 
-        return (
-            <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="项目名称">
-                        <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="描述">
-                        <Input type="textarea" {...descriptionProps} />
-                    </FormItem>
+        const {getMyGroup} = this.props;
+        if(getMyGroup && (getMyGroup.fetchStatue || false)){
+            const loop = (data) => data.map((item) => {
+                return <Menu.Item key={item.id}>{item.name}</Menu.Item>;
+            });
+            const nodes = loop(getMyGroup.myGroup);
+            const menu = (
+                <Menu onClick={this.handleMenuClick.bind(this)}>
+                    {nodes}
+                </Menu>
+            );
 
-                    <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading}>确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Box>
-        );
-
+            return (
+                <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                        <FormItem {...formItemLayout} label="项目名称">
+                            <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="描述">
+                            <Input type="textarea" {...descriptionProps} />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="项目所在组">
+                            <Dropdown overlay={menu}>
+                                <Input {...groupProps} style={{ marginLeft: 8 }} placeholder="请选择项目组" icon="down"/>
+                            </Dropdown>
+                        </FormItem>
+                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Box>
+            );
+        }else {return null;}
     }
 
 }
@@ -159,12 +204,14 @@ ProjectDetail.contextTypes = {
 ProjectDetail = Form.create()(ProjectDetail);
 
 function mapStateToProps(state) {
-    console.log("state.createProject.result:",state.createProject.result);
     return {
         inserted: state.createProject.result,
+        errMessage:state.createProject.errors,
         loginInfo:state.login.profile,
         list: state.projectList.projectList,
         loading:state.createProject.loading,
+        disabled:state.createProject.disabled,
+        getMyGroup:state.getMyGroup,
     }
 }
 

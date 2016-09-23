@@ -20,6 +20,9 @@ const RadioGroup = Radio.Group;
 class GroupDetail extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            reveiveGroup:null,
+        }
     }
 
     handleSubmit(e) {
@@ -31,6 +34,7 @@ class GroupDetail extends React.Component {
             } else {
                 const formData = form.getFieldsValue();
                 formData.owner=loginInfo.username;
+                formData.userId = loginInfo.userId;
                 actions.createGroup(formData);
             }
         })
@@ -60,22 +64,22 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    /*errCallback(){
+    errCallback(){
         notification.error({
             message: '创建失败',
             description: '项目组名称或者路径已被占用!',
+            //description:{errMessage},
             duration: 1
         });
-    }*/
+    }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted } = nextProps;
+        const { inserted, errMessage } = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
-        }
-        /*else{
+        }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback();
-        }*/
+        }
     }
 
     componentDidMount() {

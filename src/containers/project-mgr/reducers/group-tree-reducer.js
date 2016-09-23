@@ -9,7 +9,7 @@
 import {
     GET_GROUP_TREE_PENDING,
     GET_GROUP_TREE_SUCCESS,
-    GET_GROUP_TREE_ERROR
+    GET_GROUP_TREE_ERROR,
 } from '../constants/group-tree-types';
 
 const initialState = {
@@ -30,3 +30,4 @@ export default function getGroupTree(state = initialState, action = {}) {
             return state;
     }
 }
+

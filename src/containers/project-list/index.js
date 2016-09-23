@@ -84,8 +84,10 @@ class ProjectList extends Component {
         }
     }
 
-    onSelectRow(record){
-        PubSub.publish("evtRowClick",{record:record});
+    onSelectRow(groupInfo,record){
+        console.log("groupInfo-test:",groupInfo);
+        console.log("record-test:",record);
+        PubSub.publish("evtRowClick",{record:record, groupInfo:groupInfo});
     }
 
     render() {
@@ -143,7 +145,7 @@ class ProjectList extends Component {
                         </div>
                         <TableView columns={columns}
                                    dataSource={dataSource}
-                                   onSelectRow={this.onSelectRow.bind(this)}
+                                   onSelectRow={this.onSelectRow.bind(this,groupInfo)}
                         ></TableView>
                     </div>
                 )

@@ -9,11 +9,12 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col } from 'antd';
+import { Button, Row, Col, notification } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
+import {getMyGroup} from './actions/acquire_mygroup_action';
 import 'pubsub-js';
 
 
@@ -36,9 +37,11 @@ class ProjectMgr extends React.Component{
         });
     }
     editProject(type, selectedRow) {
+        const {loginInfo} = this.props;
+        this.props.getMyGroup(loginInfo.username);
         this.context.router.push({
             pathname: '/project-detail.html',
-            state: {editType: type, selectedRow}
+            state: {editType: type, selectedRow,}
         });
     }
 
@@ -91,13 +94,15 @@ ProjectMgr.contextTypes = {
 function mapStateToProps(state) {
     return {
         loading : state.getGroupTree.loading,
-        treeData: state.getGroupTree.treeData
+        treeData: state.getGroupTree.treeData,
+        loginInfo:state.login.profile,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getGroupTree: bindActionCreators(getGroupTree, dispatch)
+        getGroupTree: bindActionCreators(getGroupTree, dispatch),
+        getMyGroup:bindActionCreators(getMyGroup, dispatch),
     }
 }
 

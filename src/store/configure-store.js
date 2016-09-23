@@ -10,6 +10,7 @@ import projectList from '../containers/project-list/reducers/priject-list-reduce
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
+import getMyGroup from '../containers/project-mgr/reducers/acquire_mygroup_reducer';
 
 
 const reducer = combineReducers({
@@ -19,6 +20,7 @@ const reducer = combineReducers({
 	projectList,
     createGroup,
     createProject,
+    getMyGroup,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

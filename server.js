@@ -15,6 +15,7 @@ var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+const mygroup = require('./mockdata/mygroup.json');
 
 //const projectList = require('./mockdata/project');
 const group = require('./mockdata/group.json');
@@ -56,6 +57,10 @@ app.post('/gitlab/login', function (req, res) {
 
 app.post('/gitlab/group', function (req, res) {
     res.json(group);
+});
+
+app.post('/gitlab/mygroup', function (req, res) {
+    res.json(mygroup);
 });
 
 
