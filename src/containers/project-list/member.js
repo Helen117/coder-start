@@ -16,6 +16,7 @@ class ProjectMember extends Component {
         this.state = {
             memberType:false,
             selectRow:null,
+            selectGroup:null,
         };
         this.showProjectMember = this.showProjectMember.bind(this);
         this.notShowMember = this.notShowMember.bind(this);
@@ -36,7 +37,8 @@ class ProjectMember extends Component {
     showProjectMember(msg,data){
         this.setState({
             memberType:true,
-            selectRow:data.record.projectName
+            selectRow:data.record.projectName,
+            selectGroup:data.groupInfo,
         })
     }
 
@@ -64,7 +66,8 @@ class ProjectMember extends Component {
             const {list,fetchStatus} = this.props;
             if (fetchStatus || false) {
                 var projectName = this.state.selectRow;
-                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
+                var groupInfo = this.state.selectGroup;
+                var {projectInfo} = this.searchGroupByProjectName(projectName,list);
                 console.log("projectInfo:",projectInfo);
 
                 const columns = [

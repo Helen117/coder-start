@@ -6,6 +6,7 @@ import {PROJECT_LIST} from '../constants/list-action-types';
 
 export function projectList(userName) {
     var path = '/groups/all';
+    //var path = '/mygroup';
     return {
         type: PROJECT_LIST,
         payload: {
