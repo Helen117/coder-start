@@ -18,8 +18,11 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
+import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
+
+import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
 
 import ProjectList from './containers/project-list';
 
@@ -59,17 +62,22 @@ ReactDOM.render(
                         </Route>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
                         </Route>
+                        <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
+                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
+                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
+                        <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={AddIssue}/>
                         <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                     </Route>
+                    <Route path="register.html" component={Register}/>
                     <Route path="login.html" component={Login}/>
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
         </Provider>
-        {/*<DevTools store={store}/>*/}
+        {<DevTools store={store}/>}
     </div>,
     root
 );

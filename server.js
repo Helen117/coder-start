@@ -22,6 +22,12 @@ const group = require('./mockdata/group.json');
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
+const group_ = require('./mockdata/group');
+var dataSource = group_.assign;
+var issueNotes = group_.notes;
+
+const issueList_ =require('./mockdata/issueList');
+var issueList = issueList_.issueList;
 
 const app = express();
 
@@ -46,6 +52,7 @@ const port = isProduction ? (process.env.PORT || 80) : 8080;
 //以下是模拟服务端请求数据
 app.post('/gitlab/login', function (req, res) {
     const credentials = req.body;
+    console.log('username:',credentials.username);
     if (credentials.username === login.username && credentials.password === login.password) {
         //res.cookie('uid', '1', {domain: '127.0.0.1'});
         res.json(user);
@@ -54,6 +61,43 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
+app.post('/gitlab/user/add', function (req, res) {
+        res.json({success: true,errorCode: null,errorMsg: null});
+});
+
+app.get('/gitlab/userExists', function (req, res) {
+    res.json(user);
+});
+
+app.post('/gitlab/project/assign', function (req, res) {
+    const credentials = req.body;
+    console.log('projectId:',credentials.projectId);
+    if (credentials) {
+        res.json(dataSource);
+    } else {
+        res.status('500').send({'errorMsg': 'Invalid projectId'});
+    }
+});
+
+app.post('/gitlab/project/add-issue', function (req, res) {
+        res.json({success: true,errorCode: null,errorMsg: null});
+});
+
+app.post('/gitlab/issueNotes', function (req, res) {
+        res.json(issueNotes);
+});
+
+app.post('/gitlab/project/issues', function (req, res) {
+    res.json(issueList);
+});
+
+app.post('/gitlab/issue/add-note', function (req, res) {
+    res.json({success: true,errorCode: null,errorMsg: null,result:1});
+});
+
+// app.get('/gitlab/user/1', function (req, res) {
+//     res.json(user);
+// });
 app.post('/gitlab/group', function (req, res) {
     res.json(group);
 });
@@ -63,7 +107,6 @@ app.get('/gitlab/user/1', function (req, res) {
 
     res.json(user);
 });
-
 
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
