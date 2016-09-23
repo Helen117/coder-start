@@ -13,7 +13,6 @@ module.exports.menu = {
             name: '首页',
             link: '/home.html'
         }]
-<<<<<<< HEAD
     }, {
         id: 2,
         name: '用户管理',
@@ -45,5 +44,4 @@ module.exports.menu = {
                 link: '/milestones.html'
             }]
         }]
-<<<<<<< HEAD
 };
