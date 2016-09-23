@@ -54,6 +54,7 @@ class InputPage extends React.Component {
                             </FormItem>
                         </Col>
                     </FormItem>
+
                 </Form>
             </Box>
 

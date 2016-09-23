@@ -20,7 +20,7 @@ class Milestones extends React.Component {
 
     componentDidMount() {
         //let uid = authUtils.getUid();
-        let projectId = 3;
+        let projectId = 17;
         this.props.getMilestones(projectId);
     }
 
@@ -29,10 +29,10 @@ class Milestones extends React.Component {
         return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
     }
 
-    moreMilestones(milestonesId){
+    moreMilestones(milestonesId,projectId){
         this.context.router.push({
             pathname: '/moreMilestones.html',
-            state: {milestonesId}
+            state: {milestonesId,projectId}
         });
     }
 
@@ -45,14 +45,14 @@ class Milestones extends React.Component {
 
 
     render(){
-
+        let projectId = 17;
         const {items} = this.props;
         const timeLine = items.map((item) => {
             return (
 
-                <Timeline.Item   key={'milestones' + item.id}>
-                    <span style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.title}</span><br/>
-                    <span>计划发布时间：{this.getTime(item.due_date)}</span><br/>
+                <Timeline.Item   key={'milestones' + item.gitlabMilestone.id}>
+                    <span style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</span><br/>
+                    <span>计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</span><br/>
                     <span>里程碑创建人：{item.owner}</span><br/>
                     <span>里程待解决的问题</span><br/>
                     {item.issues.map((node) => {
@@ -62,7 +62,7 @@ class Milestones extends React.Component {
                         );
                     })}
 
-                    <a onClick={this.moreMilestones.bind(this, item.id)}>查看更多</a>
+                    <a onClick={this.moreMilestones.bind(this, item.gitlabMilestone.id,projectId)}>查看更多</a>
 
                 </Timeline.Item>
 

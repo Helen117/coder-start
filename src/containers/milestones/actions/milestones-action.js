@@ -5,11 +5,13 @@ import {ACQUIRE_MILESTONES,ACQUIRE_MILESTONES_DETAIL} from '../constants/milesto
 import api from '../../../api';
 
 export function getMilestones(projectId) {
+    //var path='/milestones';
+    var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
         payload: {
-            promise: api.post('/milestones', {
-                data: {
+            promise: api.post(path, {
+                params: {
                     projectId:projectId
                 }
             })
@@ -17,13 +19,16 @@ export function getMilestones(projectId) {
     }
 }
 
-export function getMilestonesDetail(milestonesId) {
+export function getMilestonesDetail(milestonesId,projectId) {
+    var path ='/milestone/issues'
+    //var path ='/milestoneDetail'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {
-            promise: api.post('/milestoneDetail', {
-                data: {
-                    milestonesId:milestonesId
+            promise: api.post(path, {
+                params: {
+                    milestoneId:milestonesId,
+                    projectId:projectId
                 }
             })
         }

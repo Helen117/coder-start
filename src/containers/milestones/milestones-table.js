@@ -22,9 +22,11 @@ class MilestoneDetail extends React.Component {
     componentDidMount() {
         console.info('componentDidMount');
         const {milestonesId} = this.props.location.state;
-
-        if (milestonesId){
-            this.props.getMilestonesDetail(milestonesId);
+        const {projectId} = this.props.location.state;
+        console.log('state',this.props.location.state);
+        //const {milestonesId} = 3;
+        if (milestonesId&&projectId){
+            this.props.getMilestonesDetail(milestonesId,projectId);
         }
     }
 

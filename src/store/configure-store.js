@@ -10,6 +10,7 @@ import milestones from '../containers/milestones/reducers/milestones-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
+import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 
 const reducer = combineReducers({
     login,
@@ -17,7 +18,9 @@ const reducer = combineReducers({
     milestones,
     getGroupTree,
     createGroup,
-    createProject
+    createGroup,
+    createProject,
+    createMilestones
 });
 
 

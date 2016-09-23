@@ -36,6 +36,7 @@ class _Api {
                 }
                 if (data){
                     opts.body = JSON.stringify(data);
+                    opts.headers['Content-Type'] = 'application/json; charset=utf-8';
                 }
                 if (params) {
                     opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
