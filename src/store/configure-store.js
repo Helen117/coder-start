@@ -12,6 +12,7 @@ import createGroup from '../containers/project-mgr/reducers/create-group-reducer
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 
+
 const reducer = combineReducers({
     login,
     menu,
@@ -22,7 +23,6 @@ const reducer = combineReducers({
     createProject,
     createMilestones
 });
-
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,
