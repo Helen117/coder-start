@@ -8,6 +8,7 @@
  */
 import React, {PropTypes} from 'react';
 import { Tree, Input } from 'antd';
+
 import { loopAllChildren, flatToHierarchy, getPropValue, labelCompatible } from './util';
 import './index.less';
 
@@ -157,7 +158,6 @@ export default class TreeFilter extends React.Component {
                         (<span className="filter-not-found">{notFoundMsg?notFoundMsg:'没有数据'}</span>)
                         :(<Tree {...trProps}>{nodes}</Tree>)
                 )}
-
             </div>
         );
     }

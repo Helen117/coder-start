@@ -10,18 +10,20 @@ const config = require('./webpack.config');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDeveloping = !isProduction;
 
-// const {menu} = require('./mockdata/menu');
-// const {login, user} = require('./mockdata/user');
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
+
+//const projectList = require('./mockdata/project');
+const group = require('./mockdata/group.json');
+
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
 const group_ = require('./mockdata/group');
-var group = group_.group;
+var dataSource = group_.group;
 var issueNotes = group_.notes;
 
 const issueList_ =require('./mockdata/issueList');
@@ -71,7 +73,7 @@ app.post('/gitlab/fetchData', function (req, res) {
     const credentials = req.body;
     console.log('projectId:',credentials.projectId);
     if (credentials) {
-        res.json(group);
+        res.json(dataSource);
     } else {
         res.status('500').send({'errorMsg': 'Invalid projectId'});
     }
@@ -96,6 +98,15 @@ app.post('/gitlab/comment', function (req, res) {
 // app.get('/gitlab/user/1', function (req, res) {
 //     res.json(user);
 // });
+app.post('/gitlab/group', function (req, res) {
+    res.json(group);
+});
+
+
+app.get('/gitlab/user/1', function (req, res) {
+
+    res.json(user);
+});
 
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);

@@ -18,13 +18,14 @@ const initialState = {
 export default function createProject(state = initialState, action = {}) {
     switch (action.type) {
         case CREATE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {});
+            return Object.assign({}, initialState, {loading:true});
         case CREATE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload});
+            return Object.assign({}, initialState, {result: action.payload,loading:false});
         case CREATE_PROJECT_ERROR:
             return {
                 ...state,
-                errors: action.payload.message
+                errors: action.payload.message,
+                loading:false
             };
         default:
             return state;

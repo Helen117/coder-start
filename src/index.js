@@ -23,7 +23,11 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
+
+import ProjectList from './containers/project-list';
+
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
+
 
 //import authUtils from './utils/auth';
 import {getCookie} from './utils';
@@ -62,6 +66,8 @@ ReactDOM.render(
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
                         <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={IssueList}/>
+                        <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
+                        </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                     </Route>
