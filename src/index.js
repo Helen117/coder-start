@@ -65,7 +65,7 @@ ReactDOM.render(
                         <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
-                        <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={IssueList}/>
+                        <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={AddIssue}/>
                         <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>

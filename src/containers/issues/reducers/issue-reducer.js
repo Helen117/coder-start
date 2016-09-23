@@ -2,16 +2,18 @@
  * Created by helen on 2016/9/19.
  */
 const initialState = {
-
+    milestones: null,
+    members: null,
+    labels: null
 };
 
 export default function issue(state = initialState, action = {}) {
     switch (action.type) {
 
         case 'FETCH_DATA_SUCCESS':
-            return Object.assign({}, initialState, {mileStones: action.payload[1].mileStones,members:action.payload[0].members,fetchErrors: null});
+            return Object.assign({}, initialState, {milestones: action.payload.milestones,members:action.payload.members,labels:action.payload.labels,fetchErrors: null});
         case 'FETCH_DATA_ERROR':
-            return Object.assign({}, initialState, {members: null,mileStones:null, fetchErrors: action.payload.errorMsg});
+            return Object.assign({}, initialState, {milestones:null,members:null,labels:null, fetchErrors: action.payload.errorMsg});
 
         case 'ADD_ISSUE_SUCCESS':
             return Object.assign({}, initialState, {addIssue: action.payload, addIssueError: null});

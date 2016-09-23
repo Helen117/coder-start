@@ -52,7 +52,17 @@ class Login extends React.Component {
         const {actions} = this.props;
 
         const data = this.props.form.getFieldsValue();
-        actions.login(data.user, data.password);
+
+        if(data.user && data.password){
+            actions.login(data.user, data.password);
+        }else{
+            notification.error({
+                message: '登录失败',
+                description: '请输入正确的用户名、密码',
+                duration: 3
+            });
+        }
+
     }
 
     register(){

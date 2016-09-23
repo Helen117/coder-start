@@ -40,7 +40,7 @@ class Register extends Component{
         if(error&& error != this.props.registerState.errors){
             message.error('注册失败！'+error);
         }
-        if (!registering && !error && result) {
+        if (!registering && !error && result && result!=this.props.registerState.registerResult) {
             message.success('注册成功！');
             this.context.router.replace('/login.html');
         }
@@ -82,6 +82,10 @@ class Register extends Component{
                 actions.register(data);
             }
         })
+    }
+    handleCancel(){
+        this.props.form.resetFields();
+        this.context.router.replace('/login.html');
     }
 
     handleReset(e) {
@@ -134,7 +138,7 @@ class Register extends Component{
 
                 <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit">提交</Button>
-                    <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
+                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                 </FormItem>
             </Form>
         );

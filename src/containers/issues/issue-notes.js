@@ -31,11 +31,12 @@ import * as issue from './actions/issue-action';
     handleSubmit(e) {
         e.preventDefault();
         var body = document.getElementById("body").value;
-        const {actions} = this.props;
+        const {actions,loginInfo} = this.props;
         var notes = {
-            id:1,
-            issue_id:2,
+            projectId:17,
+            issueId:2,
             body:body,
+            username:loginInfo.username,
             create_at:Date.now()
         };
         if(notes){
@@ -80,7 +81,8 @@ import * as issue from './actions/issue-action';
 
 function mapStateToProps(state) {
     return {
-        issue:state.issue
+        issue:state.issue,
+        loginInfo:state.login.profile
     };
 }
 

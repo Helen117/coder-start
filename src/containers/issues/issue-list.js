@@ -1,5 +1,5 @@
 /**
- * Created by helen on 2016/9/19.
+ * Created by helen on 15016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
 import { Table ,Button} from 'antd';
@@ -20,11 +20,18 @@ class IssueList extends Component {
     componentDidMount() {
         console.info('componentDidMount');
         const {actions} = this.props;
-        actions.getIssueList();
+        actions.getIssueList(17);
     }
 
-    editIssue() {
-        this.context.router.replace('/issueEdit.html');
+    // editIssue() {
+    //     this.context.router.replace('/issueEdit.html');
+    // }
+    editIssue(type, selectedRow) {
+        console.log('window.location:',window.location);
+        this.context.router.push({
+            pathname: '/issueEdit.html',
+            state: {editType: type, selectedRow}
+        });
     }
 
     issueNotes(record) {
@@ -44,15 +51,17 @@ class IssueList extends Component {
         const data = [];
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
+                var assignee_name = issueList[i].assignee?issueList[i].assignee.name:null;
+                var labels = issueList[i].labels?issueList[i].labels+';':null;
                 data.push({
                     project_id:issueList[i].project_id,
                     title: issueList[i].title,
                     description:issueList[i].description,
                     author_name: issueList[i].author.name,
-                    assignee_name: issueList[i].assignee.name,
+                    assignee_name: assignee_name,
                     created_at:  this.getTime(issueList[i].created_at),
                     due_date:this.getTime(issueList[i].due_date),
-                    labels: issueList[i].labels,
+                    labels: labels,
                     state: issueList[i].state,
                 });
             }
@@ -60,14 +69,21 @@ class IssueList extends Component {
         return data;
     }
 
+
     render() {
+        const pagination = {
+            pageSize:6,
+        };
 
         return (
             <Box title="问题列表信息">
-                <Button onClick={this.editIssue.bind(this)}>新增问题</Button>
+                <Button onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
                 <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource()}
                        bordered
-                       showHeader={true}
+                       size="middle"
+                       loading={this.props.loading}
+                       pagination={pagination}
+                       scroll={{x:1000,y:300}}
                 >
                 </Table>
             </Box>
@@ -89,47 +105,48 @@ IssueList.contextTypes = {
 IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
     dataIndex: 'group_id',
-    width: '12.5%'
+    width: 120
 },{
     title: '所属项目',
     dataIndex: 'project_id',
-    width: '12.5%'
+    width: 120,
+    //fixed: 'left'
 },{
     title: '问题名称',
     dataIndex: 'title',
-    width: '12.5%'
+    width: 120
 },{
     title: '问题描述',
     dataIndex: 'description',
-    width: '12.5%'
+    width: 200
 }, {
     title: '创建人',
     dataIndex: 'author_name',
-    width: '12.5%'
+    width: 100
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
-    width: '12.5%'
+    width: 100
 },{
     title: '问题标签',
     dataIndex: 'labels',
-    width: '12.5%'
+    width: 150
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
-    width: '12.5%'
+    width: 150
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',
-    width: '12.5%'
+    width: 150
 },{
     title: '状态',
     dataIndex: 'state',
-    width: '12.5%'
+    width: 100
 },{
     title: '操作',
     dataIndex: 'key',
-    width: '20%',
+    width: 120,
     render: (text, record, index)=> {
         return <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>;
     }
@@ -139,7 +156,8 @@ IssueList.prototype.issueListColumns = (self)=>[{
 
 function mapStateToProps(state) {
     return {
-        issueList: state.issue.issueList
+        issueList: state.issue.issueList,
+        loading:state.issue.loading
     };
 }
 
