@@ -7,7 +7,6 @@ import {ACQUIRE_MYGROUP} from '../constants/acquire_mygroup_types';
 export function getMyGroup(username) {
     //var path = '/groups/myGroup';
     var path = '/groups/user';
-    console.log("username:",username);
     return {
         type: ACQUIRE_MYGROUP,
         payload: {

@@ -48,7 +48,6 @@ class ProjectMgr extends React.Component{
 
 
     onSelectNode(node){
-        console.info(node);
         this.props.getGroupMembers(node.id);
         PubSub.publish("evtTreeClick",node);
     }

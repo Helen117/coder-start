@@ -15,6 +15,7 @@ import createGroup from '../containers/project-mgr/reducers/create-group-reducer
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 import getMyGroup from '../containers/project-mgr/reducers/acquire_mygroup_reducer';
 import getGroupMembers from '../containers/project-mgr/reducers/group_members_reducer';
+import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 
 
 const reducer = combineReducers({
@@ -27,7 +28,9 @@ const reducer = combineReducers({
     getMyGroup,
     getGroupMembers,
     register,
-    issue
+    issue,
+    consernProject,
+    unconsernProject
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

@@ -4,15 +4,15 @@
 import api from '../../../api';
 import {PROJECT_LIST} from '../constants/list-action-types';
 
-export function projectList(userName) {
-    var path = '/groups/all';
-    //var path = '/mygroup';
+export function projectList(username) {
+    var path = '/groups/user';
+    console.log("username:",username);
     return {
         type: PROJECT_LIST,
         payload: {
             promise: api.post(path,{
-                data: {
-                    username: userName,
+                params: {
+                    username: username,
                 }
             })
         }

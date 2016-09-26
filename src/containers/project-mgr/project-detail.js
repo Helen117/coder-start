@@ -33,7 +33,6 @@ class ProjectDetail extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                console.log('收到表单值：', formData);
                 var data={
                     username:'',
                     gitlabProject:{
@@ -125,7 +124,6 @@ class ProjectDetail extends React.Component {
     }
 
     handleMenuClick(e){
-        console.log('click left button', e);
         const {setFieldsValue} = this.props.form;
         const {getMyGroup} = this.props;
         for(var i=0;i<getMyGroup.myGroup.length;i++){

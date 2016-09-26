@@ -48,15 +48,12 @@ class ProjectMember extends Component {
         })
     }
 
-    searchGroupByProjectName(projectName,list){
-        var projectInfo,groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                if(projectName == list[i].children[j].gitlabProject.name){
-                    groupInfo = list[i];
-                    projectInfo = list[i].children[j];
-                    return {projectInfo,groupInfo}
-                }
+    searchGroupByProjectName(projectName,groupInfo){
+        var projectInfo;
+        for(var i=0;i<groupInfo.children.length;i++){
+            if(projectName == groupInfo.children[i].gitlabProject.name){
+                projectInfo = groupInfo.children[i];
+                return {projectInfo}
             }
         }
     }
@@ -67,8 +64,7 @@ class ProjectMember extends Component {
             if (fetchStatus || false) {
                 var projectName = this.state.selectRow;
                 var groupInfo = this.state.selectGroup;
-                var {projectInfo} = this.searchGroupByProjectName(projectName,list);
-                console.log("projectInfo:",projectInfo);
+                var {projectInfo} = this.searchGroupByProjectName(projectName,groupInfo);
 
                 const columns = [
                     {title: "项目人员", dataIndex: "name", key: "name"},
