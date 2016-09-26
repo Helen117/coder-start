@@ -3,7 +3,7 @@
  */
 import React, {PropTypes} from 'react';
 import { Table } from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestonesDetail} from './actions/milestones-action';
