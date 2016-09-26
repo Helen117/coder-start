@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Radio} from 'antd';
 import Box from '../../components/box';
 import {createGroup} from './actions/create-group-action';
+import 'pubsub-js';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -61,6 +62,7 @@ class GroupDetail extends React.Component {
             description: '',
             duration: 1
         });
+        PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
