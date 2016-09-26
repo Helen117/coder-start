@@ -79,6 +79,18 @@ app.post('/api/project-mgr/groupTree', function (req, res) {
     res.json(groupTree);
 });
 
+app.get('/api/milestones', function (req, res) {
+    res.json(milestones);
+});
+
+app.get('/api/milestoneDetail', function (req, res) {
+    res.json(milestoneDetail);
+});
+
+app.post('/api/project-mgr/groupTree', function (req, res) {
+    res.json(groupTree);
+});
+
 
 app.post('/gitlab/milestones', function (req, res) {
     res.json(milestones);
