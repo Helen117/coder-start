@@ -28,7 +28,11 @@ class ProjectMgr extends React.Component{
     }
 
     componentDidMount() {
-        this.props.getGroupTree();
+        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree());
+        const {treeData} = this.props;
+        if (!treeData){
+            this.props.getGroupTree();
+        }
     }
 
     editGroup(type, selectedRow) {

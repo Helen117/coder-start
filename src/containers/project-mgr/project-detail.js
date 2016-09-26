@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
+import 'pubsub-js';
 import styles from './index.css';
 
 const confirm = Modal.confirm;
@@ -72,6 +73,7 @@ class ProjectDetail extends React.Component {
             description: '',
             duration: 1
         });
+        PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
