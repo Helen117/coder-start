@@ -4,7 +4,7 @@
 
 
 import React, {PropTypes} from 'react';
-import {Timeline,Button} from 'antd';
+import {Timeline,Button,Progress,Col,Row } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -51,26 +51,39 @@ class Milestones extends React.Component {
         const timeLine = items.map((item) => {
             let i = 0;
             return (
+                <div>
+                    <Row>
+                        <Col span="10">
 
-                <Timeline.Item   key={'milestones' + item.gitlabMilestone.id}>
-                    <span style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</span><br/>
-                    <span>计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</span><br/>
-                    <span>里程碑创建人：{item.owner}</span><br/>
-                    <span>里程待解决的问题:</span><br/>
+                            <Timeline.Item   key={'milestones' + item.gitlabMilestone.id}>
 
-                    {item.issues.map((node) => {
-                        //console.log('item.issues',item.issues);
-                        i++;
-                        return (
-                            <span key={i} style={{margin:12}} >{i}.{node}<br/></span>
+                                    <Row style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</Row>
+                                    <Row>
+                                        <Col span="1"></Col>
+                                            <Col span="23">
+                                            <Row >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</Row>
+                                            <Row>创建人：{item.owner}</Row>
+                                            <Row>待解决的问题:</Row>
 
+                                            {item.issues.map((node) => {
+                                                //console.log('item.issues',item.issues);
+                                                i++;
+                                                return (
+                                                    <Row key={i}  >
+                                                        <Col span="1"/>
+                                                        {i}.{node}
+                                                    </Row>
+                                                );
+                                            })}
+                                             <Progress percent={item.rate} />
+                                            <a onClick={this.moreMilestones.bind(this, item.gitlabMilestone.id)}>查看更多</a>
+                                            </Col>
+                                    </Row>
+                            </Timeline.Item>
 
-                        );
-                    })}
-
-                    <a onClick={this.moreMilestones.bind(this, item.gitlabMilestone.id)}>查看更多</a>
-
-                </Timeline.Item>
+                            </Col>
+                    </Row>
+                </div>
 
             )
         });
