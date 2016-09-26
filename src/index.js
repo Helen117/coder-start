@@ -23,10 +23,8 @@ import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
 
-
 import NotFound from './components/page/not-found';
 
-import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
 
@@ -63,19 +61,15 @@ ReactDOM.render(
                     <IndexRedirect to="home.html"/>
                     <Route component={App}>
 
-                        <Route name="home" breadcrumbName="首页" path="home" component={Home}/>
-                        <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
-                            <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
+                        <Route name="home" breadcrumbName="首页" path="home.html" component={Home}/>
+                        <Route name="userMgr" breadcrumbName="用户列表" path="user.html" component={UserList}>
+                            <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
                         </Route>
                         <Route name="milestones" breadcrumbName="里程碑" path="milestones.html" component={Milestones}/>
                         <Route name="moreMilestones" breadcrumbName="查看更多" path="moreMilestones.html" component={MilestoneDetail}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones.html" component={MilestoneCreate}/>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
                         </Route>
-
-                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
-                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
-
                         <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>

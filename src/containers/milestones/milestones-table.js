@@ -25,21 +25,30 @@ class MilestoneDetail extends React.Component {
         const {projectId} = this.props.location.state;
         console.log('state',this.props.location.state);
         //const {milestonesId} = 3;
-        if (milestonesId&&projectId){
+        if (milestonesId && projectId){
             this.props.getMilestonesDetail(milestonesId,projectId);
         }
     }
 
     //时间戳转换成日期
     getTime(date) {
-        return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+        if(date != null) {
+            return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+        }else{
+            return '';
+        }
     }
 
     //获取表格的数据源
     getDataSource(){
-        const milestoneDetail = this.props.milestoneDetail.result;
-        console.log('获取表格数据：',milestoneDetail);
         const data = [];
+        console.log('this.props.milestoneDetail',this.props.milestoneDetail);
+        if(this.props.milestoneDetail != null){
+            const milestoneDetail = this.props.milestoneDetail;
+
+
+        console.log('获取表格数据：',milestoneDetail);
+
         if(milestoneDetail !=null){
             for (let i = 0; i < milestoneDetail.length; i++) {
                 data.push({
@@ -52,7 +61,7 @@ class MilestoneDetail extends React.Component {
                     state: milestoneDetail[i].state,
                 });
             }
-        }
+        }}
         return data;
     }
 

@@ -8,9 +8,6 @@ import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import milestones from '../containers/milestones/reducers/milestones-reducer';
-import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
-import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
-import createProject from '../containers/project-mgr/reducers/create-project-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';

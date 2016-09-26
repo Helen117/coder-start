@@ -18,7 +18,7 @@ export default function milestones(state = initialState, action = {}) {
     console.log('action.type:',action.type);
     switch (action.type) {
         //获取里程碑
-        case ACQUIRE_MILESTONES_PENDING:
+        case ACQUIRE_MILESTONES_SUCCESS:
             return Object.assign({}, initialState, {items: action.payload});
 
         case ACQUIRE_MILESTONES_ERROR:
