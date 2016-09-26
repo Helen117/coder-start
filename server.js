@@ -62,7 +62,7 @@ const port = isProduction ? (process.env.PORT || 80) : 8080;
 //以下是模拟服务端请求数据
 app.post('/gitlab/login', function (req, res) {
     const credentials = req.body;
-    console.log('username:',credentials.username);
+    //console.log('username:',credentials.username);
     if (credentials.username === login.username && credentials.password === login.password) {
         //res.cookie('uid', '1', {domain: '127.0.0.1'});
         res.json(user);
@@ -81,7 +81,7 @@ app.get('/gitlab/userExists', function (req, res) {
 
 app.post('/gitlab/project/assign', function (req, res) {
     const credentials = req.body;
-    console.log('projectId:',credentials.projectId);
+    //console.log('projectId:',credentials.projectId);
     if (credentials) {
         res.json(dataSource);
     } else {

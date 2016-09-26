@@ -18,7 +18,7 @@ class IssueList extends Component {
     }
 
     componentDidMount() {
-        console.info('componentDidMount');
+        //console.info('componentDidMount');
         const {actions} = this.props;
         actions.getIssueList(17);
     }
@@ -27,7 +27,7 @@ class IssueList extends Component {
     //     this.context.router.replace('/issueEdit.html');
     // }
     editIssue(type, selectedRow) {
-        console.log('window.location:',window.location);
+        //console.log('window.location:',window.location);
         this.context.router.push({
             pathname: '/issueEdit.html',
             state: {editType: type, selectedRow}
