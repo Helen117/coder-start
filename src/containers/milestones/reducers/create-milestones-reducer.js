@@ -12,14 +12,14 @@ const initialState = {
 };
 
 export default function createMilestones(state = initialState, action = {}) {
-    console.log('action.type:',action.type);
+    //console.log('action.type:',action.type);
     switch (action.type) {
         //获取里程碑
         case CREATE_MILESTONES_SUCCESS:
             return Object.assign({}, initialState, {items: action.payload});
 
         case CREATE_MILESTONES_ERROR:
-            console.log("CREATE milestones error!");
+            //console.log("CREATE milestones error!");
             return state;
         
         default:

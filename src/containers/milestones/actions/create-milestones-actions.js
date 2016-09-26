@@ -6,7 +6,7 @@ import {CREATE_MILESTONES} from '../constants/create-milestones-action-types';
 
 export function createMilestone(milestoneData) {
     var path = '/milestone/create';
-    console.log('milestoneData',milestoneData);
+    //console.log('milestoneData',milestoneData);
     return {
         type: CREATE_MILESTONES,
         payload: {

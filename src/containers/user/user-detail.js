@@ -65,7 +65,7 @@ class UserDetail extends React.Component {
     componentWillMount() {
     }
     componentDidMount() {
-        console.info('componentDidMount');
+        //console.info('componentDidMount');
         const {selectedRow} = this.props.location.state;
         if (selectedRow){
             const {setFieldsValue} = this.props.form;

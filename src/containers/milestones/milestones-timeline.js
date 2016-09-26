@@ -97,7 +97,7 @@ Milestones.contextTypes = {
 };
 
 function mapStateToProps(state) {
-    console.log('获取到的item：',state.milestones.items);
+    //console.log('获取到的item：',state.milestones.items);
     return {
         items: state.milestones.items,
     };

@@ -20,10 +20,10 @@ class MilestoneDetail extends React.Component {
     }
 
     componentDidMount() {
-        console.info('componentDidMount');
+        //console.info('componentDidMount');
         const {milestonesId} = this.props.location.state;
         const {projectId} = this.props.location.state;
-        console.log('state',this.props.location.state);
+       // console.log('state',this.props.location.state);
         //const {milestonesId} = 3;
         if (milestonesId && projectId){
             this.props.getMilestonesDetail(milestonesId,projectId);
@@ -42,12 +42,12 @@ class MilestoneDetail extends React.Component {
     //获取表格的数据源
     getDataSource(){
         const data = [];
-        console.log('this.props.milestoneDetail',this.props.milestoneDetail);
+        //console.log('this.props.milestoneDetail',this.props.milestoneDetail);
         if(this.props.milestoneDetail != null){
             const milestoneDetail = this.props.milestoneDetail;
 
 
-        console.log('获取表格数据：',milestoneDetail);
+        //console.log('获取表格数据：',milestoneDetail);
 
         if(milestoneDetail !=null){
             for (let i = 0; i < milestoneDetail.length; i++) {
@@ -125,7 +125,7 @@ MilestoneDetail.prototype.milestoneListColumns = (self)=>[{
 
 
 function mapStateToProps(state) {
-    console.log('获取到的里程碑详细数据：',state.milestones.milestoneDetail);
+    //console.log('获取到的里程碑详细数据：',state.milestones.milestoneDetail);
     return {
         milestoneDetail: state.milestones.milestoneDetail,
     };
