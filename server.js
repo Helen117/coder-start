@@ -21,11 +21,11 @@ var user = user_.user;
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
-const milestones_ = require('./mockdata/milestones_new.json');
-var milestones = milestones_.result;
+const milestones_ = require('./mockdata/milestones');
+var milestones = milestones_.milestones;
 
-const milestones_detail_ = require('./mockdata/milestonesDetail_new.json');
-var milestoneDetail = milestones_detail_.result;
+const milestones_detail_ = require('./mockdata/milestonesDetail');
+var milestoneDetail = milestones_detail_.milestoneDetail;
 
 const app = express();
 
@@ -67,6 +67,19 @@ app.post('/gitlab/menu', function (req, res) {
 });
 
 
+app.get('/api/milestones', function (req, res) {
+    res.json(milestones);
+});
+
+app.get('/api/milestoneDetail', function (req, res) {
+    res.json(milestoneDetail);
+});
+
+app.post('/api/project-mgr/groupTree', function (req, res) {
+    res.json(groupTree);
+});
+
+
 app.post('/gitlab/milestones', function (req, res) {
     res.json(milestones);
 });
@@ -87,7 +100,6 @@ app.post('/gitlab/project-mgr/createProject', function (req, res) {
 app.post('/gitlab/project-mgr/createGroup', function (req, res) {
     res.json({success: true,errorCode: null,errorMsg: null,result:1});
 });
-
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
