@@ -3,7 +3,7 @@
  */
 import React, {PropTypes} from 'react';
 import { DatePicker, Button, Form, Input, Col} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
