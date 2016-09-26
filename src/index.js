@@ -77,7 +77,7 @@ ReactDOM.render(
                 </Route>
             </Router>
         </Provider>
-        {<DevTools store={store}/>}
+        {process.env.NODE_ENV=='development'?(<DevTools store={store}/>):(<div/>)}
     </div>,
     root
 );
