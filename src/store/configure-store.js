@@ -6,6 +6,9 @@ import DevTools from '../tools/ReduxDevTools';
 
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
+
+import milestones from '../containers/milestones/reducers/milestones-reducer';
+import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';
 
@@ -20,9 +23,10 @@ import getGroupMembers from '../containers/project-mgr/reducers/group_members_re
 const reducer = combineReducers({
     login,
     menu,
+    milestones,
     getGroupTree,
 	projectList,
-    createGroup,
+    createMilestones,
     createProject,
     getMyGroup,
     getGroupMembers,

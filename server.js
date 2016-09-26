@@ -12,6 +12,7 @@ const isDeveloping = !isProduction;
 
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
+
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
@@ -23,12 +24,20 @@ const group = require('./mockdata/group.json');
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
+
+const milestones_ = require('./mockdata/milestones');
+var milestones = milestones_.milestones;
+
+const milestones_detail_ = require('./mockdata/milestonesDetail');
+var milestoneDetail = milestones_detail_.milestoneDetail;
+
 const group_ = require('./mockdata/group');
 var dataSource = group_.assign;
 var issueNotes = group_.notes;
 
 const issueList_ =require('./mockdata/issueList');
 var issueList = issueList_.issueList;
+
 
 const app = express();
 
@@ -43,7 +52,7 @@ if (isDeveloping) {
     app.use(require('webpack-hot-middleware')(compiler));
 }
 
-//  RESTful API
+//  RESTful gitlab
 const publicPath = path.resolve(__dirname);
 app.use(bodyParser.json({type: 'application/json'}));
 app.use(express.static(publicPath));
@@ -117,7 +126,22 @@ app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
 });
 
+
+app.get('/api/milestones', function (req, res) {
+    res.json(milestones);
+});
+
+app.get('/api/milestoneDetail', function (req, res) {
+    res.json(milestoneDetail);
+});
+
+app.post('/api/project-mgr/groupTree', function (req, res) {
+    res.json(groupTree);
+});
+
+
 app.post('/gitlab/groups/all', function (req, res) {
+
     res.json(groupTree);
 });
 
@@ -128,7 +152,6 @@ app.post('/gitlab/project-mgr/createProject', function (req, res) {
 app.post('/gitlab/project-mgr/createGroup', function (req, res) {
     res.json({success: true,errorCode: null,errorMsg: null,result:1});
 });
-
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
