@@ -5,7 +5,7 @@
 
 import React, {PropTypes} from 'react';
 import {Timeline,Button} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestones} from './actions/milestones-action';

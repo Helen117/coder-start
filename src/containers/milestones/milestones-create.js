@@ -5,7 +5,7 @@
 import React,{ PropTypes } from 'react';
 import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
