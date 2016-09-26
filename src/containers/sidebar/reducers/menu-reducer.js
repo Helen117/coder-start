@@ -17,7 +17,7 @@ export default function menu(state = initialState, action = {}) {
     switch (action.type) {
         case GET_ALL_MENU_SUCCESS:
             //menuUtils.saveMenu(action.payload);
-            console.log('获取侧边栏的数据',action.payload);
+            //console.log('获取侧边栏的数据',action.payload);
             return Object.assign({}, initialState, {items: action.payload});
         case UPDATE_NAVPATH:
             let navpath = [], tmpOb, tmpKey, child;

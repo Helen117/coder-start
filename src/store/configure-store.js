@@ -27,6 +27,7 @@ const reducer = combineReducers({
     getGroupTree,
 	projectList,
     createMilestones,
+    createGroup,
     createProject,
     getMyGroup,
     getGroupMembers,
