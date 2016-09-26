@@ -33,6 +33,7 @@ const buildDone = (err, stats) => {
 }
 
 var config = require('./webpack.config.js')
+var prodConfig = require('./webpack.config.prod.js')
 //var serverConfig = require('./webpack.server.config.js')
 
 gulp.task('build', () => {
@@ -65,7 +66,7 @@ gulp.task('dist', ['cleanDist','copyAssets'], function () {
   process.env.NODE_ENV = 'production'
   gulp
     .src('./src/index.js')
-    .pipe(webpackStream(config, webpack, buildDone))
+    .pipe(webpackStream(prodConfig, webpack, buildDone))
     .pipe(gulp.dest('dist'))
 })//等同与：webpack -p
 
