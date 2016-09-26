@@ -27,6 +27,7 @@ class Login extends React.Component {
         const uid = nextProps.uid;
 
         if (error != this.props.loginErrors && error) {
+
             notification.error({
                 message: '登录失败',
                 description: error,
@@ -51,7 +52,21 @@ class Login extends React.Component {
         const {actions} = this.props;
 
         const data = this.props.form.getFieldsValue();
-        actions.login(data.user, data.password);
+
+        if(data.user && data.password){
+            actions.login(data.user, data.password);
+        }else{
+            notification.error({
+                message: '登录失败',
+                description: '请输入正确的用户名、密码',
+                duration: 3
+            });
+        }
+
+    }
+
+    register(){
+        this.context.router.replace('/register.html');
     }
 
     render() {
@@ -69,7 +84,10 @@ class Login extends React.Component {
                         <Row>
                             <Col span='16' offset='6'>
                                 <Button type='primary' htmlType='submit' loading={this.props.loggingIn}>确定</Button>
+                                <Button type='primary' onClick={this.register.bind(this)}>注册</Button>
+
                             </Col>
+
                         </Row>
                     </Form>
                 </Col>

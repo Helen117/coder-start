@@ -8,7 +8,7 @@
  */
 import React, { PropTypes } from 'react';
 import {Form, Input, Button, Checkbox, Radio, Tooltip, Icon, Modal, notification, InputNumber, Switch, Select} from 'antd';
-import Box from '../../components/Box';
+import Box from '../../components/box';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
