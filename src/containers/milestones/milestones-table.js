@@ -27,20 +27,15 @@ class MilestoneDetail extends React.Component {
         }
     }
 
-
-
     render(){
         const milestoneDetail = this.props.milestoneDetail;
-        if(milestoneDetail != null){
+        const isLoading = this.props.loading
         return(
             <Box title="里程碑详细信息">
-                <IssuesTable dataSource={milestoneDetail}>
+                <IssuesTable loading = {isLoading} dataSource={milestoneDetail}>
                 </IssuesTable>
             </Box>
-        )}
-        else{
-            return null;
-        }
+        )
     }
 }
 
@@ -55,6 +50,7 @@ function mapStateToProps(state) {
     //console.log('获取到的里程碑详细数据：',state.milestones.milestoneDetail);
     return {
         milestoneDetail: state.milestones.milestoneDetail,
+        loading:state.milestones.loading
     };
 }
 

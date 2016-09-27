@@ -6,6 +6,7 @@ import {
     ACQUIRE_MILESTONES_SUCCESS,
     ACQUIRE_MILESTONES_PENDING,
     ACQUIRE_MILESTONES_ERROR,
+    ACQUIRE_MILESTONES_DETAIL_PENDING,
     ACQUIRE_MILESTONES_DETAIL_SUCCESS,
     ACQUIRE_MILESTONES_DETAIL_ERROR
 } from '../constants/milestones-action-types';
@@ -17,6 +18,8 @@ const initialState = {
 export default function milestones(state = initialState, action = {}) {
     //console.log('action.type:',action.type);
     switch (action.type) {
+        case ACQUIRE_MILESTONES_PENDING:
+            return Object.assign({}, initialState, {loading: true});
         //获取里程碑
         case ACQUIRE_MILESTONES_SUCCESS:
             return Object.assign({}, initialState, {items: action.payload});
@@ -26,6 +29,8 @@ export default function milestones(state = initialState, action = {}) {
             return state;
 
         //获取里程碑详细信息
+        case ACQUIRE_MILESTONES_DETAIL_PENDING:
+            return Object.assign({}, initialState, {loading: true});
         case ACQUIRE_MILESTONES_DETAIL_SUCCESS:
             //console.log('reducer里获取里程碑详细的数据为',action.payload);
             return Object.assign({}, initialState, {milestoneDetail: action.payload});
