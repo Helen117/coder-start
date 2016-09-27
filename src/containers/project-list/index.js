@@ -9,7 +9,7 @@ import {Switch,Icon} from 'antd';
 import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as listActions from './actions/project-list-actions';
+import * as starActions from './actions/consern-project-actions';
 import TableView from '../../components/table';
 import styles from './index.css';
 
@@ -27,8 +27,6 @@ class ProjectList extends Component {
     }
 
     componentDidMount() {
-        const {listActions,loginInfo} = this.props;
-        listActions.projectList(loginInfo.username);
         //在此处注册对其他控件发送的消息的响应
         PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
     }
@@ -88,44 +86,35 @@ class ProjectList extends Component {
         PubSub.publish("evtRowClick",{record:record, groupInfo:groupInfo});
     }
 
+    concernedChange(consernedProject,groupInfo,is_conserned){
+        const {loginInfo,starActions} = this.props;
+        var projectId = '';
+        for(var i=0;i<groupInfo.children.length;i++){
+            if(consernedProject.projectName == groupInfo.children[i].name){
+                projectId= groupInfo.children[i].gitlabProject.id;
+            }
+        }
+        var starInfo={
+            username:null,
+            projectId:null,
+        };
+        starInfo.username = loginInfo.username;
+        starInfo.projectId = projectId;
+        if(is_conserned == 'no'){
+            starActions.consernProject(starInfo);
+        }else{
+            starActions.unconsernProject(starInfo);
+        }
+    }
+
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,fetchStatus,loginInfo,groupMembers,fetchGroupMembers} = this.props;
-            if ((fetchStatus || false) && (fetchGroupMembers || false) ) {
+            const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
+            if ((fetchGroupMembers || false) && (fetchProjectStar || false)) {
                 var groupName = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupName,list);
-                var starInfo = groupInfo.star;
+                //var starInfo = groupInfo.star;
 
-                const columns = [
-                    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
-                    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
-                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum"},
-                    {title: "owner", dataIndex: "owner", key: "owner"},
-                    {title: "是否关注", dataIndex: "consern", key: "consern",
-                        render(text,record){
-                            var count = 0, count2 = 0;
-                            for(var i=0;i<starInfo.length;i++){
-                                if(record.projectName == starInfo[i].name){
-                                    count++;
-                                    for(var j=0;j<groupInfo.children.length;j++){
-                                        if(record.projectName == groupInfo.children[j].gitlabProject.name){
-                                            if(loginInfo.username == groupInfo.children[j].gitlabProjectMember.name){
-                                                count2++;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if(count == 0){
-                                return <Switch checkedChildren="是" unCheckedChildren="否" />
-                            }else if(count2 == 0){
-                                return <Switch checkedChildren="否" unCheckedChildren="是" />
-                            }else{
-                                return <Switch disabled checkedChildren="否" unCheckedChildren="是" />
-                            }
-                        }
-                    }
-                ];
                 const dataSource = [];
                 for(var i=0;i<groupInfo.children.length;i++){
                     var manager = '';
@@ -142,12 +131,53 @@ class ProjectList extends Component {
                         owner:groupInfo.children[i].gitlabProject.owner
                     });
                 }
+                const groupColumns = (self)=>[
+                    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
+                    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
+                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum"},
+                    {title: "owner", dataIndex: "owner", key: "owner"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern",
+                        render(text,record){
+                            var count = 0, count2 = 0,recordPrijectId='';
+                            for(i=0;i<groupInfo.children.length;i++){
+                                if(record.projectName == groupInfo.children[i].gitlabProject.name){
+                                    recordPrijectId = groupInfo.children[i].gitlabProject.id;
+                                    for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
+                                        if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
+                                            count2++;//当前用户是此项目下成员
+                                        }
+                                    }
+                                }
+                            }
+                            for(var j=0;j<starList.length;j++){
+                                if(recordPrijectId == starList[j].id){
+                                    count++;
+                                }
+                            }
+                            if(count == 0 && count2 == 0){//未关注
+                                var is_conserned = 'no';
+                                return <Switch checkedChildren="是" unCheckedChildren="否"
+                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
+                            }else if(count != 0 && count2 == 0){//已关注
+                                var is_conserned = 'yes';
+                                return <Switch checkedChildren="是" unCheckedChildren="否"
+                                               defaultChecked="true"
+                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
+                            }else{//项目成员
+                                var is_conserned = 'yes';
+                                return <Switch disabled checkedChildren="是" unCheckedChildren="否"
+                                               defaultChecked="true"
+                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
+                            }
+                        }
+                    }
+                ];
                 return (
                     <div className ={styles.project_list_div}>
                         <div>
                             <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                         </div>
-                        <TableView columns={columns}
+                        <TableView columns={groupColumns(this)}
                                    dataSource={dataSource}
                                    onSelectRow={this.onSelectRow.bind(this,groupInfo)}
                         ></TableView>
@@ -156,57 +186,60 @@ class ProjectList extends Component {
             }
             return null;
         }else if(this.state.itemType == true){//展示项目信息
-            const {list,fetchStatus,loginInfo} = this.props;
-             if ((fetchStatus || false)) {
-             var projectName = this.state.itemNode;
-             var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
-　　　　　　 var starInfo = groupInfo.star;
-             const columns = [
-             {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
-             {title: "项目名称", dataIndex: "project_name", key: "project_name"},
-             {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
-             {title: "是否关注", dataIndex: "consern", key: "consern"},
-             {title: "项目状态", dataIndex: "state", key: "state"},
-             {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
-             {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
-             ];
-             var count1=0, count2=0;
-             for(var i=0;i<starInfo.length;i++){
-                if(projectName == starInfo[i].name){
-                    count1++;
-                    for(var j=0;j<projectInfo.gitlabProjectMember.length;j++){
-                        if(loginInfo.username == projectInfo.gitlabProjectMember[j].name){
-                            count2++;
-                         }
-                         console.log("count2:",count2);
+            const {list,loginInfo,fetchProjectStar,starList} = this.props;
+            if(fetchProjectStar || false){
+                var projectName = this.state.itemNode;
+                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
+                //var starInfo = groupInfo.star;
+                const columns = [
+                    {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+                    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern"},
+                    {title: "项目状态", dataIndex: "state", key: "state"},
+                    {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+                    {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+                ];
+                var count=0, count2=0;
+                for(i=0;i<groupInfo.children.length;i++){
+                    if(projectInfo.name == groupInfo.children[i].gitlabProject.name){
+                        for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
+                            if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
+                                count2++;//当前用户是此项目下成员
+                            }
+                        }
                     }
                 }
-             }
-             if(count1 == 0){
-                 var consern_desc = "尚未关注此项目";
-             }else if(count2 == 0){
-                 var consern_desc = "我关注了这个项目";
-             }else if(count2 != 0){
-                 var consern_desc = "我是项目成员";
-             }
-             const dataSource = [{
-             group_name:groupInfo.name,
-             project_name:projectName,
-             //next_milestom:
-             consern:consern_desc,
-             //state:
-             //tech_debt:
-             //test_cover:
-             }];
+                for(var j=0;j<starList.length;j++){
+                    if(projectInfo.name == starList[j].name){
+                        count++;
+                    }
+                }
+                if(count == 0 && count2 == 0){//未关注
+                    var consern_desc = "尚未关注此项目";
+                }else if(count2 == 0){//已关注
+                    var consern_desc = "我关注了这个项目";
+                }else{//项目成员
+                    var consern_desc = "我是项目成员";
+                }
+                const dataSource = [{
+                    group_name:groupInfo.name,
+                    project_name:projectName,
+                    //next_milestom:
+                    consern:consern_desc,
+                    //state:
+                    //tech_debt:
+                    //test_cover:
+                }];
 
-             return (
-                <div className={styles.project_list_div}>
-                <TableView columns={columns}
-                dataSource={dataSource}
-                ></TableView>
-             </div>
-             )
-             }
+                return (
+                    <div className={styles.project_list_div}>
+                        <TableView columns={columns}
+                                   dataSource={dataSource}
+                        ></TableView>
+                    </div>
+                )
+            }
              return null;
         }else if(this.state.nullType == true){
             return(
@@ -222,17 +255,18 @@ class ProjectList extends Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.projectList.projectList,
-        fetchStatus:state.projectList.fetchStatus,
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
+        fetchProjectStar:state.getProjectStar.fetchStatus,
+        starList:state.getProjectStar.starList,
+        list: state.getGroupTree.treeData,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        listActions: bindActionCreators(listActions, dispatch),
+        starActions: bindActionCreators(starActions, dispatch),
     }
 }
 

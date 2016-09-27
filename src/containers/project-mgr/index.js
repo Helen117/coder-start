@@ -14,8 +14,8 @@ import TreeFilter from '../../components/tree-filter';
 import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
-import {getMyGroup} from './actions/acquire_mygroup_action';
 import {getGroupMembers} from './actions/group_members_action';
+import {getProjectStar} from './actions/project-star-action';
 import 'pubsub-js';
 
 
@@ -25,13 +25,18 @@ export ProjectDetail from './project-detail';
 class ProjectMgr extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+            selectGroupName:null,
+            selectGroupId:null
+        };
     }
 
     componentDidMount() {
-        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree());
+        const {loginInfo} =this.props;
+        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
         const {treeData} = this.props;
         if (!treeData){
-            this.props.getGroupTree();
+            this.props.getGroupTree(loginInfo.username);
         }
     }
 
@@ -42,18 +47,25 @@ class ProjectMgr extends React.Component{
         });
     }
     editProject(type, selectedRow) {
-        const {loginInfo} = this.props;
-        this.props.getMyGroup(loginInfo.username);
         this.context.router.push({
             pathname: '/project-detail.html',
-            state: {editType: type, selectedRow,}
+            state: {editType: type, selectedRow,
+                    selectGroupName:this.state.selectGroupName,
+                    selectGroupId:this.state.selectGroupId}
         });
     }
 
 
     onSelectNode(node){
-        //console.info(node);
-        this.props.getGroupMembers(node.id);
+        const {loginInfo} = this.props;
+        if(node.id.indexOf("_p") < 0){
+            this.setState({
+                selectGroupName:node.name,
+                selectGroupId:node.id
+            });
+            this.props.getGroupMembers(node.id);
+        }
+        this.props.getProjectStar(loginInfo.username);
         PubSub.publish("evtTreeClick",node);
     }
 
@@ -108,8 +120,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
-        getMyGroup:bindActionCreators(getMyGroup, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
+        getProjectStar:bindActionCreators(getProjectStar, dispatch),
     }
 }
 
