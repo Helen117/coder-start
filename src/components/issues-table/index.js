@@ -22,6 +22,10 @@ export default class IssuesTable extends React.Component {
             return '';
         }
     }
+    onChange(pagination, filters, sorter) {
+        // 点击分页、筛选、排序时触发
+        console.log('各类参数是', pagination, filters, sorter);
+    }
 
     //处理表格数据源
     getDataSource(dataSource){
@@ -41,13 +45,16 @@ export default class IssuesTable extends React.Component {
         }
         return data;
     }
-    
+
     render(){
         return(
-            <Table columns={this.milestoneListColumns(this)} dataSource={this.getDataSource(this.props.dataSource)}
+            <Table columns={this.milestoneListColumns(this)}
+                   dataSource={this.getDataSource(this.props.dataSource)}
                    bordered={false}
                    showHeader={true}
-                   size="middle">
+                   size="middle"
+                   loading = {this.props.loading}
+                   onChange={this.onChange.bind(this)} >
             </Table>
         )
     }
@@ -56,29 +63,31 @@ export default class IssuesTable extends React.Component {
 IssuesTable.prototype.milestoneListColumns = (self)=>[{
     title: '问题名称',
     dataIndex: 'title',
-    width: '12.5%'
+    width: '12.5%',
 }, {
     title: '创建人',
     dataIndex: 'author_name',
-    width: '12.5%'
+    width: '12.5%',
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
-    width: '12.5%'
+    width: '12.5%',
 },{
     title: '问题标签',
     dataIndex: 'labels',
-    width: '12.5%'
+    width: '12.5%',
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
-    width: '12.5%'
+    width: '12.5%',
+    sorter: (a, b) => a.created_at.length - b.created_at.length,
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',
-    width: '12.5%'
+    width: '12.5%',
+    sorter: (a, b) => a.due_date - b.due_date,
 },{
     title: '状态',
     dataIndex: 'state',
-    width: '12.5%'
+    width: '12.5%',
 }];
