@@ -24,13 +24,13 @@ class ProjectMember extends Component {
 
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
-        PubSub.subscribe("evtRowClick",this.showProjectMember.bind(this) );
+        PubSub.subscribe("evtMemberCountClick",this.showProjectMember.bind(this) );
         PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
-        PubSub.unsubscribe("evtRowClick");
+        PubSub.unsubscribe("evtMemberCountClick");
         PubSub.unsubscribe("evtTreeClick");
     }
 

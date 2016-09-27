@@ -11,8 +11,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import ProjectList from '../project-list';
+import ProjectList from '../project-list/project-list';
 import ProjectMember from '../project-list/member';
+import ProjectItem from '../project-list/project-item';
 import {getGroupTree} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
@@ -57,7 +58,7 @@ class ProjectMgr extends React.Component{
 
 
     onSelectNode(node){
-        const {loginInfo} = this.props;
+        const {loginInfo,starList} = this.props;
         if(node.id.indexOf("_p") < 0){
             this.setState({
                 selectGroupName:node.name,
@@ -93,6 +94,7 @@ class ProjectMgr extends React.Component{
                     </Row>
                     <Row>
                         <ProjectList />
+                        <ProjectItem />
                         <ProjectMember />
                     </Row>
                 </Col>
@@ -114,6 +116,7 @@ function mapStateToProps(state) {
         loading : state.getGroupTree.loading,
         treeData: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
+        starList:state.getProjectStar.starList,
     }
 }
 
