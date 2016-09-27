@@ -35,7 +35,12 @@ class IssueList extends Component {
     }
 
     issueNotes(record) {
-        this.context.router.replace('/issueNotes.html');
+        //this.context.router.replace('/issueNotes.html');
+        console.log('record:',record);
+        this.context.router.push({
+            pathname: '/issueNotes.html',
+            state: {record}
+        });
     }
 
 
@@ -105,7 +110,7 @@ IssueList.contextTypes = {
 IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
     dataIndex: 'group_id',
-    width: 120
+    width: 120,
 },{
     title: '所属项目',
     dataIndex: 'project_id',
@@ -134,7 +139,8 @@ IssueList.prototype.issueListColumns = (self)=>[{
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
-    width: 150
+    width: 150,
+    sorter: (a, b) => a.created_at - b.created_at,
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',

@@ -5,6 +5,7 @@ import React, {PropTypes,Component} from 'react';
 import { Form, Input, Button, message} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import styles from './index.css';
 import * as issue from './actions/issue-action';
 
  class IssueNotes extends Component {
@@ -14,6 +15,7 @@ import * as issue from './actions/issue-action';
     }
 
      componentWillMount() {
+         console.log('record:',this.props.location.state);
          const {actions} = this.props;
          actions.issueNotes(17,2);
      }
@@ -23,6 +25,7 @@ import * as issue from './actions/issue-action';
          console.log('result:',result);
          if(result){
              document.getElementById("body").value="";
+             this.setState({'hasValue':false});
              const {actions} = this.props;
              actions.issueNotes(17,2);
          }
@@ -56,13 +59,32 @@ import * as issue from './actions/issue-action';
     render() {
         const { issue } = this.props;
         console.log('issue:',issue.issueNotes);
-        const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>{data.body}</li>):[];
+        const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>
+            <div className={styles.notes_ul} >
+                <span>{data.author.name}@{data.author.username} {data.created_at}</span>
+                <p>
+                    {data.body}
+                </p>
+            </div>
+        </li>):[];
         const hasBody=this.state.hasValue;
         return(
             <div>
                 <ul>
+                    <div className={styles.notes_ul}>
+                        <h2>
+                            {this.props.location.state.record.title}
+                        </h2>
+                        <p>
+                            {this.props.location.state.record.description}
+                        </p>
+                    </div>
+                </ul>
+                <br/>
+                <ul>
                     {list}
                 </ul>
+                <br/>
                 <ul>
                     <li>
                         <Form onSubmit={this.handleSubmit.bind(this)}>
