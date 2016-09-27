@@ -12,6 +12,8 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
+import {getMyGroup} from './actions/acquire_mygroup_action';
+import 'pubsub-js';
 import styles from './index.css';
 
 const confirm = Modal.confirm;
@@ -71,6 +73,7 @@ class ProjectDetail extends React.Component {
             description: '',
             duration: 1
         });
+        PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
@@ -100,6 +103,9 @@ class ProjectDetail extends React.Component {
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
         }
+
+        const {loginInfo,getMyGroupActions} = this.props;
+        getMyGroupActions.getMyGroup(loginInfo.username);
     }
 
     projectNameExists(rule, value, callback){
@@ -156,41 +162,48 @@ class ProjectDetail extends React.Component {
         const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
 
         const {getMyGroup} = this.props;
-        if(getMyGroup && (getMyGroup.fetchStatue || false)){
+        const menuData = {
+            content:
+                (
+                    <Menu>
+                        <Menu.Item></Menu.Item>
+                    </Menu>
+                )
+        };
+        if(getMyGroup && (getMyGroup.fetchStatus || false)){
             const loop = (data) => data.map((item) => {
                 return <Menu.Item key={item.id}>{item.name}</Menu.Item>;
             });
             const nodes = loop(getMyGroup.myGroup);
-            const menu = (
+            menuData.content = (
                 <Menu onClick={this.handleMenuClick.bind(this)}>
                     {nodes}
                 </Menu>
             );
+        }
 
-            return (
-                <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
-                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                        <FormItem {...formItemLayout} label="项目名称">
-                            <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="描述">
-                            <Input type="textarea" {...descriptionProps} />
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="项目所在组">
-                            <Dropdown overlay={menu}>
-                                <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
-                            </Dropdown>
-                        </FormItem>
-                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                        </FormItem>
-                    </Form>
-                </Box>
-            );
-        }else {return null;}
+        return (
+            <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
+                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                    <FormItem {...formItemLayout} label="项目名称">
+                        <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="描述">
+                        <Input type="textarea" {...descriptionProps} />
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="项目所在组">
+                        <Dropdown overlay={menuData.content}>
+                            <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
+                        </Dropdown>
+                    </FormItem>
+                    <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    </FormItem>
+                </Form>
+            </Box>
+        );
     }
-
 }
 
 ProjectDetail.contextTypes = {
@@ -207,7 +220,7 @@ function mapStateToProps(state) {
         inserted: state.createProject.result,
         errMessage:state.createProject.errors,
         loginInfo:state.login.profile,
-        list: state.projectList.projectList,
+        list: state.getGroupTree.treeData,
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
         getMyGroup:state.getMyGroup,
@@ -216,7 +229,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createProject}, dispatch)
+        actions: bindActionCreators({createProject}, dispatch),
+        getMyGroupActions:bindActionCreators({getMyGroup}, dispatch),
     }
 }
 

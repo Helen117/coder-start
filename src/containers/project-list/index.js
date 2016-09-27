@@ -9,7 +9,6 @@ import {Switch,Icon} from 'antd';
 import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as listActions from './actions/project-list-actions';
 import * as starActions from './actions/consern-project-actions';
 import TableView from '../../components/table';
 import styles from './index.css';
@@ -28,8 +27,6 @@ class ProjectList extends Component {
     }
 
     componentDidMount() {
-        const {listActions,loginInfo} = this.props;
-        listActions.projectList(loginInfo.username);
         //在此处注册对其他控件发送的消息的响应
         PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
     }
@@ -90,7 +87,6 @@ class ProjectList extends Component {
     }
 
     concernedChange(consernedProject,groupInfo,is_conserned){
-        console.log("consernedProject",consernedProject);
         const {loginInfo,starActions} = this.props;
         var projectId = '';
         for(var i=0;i<groupInfo.children.length;i++){
@@ -114,7 +110,7 @@ class ProjectList extends Component {
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,fetchStatus,loginInfo,groupMembers,fetchGroupMembers} = this.props;
-            if ((fetchStatus || false) && (fetchGroupMembers || false) ) {
+            if (fetchGroupMembers || false) {
                 var groupName = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupName,list);
                 var starInfo = groupInfo.star;
@@ -142,9 +138,10 @@ class ProjectList extends Component {
                     {title: "owner", dataIndex: "owner", key: "owner"},
                     {title: "是否关注", dataIndex: "consern", key: "consern",
                         render(text,record){
-                            var count = 0, count2 = 0;
+                            var count = 0, count2 = 0,recordPrijectId='';
                             for(i=0;i<groupInfo.children.length;i++){
                                 if(record.projectName == groupInfo.children[i].gitlabProject.name){
+                                    recordPrijectId = groupInfo.children[i].gitlabProject.id;
                                     for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
                                         if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
                                             count2++;//当前用户是此项目下成员
@@ -153,16 +150,15 @@ class ProjectList extends Component {
                                 }
                             }
                             for(var j=0;j<starInfo.length;j++){
-                                if(record.projectName == starInfo[j].name){
+                                if(recordPrijectId == starInfo[j].id){
                                     count++;
                                 }
                             }
                             if(count == 0 && count2 == 0){//未关注
                                 var is_conserned = 'no';
                                 return <Switch checkedChildren="是" unCheckedChildren="否"
-                                               defaultChecked
                                                onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
-                            }else if(count2 == 0){//已关注
+                            }else if(count != 0 && count2 == 0){//已关注
                                 var is_conserned = 'yes';
                                 return <Switch checkedChildren="是" unCheckedChildren="否"
                                                defaultChecked="true"
@@ -191,7 +187,6 @@ class ProjectList extends Component {
             return null;
         }else if(this.state.itemType == true){//展示项目信息
             const {list,fetchStatus,loginInfo} = this.props;
-             if ((fetchStatus || false)) {
              var projectName = this.state.itemNode;
              var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
 　　　　　　 var starInfo = groupInfo.star;
@@ -243,7 +238,6 @@ class ProjectList extends Component {
                 ></TableView>
              </div>
              )
-             }
              return null;
         }else if(this.state.nullType == true){
             return(
@@ -259,17 +253,15 @@ class ProjectList extends Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.projectList.projectList,
-        fetchStatus:state.projectList.fetchStatus,
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
+        list: state.getGroupTree.treeData,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        listActions: bindActionCreators(listActions, dispatch),
         starActions: bindActionCreators(starActions, dispatch),
     }
 }

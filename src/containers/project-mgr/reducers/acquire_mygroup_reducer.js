@@ -12,14 +12,14 @@ const initialState = {
 export default function getMyGroup(state = initialState, action = {}){
     switch (action.type) {
         case ACQUIRE_MYGROUP_PENDING:
-            return Object.assign({}, initialState, {fetchStatue:false});
+            return Object.assign({}, initialState, {fetchStatus:false});
         case ACQUIRE_MYGROUP_SUCCESS:
-            return Object.assign({}, initialState, {myGroup: action.payload, fetchStatue:true});
+            return Object.assign({}, initialState, {myGroup: action.payload, fetchStatus:true});
         case ACQUIRE_MYGROUP_ERROR:
             return {
                 ...state,
                 errors: action.payload.message,
-                fetchStatue:false
+                fetchStatus:false
             };
         default:
             return state;

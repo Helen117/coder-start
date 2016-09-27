@@ -23,24 +23,42 @@ module.exports.menu = {
         }, {
             id: 22,
             name: '测试',
-            link: '/test.html'
-        }]
-    }, {
+            link: '/test'
+            }]
+        },
+
+        , {
         id: 3,
         name: '项目管理',
         subMenu: [{
             id: 31,
             name: '项目管理',
-            link: '/project-mgr.html'
-        }]
-    },{
-    id: 6,
-    name: '问题管理',
-    subMenu: [{
-        id: 61,
-        name: '问题管理',
-        link: '/issue.html'
-    }]
-}]
-};
+            subMenu: [{
+                id: 31,
+                name: '项目管理',
+                link: '/project-mgr.html'
+            }]
+        },
+        ]
 
+        },
+        {
+            id: 4,
+            name: '里程碑',
+            subMenu: [{
+                id: 41,
+                name: '里程碑',
+                link: '/milestones.html'
+            }]
+        },
+        {
+        id: 6,
+        name: '问题管理',
+        subMenu: [{
+            id: 61,
+            name: '问题管理',
+            link: '/issue.html'
+        }]
+    }]
+
+};

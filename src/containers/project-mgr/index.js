@@ -14,7 +14,6 @@ import TreeFilter from '../../components/tree-filter';
 import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
-import {getMyGroup} from './actions/acquire_mygroup_action';
 import {getGroupMembers} from './actions/group_members_action';
 import 'pubsub-js';
 
@@ -28,7 +27,14 @@ class ProjectMgr extends React.Component{
     }
 
     componentDidMount() {
-        this.props.getGroupTree();
+        const {loginInfo} =this.props;
+        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
+        //PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree());
+        const {treeData} = this.props;
+        if (!treeData){
+            this.props.getGroupTree(loginInfo.username);
+            //this.props.getGroupTree();
+        }
     }
 
     editGroup(type, selectedRow) {
@@ -38,8 +44,6 @@ class ProjectMgr extends React.Component{
         });
     }
     editProject(type, selectedRow) {
-        const {loginInfo} = this.props;
-        this.props.getMyGroup(loginInfo.username);
         this.context.router.push({
             pathname: '/project-detail.html',
             state: {editType: type, selectedRow,}
@@ -103,7 +107,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
-        getMyGroup:bindActionCreators(getMyGroup, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
     }
 }

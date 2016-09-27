@@ -60,43 +60,41 @@ class ProjectMember extends Component {
 
     render(){
         if(this.state.memberType == true){
-            const {list,fetchStatus} = this.props;
-            if (fetchStatus || false) {
-                var projectName = this.state.selectRow;
-                var groupInfo = this.state.selectGroup;
-                var {projectInfo} = this.searchGroupByProjectName(projectName,groupInfo);
+            const {list} = this.props;
+            var projectName = this.state.selectRow;
+            var groupInfo = this.state.selectGroup;
+            var {projectInfo} = this.searchGroupByProjectName(projectName,groupInfo);
 
-                const columns = [
-                    {title: "项目人员", dataIndex: "name", key: "name"},
-                    {title: "角色", dataIndex: "role", key: "role"},
-                    {title: "进入项目时间", dataIndex: "join_time", key: "join_time"},
-                    {title: "人员状态", dataIndex: "state", key: "state"}
-                ];
-                const dataSource = [];
-                for(var i=0;i<projectInfo.gitlabProjectMember.length;i++){
-                    if(projectName == projectInfo.gitlabProject.name){
-                        dataSource.push({
-                            key:i+1,
-                            name:projectInfo.gitlabProjectMember[i].name,
-                            role:projectInfo.gitlabProjectMember[i].is_admin?"admin":"非admin",
-                            join_time:projectInfo.gitlabProjectMember[i].created_at,
-                            state:projectInfo.gitlabProjectMember[i].state
-                        });
-                    }
+            const columns = [
+                {title: "项目人员", dataIndex: "name", key: "name"},
+                {title: "角色", dataIndex: "role", key: "role"},
+                {title: "进入项目时间", dataIndex: "join_time", key: "join_time"},
+                {title: "人员状态", dataIndex: "state", key: "state"}
+            ];
+            const dataSource = [];
+            for(var i=0;i<projectInfo.gitlabProjectMember.length;i++){
+                if(projectName == projectInfo.gitlabProject.name){
+                    dataSource.push({
+                        key:i+1,
+                        name:projectInfo.gitlabProjectMember[i].name,
+                        role:projectInfo.gitlabProjectMember[i].is_admin?"admin":"非admin",
+                        join_time:projectInfo.gitlabProjectMember[i].created_at,
+                        state:projectInfo.gitlabProjectMember[i].state
+                    });
                 }
-
-                return (
-                    <div className={styles.project_list_div}>
-                        <div>
-                            <p>项目创建时间:{projectInfo.gitlabProject.created_at}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
-                        </div>
-                        <TableView columns={columns}
-                                   dataSource={dataSource}
-                        ></TableView>
-
-                    </div>
-                )
             }
+
+            return (
+                <div className={styles.project_list_div}>
+                    <div>
+                        <p>项目创建时间:{projectInfo.gitlabProject.created_at}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                    </div>
+                    <TableView columns={columns}
+                               dataSource={dataSource}
+                    ></TableView>
+
+                </div>
+            )
         }else{
             return null;
         }
@@ -105,8 +103,7 @@ class ProjectMember extends Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.projectList.projectList,
-        fetchStatus:state.projectList.fetchStatus,
+        list: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
     }
 }

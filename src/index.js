@@ -18,9 +18,13 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
+import {Milestones,MilestoneDetail,MilestoneCreate} from './containers/milestones';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
+
+
 import NotFound from './components/page/not-found';
+
 
 import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
 
@@ -56,10 +60,14 @@ ReactDOM.render(
                 <Route path="/" onEnter={validate}>
                     <IndexRedirect to="home.html"/>
                     <Route component={App}>
+
                         <Route name="home" breadcrumbName="首页" path="home.html" component={Home}/>
                         <Route name="userMgr" breadcrumbName="用户列表" path="user.html" component={UserList}>
                             <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
                         </Route>
+                        <Route name="milestones" breadcrumbName="里程碑" path="milestones.html" component={Milestones}/>
+                        <Route name="moreMilestones" breadcrumbName="查看更多" path="moreMilestones.html" component={MilestoneDetail}/>
+                        <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones.html" component={MilestoneCreate}/>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
                         </Route>
                         <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
@@ -70,14 +78,15 @@ ReactDOM.render(
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
+
                     </Route>
                     <Route path="register.html" component={Register}/>
                     <Route path="login.html" component={Login}/>
                     <Route path="*" component={NotFound}/>
-                </Route>
+                    </Route>
             </Router>
         </Provider>
-        {<DevTools store={store}/>}
+        {process.env.NODE_ENV=='development'?(<DevTools store={store}/>):(<div/>)}
     </div>,
     root
 );
