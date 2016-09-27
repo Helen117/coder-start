@@ -12,7 +12,6 @@ import {CREATE_PROJECT} from '../constants/create-project-types';
 export function createProject(projectData) {
     //var path = '/project-mgr/createProject';
     var path = '/project/create';
-    console.log("projectData:",projectData);
     return {
         type: CREATE_PROJECT,
         payload: {

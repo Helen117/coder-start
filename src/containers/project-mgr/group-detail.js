@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Radio} from 'antd';
 import Box from '../../components/box';
 import {createGroup} from './actions/create-group-action';
+import 'pubsub-js';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -61,6 +62,7 @@ class GroupDetail extends React.Component {
             description: '',
             duration: 1
         });
+        PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
@@ -128,52 +130,54 @@ class GroupDetail extends React.Component {
     render() {
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
+        const {list} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        const nameProps = getFieldProps('name',
-            {rules:[
-                {required:true, message:'请输入项目组名称！'},
-                {validator:this.groupNameExists.bind(this)},
-            ]});
-        const pathProps = getFieldProps('path',
-            {rules: [
-                { required:true, message:'请输入项目组路径！'},
-                {validator:this.groupPathExists.bind(this)},
-            ]});
-        const descriptionProps = getFieldProps('description',);
-        const visibilityProps = getFieldProps('visibility_level',);
+        if(list){
+            const nameProps = getFieldProps('name',
+                {rules:[
+                    {required:true, message:'请输入项目组名称！'},
+                    {validator:this.groupNameExists.bind(this)},
+                ]});
+            const pathProps = getFieldProps('path',
+                {rules: [
+                    { required:true, message:'请输入项目组路径！'},
+                    {validator:this.groupPathExists.bind(this)},
+                ]});
+            const descriptionProps = getFieldProps('description',);
+            const visibilityProps = getFieldProps('visibility_level',);
 
-        return (
-            <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="项目组名称">
-                        <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="项目组路径">
-                        <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="描述">
-                        <Input type="textarea" {...descriptionProps} />
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="可见级别">
-                        <RadioGroup {...visibilityProps}>
-                            <Radio value="0">Private</Radio>
-                            <Radio value="10">Intenal</Radio>
-                            <Radio value="20">Public</Radio>
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit">确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Box>
-        );
-
+            return (
+                <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                        <FormItem {...formItemLayout} label="项目组名称">
+                            <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="项目组路径">
+                            <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="描述">
+                            <Input type="textarea" {...descriptionProps} />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="可见级别">
+                            <RadioGroup {...visibilityProps}>
+                                <Radio value="0">Private</Radio>
+                                <Radio value="10">Intenal</Radio>
+                                <Radio value="20">Public</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit">确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Box>
+            );
+        }
+        return null;
     }
-
 }
 
 GroupDetail.contextTypes = {
@@ -190,7 +194,7 @@ function mapStateToProps(state) {
         inserted: state.createGroup.result,
         errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
-        list: state.projectList.projectList,
+        list: state.getGroupTree.treeData,
     }
 }
 
