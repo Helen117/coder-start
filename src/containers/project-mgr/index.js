@@ -15,6 +15,7 @@ import ProjectList from '../project-list';
 import ProjectMember from '../project-list/member';
 import {getGroupTree} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
+import {getProjectStar} from './actions/project-star-action';
 import 'pubsub-js';
 
 
@@ -24,16 +25,18 @@ export ProjectDetail from './project-detail';
 class ProjectMgr extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+            selectGroupName:null,
+            selectGroupId:null
+        };
     }
 
     componentDidMount() {
         const {loginInfo} =this.props;
         PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
-        //PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree());
         const {treeData} = this.props;
         if (!treeData){
             this.props.getGroupTree(loginInfo.username);
-            //this.props.getGroupTree();
         }
     }
 
@@ -46,13 +49,23 @@ class ProjectMgr extends React.Component{
     editProject(type, selectedRow) {
         this.context.router.push({
             pathname: '/project-detail.html',
-            state: {editType: type, selectedRow,}
+            state: {editType: type, selectedRow,
+                    selectGroupName:this.state.selectGroupName,
+                    selectGroupId:this.state.selectGroupId}
         });
     }
 
 
     onSelectNode(node){
-        this.props.getGroupMembers(node.id);
+        const {loginInfo} = this.props;
+        if(node.id.indexOf("_p") < 0){
+            this.setState({
+                selectGroupName:node.name,
+                selectGroupId:node.id
+            });
+            this.props.getGroupMembers(node.id);
+        }
+        this.props.getProjectStar(loginInfo.username);
         PubSub.publish("evtTreeClick",node);
     }
 
@@ -108,6 +121,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
+        getProjectStar:bindActionCreators(getProjectStar, dispatch),
     }
 }
 

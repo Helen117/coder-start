@@ -109,11 +109,11 @@ class ProjectList extends Component {
 
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,fetchStatus,loginInfo,groupMembers,fetchGroupMembers} = this.props;
-            if (fetchGroupMembers || false) {
+            const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
+            if ((fetchGroupMembers || false) && (fetchProjectStar || false)) {
                 var groupName = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupName,list);
-                var starInfo = groupInfo.star;
+                //var starInfo = groupInfo.star;
 
                 const dataSource = [];
                 for(var i=0;i<groupInfo.children.length;i++){
@@ -149,8 +149,8 @@ class ProjectList extends Component {
                                     }
                                 }
                             }
-                            for(var j=0;j<starInfo.length;j++){
-                                if(recordPrijectId == starInfo[j].id){
+                            for(var j=0;j<starList.length;j++){
+                                if(recordPrijectId == starList[j].id){
                                     count++;
                                 }
                             }
@@ -186,58 +186,60 @@ class ProjectList extends Component {
             }
             return null;
         }else if(this.state.itemType == true){//展示项目信息
-            const {list,fetchStatus,loginInfo} = this.props;
-             var projectName = this.state.itemNode;
-             var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
-　　　　　　 var starInfo = groupInfo.star;
-             const columns = [
-             {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
-             {title: "项目名称", dataIndex: "project_name", key: "project_name"},
-             {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
-             {title: "是否关注", dataIndex: "consern", key: "consern"},
-             {title: "项目状态", dataIndex: "state", key: "state"},
-             {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
-             {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
-             ];
-             var count=0, count2=0;
-             for(i=0;i<groupInfo.children.length;i++){
-                 if(projectInfo.name == groupInfo.children[i].gitlabProject.name){
-                     for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
-                         if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
-                             count2++;//当前用户是此项目下成员
-                         }
-                     }
-                 }
-             }
-             for(var j=0;j<starInfo.length;j++){
-                 if(projectInfo.name == starInfo[j].name){
-                     count++;
-                 }
-             }
-             if(count == 0 && count2 == 0){//未关注
-                 var consern_desc = "尚未关注此项目";
-             }else if(count2 == 0){//已关注
-                 var consern_desc = "我关注了这个项目";
-             }else{//项目成员
-                 var consern_desc = "我是项目成员";
-             }
-             const dataSource = [{
-             group_name:groupInfo.name,
-             project_name:projectName,
-             //next_milestom:
-             consern:consern_desc,
-             //state:
-             //tech_debt:
-             //test_cover:
-             }];
+            const {list,loginInfo,fetchProjectStar,starList} = this.props;
+            if(fetchProjectStar || false){
+                var projectName = this.state.itemNode;
+                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
+                //var starInfo = groupInfo.star;
+                const columns = [
+                    {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+                    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern"},
+                    {title: "项目状态", dataIndex: "state", key: "state"},
+                    {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+                    {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+                ];
+                var count=0, count2=0;
+                for(i=0;i<groupInfo.children.length;i++){
+                    if(projectInfo.name == groupInfo.children[i].gitlabProject.name){
+                        for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
+                            if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
+                                count2++;//当前用户是此项目下成员
+                            }
+                        }
+                    }
+                }
+                for(var j=0;j<starList.length;j++){
+                    if(projectInfo.name == starList[j].name){
+                        count++;
+                    }
+                }
+                if(count == 0 && count2 == 0){//未关注
+                    var consern_desc = "尚未关注此项目";
+                }else if(count2 == 0){//已关注
+                    var consern_desc = "我关注了这个项目";
+                }else{//项目成员
+                    var consern_desc = "我是项目成员";
+                }
+                const dataSource = [{
+                    group_name:groupInfo.name,
+                    project_name:projectName,
+                    //next_milestom:
+                    consern:consern_desc,
+                    //state:
+                    //tech_debt:
+                    //test_cover:
+                }];
 
-             return (
-                <div className={styles.project_list_div}>
-                <TableView columns={columns}
-                dataSource={dataSource}
-                ></TableView>
-             </div>
-             )
+                return (
+                    <div className={styles.project_list_div}>
+                        <TableView columns={columns}
+                                   dataSource={dataSource}
+                        ></TableView>
+                    </div>
+                )
+            }
              return null;
         }else if(this.state.nullType == true){
             return(
@@ -256,6 +258,8 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
+        fetchProjectStar:state.getProjectStar.fetchStatus,
+        starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
     }
 }

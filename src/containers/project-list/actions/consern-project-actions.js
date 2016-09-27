@@ -5,7 +5,6 @@ import api from '../../../api';
 import {CONSERN_PROJECT, UNCONSERN_PROJECT} from '../constants/consern-action-types';
 
 export function consernProject(starInfo) {
-    console.log("starInfo:",starInfo);
     var path = '/project/star';
     return {
         type: CONSERN_PROJECT,

@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
-import {getMyGroup} from './actions/acquire_mygroup_action';
 import 'pubsub-js';
 import styles from './index.css';
 
@@ -98,14 +97,15 @@ class ProjectDetail extends React.Component {
     componentWillMount() {
     }
     componentDidMount() {
-        const {selectedRow, } = this.props.location.state;
+        const {selectedRow,selectGroupName,selectGroupId } = this.props.location.state;
+        const {setFieldsValue} = this.props.form;
         if (selectedRow){
-            const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
         }
-
-        const {loginInfo,getMyGroupActions} = this.props;
-        getMyGroupActions.getMyGroup(loginInfo.username);
+        if(selectGroupName){
+            setFieldsValue({groupid:selectGroupName});
+            this.setState({selectGroupId:selectGroupId});
+        }
     }
 
     projectNameExists(rule, value, callback){
@@ -131,13 +131,13 @@ class ProjectDetail extends React.Component {
 
     handleMenuClick(e){
         const {setFieldsValue} = this.props.form;
-        const {getMyGroup} = this.props;
-        for(var i=0;i<getMyGroup.myGroup.length;i++){
-            if(e.key == getMyGroup.myGroup[i].id){
-               const groupName = getMyGroup.myGroup[i].name;
+        const {list} = this.props;
+        for(var i=0;i<list.length;i++){
+            if(e.key == list[i].id){
+               const groupName = list[i].name;
                setFieldsValue({groupid:groupName});
                 this.setState({
-                    selectGroupId:getMyGroup.myGroup[i].id
+                    selectGroupId:list[i].id
                 });
             }
         }
@@ -151,58 +151,50 @@ class ProjectDetail extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
-        const nameProps = getFieldProps('name',
-            {rules:[
-                { required:true, message:'请输入项目名称!'},
-                {validator:this.projectNameExists.bind(this)},
+        const {list} = this.props;
+        if(list){
+            const nameProps = getFieldProps('name',
+                {rules:[
+                    { required:true, message:'请输入项目名称!'},
+                    {validator:this.projectNameExists.bind(this)},
                 ]
-            });
-        const descriptionProps = getFieldProps('description',);
-        const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
+                });
+            const descriptionProps = getFieldProps('description',);
+            const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
 
-        const {getMyGroup} = this.props;
-        const menuData = {
-            content:
-                (
-                    <Menu>
-                        <Menu.Item></Menu.Item>
-                    </Menu>
-                )
-        };
-        if(getMyGroup && (getMyGroup.fetchStatus || false)){
             const loop = (data) => data.map((item) => {
                 return <Menu.Item key={item.id}>{item.name}</Menu.Item>;
             });
-            const nodes = loop(getMyGroup.myGroup);
-            menuData.content = (
+            const nodes = loop(list);
+            const menu = (
                 <Menu onClick={this.handleMenuClick.bind(this)}>
                     {nodes}
                 </Menu>
             );
-        }
 
-        return (
-            <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="项目名称">
-                        <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="描述">
-                        <Input type="textarea" {...descriptionProps} />
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="项目所在组">
-                        <Dropdown overlay={menuData.content}>
-                            <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
-                        </Dropdown>
-                    </FormItem>
-                    <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Box>
-        );
+            return (
+                <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                        <FormItem {...formItemLayout} label="项目名称">
+                            <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="描述">
+                            <Input type="textarea" {...descriptionProps} />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="项目所在组">
+                            <Dropdown overlay={menu}>
+                                <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
+                            </Dropdown>
+                        </FormItem>
+                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Box>
+            );
+        }
+        return null;
     }
 }
 
@@ -223,14 +215,12 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
-        getMyGroup:state.getMyGroup,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({createProject}, dispatch),
-        getMyGroupActions:bindActionCreators({getMyGroup}, dispatch),
     }
 }
 
