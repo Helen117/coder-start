@@ -17,7 +17,7 @@ import * as issue from './actions/issue-action';
      componentWillMount() {
          console.log('record:',this.props.location.state);
          const {actions} = this.props;
-         actions.issueNotes(17,2);
+         actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
      }
 
      componentWillReceiveProps(nextProps) {
@@ -27,7 +27,7 @@ import * as issue from './actions/issue-action';
              document.getElementById("body").value="";
              this.setState({'hasValue':false});
              const {actions} = this.props;
-             actions.issueNotes(17,2);
+             actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
          }
      }
 
@@ -36,8 +36,8 @@ import * as issue from './actions/issue-action';
         var body = document.getElementById("body").value;
         const {actions,loginInfo} = this.props;
         var notes = {
-            projectId:17,
-            issueId:2,
+            projectId:this.props.location.state.record.project_id,
+            issueId:this.props.location.state.record.id,
             body:body,
             username:loginInfo.username,
             create_at:Date.now()
@@ -61,7 +61,7 @@ import * as issue from './actions/issue-action';
         console.log('issue:',issue.issueNotes);
         const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>
             <div className={styles.notes_ul} >
-                <span>{data.author.name}@{data.author.username} {data.created_at}</span>
+                <span>{data.author.name}@{data.author.username} {new Date(parseInt(data.created_at)).toLocaleString()}</span>
                 <p>
                     {data.body}
                 </p>

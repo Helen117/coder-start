@@ -124,7 +124,9 @@ class Register extends Component{
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="ssh key" >
-                    <Input type="textarea" placeholder="ssh key" rows="3" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                    <Input type="textarea" placeholder="1、下载Git-Bash;
+                    2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
+                    3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来." rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="申请角色" >
