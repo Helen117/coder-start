@@ -15,23 +15,45 @@ import './index.less';
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
+        this.page = 1;
     }
 
     componentDidMount() {
-        //let uid = authUtils.getUid();
         let projectId = 17;
-        this.props.getMilestones(projectId);
+        const {milestoneData} = this.props;
+        if (milestoneData == ''){
+            this.props.getMilestones(projectId,this.page);
+        }
+
     }
 
+    moreMilestones(){
+        let projectId = 17;
+        this.page ++;
+        this.props.getMilestones(projectId,this.page);
+    }
     //时间戳转换成日期
     getTime(date) {
         return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
     }
 
-    moreMilestones(milestonesId){
+    //根据状态及完成情况设置时间轴颜色
+    setMilestoneColor(state,due_date){
+        let timelineColor = '';
+        if (state == 'closed'){
+            timelineColor="green";
+        }else if(state == 'active' && due_date <= Date.now()){
+            timelineColor="red";
+        }else{
+            timelineColor="blue";
+        }
+        return timelineColor;
+    }
+
+    milestonesDetail(milestonesId){
         const projectId =17;
         this.context.router.push({
-            pathname: '/moreMilestones.html',
+            pathname: '/milestonesDetail.html',
             state: {milestonesId,projectId}
         });
     }
@@ -44,40 +66,28 @@ class Milestones extends React.Component {
     }
 
     render(){
-        const {items} = this.props;
-        console.log('items',items);
-        const {loading, loadingMsg,notFoundMsg} = this.props;
-        if (items != null && items!= 'undefined'){
-        var timeLine = items.map((item) => {
-            //根据状态及完成情况设置时间轴颜色
-            var timelineColor = '';
-            if (item.gitlabMilestone.state == 'closed'){
-                timelineColor="green";
-            }else if(item.gitlabMilestone.state == 'active' && item.gitlabMilestone.due_date <= Date.now()){
-                timelineColor="red";
-            }else{
-                timelineColor="blue";
-            }
-            let i = 0;
-            return (
-                <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id}>
-                    <p style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</p>
-                    <div style={{marginLeft:12,width:500}}>
-                        <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
-                        <p>创建人：{item.owner}</p>
-                        <p>待解决的问题:</p>
-                        {item.issues.map((node) => {
-                            i++;
-                            return (
-                                <p style={{marginLeft:12}} key={i} >{i}.{node}</p>
-                            );
-                        })}
-                        <Progress percent={item.rate} />
-                        <a onClick={this.moreMilestones.bind(this, item.gitlabMilestone.id)}>查看更多</a>
-                    </div>
-                </Timeline.Item>
-            )
-        })}else{
+        const {loading, loadingMsg,notFoundMsg,milestoneData} = this.props;
+        if (milestoneData != '' && milestoneData!= 'undefined'){
+            var timeLine = milestoneData.map((item) => {
+                const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
+                let i = 0;
+                return (
+                    <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
+                        <p style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</p>
+                        <div style={{marginLeft:12,width:500}}>
+                            <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
+                            <p>创建人：{item.owner}</p>
+                            <p>待解决的问题:</p>
+                            {item.issues.map((node) => {
+                                i++;
+                                return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)})
+                            }
+                            <Progress percent={item.rate} />
+                            <a onClick={this.milestonesDetail.bind(this, item.gitlabMilestone.id)}>查看更多</a>
+                        </div>
+                    </Timeline.Item>)
+            })
+        }else{
             var timeLine ='';
         };
 
@@ -93,7 +103,7 @@ class Milestones extends React.Component {
                 ):(
                     timeLine.length==0?
                         (<span className="filter-not-found">{notFoundMsg?notFoundMsg:'没有数据'}</span>)
-                        :(<Timeline >{timeLine}</Timeline>)
+                        :(<Timeline pending={<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}>{timeLine}</Timeline>)
                 )}
 
             </Box>
@@ -116,7 +126,7 @@ Milestones.propTypes = {
 function mapStateToProps(state) {
     //console.log('获取到的item：',state.milestones.items);
     return {
-        items: state.milestones.items,
+        milestoneData: state.milestones.items,
         loading:state.milestones.loading
     };
 }

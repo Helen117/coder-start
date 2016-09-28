@@ -66,7 +66,7 @@ ReactDOM.render(
                             <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
                         </Route>
                         <Route name="milestones" breadcrumbName="里程碑" path="milestones.html" component={Milestones}/>
-                        <Route name="moreMilestones" breadcrumbName="查看更多" path="moreMilestones.html" component={MilestoneDetail}/>
+                        <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail.html" component={MilestoneDetail}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones.html" component={MilestoneCreate}/>
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
                         </Route>

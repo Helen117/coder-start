@@ -35,9 +35,12 @@ class MilestoneCreate extends React.Component {
                 var owner = logInfo.username;
                 var milestoneData = {owner,userId,gitlabMilestone};
                 this.props.createMilestone(milestoneData);
+                //let isRefresh = 'ok';
                 this.context.router.push({
                     pathname: '/milestones.html',
+                    //state: {isRefresh}
                 });
+                //isRefresh = '';
             }
         })
     }

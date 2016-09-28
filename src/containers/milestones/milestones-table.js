@@ -49,8 +49,8 @@ MilestoneDetail.contextTypes = {
 function mapStateToProps(state) {
     //console.log('获取到的里程碑详细数据：',state.milestones.milestoneDetail);
     return {
-        milestoneDetail: state.milestones.milestoneDetail,
-        loading:state.milestones.loading
+        milestoneDetail: state.milestonesDetail.milestoneDetail,
+        loading:state.milestonesDetail.loading
     };
 }
 
