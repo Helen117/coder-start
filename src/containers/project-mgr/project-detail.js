@@ -34,7 +34,6 @@ class ProjectDetail extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                console.log('收到表单值：', formData);
                 var data={
                     username:'',
                     gitlabProject:{
@@ -98,10 +97,14 @@ class ProjectDetail extends React.Component {
     componentWillMount() {
     }
     componentDidMount() {
-        const {selectedRow, } = this.props.location.state;
+        const {selectedRow,selectGroupName,selectGroupId } = this.props.location.state;
+        const {setFieldsValue} = this.props.form;
         if (selectedRow){
-            const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
+        }
+        if(selectGroupName){
+            setFieldsValue({groupid:selectGroupName});
+            this.setState({selectGroupId:selectGroupId});
         }
     }
 
@@ -127,15 +130,14 @@ class ProjectDetail extends React.Component {
     }
 
     handleMenuClick(e){
-        console.log('click left button', e);
         const {setFieldsValue} = this.props.form;
-        const {getMyGroup} = this.props;
-        for(var i=0;i<getMyGroup.myGroup.length;i++){
-            if(e.key == getMyGroup.myGroup[i].id){
-               const groupName = getMyGroup.myGroup[i].name;
+        const {list} = this.props;
+        for(var i=0;i<list.length;i++){
+            if(e.key == list[i].id){
+               const groupName = list[i].name;
                setFieldsValue({groupid:groupName});
                 this.setState({
-                    selectGroupId:getMyGroup.myGroup[i].id
+                    selectGroupId:list[i].id
                 });
             }
         }
@@ -149,22 +151,21 @@ class ProjectDetail extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
-        const nameProps = getFieldProps('name',
-            {rules:[
-                { required:true, message:'请输入项目名称!'},
-                {validator:this.projectNameExists.bind(this)},
+        const {list} = this.props;
+        if(list){
+            const nameProps = getFieldProps('name',
+                {rules:[
+                    { required:true, message:'请输入项目名称!'},
+                    {validator:this.projectNameExists.bind(this)},
                 ]
-            });
-        const descriptionProps = getFieldProps('description',);
-        const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
+                });
+            const descriptionProps = getFieldProps('description',);
+            const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
 
-        const {getMyGroup} = this.props;
-        if(getMyGroup && (getMyGroup.fetchStatue || false)){
             const loop = (data) => data.map((item) => {
                 return <Menu.Item key={item.id}>{item.name}</Menu.Item>;
             });
-            const nodes = loop(getMyGroup.myGroup);
+            const nodes = loop(list);
             const menu = (
                 <Menu onClick={this.handleMenuClick.bind(this)}>
                     {nodes}
@@ -192,9 +193,9 @@ class ProjectDetail extends React.Component {
                     </Form>
                 </Box>
             );
-        }else {return null;}
+        }
+        return null;
     }
-
 }
 
 ProjectDetail.contextTypes = {
@@ -211,16 +212,15 @@ function mapStateToProps(state) {
         inserted: state.createProject.result,
         errMessage:state.createProject.errors,
         loginInfo:state.login.profile,
-        list: state.projectList.projectList,
+        list: state.getGroupTree.treeData,
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
-        getMyGroup:state.getMyGroup,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createProject}, dispatch)
+        actions: bindActionCreators({createProject}, dispatch),
     }
 }
 

@@ -12,12 +12,12 @@ import createMilestones from '../containers/milestones/reducers/create-milestone
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';
 
-import projectList from '../containers/project-list/reducers/priject-list-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
-import getMyGroup from '../containers/project-mgr/reducers/acquire_mygroup_reducer';
 import getGroupMembers from '../containers/project-mgr/reducers/group_members_reducer';
+import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
+import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 
 
 const reducer = combineReducers({
@@ -25,14 +25,15 @@ const reducer = combineReducers({
     menu,
     milestones,
     getGroupTree,
-	projectList,
     createMilestones,
     createGroup,
     createProject,
-    getMyGroup,
     getGroupMembers,
     register,
-    issue
+    issue,
+    consernProject,
+    unconsernProject,
+    getProjectStar,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
