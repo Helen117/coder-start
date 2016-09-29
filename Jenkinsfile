@@ -16,7 +16,7 @@ node (){
 
     stage 'deploy'
     echo 'deploy'
-    sshagent(['jenkins']) {
+    sshagent(credentials: ['jenkins']) {
         sh 'ssh -o StrictHostKeyChecking=no -l devops-web 10.10.152.143 uname -a'
     }
 
