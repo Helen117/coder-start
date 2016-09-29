@@ -3,7 +3,7 @@
  */
 
 import React, {PropTypes} from 'react';
-import {Timeline,Button,Row,Col,Progress} from 'antd';
+import {Timeline,Button,Row,Col,Progress,notification} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -11,27 +11,50 @@ import {getMilestones} from './actions/milestones-action';
 
 import './index.less';
 
-
+const data = [];
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
-        this.page = 1;
+        this.page =1;
     }
 
     componentDidMount() {
         let projectId = 17;
         const {milestoneData} = this.props;
-        if (milestoneData == ''){
+        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,this.page));
+        if (milestoneData == '' ){
             this.props.getMilestones(projectId,this.page);
         }
 
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData) {
+           // const {milestoneData} = nextProps.milestoneData;
+            for(let i=0; i<nextProps.milestoneData.length; i++) {
+                data.push(nextProps.milestoneData[i]);
+            }
+        }else if(nextProps.milestoneData.length==0){
+            //this.warnCallback();
+        }
+    }
+
+
+    warnCallback(){
+        notification.warning({
+            message: '无更多数据',
+            description: '无更多数据!',
+            duration: 2
+        });
     }
 
     moreMilestones(){
         let projectId = 17;
         this.page ++;
         this.props.getMilestones(projectId,this.page);
+
     }
+
     //时间戳转换成日期
     getTime(date) {
         return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
@@ -65,10 +88,13 @@ class Milestones extends React.Component {
         });
     }
 
-    render(){
-        const {loading, loadingMsg,notFoundMsg,milestoneData} = this.props;
-        if (milestoneData != '' && milestoneData!= 'undefined'){
-            var timeLine = milestoneData.map((item) => {
+    //gouz
+    timelineItemConst(){
+        const {milestoneData} = this.props;
+        //console.log('milestoneData',milestoneData);
+        //console.log('data222',data);
+        if (data != '' && milestoneData!= 'data'){
+            var timeLine = data.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
@@ -90,7 +116,13 @@ class Milestones extends React.Component {
         }else{
             var timeLine ='';
         };
+        return timeLine;
+    }
 
+    render(){
+        this.timeline =[];
+        const {loading, loadingMsg,notFoundMsg,milestoneData} = this.props;
+        const timeLine = this.timelineItemConst();
         return (
             <Box title="里程碑">
                 <div style={{marginBottom: 16}}>
