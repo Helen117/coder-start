@@ -16,9 +16,9 @@ node (){
 
     stage 'deploy'
     echo 'deploy'
-    //sshagent(['RemoteCredentials']) {
-    //    sh 'ssh -o StrictHostKeyChecking=no -l remoteusername remotetarget uname -a'
-    //}
+    sshagent(['jenkins']) {
+        sh 'ssh -o StrictHostKeyChecking=no -l devops-web 10.10.152.143 uname -a'
+    }
 
 
 
