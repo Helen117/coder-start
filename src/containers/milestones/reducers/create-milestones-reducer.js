@@ -20,7 +20,10 @@ export default function createMilestones(state = initialState, action = {}) {
 
         case CREATE_MILESTONES_ERROR:
             //console.log("CREATE milestones error!");
-            return state;
+            return {
+                ...state,
+                errors: action.payload.message
+            };
         
         default:
             return state;
