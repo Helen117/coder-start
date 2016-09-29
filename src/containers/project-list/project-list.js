@@ -42,7 +42,7 @@ class ProjectList extends Component {
         if(data.isLeaf == false && (data.id.indexOf("_p") < 0)){
             this.setState({
                 listType:true,
-                listNode:data.name,
+                listNode:data.id,
             });
         }else if(data.isLeaf == true && (data.id.indexOf("_p") < 0)){
             this.setState({
@@ -57,10 +57,10 @@ class ProjectList extends Component {
         }
     }
 
-    searchGroupByGroupName(groupName,list){
+    searchGroupByGroupName(groupId,list){
         var groupInfo;
         for(var i=0;i<list.length;i++){
-            if(groupName == list[i].name){
+            if(groupId == list[i].id){
                 groupInfo = list[i];
                 return groupInfo;
             }
@@ -68,7 +68,7 @@ class ProjectList extends Component {
     }
 
     concernedChange(consernedProject,groupInfo,is_conserned){
-        const {loginInfo,starActions,consernedInfo,unconsernedInfo} = this.props;
+        const {loginInfo,starActions,} = this.props;
         var projectId = '';
         for(var i=0;i<groupInfo.children.length;i++){
             if(consernedProject.projectName == groupInfo.children[i].name){
@@ -92,26 +92,39 @@ class ProjectList extends Component {
         PubSub.publish("evtMemberCountClick",{record:record, groupInfo:groupInfo});
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {loginInfo,} = this.props;
+        const { consernedInfo, unconsernedInfo } = nextProps;
+        if (this.props.consernedInfo != consernedInfo && consernedInfo){
+            this.props.getProjectStar(loginInfo.username);
+        }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
+            this.props.getProjectStar(loginInfo.username);
+        }
+    }
+
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
-            if ((fetchGroupMembers || false) && (fetchProjectStar || false)) {
-                var groupName = this.state.listNode;
-                var groupInfo = this.searchGroupByGroupName(groupName,list);
+            if (fetchProjectStar || false) {
+                var groupId = this.state.listNode;
+                var groupInfo = this.searchGroupByGroupName(groupId,list);
 
                 const dataSource = [];
                 for(var i=0;i<groupInfo.children.length;i++){
                     var manager = '';
-                    for(var j=0;j<groupMembers.length;j++){
-                        if(groupInfo.children[i].gitlabProject.creator_id == groupMembers[j].id){
-                            manager = groupMembers[j].name;
+                    if(fetchGroupMembers || false){
+                        for(var j=0;j<groupMembers.length;j++){
+                            if(groupInfo.children[i].gitlabProject.creator_id == groupMembers[j].id){
+                                manager = groupMembers[j].name;
+                            }
                         }
-                    }
+                    }//else if(groupInfo.nama == )
+
                     dataSource.push({
                         key:i+1,
                         projectName:groupInfo.children[i].gitlabProject.name,
                         manager:manager,
-                        memberNum:groupInfo.children[i].gitlabProjectMember.length,
+                        memberNum:"共"+groupInfo.children[i].gitlabProjectMember.length+"人",
                         owner:groupInfo.children[i].gitlabProject.owner
                     });
                 }
@@ -185,6 +198,7 @@ class ProjectList extends Component {
 }
 
 function mapStateToProps(state) {
+    //console.log("state.getProjectInfo:",state.getProjectInfo);
     return {
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
@@ -192,6 +206,9 @@ function mapStateToProps(state) {
         fetchProjectStar:state.getProjectStar.fetchStatus,
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
+        consernedInfo:state.consernProject.consernedInfo,
+        unconsernedInfo:state.unconsernProject.unconsernedInfo,
+        getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
 

@@ -24,7 +24,7 @@ export default function createProject(state = initialState, action = {}) {
         case CREATE_PROJECT_ERROR:
             return {
                 ...state,
-                errors: action.payload.message,
+                errors: action.payload.errorMsg,
                 loading:false,
                 disabled:false,
             };

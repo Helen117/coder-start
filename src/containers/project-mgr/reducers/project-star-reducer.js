@@ -19,7 +19,7 @@ export default function getProjectStar(state = initialState, action = {}) {
         case GET_PROJECTSTAR_ERROR:
             return {
                 ...state,
-                errors: action.payload.message,
+                errors: action.payload.errorMsg,
                 fetchStatus:false,
             };
         default:

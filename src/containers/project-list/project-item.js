@@ -31,10 +31,10 @@ class ProjectItem extends Component {
     }
 
     showProjectItem(msg,data){
-        if(data.isLeaf == true && (data.id.indexOf("_p") > 0)){
+        if(data.isLeaf == true && data.id.indexOf("_p") > 0){
             this.setState({
                 itemType:true,
-                itemNode:data.name,
+                itemNode:data.id.replace("_p",""),
             });
         }else{
             this.setState({
@@ -44,11 +44,11 @@ class ProjectItem extends Component {
         }
     }
 
-    searchGroupByProjectName(projectName,list){
+    searchGroupByProjectName(projectId,list){
         var projectInfo,groupInfo;
         for(var i=0;i<list.length;i++){
             for(var j=0;j<list[i].children.length;j++){
-                if(projectName == list[i].children[j].gitlabProject.name){
+                if(projectId == list[i].children[j].gitlabProject.id){
                     groupInfo = list[i];
                     projectInfo = list[i].children[j];
                     return {projectInfo,groupInfo}
@@ -61,8 +61,8 @@ class ProjectItem extends Component {
         if(this.state.itemType == true){//展示项目信息
             const {list,loginInfo,fetchProjectStar,starList} = this.props;
             if(fetchProjectStar || false){
-                var projectName = this.state.itemNode;
-                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectName,list);
+                var projectId = this.state.itemNode;
+                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
                 const columns = [
                     {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
@@ -83,7 +83,7 @@ class ProjectItem extends Component {
                     }
                 }
                 for(var j=0;j<starList.length;j++){
-                    if(projectInfo.name == starList[j].name){
+                    if(projectInfo.id == starList[j].id){
                         count++;
                     }
                 }
@@ -96,7 +96,7 @@ class ProjectItem extends Component {
                 }
                 const dataSource = [{
                     group_name:groupInfo.name,
-                    project_name:projectName,
+                    project_name:projectInfo.name,
                     //next_milestom:
                     consern:consern_desc,
                     //state:
@@ -125,6 +125,7 @@ function mapStateToProps(state) {
         fetchProjectStar:state.getProjectStar.fetchStatus,
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
+        getProjectInfo:state.getProjectInfo.projectInfo,
     }
 }
 

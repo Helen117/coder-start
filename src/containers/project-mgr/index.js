@@ -17,6 +17,8 @@ import ProjectItem from '../project-list/project-item';
 import {getGroupTree} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
+import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
+//import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import 'pubsub-js';
 
 
@@ -65,8 +67,19 @@ class ProjectMgr extends React.Component{
                 selectGroupId:node.id
             });
             this.props.getGroupMembers(node.id);
+            this.props.getGroupInfo(node);
+        }else{
+            var node_p = {
+                id:null,
+                isLeaf:node.isLeaf,
+                name:node.name
+            };
+            node_p.id = node.id.replace("_p","");
+            this.props.getProjectInfo(node_p);
         }
-        this.props.getProjectStar(loginInfo.username);
+        if(!starList){
+            this.props.getProjectStar(loginInfo.username);
+        }
         PubSub.publish("evtTreeClick",node);
     }
 
@@ -98,7 +111,6 @@ class ProjectMgr extends React.Component{
                         <ProjectMember />
                     </Row>
                 </Col>
-
             </Row>
         );
     }
@@ -125,6 +137,8 @@ function mapDispatchToProps(dispatch) {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
         getProjectStar:bindActionCreators(getProjectStar, dispatch),
+        getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
+        getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
     }
 }
 

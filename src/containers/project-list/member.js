@@ -58,6 +58,19 @@ class ProjectMember extends Component {
         }
     }
 
+    transformDate(timestamp){
+        var newDate = new Date();
+        newDate.setTime(timestamp);
+        return newDate.toLocaleString();
+    }
+
+    componentWillReceiveProps(nextProps){
+        const { getGroupInfo } = nextProps;
+        if(this.props.getGroupInfo != getGroupInfo && getGroupInfo){
+            this.notShowMember();
+        }
+    }
+
     render(){
         if(this.state.memberType == true){
             const {list} = this.props;
@@ -78,7 +91,7 @@ class ProjectMember extends Component {
                         key:i+1,
                         name:projectInfo.gitlabProjectMember[i].name,
                         role:projectInfo.gitlabProjectMember[i].is_admin?"admin":"非admin",
-                        join_time:projectInfo.gitlabProjectMember[i].created_at,
+                        join_time:this.transformDate(projectInfo.gitlabProjectMember[i].created_at),
                         state:projectInfo.gitlabProjectMember[i].state
                     });
                 }
@@ -87,7 +100,7 @@ class ProjectMember extends Component {
             return (
                 <div className={styles.project_list_div}>
                     <div>
-                        <p>项目创建时间:{projectInfo.gitlabProject.created_at}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                        <p>项目创建时间:{this.transformDate(projectInfo.gitlabProject.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                     </div>
                     <TableView columns={columns}
                                dataSource={dataSource}
@@ -105,6 +118,7 @@ function mapStateToProps(state) {
     return {
         list: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
+        getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
 

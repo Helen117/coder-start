@@ -18,6 +18,8 @@ import createProject from '../containers/project-mgr/reducers/create-project-red
 import getGroupMembers from '../containers/project-mgr/reducers/group_members_reducer';
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
+import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
+//import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
 
 
 const reducer = combineReducers({
@@ -34,6 +36,8 @@ const reducer = combineReducers({
     consernProject,
     unconsernProject,
     getProjectStar,
+    getGroupInfo,
+    getProjectInfo,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
