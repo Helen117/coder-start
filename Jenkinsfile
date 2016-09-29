@@ -9,14 +9,14 @@ node (){
     echo 'checkout from git'
 
     stage 'build and package'
-    echo 'build and package'
-    //sh 'npm install'
-    //sh 'npm run build'
-    //sh 'tar czf dist.tar.gz dist'
+    //echo 'build and package'
+    sh 'npm install'
+    sh 'npm run build'
+    sh 'tar czf dist.tar.gz dist'
 
     stage 'deploy'
-    echo 'deploy'
-    sshagent(credentials: ['jenkins']) {
+    //echo 'deploy'
+    sshagent(['709aac15-a8eb-4d00-af53-2d01a01c7277']) {
         sh 'ssh -o StrictHostKeyChecking=no -l devops-web 10.10.152.143 uname -a'
     }
 
