@@ -10,9 +10,9 @@ node (){
 
     stage 'build and package'
     //echo 'build and package'
-    sh 'npm install'
-    sh 'npm run build'
-    sh 'tar czf dist.tar.gz dist'
+    //sh 'npm install'
+    //sh 'npm run build'
+    //sh 'tar czf dist.tar.gz dist'
 
     stage 'deploy'
     //echo 'deploy'
