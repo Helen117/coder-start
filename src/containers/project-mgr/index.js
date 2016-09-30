@@ -53,29 +53,49 @@ class ProjectMgr extends React.Component{
         this.context.router.push({
             pathname: '/project-detail.html',
             state: {editType: type, selectedRow,
-                    selectGroupName:this.state.selectGroupName,
-                    selectGroupId:this.state.selectGroupId}
+                    /*selectGroupName:this.state.selectGroupName,
+                    selectGroupId:this.state.selectGroupId*/}
         });
     }
 
+    searchGroupByGroupId(groupId,list){
+        var groupInfo;
+        for(var i=0;i<list.length;i++){
+            if(groupId == list[i].id){
+                groupInfo = list[i];
+                return groupInfo;
+            }
+        }
+    }
+
+    searchGroupByProjectId(projectId,list){
+        var projectInfo,groupInfo;
+        for(var i=0;i<list.length;i++){
+            for(var j=0;j<list[i].children.length;j++){
+                if(projectId == list[i].children[j].gitlabProject.id){
+                    groupInfo = list[i];
+                    projectInfo = list[i].children[j];
+                    return {projectInfo,groupInfo}
+                }
+            }
+        }
+    }
 
     onSelectNode(node){
-        const {loginInfo,starList} = this.props;
+        const {loginInfo, starList, list} = this.props;
         if(node.id.indexOf("_p") < 0){
-            this.setState({
+            /*this.setState({
                 selectGroupName:node.name,
                 selectGroupId:node.id
-            });
+            });*/
             this.props.getGroupMembers(node.id);
-            this.props.getGroupInfo(node);
+            const groupInfo = this.searchGroupByGroupId(node.id, list);
+            this.props.getGroupInfo(groupInfo);
         }else{
-            var node_p = {
-                id:null,
-                isLeaf:node.isLeaf,
-                name:node.name
-            };
-            node_p.id = node.id.replace("_p","");
-            this.props.getProjectInfo(node_p);
+            var node_p = node.id.replace("_p","");
+            const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
+            this.props.getProjectInfo(projectInfo);
+            this.props.getGroupInfo(groupInfo);
         }
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
@@ -129,6 +149,7 @@ function mapStateToProps(state) {
         treeData: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
         starList:state.getProjectStar.starList,
+        list: state.getGroupTree.treeData,
     }
 }
 

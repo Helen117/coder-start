@@ -198,7 +198,6 @@ class ProjectList extends Component {
 }
 
 function mapStateToProps(state) {
-    //console.log("state.getProjectInfo:",state.getProjectInfo);
     return {
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
