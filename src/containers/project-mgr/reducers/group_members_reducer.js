@@ -19,7 +19,7 @@ export default function getGroupMembers(state = initialState, action = {}) {
         case GET_GROUPMEMBERS_ERROR:
             return {
                 ...state,
-                errors: action.payload.message,
+                errors: action.payload.errorMsg,
                 fetchStatus:false,
             };
         default:
