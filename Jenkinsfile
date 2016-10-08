@@ -3,8 +3,8 @@
  *
  */
 
-def deployTarget = 'devops-web@10.10.152.143'
-def deployTargetPath = '~'
+def deployTarget = 'root@10.10.152.143'
+def deployTargetPath = '/home/devops-web'
 def gitUrl = 'ssh://git@10.10.152.146:10022/devops/devops-web.git'
 def gitCredentialsId = 'd10d8ad2-c4d7-4ff9-b49b-61302ee43c47'
 def sshagentCredentialsId = 'e2687fc3-2b72-4129-8678-e114919d1567'
@@ -49,7 +49,7 @@ node (){
         try {
             sshagent([sshagentCredentialsId]) {
                 sh 'scp -o StrictHostKeyChecking=no dist.tar.gz ' + deployTarget + ':' + deployTargetPath
-                sh 'ssh -o StrictHostKeyChecking=no ' + deployTarget + ' "cd ' + deployTargetPath + ';tar xzf dist.tar.gz;chmod -R 777 dist"'
+                sh 'ssh -o StrictHostKeyChecking=no ' + deployTarget + ' "cd ' + deployTargetPath + ';chown devops-web:devops-web dist.tar.gz;tar xzf dist.tar.gz;chmod -R 777 dist"'
                 //sh 'ssh -o StrictHostKeyChecking=no xuwz@192.168.198.128 "tar xzf dist.tar.gz"'
                 //sh 'ssh -o StrictHostKeyChecking=no xuwz@192.168.198.128 uname -a'
             }
