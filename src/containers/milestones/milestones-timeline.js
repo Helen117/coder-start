@@ -8,34 +8,38 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestones} from './actions/milestones-action';
+import {getMoreMilestones} from './actions/more-milestones-actions';
 
 import './index.less';
 
 const data = [];
+var page =1;
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
-        this.page =1;
     }
 
     componentDidMount() {
         let projectId = 17;
         const {milestoneData} = this.props;
-        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,this.page));
+        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,page));
         if (milestoneData == '' ){
-            this.props.getMilestones(projectId,this.page);
+            this.props.getMilestones(projectId,page);
         }
 
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData) {
-           // const {milestoneData} = nextProps.milestoneData;
-            for(let i=0; i<nextProps.milestoneData.length; i++) {
+        const actionType = this.props.actionType;
+        //console.log('actionType',actionType);
+        if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData != '') {
+            const moreMilestoneData = nextProps.milestoneData;
+            /*for(let i=0; i<nextProps.milestoneData.length; i++) {
                 data.push(nextProps.milestoneData[i]);
-            }
-        }else if(nextProps.milestoneData.length==0){
-            //this.warnCallback();
+            }*/
+            this.props.getMoreMilestones(data,moreMilestoneData);
+        }else if(nextProps.milestoneData == '' && this.props.milestoneData == ''&& actionType){
+            this.warnCallback();
         }
     }
 
@@ -50,8 +54,9 @@ class Milestones extends React.Component {
 
     moreMilestones(){
         let projectId = 17;
-        this.page ++;
-        this.props.getMilestones(projectId,this.page);
+        page ++;
+        //console.log('page',page);
+        this.props.getMilestones(projectId,page);
 
     }
 
@@ -93,6 +98,7 @@ class Milestones extends React.Component {
         const {milestoneData} = this.props;
         //console.log('milestoneData',milestoneData);
         //console.log('data222',data);
+        //console.log("data",data);
         if (data != '' && milestoneData!= 'data'){
             var timeLine = data.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
@@ -158,14 +164,19 @@ Milestones.propTypes = {
 function mapStateToProps(state) {
     //console.log('获取到的item：',state.milestones.items);
     return {
+        moreMilestoneData:state.moreMilestonesData.moreData,
         milestoneData: state.milestones.items,
-        loading:state.milestones.loading
+        loading:state.milestones.loading,
+        actionType:state.moreMilestonesData.actionType
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMilestones: bindActionCreators(getMilestones, dispatch)
+        getMilestones: bindActionCreators(getMilestones, dispatch),
+
+       getMoreMilestones:bindActionCreators(getMoreMilestones, dispatch),
+
     }
 }
 
