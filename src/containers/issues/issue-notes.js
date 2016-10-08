@@ -47,6 +47,10 @@ import * as issue from './actions/issue-action';
         }
     }
 
+    closeIssue(){
+        this.props.actions.closeIssue(this.props.location.state.record.id);
+    }
+
     change(){
         var body = document.getElementById("body").value;
         if(body.length>0){
@@ -91,7 +95,8 @@ import * as issue from './actions/issue-action';
                                 <Input type="textarea" placeholder="Write a comment"
                                        rows="10" id="body" onChange={this.change.bind(this)}/>
                             <br/>
-                            <Button type='primary' htmlType='submit' disabled={!hasBody}>确定</Button>
+                            <Button type='primary' htmlType='submit' disabled={!hasBody}>提交</Button>
+                            <Button type="ghost" onClick={this.closeIssue.bind(this)} >关闭问题</Button>
                         </Form>
                     </li>
                 </ul>

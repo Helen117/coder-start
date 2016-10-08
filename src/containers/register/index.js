@@ -23,19 +23,19 @@ class Register extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
-    componentWillMount(){
-        const { actions } = this.props;
-        actions.userExists();
-    }
+    // componentWillMount(){
+    //     const { actions } = this.props;
+    //     actions.userExists();
+    // }
     componentWillReceiveProps(nextProps) {
         const result = nextProps.registerState.registerResult;
         const error = nextProps.registerState.errors;
         const registering = nextProps.registerState.registering;
-        const userExists = nextProps.registerState.userExists;
+        // const userExists = nextProps.registerState.userExists;
 
-        if(userExists && this.props.registerState.userExists==null) {
-            userName.push(nextProps.registerState.userExists.username);
-        }
+        // if(userExists && this.props.registerState.userExists==null) {
+        //     userName.push(nextProps.registerState.userExists.username);
+        // }
 
         if(error&& error != this.props.registerState.errors){
             message.error('注册失败！'+error);
@@ -54,17 +54,17 @@ class Register extends Component{
             // if(!reg.test(value)){
             //     callback('字母开头，允许4-16字节，允许字母数字下划线');
             // }
-            console.log('userName:',userName);
+            // console.log('userName:',userName);
             if(!(userName.length>0)){
                 callback();
             }
-            for(var i =0;i<userName.length;i++){
-                if (value == userName[i]) {
-                    callback([new Error('抱歉，该用户名已被占用。')]);
-                } else {
-                    callback();
-                }
-            }
+            // for(var i =0;i<userName.length;i++){
+            //     if (value == userName[i]) {
+            //         callback([new Error('抱歉，该用户名已被占用。')]);
+            //     } else {
+            //         callback();
+            //     }
+            // }
 
         }
 
