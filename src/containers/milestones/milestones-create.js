@@ -4,7 +4,7 @@
 
 import React,{ PropTypes } from 'react';
 import InputPage from '../../components/input-page';
-import { DatePicker, Button, Modal, Form, Input, Col} from 'antd';
+import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
 import {bindActionCreators} from 'redux';
@@ -35,11 +35,37 @@ class MilestoneCreate extends React.Component {
                 var owner = logInfo.username;
                 var milestoneData = {owner,userId,gitlabMilestone};
                 this.props.createMilestone(milestoneData);
-                this.context.router.push({
-                    pathname: '/milestones.html',
-                });
             }
         })
+    }
+
+
+    insertCallback(){
+        notification.success({
+            message: '创建成功',
+            description: '',
+            duration: 1
+        });
+        PubSub.publish("evtRefreshTimeilne",{});
+        this.context.router.goBack();
+    }
+
+    errCallback(){
+        notification.error({
+            message: '创建失败',
+            description: '创建失败!',
+            //description:{errMessage},
+            duration: 1
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { inserted, errMessage } = nextProps;
+        if (this.props.inserted != inserted && inserted){
+            this.insertCallback();
+        }else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback();
+        }
     }
 
     handleCancel() {
@@ -194,12 +220,17 @@ MilestoneCreate.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+
+
 function mapStateToProps(state) {
-    //console.log("state.login:",state.milestones);
+    console.log("state.result:",state.createMilestones.result);
+    console.log("state.errors:",state.createMilestones.errors);
     return {
-        milestones:state.milestones.items,
+
+        milestones: state.milestones.items,
+        logInfo: state.login.profile,
         inserted: state.createMilestones.items,
-        logInfo:state.login.profile,
+        errMessage: state.createMilestones.errors,
 
     }
 }

@@ -4,7 +4,7 @@
 import {ACQUIRE_MILESTONES,ACQUIRE_MILESTONES_DETAIL} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getMilestones(projectId) {
+export function getMilestones(projectId,page) {
     //var path='/milestones';
     var path ='/milestone/project';
     return {
@@ -12,7 +12,8 @@ export function getMilestones(projectId) {
         payload: {
             promise: api.post(path, {
                 params: {
-                    projectId:projectId
+                    projectId:projectId,
+                    page:page
                 }
             })
         }

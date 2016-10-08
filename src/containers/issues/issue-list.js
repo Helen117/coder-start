@@ -57,7 +57,7 @@ class IssueList extends Component {
     //获取表格的数据源
     getDataSource(){
         const {issueList} = this.props;
-        console.log('获取表格数据：',issueList);
+        //console.log('获取表格数据：',issueList);
         const data = [];
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
