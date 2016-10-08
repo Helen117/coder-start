@@ -66,11 +66,11 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    errCallback(){
+    errCallback(message){
         notification.error({
             message: '创建失败',
-            description: '项目组名称或者路径已被占用!',
-            //description:{errMessage},
+            //description: '项目组名称或者路径已被占用!',
+            description:message,
             duration: 1
         });
     }
@@ -80,7 +80,15 @@ class GroupDetail extends React.Component {
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback();
+            var message ='';
+            if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") < 0)){
+                message = "项目组名称已被占用!";
+            }else if((errMessage.indexOf("path") > 0) && (errMessage.indexOf("name") < 0)){
+                message = "项目组路径已被占用!";
+            }else if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") > 0)){
+                message = "项目组名称或者路径已被占用!";
+            }
+            this.errCallback(message);
         }
     }
 
@@ -112,10 +120,14 @@ class GroupDetail extends React.Component {
     }
 
     groupPathExists(rule, value, callback){
+        var reg =new RegExp ('^[a-zA-Z0-9_]{1,10}$');
         const {list} = this.props;
         if(!value){
             callback();
         }else{
+            if(!reg.test(value)){
+                     callback('允许1-10字节，允许字母数字下划线');
+            }
             for(var i=0;i<list.length;i++){
                 if(value == list[i].path){
                     callback([new Error('项目组路径已被占用')]);
@@ -144,6 +156,7 @@ class GroupDetail extends React.Component {
             const pathProps = getFieldProps('path',
                 {rules: [
                     { required:true, message:'请输入项目组路径！'},
+                    //{test:^[a-zA-Z0-9]{1-10}$},
                     {validator:this.groupPathExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);

@@ -13,7 +13,6 @@ import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'ant
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
 import 'pubsub-js';
-import styles from './index.css';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -28,7 +27,7 @@ class ProjectDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo } = this.props;
+        const { actions, form, loginInfo, getGroupInfo } = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -45,7 +44,7 @@ class ProjectDetail extends React.Component {
                 data.userId = loginInfo.userId;
                 data.gitlabProject.name = formData.name;
                 data.gitlabProject.description = formData.description;
-                data.groupId = this.state.selectGroupId;
+                data.groupId = getGroupInfo.id;
                 actions.createProject(data);
             }
         })
@@ -97,14 +96,14 @@ class ProjectDetail extends React.Component {
     componentWillMount() {
     }
     componentDidMount() {
-        const {selectedRow,selectGroupName,selectGroupId } = this.props.location.state;
+        const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
+        const {getGroupInfo} = this.props;
         if (selectedRow){
             setFieldsValue(selectedRow);
         }
-        if(selectGroupName){
-            setFieldsValue({groupid:selectGroupName});
-            this.setState({selectGroupId:selectGroupId});
+        if(getGroupInfo){
+            setFieldsValue({groupid:getGroupInfo.name});
         }
     }
 
@@ -183,7 +182,7 @@ class ProjectDetail extends React.Component {
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
                             <Dropdown overlay={menu}>
-                                <Input {...groupProps} className={styles.group_down} placeholder="请选择项目组"/>
+                                <Input {...groupProps} placeholder="请选择项目组"/>
                             </Dropdown>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
@@ -215,6 +214,7 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
+        getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
 

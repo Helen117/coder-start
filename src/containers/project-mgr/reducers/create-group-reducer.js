@@ -24,7 +24,7 @@ export default function createGroup(state = initialState, action = {}) {
         case CREATE_GROUP_ERROR:
             return {
                 ...state,
-                errors: action.payload.message
+                errors: action.payload.errorMsg
             };
         default:
             return state;
