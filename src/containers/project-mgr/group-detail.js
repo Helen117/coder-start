@@ -76,19 +76,21 @@ class GroupDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage } = nextProps;
-        if (this.props.inserted != inserted && inserted){
+        const {inserted, errMessage} = nextProps;
+        if (this.props.inserted != inserted && inserted) {
             this.insertCallback();
-        }else if(this.props.errMessage != errMessage && errMessage){
-            var message ='';
-            if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") < 0)){
-                message = "项目组名称已被占用!";
-            }else if((errMessage.indexOf("path") > 0) && (errMessage.indexOf("name") < 0)){
-                message = "项目组路径已被占用!";
-            }else if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") > 0)){
-                message = "项目组名称或者路径已被占用!";
-            }
-            this.errCallback(message);
+        } else if (this.props.errMessage != errMessage && errMessage) {
+            /*var message ='';
+             if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") < 0)){
+             message = "项目组名称已被占用!";
+             }else if((errMessage.indexOf("path") > 0) && (errMessage.indexOf("name") < 0)){
+             message = "项目组路径已被占用!";
+             }else if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") > 0)){
+             message = "项目组名称或者路径已被占用!";
+             }
+             this.errCallback(message);
+             }*/
+            this.errCallback(errMessage);
         }
     }
 

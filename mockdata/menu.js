@@ -25,9 +25,7 @@ module.exports.menu = {
             name: '测试',
             link: '/test'
             }]
-        },
-
-        , {
+        }, {
         id: 3,
         name: '项目管理',
         subMenu: [{

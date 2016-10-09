@@ -10,12 +10,56 @@
   width: 224px;
   //background: #404040;
   background: #fff;
-  position: absolute;
-  overflow: auto;
+  position:fixed;
+  right:0px;
+  //position: relative;
+  position:fixed;
+  overflow: hidden;
   padding-bottom: 24px;
   height: 100%;
+  z-index: 1000;
+  border: solid 2px #ECECEC;
+  //left: 0px;
+}
+
+.ant-layout-aside .ant-layout-sider-off {
+  width: 0px;
+  //background: #404040;
+  background: #fff;
+  //position: relative;
+  right:0px;
+  position:fixed;
+  //position:fixed;
+  overflow: hidden;
+  //overflow: hidden;
+  padding-bottom: 24px;
+  height: 100%;
+  left: -220px;
+  //left:auto;
 }
 
 .ant-layout-aside .ant-layout-sider > .ant-menu {
   margin-bottom: 20px;
+}
+
+.side-bar-button {
+  //right:-220px;
+  //right:-190px;
+  left:20px;
+  position: relative;
+  //position: absolute;
+}
+
+.side-bar-button-off{
+  //left:6px;
+  //position: relative;
+}
+
+
+.action-button-sidebar{
+  padding: 15px 10px 5px 178px;
+  cursor: pointer;
+  font-size: 28px;
+  color:#404040;
+
 }

@@ -75,11 +75,11 @@ class ProjectDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    errCallback(){
+    errCallback(errMessage){
         notification.error({
             message: '创建失败',
-            description: '项目名称已被占用!',
-            //description:{errMessage},
+            //description: '项目名称已被占用!',
+            description:errMessage,
             duration: 1
         });
     }
@@ -89,7 +89,7 @@ class ProjectDetail extends React.Component {
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback();
+            this.errCallback(errMessage);
         }
     }
 

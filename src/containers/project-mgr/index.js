@@ -19,6 +19,7 @@ import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 //import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
+import TopNaviGation from './top-navigation';
 import 'pubsub-js';
 
 
@@ -106,32 +107,37 @@ class ProjectMgr extends React.Component{
     render(){
         const {treeData, loading} = this.props;
         return (
-            <Row className="ant-layout-content" style={{minHeight:300}}>
-                <Col span={6}>
-                    <TreeFilter
-                        loading={loading}
-                        notFoundMsg='找不到项目'
-                        inputPlaceholder="快速查询项目"
-                        loadingMsg="正在加载项目信息..."
-                        nodesData={treeData}
-                        onSelect={this.onSelectNode.bind(this)}/>
-                </Col>
-                <Col span={18}>
-                    <Row>
-                        <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
-                            新建项目组
-                        </Button>
-                        <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
-                            新建项目
-                        </Button>
-                    </Row>
-                    <Row>
-                        <ProjectList />
-                        <ProjectItem />
-                        <ProjectMember />
-                    </Row>
-                </Col>
-            </Row>
+            <div>
+                <Row>
+                    <TopNaviGation />
+                </Row>
+                <Row className="ant-layout-content" style={{minHeight:300}}>
+                    <Col span={6}>
+                        <TreeFilter
+                            loading={loading}
+                            notFoundMsg='找不到项目'
+                            inputPlaceholder="快速查询项目"
+                            loadingMsg="正在加载项目信息..."
+                            nodesData={treeData}
+                            onSelect={this.onSelectNode.bind(this)}/>
+                    </Col>
+                    <Col span={18}>
+                        <Row>
+                            <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
+                                新建项目组
+                            </Button>
+                            <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
+                                新建项目
+                            </Button>
+                        </Row>
+                        <Row>
+                            <ProjectList />
+                            <ProjectItem />
+                            <ProjectMember />
+                        </Row>
+                    </Col>
+                </Row>
+            </div>
         );
     }
 
