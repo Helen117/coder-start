@@ -223,8 +223,6 @@ MilestoneCreate.contextTypes = {
 
 
 function mapStateToProps(state) {
-    console.log("state.result:",state.createMilestones.result);
-    console.log("state.errors:",state.createMilestones.errors);
     return {
 
         milestones: state.milestones.items,

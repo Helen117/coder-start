@@ -88,7 +88,7 @@ class AddIssue extends Component{
         };
 
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
+        console.log('assignee',assignee);
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];

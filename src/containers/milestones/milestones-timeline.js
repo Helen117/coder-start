@@ -21,24 +21,25 @@ class Milestones extends React.Component {
 
     componentDidMount() {
         let projectId = 17;
-        const {milestoneData} = this.props;
-        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,page));
-        if (milestoneData == '' ){
-            this.props.getMilestones(projectId,page);
+        const {moreMilestoneData} = this.props;
+        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,1));
+        if (!moreMilestoneData){
+        this.props.getMilestones(projectId,page);
         }
 
     }
 
     componentWillReceiveProps(nextProps) {
         const actionType = this.props.actionType;
-        //console.log('actionType',actionType);
+        const acquireData = nextProps.acquireData;
         if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData != '') {
-            const moreMilestoneData = nextProps.milestoneData;
-            /*for(let i=0; i<nextProps.milestoneData.length; i++) {
-                data.push(nextProps.milestoneData[i]);
-            }*/
-            this.props.getMoreMilestones(data,moreMilestoneData);
-        }else if(nextProps.milestoneData == '' && this.props.milestoneData == ''&& actionType){
+            console.log(1111);
+            console.log('this.props.milestoneData',this.props.milestoneData);
+            console.log('nextProps.milestoneData11',nextProps.milestoneData);
+            this.props.getMoreMilestones(data,nextProps.milestoneData);
+
+        }
+        if(this.props.milestoneData =='' && nextProps.milestoneData=='' && acquireData ){
             this.warnCallback();
         }
     }
@@ -55,9 +56,7 @@ class Milestones extends React.Component {
     moreMilestones(){
         let projectId = 17;
         page ++;
-        //console.log('page',page);
         this.props.getMilestones(projectId,page);
-
     }
 
     //时间戳转换成日期
@@ -96,9 +95,7 @@ class Milestones extends React.Component {
     //gouz
     timelineItemConst(){
         const {milestoneData} = this.props;
-        //console.log('milestoneData',milestoneData);
-        //console.log('data222',data);
-        //console.log("data",data);
+        console.log('data',data);
         if (data != '' && milestoneData!= 'data'){
             var timeLine = data.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
@@ -127,7 +124,7 @@ class Milestones extends React.Component {
 
     render(){
         this.timeline =[];
-        const {loading, loadingMsg,notFoundMsg,milestoneData} = this.props;
+        const {loading, loadingMsg,notFoundMsg} = this.props;
         const timeLine = this.timelineItemConst();
         return (
             <Box title="里程碑">
@@ -166,6 +163,7 @@ function mapStateToProps(state) {
     return {
         moreMilestoneData:state.moreMilestonesData.moreData,
         milestoneData: state.milestones.items,
+        acquireData:state.milestones.acquireData,
         loading:state.milestones.loading,
         actionType:state.moreMilestonesData.actionType
     };
