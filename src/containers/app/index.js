@@ -4,12 +4,14 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Icon,Button,Row,Col, Affix} from 'antd';
 
 import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile} from '../login/actions/login-action';
+import MenuBar from '../../components/menubar';
 
 //import authUtils from '../../utils/auth'
 
@@ -20,6 +22,9 @@ import './index.less';
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            isOpened:false
+        }
     }
 
     componentWillMount() {
@@ -34,16 +39,36 @@ class App extends React.Component {
         this.context.router.replace('/login.html');
     }
 
+    clickSideBar(isOpened){
+        //console.log("isOpened:",isOpened);
+        this.setState({
+            isOpened:isOpened
+        });
+    }
+
+    clickBreadSideBar(){
+        this.setState({
+            isOpened: this.state.isOpened ? false : true
+        });
+        //console.log("!this.state.isOpened:",!this.state.isOpened);
+    }
+
     render() {
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
-
+        //console.log("this.state.isOpened:",this.state.isOpened);
         return (
             <div className="ant-layout-aside">
-                <Header profile={profile} logout={this.logout.bind(this)}/>
-                <Sidebar uid={uid}/>
-                <div className="ant-layout-main">
-                    <NavPath />
+                <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)} isOpened={this.state.isOpened}/>
+                <Affix>
+                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
+                </Affix>
+                <div className="ant-layout-main" >
+                    <Affix offsetTop={66}>
+                        <NavPath />
+                        <MenuBar />
+                    </Affix>
+
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}
                         {this.props.children}

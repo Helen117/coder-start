@@ -104,7 +104,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        <DatePicker style={{ width: 184 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
+                        <DatePicker style={{ width: 200 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >

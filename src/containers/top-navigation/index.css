@@ -1,0 +1,12 @@
+.sub_navi{
+    text-align: center;
+    background-color: #f7f7f7;
+}
+.sub_navi .sub_navi_li{
+    float: left;
+}
+
+.sub_navi .sub_navi_ul{
+    /*list-style-type: disc;*/
+}
+
