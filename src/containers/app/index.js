@@ -59,7 +59,9 @@ class App extends React.Component {
         return (
             <div className="ant-layout-aside">
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)} isOpened={this.state.isOpened}/>
-                <Affix><Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/></Affix>
+                <Affix>
+                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
+                </Affix>
                 <div className="ant-layout-main" >
                     <Affix offsetTop={70}>
                         <NavPath />
