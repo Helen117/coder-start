@@ -16,6 +16,7 @@ export default function createMilestones(state = initialState, action = {}) {
     switch (action.type) {
         //获取里程碑
         case CREATE_MILESTONES_SUCCESS:
+            console.log('action.payload',action.payload);
             return Object.assign({}, initialState, {items: action.payload});
 
         case CREATE_MILESTONES_ERROR:
