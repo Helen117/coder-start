@@ -29,6 +29,18 @@ export function addIssues(issues) {
     }
 }
 
+export function updateIssue(issue) {
+    console.log('update issue:',issue);
+    return {
+        type: 'UPDATE_ISSUE',
+        payload: {
+            promise: api.post('/project/update-issue',{
+                data:issue
+            })
+        }
+    }
+}
+
 export function issueNotes(projectId,issueId) {
     return {
         type: 'ISSUE_NOTES',

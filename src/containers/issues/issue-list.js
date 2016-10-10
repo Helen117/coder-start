@@ -23,14 +23,11 @@ class IssueList extends Component {
     }
 
     componentDidMount() {
-        //console.info('componentDidMount');
         const {actions} = this.props;
         actions.getIssueList(17);
     }
 
-    // editIssue() {
-    //     this.context.router.replace('/issueEdit.html');
-    // }
+
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
         this.context.router.push({
@@ -41,7 +38,7 @@ class IssueList extends Component {
 
     issueNotes(record) {
         //this.context.router.replace('/issueNotes.html');
-        console.log('record:',record);
+        //console.log('record:',record);
         this.context.router.push({
             pathname: '/issueNotes.html',
             state: {record}
@@ -62,8 +59,10 @@ class IssueList extends Component {
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
                 var assign_name = issueList[i].assignee?issueList[i].assignee.name:null;
+                var assign_id = issueList[i].assignee?issueList[i].assignee.id:null;
                 var labels = issueList[i].labels.length>0?issueList[i].labels+';':null;
                 var milestoneTitle = issueList[i].milestone?issueList[i].milestone.title:null;
+                var milestone_id = issueList[i].milestone?issueList[i].milestone.id:null;
                 var milestoneDueDate = issueList[i].milestone?issueList[i].milestone.due_date:null;
                 data.push({
                     group_id:issueList[i].iid,
@@ -73,7 +72,9 @@ class IssueList extends Component {
                     description:issueList[i].description,
                     author_name: issueList[i].author.name,
                     assignee_name: assign_name,
+                    assign_id :assign_id,
                     milestoneTitle:milestoneTitle,
+                    milestone_id:milestone_id,
                     milestoneDueDate:milestoneDueDate,
                     created_at:  this.getTime(issueList[i].created_at),
                     due_date:this.getTime(issueList[i].due_date),
@@ -247,7 +248,10 @@ IssueList.prototype.issueListColumns = (self)=>[{
     dataIndex: 'key',
     width: '12%',
     render: (text, record, index)=> {
-        return <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>;
+        return <div>
+                    <Button type="ghost" onClick={self.editIssue.bind(self,'modify', record)}>修改</Button>
+                    <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>
+               </div>;
     }
 }];
 
