@@ -23,19 +23,19 @@ class Register extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
-    componentWillMount(){
-        const { actions } = this.props;
-        actions.userExists();
-    }
+    // componentWillMount(){
+    //     const { actions } = this.props;
+    //     actions.userExists();
+    // }
     componentWillReceiveProps(nextProps) {
         const result = nextProps.registerState.registerResult;
         const error = nextProps.registerState.errors;
         const registering = nextProps.registerState.registering;
-        const userExists = nextProps.registerState.userExists;
+        // const userExists = nextProps.registerState.userExists;
 
-        if(userExists && this.props.registerState.userExists==null) {
-            userName.push(nextProps.registerState.userExists.username);
-        }
+        // if(userExists && this.props.registerState.userExists==null) {
+        //     userName.push(nextProps.registerState.userExists.username);
+        // }
 
         if(error&& error != this.props.registerState.errors){
             message.error('注册失败！'+error);
@@ -54,17 +54,17 @@ class Register extends Component{
             // if(!reg.test(value)){
             //     callback('字母开头，允许4-16字节，允许字母数字下划线');
             // }
-            console.log('userName:',userName);
+            // console.log('userName:',userName);
             if(!(userName.length>0)){
                 callback();
             }
-            for(var i =0;i<userName.length;i++){
-                if (value == userName[i]) {
-                    callback([new Error('抱歉，该用户名已被占用。')]);
-                } else {
-                    callback();
-                }
-            }
+            // for(var i =0;i<userName.length;i++){
+            //     if (value == userName[i]) {
+            //         callback([new Error('抱歉，该用户名已被占用。')]);
+            //     } else {
+            //         callback();
+            //     }
+            // }
 
         }
 
@@ -124,7 +124,9 @@ class Register extends Component{
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="ssh key" >
-                    <Input type="textarea" placeholder="ssh key" rows="3" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                    <Input type="textarea" placeholder="1、下载Git-Bash;
+                    2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
+                    3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来." rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
                 </FormItem>
 
                 <FormItem {...formItemLayout} label="申请角色" >

@@ -88,7 +88,7 @@ class AddIssue extends Component{
         };
 
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
+        console.log('assignee',assignee);
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
@@ -104,7 +104,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        <DatePicker style={{ width: 184 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
+                        <DatePicker style={{ width: 200 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >

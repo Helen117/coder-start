@@ -46,8 +46,7 @@ class MilestoneCreate extends React.Component {
             description: '',
             duration: 1
         });
-        PubSub.publish("evtRefreshTimeilne",{});
-        this.context.router.goBack();
+        this.context.router.replace('/milestones.html')
     }
 
     errCallback(){
@@ -102,6 +101,7 @@ class MilestoneCreate extends React.Component {
 
     checkCreateDate(rule, value, callback){
         const {milestones} = this.props;
+        console.log('milestones',milestones);
         var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
         if (!value) {
             callback();
@@ -223,8 +223,6 @@ MilestoneCreate.contextTypes = {
 
 
 function mapStateToProps(state) {
-    console.log("state.result:",state.createMilestones.result);
-    console.log("state.errors:",state.createMilestones.errors);
     return {
 
         milestones: state.milestones.items,

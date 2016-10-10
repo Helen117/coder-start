@@ -10,6 +10,9 @@ import {
 
 const initialState = {
     items: [],
+    loading:false,
+    loadErrors:null,
+    acquireData:false
 };
 
 export default function milestones(state = initialState, action = {}) {
@@ -19,11 +22,11 @@ export default function milestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true});
         //获取里程碑
         case ACQUIRE_MILESTONES_SUCCESS:
-            return Object.assign({}, initialState, {items: action.payload});
+            return Object.assign({}, initialState, {items: action.payload, loading: false,acquireData:true});
 
         case ACQUIRE_MILESTONES_ERROR:
             //console.log("acquire milestones error!");
-            return state;
+            return {state, loginErrors: action.payload.errorMsg};
 
         default:
             return state;

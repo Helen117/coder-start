@@ -38,6 +38,9 @@ export default function issue(state = initialState, action = {}) {
         case 'COMMENT_SUCCESS':
             return Object.assign({}, initialState, {comment: action.payload});
 
+        case 'CLOSEISSUE':
+            return Object.assign({}, initialState, {closeIssue: action.payload});
+
         default:
             return state;
     }
