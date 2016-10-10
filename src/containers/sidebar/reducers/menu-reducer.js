@@ -20,6 +20,7 @@ export default function menu(state = initialState, action = {}) {
             //console.log('获取侧边栏的数据',action.payload);
             return Object.assign({}, initialState, {items: action.payload});
         case UPDATE_NAVPATH:
+            //console.log("action.payload.data:",action.payload.data);
             let navpath = [], tmpOb, tmpKey, child;
             if (action.payload.data) {
                 action.payload.data.reverse().map((item)=> {
