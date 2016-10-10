@@ -33,12 +33,11 @@ class createMergeRequest extends Component {
         this.context.router.goBack();
     }
 
-    errCallback(){
-        let errMessage =this.props.errMessage;
+    errCallback(errMessage){
         notification.error({
             message: '创建失败',
-            description:{errMessage},
-            duration: 1
+            description:errMessage,
+            duration: 2
         });
     }
 
@@ -47,7 +46,7 @@ class createMergeRequest extends Component {
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback();
+            this.errCallback(errMessage);
         }
     }
 
@@ -171,6 +170,7 @@ createMergeRequest.contextTypes = {
 };
 
 function mapStateToProps(state) {
+
     return {
         milestones:state.fetchMergeData.milestones,
         labels:state.fetchMergeData.labels,
