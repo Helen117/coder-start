@@ -22,6 +22,7 @@ class NavPath extends React.Component {
 
     render() {
         const {navpath} = this.props;
+
         // let rightNavPath = menuUtils.getNavPath()
         // rightNavPath = navpath.length>0 ? navpath:rightNavPath;
 
@@ -34,8 +35,8 @@ class NavPath extends React.Component {
         return (
             <div className="ant-layout-breadcrumb">
                 <Breadcrumb>
-                    <Breadcrumb.Item key='bc-0'><Link to={'/home.html'} state={null}>首页</Link></Breadcrumb.Item>
-                    {bread}
+                    {/*<Breadcrumb.Item key='bc-0'><Link to={'/home.html'} state={null}>首页</Link></Breadcrumb.Item>*/}
+                    {bread.length>0?bread:(<Breadcrumb.Item key='bc-0'>首页</Breadcrumb.Item>)}
                 </Breadcrumb>
                 <br />
             </div>

@@ -59,8 +59,9 @@ class Sidebar extends React.Component {
         //console.log("this.state.openSideBar:",this.state.openSideBar);
         const {items} = this.props;
         let openKey = [];
+        let selectedKeys = ['menu1'];
 
-        const menu = items.map((    item) => {
+        const menu = items.map((item) => {
             openKey.push('sub' + item.id);
             return (
                 <Menu.Item key={'menu' + item.id}>
@@ -90,7 +91,7 @@ class Sidebar extends React.Component {
                 <Icon className="action-button-sidebar"
                       type="bars"
                       onClick={this.clickSideBar.bind(this)}/>
-                <Menu mode="inline" theme="light" openKeys={openKey} onClick={this.menuClickHandle.bind(this)}>
+                <Menu mode="inline" theme="light" openKeys={openKey} defaultSelectedKeys={selectedKeys} onSelect={this.menuClickHandle.bind(this)}>
                     {menu}
                 </Menu>
             </aside>

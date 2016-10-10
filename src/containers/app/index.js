@@ -12,6 +12,7 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import TopNaviGation from '../top-navigation/top-navigation';
 import {logout, fetchProfile} from '../login/actions/login-action';
+import MenuBar from '../../components/menubar';
 
 //import authUtils from '../../utils/auth'
 
@@ -66,8 +67,9 @@ class App extends React.Component {
                             showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
                 <div className="ant-layout-main" >
-                    <Affix offsetTop={70}>
+                    <Affix offsetTop={66}>
                         <NavPath />
+                        <MenuBar />
                     </Affix>
                     <TopNaviGation />
                     <div className="ant-layout-container">
