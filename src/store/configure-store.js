@@ -21,7 +21,8 @@ import getGroupMembers from '../containers/project-mgr/reducers/group_members_re
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
-import fetchMergeData from '../containers/mergeRequest/reducers/fetch-datasource-reducer'
+import fetchMergeData from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
+//import getTopNaviInfo from '../containers/top-navigation/reducers/select-topnavi-reducer';
 
 
 const reducer = combineReducers({
@@ -42,7 +43,8 @@ const reducer = combineReducers({
     getGroupInfo,
     getProjectInfo,
     milestonesDetail,
-    fetchMergeData
+    fetchMergeData,
+    //getTopNaviInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

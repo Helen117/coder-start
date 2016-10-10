@@ -1,12 +1,30 @@
+/*.top_navi{
+    text-align: center;
+}
+.top_navi .top_navi_menu{
+    position:relative;
+    //left:50%;
+    //float: left;
+}
+.top_navi .top_navi_menuitem{
+    position: relative;
+    //float: left;
+    //right:50%;
+    //z-index: 100;
+}*/
+
 .sub_navi{
     text-align: center;
-    background-color: #f7f7f7;
+}
+.sub_navi .sub_navi_ul{
+    position: relative;
+    float: left;
+    left:50%;
 }
 .sub_navi .sub_navi_li{
+    position:relative;
+    right:50%;
     float: left;
 }
 
-.sub_navi .sub_navi_ul{
-    /*list-style-type: disc;*/
-}
 

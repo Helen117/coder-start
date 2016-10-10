@@ -10,6 +10,7 @@ import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
+import TopNaviGation from '../top-navigation/top-navigation';
 import {logout, fetchProfile} from '../login/actions/login-action';
 
 //import authUtils from '../../utils/auth'
@@ -58,15 +59,17 @@ class App extends React.Component {
         //console.log("this.state.isOpened:",this.state.isOpened);
         return (
             <div className="ant-layout-aside">
-                <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)} isOpened={this.state.isOpened}/>
+                <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
+                         isOpened={this.state.isOpened}/>
                 <Affix>
-                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
+                    <Header profile={profile} logout={this.logout.bind(this)}
+                            showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
                 <div className="ant-layout-main" >
                     <Affix offsetTop={70}>
                         <NavPath />
                     </Affix>
-
+                    <TopNaviGation />
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}
                         {this.props.children}
