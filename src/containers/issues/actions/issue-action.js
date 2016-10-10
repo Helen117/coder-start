@@ -67,3 +67,16 @@ export function comment(notes) {
         }
     }
 }
+
+export function closeIssue(issueId) {
+    return {
+        type: 'CLOSEISSUE',
+        payload: {
+            promise: api.post('/issue/close',{
+                params: {
+                    issueId: issueId
+                }
+            })
+        }
+    }
+}
