@@ -11,6 +11,7 @@ import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile} from '../login/actions/login-action';
+import MenuBar from '../../components/menubar';
 
 //import authUtils from '../../utils/auth'
 
@@ -63,8 +64,9 @@ class App extends React.Component {
                     <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
                 <div className="ant-layout-main" >
-                    <Affix offsetTop={70}>
+                    <Affix offsetTop={66}>
                         <NavPath />
+                        <MenuBar />
                     </Affix>
 
                     <div className="ant-layout-container">
