@@ -42,13 +42,13 @@ class createMergeRequest extends Component {
         e.preventDefault();
         const {getProjectInfo} = this.props;
         const projectId = getProjectInfo.gitlabProject.id;
-        this.props.form.setFieldsValue({project_id: projectId});
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
+                data.project_id=projectId;
                 console.log('收到表单值：', data);
             }
         })
@@ -76,7 +76,7 @@ class createMergeRequest extends Component {
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                         <FormItem {...formItemLayout} label="source branch">
-                                <Select style={{ width: 200 }} {...getFieldProps('project_id',{initialValue: path})} >
+                                <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: path})} >
                                     <Option key={projectId}>{path}</Option>
                                 </Select>
                                 <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('source_branch',{initialValue: 'master'})} >

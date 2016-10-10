@@ -5,7 +5,10 @@ import api from '../../../api';
 import {MORE_MILESTONES_SUCCESS,
     MORE_MILESTONES_ERROR} from '../constants/more-milestones-action-type';
 
-export function getMoreMilestonesSuss(data) {
+export function getMoreMilestonesSuss(data,moreMilestoneData) {
+    for(let i=0; i<moreMilestoneData.length; i++) {
+        data.push(moreMilestoneData[i]);
+    }
     return {
         type:MORE_MILESTONES_SUCCESS,
         data:data
@@ -22,10 +25,8 @@ export function getMoreMilestonesFail() {
 export function getMoreMilestones(data,moreMilestoneData) {
     return (dispatch) => {
         if(moreMilestoneData){
-            for(let i=0; i<moreMilestoneData.length; i++) {
-                data.push(moreMilestoneData[i]);
-            }
-            dispatch(getMoreMilestonesSuss(data));
+
+            dispatch(getMoreMilestonesSuss(data,moreMilestoneData));
         }else{
             dispatch(getMoreMilestonesFail());
         }

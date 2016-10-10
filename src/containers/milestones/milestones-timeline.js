@@ -12,7 +12,7 @@ import {getMoreMilestones} from './actions/more-milestones-actions';
 
 import './index.less';
 
-const data = [];
+var data = [];
 var page =1;
 class Milestones extends React.Component {
     constructor(props) {
@@ -22,22 +22,24 @@ class Milestones extends React.Component {
     componentDidMount() {
         let projectId = 17;
         const {moreMilestoneData} = this.props;
-        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,1));
+        PubSub.subscribe("evtRefreshTimeilne");
         if (!moreMilestoneData){
         this.props.getMilestones(projectId,page);
         }
 
     }
 
+    clearData(){
+        data = [];
+        this.props.getMilestones(17,1)
+    }
+
     componentWillReceiveProps(nextProps) {
         const actionType = this.props.actionType;
         const acquireData = nextProps.acquireData;
         if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData != '') {
-            console.log(1111);
-            console.log('this.props.milestoneData',this.props.milestoneData);
-            console.log('nextProps.milestoneData11',nextProps.milestoneData);
-            this.props.getMoreMilestones(data,nextProps.milestoneData);
-
+            const moreMilestoneData = nextProps.milestoneData;
+            this.props.getMoreMilestones(data,moreMilestoneData);
         }
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && acquireData ){
             this.warnCallback();
