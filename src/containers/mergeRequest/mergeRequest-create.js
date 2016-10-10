@@ -49,7 +49,6 @@ class createMergeRequest extends Component {
             } else {
                 const data = form.getFieldsValue();
                 data.project_id=projectId;
-                console.log('收到表单值：', data);
             }
         })
 
