@@ -69,7 +69,6 @@ class GroupDetail extends React.Component {
     errCallback(message){
         notification.error({
             message: '创建失败',
-            //description: '项目组名称或者路径已被占用!',
             description:message,
             duration: 1
         });
@@ -80,16 +79,6 @@ class GroupDetail extends React.Component {
         if (this.props.inserted != inserted && inserted) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
-            /*var message ='';
-             if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") < 0)){
-             message = "项目组名称已被占用!";
-             }else if((errMessage.indexOf("path") > 0) && (errMessage.indexOf("name") < 0)){
-             message = "项目组路径已被占用!";
-             }else if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") > 0)){
-             message = "项目组名称或者路径已被占用!";
-             }
-             this.errCallback(message);
-             }*/
             this.errCallback(errMessage);
         }
     }
