@@ -10,7 +10,6 @@ import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import TopNaviGation from '../top-navigation/top-navigation';
 import {logout, fetchProfile} from '../login/actions/login-action';
 import MenuBar from '../../components/menubar';
 
@@ -69,9 +68,9 @@ class App extends React.Component {
                 <div className="ant-layout-main" >
                     <Affix offsetTop={66}>
                         <NavPath />
-                        <MenuBar />
+                        <MenuBar menuData={this.props.menuData}
+                                 navpath={this.props.navpath}/>
                     </Affix>
-                    <TopNaviGation />
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}
                         {this.props.children}
@@ -100,7 +99,9 @@ function mapStateToProps(state) {
     const {login} = state;
     return {
         uid: login.uid ? login.uid : null,
-        profile: login.profile ? login.profile : null
+        profile: login.profile ? login.profile : null,
+        menuData:state.menu.items,
+        navpath: state.menu.navpath,
     }
 }
 

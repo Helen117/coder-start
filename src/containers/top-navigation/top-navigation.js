@@ -45,7 +45,7 @@ class TopNaviGation extends React.Component {
                     )
                 })
             }
-        }
+        };
         return (
             <div>
                 <Menu mode="horizontal" onClick={this.handleClick.bind(this)}>
