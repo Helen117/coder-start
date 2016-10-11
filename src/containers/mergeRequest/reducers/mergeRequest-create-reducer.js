@@ -26,13 +26,12 @@ export default function createMr(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading:true,disabled:true});
         
         case CREATE_MR_SUCCESS:
-            console.log('action.payload',action.payload);
             return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
 
         case CREATE_MR_ERROR:
             return {
                 ...state,
-                errors: action.payload.message,
+                errors: action.payload.errorMsg,
                 loading:false,
                 disabled:false
             };
