@@ -20,7 +20,7 @@ module.exports.menu = {
             "parentId": 0,
             "cLevel": 1,
             "name": "代码管理",
-            "link": "/project-mgr.html",
+            "link": "",
             "description": "",
             "subMenu": [
                 {
@@ -36,11 +36,47 @@ module.exports.menu = {
                             "parentId": 6,
                             "cLevel": 3,
                             "name": "项目代码",
-                            "link": "/project-mgr.html",
+                            "link": "",
+                            "description": "",
+                            "subMenu": null
+                        },
+                        {
+                            "id": 13,
+                            "parentId": 6,
+                            "cLevel": 3,
+                            "name": "里程碑管理",
+                            "link": "/milestones.html",
+                            "description": "",
+                            "subMenu": null
+                        },
+                        {
+                            "id": 14,
+                            "parentId": 6,
+                            "cLevel": 3,
+                            "name": "问题管理",
+                            "link": "/issue.html",
                             "description": "",
                             "subMenu": null
                         }
                     ]
+                },
+                {
+                    "id": 11,
+                    "parentId": 2,
+                    "cLevel": 2,
+                    "name": "测试案例",
+                    "link": "",
+                    "description": "",
+                    "subMenu": []
+                },
+                {
+                    "id": 12,
+                    "parentId": 2,
+                    "cLevel": 2,
+                    "name": "代码质量管理",
+                    "link": "",
+                    "description": "",
+                    "subMenu": []
                 }
             ]
         },
