@@ -20,8 +20,25 @@ class createMergeRequest extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
-        this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
+        if(this.props.getProjectInfo) {
+            this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
+
+        }else{
+            const {router} = this.context;
+            router.goBack();
+            this.errChosePro();
+        }
+        if(this.props.targetProData){
+            this.props.fetchMessage.fetchSourceProData(this.props.targetProData.id);
+        }
+    }
+
+    errChosePro(){
+        notification.error({
+            message: '未选择项目',
+            description:'请先在“代码管理“中选择一个项目！',
+            duration: 2
+        });
     }
 
     insertCallback(){
