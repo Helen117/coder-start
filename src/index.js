@@ -20,6 +20,7 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {Milestones,MilestoneDetail,MilestoneCreate} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
+import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
@@ -81,6 +82,8 @@ ReactDOM.render(
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
                         <Route name="mergeRequest" breadcrumbName="代码合并请求(MR)管理" path="mergeRequest.html" component={mergeRequestList}/>
                         <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest.html" component={createMergeRequest}/>
+                        <Route name="branches" breadcrumbName="分支管理" path="branches.html" component={branchesList}/>
+                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches.html" component={createBranches}/>
 
                     </Route>
                     <Route path="register.html" component={Register}/>
