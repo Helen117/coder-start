@@ -48,12 +48,17 @@ class IssueList extends Component {
 
     //时间戳转换成日期
     getTime(date) {
-        return new Date(parseInt(date)).toLocaleString();
+        if(date){
+            return new Date(parseInt(date)).toLocaleDateString();
+        }else{
+            return null;
+        }
+
     }
 
     //获取表格的数据源
     getDataSource(){
-        const {issueList} = this.props;
+        const {issueList,projectInfo,groupInfo} = this.props;
         //console.log('获取表格数据：',issueList);
         const data = [];
         if(issueList){
@@ -65,8 +70,10 @@ class IssueList extends Component {
                 var milestone_id = issueList[i].milestone?issueList[i].milestone.id:null;
                 var milestoneDueDate = issueList[i].milestone?issueList[i].milestone.due_date:null;
                 data.push({
-                    group_id:issueList[i].iid,
+                    group_id:groupInfo.id,
+                    group_name:groupInfo.name,
                     project_id:issueList[i].project_id,
+                    project_name:projectInfo.name,
                     id:issueList[i].id,
                     title: issueList[i].title,
                     description:issueList[i].description,
@@ -181,11 +188,11 @@ IssueList.contextTypes = {
 
 IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
-    dataIndex: 'group_id',
+    dataIndex: 'group_name',
     width: '8%',
 },{
     title: '所属项目',
-    dataIndex: 'project_id',
+    dataIndex: 'project_name',
     width: '8%',
     //fixed: 'left'
 },{
@@ -241,6 +248,9 @@ IssueList.prototype.issueListColumns = (self)=>[{
     }, {
         text: 'opened',
         value: 'opened',
+    },, {
+        text: 'reopened',
+        value: 'reopened',
     }],
     onFilter: (value, record) => record.state.indexOf(value) === 0
 },{
@@ -261,6 +271,8 @@ function mapStateToProps(state) {
     return {
         issueList: state.issue.issueList,
         loading:state.issue.loading,
+        projectInfo:state.getProjectInfo.projectInfo,
+        groupInfo:state.getGroupInfo.groupInfo,
     };
 }
 

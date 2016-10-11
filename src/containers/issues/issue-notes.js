@@ -105,7 +105,7 @@ import * as issue from './actions/issue-action';
         return(
             <div>
                 <ul>
-                    <div className={styles.notes_ul}>
+                    <div className={styles.notes_head}>
                         <h2>
                             {this.props.location.state.record.title}
                         </h2>
@@ -114,8 +114,7 @@ import * as issue from './actions/issue-action';
                         </p>
                     </div>
                 </ul>
-                <br/>
-                <ul>
+                <ul  className={styles.notes_ul}>
                     {list}
                 </ul>
                 <br/>

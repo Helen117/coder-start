@@ -162,7 +162,7 @@ class ProjectItem extends Component {
                 return (
                     <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-                        <Select id="role" size="large"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
+                        <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                             <Option value="http">HTTP</Option>
                         </Select>
