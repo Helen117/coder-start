@@ -36,7 +36,7 @@ module.exports.menu = {
                             "parentId": 6,
                             "cLevel": 3,
                             "name": "项目代码",
-                            "link": "",
+                            "link": "/project-mgr.html",
                             "description": "",
                             "subMenu": null
                         },
@@ -47,7 +47,7 @@ module.exports.menu = {
                             "name": "里程碑管理",
                             "link": "/milestones.html",
                             "description": "",
-                            "subMenu": null
+                            "subMenu": []
                         },
                         {
                             "id": 14,
@@ -56,7 +56,7 @@ module.exports.menu = {
                             "name": "问题管理",
                             "link": "/issue.html",
                             "description": "",
-                            "subMenu": null
+                            "subMenu": []
                         }
                     ]
                 },
@@ -95,7 +95,7 @@ module.exports.menu = {
                     "name": "里程碑管理",
                     "link": "/milestones.html",
                     "description": "",
-                    "subMenu": null
+                    "subMenu": []
                 }
             ]
         },
@@ -114,7 +114,7 @@ module.exports.menu = {
                     "name": "问题查看",
                     "link": "/issue.html",
                     "description": "",
-                    "subMenu": null
+                    "subMenu": []
                 }
             ]
         },
@@ -133,7 +133,7 @@ module.exports.menu = {
                     "name": "代码合并请求(MR)管理",
                     "link": "/mergeRequest.html",
                     "description": "",
-                    "subMenu": null
+                    "subMenu": []
                 }
             ]
         }

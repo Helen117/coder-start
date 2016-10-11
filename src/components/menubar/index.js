@@ -14,12 +14,7 @@ export default class MenuBar extends React.Component {
             currentMenuTwo:"menuTwo0",
         }
     }
-    selectMenuOne(e){
-        console.log("e:",e);
-        this.context.router.push({
-            pathname: '/project-mgr.html',
-        });
-    }
+
     clickMenuOne(e){
         this.setState({
             currentMenuOne:e.key,
@@ -72,7 +67,8 @@ export default class MenuBar extends React.Component {
                                     return (
                                         <li key={menuTwoKey}
                                             className={(menuTwoKey == this.state.currentMenuTwo) ? "active" : ""}>
-                                            <a href={itemTwo.link}><span>{itemTwo.name}</span></a>
+                                            {/*<a href={itemTwo.link}><span>{itemTwo.name}</span></a>*/}
+                                            <Link to={itemTwo.link}>{itemTwo.name}</Link>
                                         </li>
                                     )
                                 });
@@ -92,6 +88,7 @@ export default class MenuBar extends React.Component {
                 }
             }
         }
+
 
         return (
             <div className="menu-area">

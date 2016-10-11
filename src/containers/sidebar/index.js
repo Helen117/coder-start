@@ -63,9 +63,20 @@ class Sidebar extends React.Component {
 
         const menu = items.map((item) => {
             openKey.push('sub' + item.id);
+            let link;
+            if (item.subMenu.length>0){
+                if (item.subMenu[0].subMenu.length==0){
+                    link = item.subMenu[0].link;
+                }else{
+                    link = item.subMenu[0].subMenu[0].link;
+                }
+            }else{
+                link = item.link;
+            }
+            console.log("link:",link);
             return (
                 <Menu.Item key={'menu' + item.id}>
-                    <Link to={item.link}><Icon type='user'/>{item.name}</Link>
+                    <Link to={link}><Icon type='user'/>{item.name}</Link>
                 </Menu.Item>
             )
             // return (
