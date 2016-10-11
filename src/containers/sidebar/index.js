@@ -41,7 +41,6 @@ class Sidebar extends React.Component {
     }
 
     menuClickHandle(item) {
-        //console.log("menuClick:",item);
         this.props.updateNavPath(item.keyPath, item.key);
     }
 
@@ -56,7 +55,6 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        //console.log("this.state.openSideBar:",this.state.openSideBar);
         const {items} = this.props;
         let openKey = [];
         let selectedKeys = ['menu1'];
@@ -73,23 +71,11 @@ class Sidebar extends React.Component {
             }else{
                 link = item.link;
             }
-            console.log("link:",link);
             return (
                 <Menu.Item key={'menu' + item.id}>
                     <Link to={link}><Icon type='user'/>{item.name}</Link>
                 </Menu.Item>
             )
-            // return (
-            //     <SubMenu key={'sub' + item.id} title={<span><Icon type='user'/>{item.name}</span>}>
-            //         {item.subMenu.map((node) => {
-            //             return (
-            //                 <Menu.Item key={'menu' + node.id}>
-            //                     <Link to={node.link}>{node.name}</Link>
-            //                 </Menu.Item>
-            //             );
-            //         })}
-            //     </SubMenu>
-            // )
         });
         return (
             <aside className={this.state.openSideBar ? "ant-layout-sider" : "ant-layout-sider-off"}  onMouseLeave={this.clickSideBar.bind(this)}>

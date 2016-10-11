@@ -21,7 +21,6 @@ export default class MenuBar extends React.Component {
         })
     }
     clickMenuTwo(e){
-        //console.log("e:",e);
         this.setState({
             currentMenuTwo:e.key,
         })
@@ -67,7 +66,6 @@ export default class MenuBar extends React.Component {
                                     return (
                                         <li key={menuTwoKey}
                                             className={(menuTwoKey == this.state.currentMenuTwo) ? "active" : ""}>
-                                            {/*<a href={itemTwo.link}><span>{itemTwo.name}</span></a>*/}
                                             <Link to={itemTwo.link}>{itemTwo.name}</Link>
                                         </li>
                                     )
