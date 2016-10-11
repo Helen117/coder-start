@@ -8,34 +8,42 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestones} from './actions/milestones-action';
+import {getMoreMilestones} from './actions/more-milestones-actions';
 
 import './index.less';
 
-const data = [];
+var data = [];
+var page =1;
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
-        this.page =1;
     }
 
     componentDidMount() {
         let projectId = 17;
-        const {milestoneData} = this.props;
-        PubSub.subscribe("evtRefreshTimeilne",()=>this.props.getMilestones(projectId,this.page));
-        if (milestoneData == '' ){
-            this.props.getMilestones(projectId,this.page);
+        const {moreMilestoneData} = this.props;
+        //PubSub.subscribe("evtRefreshTimeilne",this.clearData.bind(this));
+        if (!moreMilestoneData || moreMilestoneData==''){
+            data =[];
+            this.props.getMilestones(projectId,page);
         }
 
     }
 
+
+
     componentWillReceiveProps(nextProps) {
-        if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData) {
-           // const {milestoneData} = nextProps.milestoneData;
-            for(let i=0; i<nextProps.milestoneData.length; i++) {
-                data.push(nextProps.milestoneData[i]);
+        const actionType = this.props.actionType;
+        const acquireData = nextProps.acquireData;
+        if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData != '') {
+            const moreMilestoneData = nextProps.milestoneData;
+            for(let i=0; i<moreMilestoneData.length; i++) {
+                data.push(moreMilestoneData[i]);
             }
-        }else if(nextProps.milestoneData.length==0){
-            //this.warnCallback();
+            this.props.getMoreMilestones(data);
+        }
+        if(this.props.milestoneData =='' && nextProps.milestoneData=='' && acquireData ){
+            this.warnCallback();
         }
     }
 
@@ -50,9 +58,8 @@ class Milestones extends React.Component {
 
     moreMilestones(){
         let projectId = 17;
-        this.page ++;
-        this.props.getMilestones(projectId,this.page);
-
+        page ++;
+        this.props.getMilestones(projectId,page);
     }
 
     //时间戳转换成日期
@@ -90,11 +97,9 @@ class Milestones extends React.Component {
 
     //gouz
     timelineItemConst(){
-        const {milestoneData} = this.props;
-        //console.log('milestoneData',milestoneData);
-        //console.log('data222',data);
-        if (data != '' && milestoneData!= 'data'){
-            var timeLine = data.map((item) => {
+        const {moreMilestoneData} = this.props;
+        if (moreMilestoneData){
+            var timeLine = moreMilestoneData.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
@@ -121,7 +126,7 @@ class Milestones extends React.Component {
 
     render(){
         this.timeline =[];
-        const {loading, loadingMsg,notFoundMsg,milestoneData} = this.props;
+        const {loading, loadingMsg,notFoundMsg} = this.props;
         const timeLine = this.timelineItemConst();
         return (
             <Box title="里程碑">
@@ -156,16 +161,21 @@ Milestones.propTypes = {
 };
 
 function mapStateToProps(state) {
-    //console.log('获取到的item：',state.milestones.items);
     return {
+        moreMilestoneData:state.moreMilestonesData.moreData,
         milestoneData: state.milestones.items,
-        loading:state.milestones.loading
+        acquireData:state.milestones.acquireData,
+        loading:state.milestones.loading,
+        actionType:state.moreMilestonesData.actionType
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMilestones: bindActionCreators(getMilestones, dispatch)
+        getMilestones: bindActionCreators(getMilestones, dispatch),
+
+       getMoreMilestones:bindActionCreators(getMoreMilestones, dispatch),
+
     }
 }
 

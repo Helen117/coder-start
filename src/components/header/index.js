@@ -7,7 +7,7 @@
  * Created by william.xu on 2016/9/4
  */
 import React from 'react';
-import {Row, Col, Icon, Menu, Dropdown} from 'antd';
+import {Row, Col, Icon, Menu, Dropdown, Button} from 'antd';
 import './index.less';
 
 const SubMenu = Menu.SubMenu;
@@ -24,6 +24,10 @@ export default class Header extends React.Component {
         }
     }
 
+    showSideBar(){
+        this.props.showSideBar();
+    }
+
     render() {
         const {profile} = this.props;
         const username = profile ? profile.name : 'loading';
@@ -32,7 +36,7 @@ export default class Header extends React.Component {
                 <Col span={6}>
                     <img src="/assets/images/logo.png"/>
                 </Col>
-                <Col span={16} className="pending-item">
+                <Col span={15} className="pending-item">
                     <p>
                         你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span>{5}</span> 项，
                         当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项
@@ -52,6 +56,14 @@ export default class Header extends React.Component {
                         {/*<Icon type="question"/>帮助*/}
                         {/*</Menu.Item>*/}
                     </Menu>
+                </Col>
+                <Col span={1}>
+                    {/*<Button style={{paddingTop:15,paddingRight:15}}*/}
+                            {/*type="Ghost" shape="circle" icon="bars"*/}
+                            {/*onClick={this.showSideBar.bind(this)}/>*/}
+                    <Icon className="action-button"
+                            type="bars" onMouseOver={this.showSideBar.bind(this)}  onClick={this.showSideBar.bind(this)}
+                          />
                 </Col>
             </Row>
         );

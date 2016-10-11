@@ -3,16 +3,39 @@
   min-height: 100%;
   min-width: 1100px;
   .ant-layout-main {
-    margin-left: 224px;
+    //margin-left: 224px;
+    //margin-left: 230px;
+    .ant-affix{
+      z-index: 9;
+    }
+  }
+  .ant-layout-main-sidebar-off {
+    margin-left: 0px;
   }
   .ant-layout-container {
-    margin: 10px;
+    margin: 0px 10px 10px 10px;
     min-height: 500px;
     .ant-layout-content {
       background: #fff;
       padding: 10px;
     }
   }
+}
+.bread-sidebar-button {
+  //right:-220px;
+  //right:-190px;
+  left:0px;
+  position: relative;
+  display: block;
+  //position: absolute;
+}
+.bread-sidebar-button-off {
+  //right:-220px;
+  //right:-190px;
+  left:8px;
+  display: none;
+  //position: absolute;
+  //position: absolute;
 }
 
 @import '../../../node_modules/antd/dist/antd.less';

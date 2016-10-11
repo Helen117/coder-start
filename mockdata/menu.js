@@ -46,6 +46,15 @@ module.exports.menu = {
             name: '问题管理',
             link: '/issue.html'
         }]
-    }]
+    },
+        {
+            id: 7,
+            name: '代码合并请求(MR)管理',
+            subMenu: [{
+                id: 71,
+                name: '代码合并请求(MR)管理',
+                link: '/mergeRequest.html'
+            }]
+        }]
 
 };

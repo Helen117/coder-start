@@ -7,6 +7,7 @@ import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
+import {getMoreMilestones} from './actions/more-milestones-actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -44,18 +45,23 @@ class MilestoneCreate extends React.Component {
         notification.success({
             message: '创建成功',
             description: '',
-            duration: 1
+            duration: 2
         });
-        PubSub.publish("evtRefreshTimeilne",{});
+        this.clearData();
         this.context.router.goBack();
+
+    }
+
+    clearData(){
+        let data = [];
+        this.props.getMoreMilestones(data);
     }
 
     errCallback(){
         notification.error({
             message: '创建失败',
             description: '创建失败!',
-            //description:{errMessage},
-            duration: 1
+            duration: 2
         });
     }
 
@@ -102,6 +108,7 @@ class MilestoneCreate extends React.Component {
 
     checkCreateDate(rule, value, callback){
         const {milestones} = this.props;
+
         var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
         if (!value) {
             callback();
@@ -204,7 +211,7 @@ class MilestoneCreate extends React.Component {
                     </Col>
                 </FormItem>
                 <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit">确定</Button>
+                    <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                     <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                 </FormItem>
             </Form>
@@ -223,21 +230,22 @@ MilestoneCreate.contextTypes = {
 
 
 function mapStateToProps(state) {
-    console.log("state.result:",state.createMilestones.result);
-    console.log("state.errors:",state.createMilestones.errors);
     return {
-
+        moreMilestoneData:state.moreMilestonesData.moreData,
         milestones: state.milestones.items,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
+        loading:state.createMilestones.loading,
+        disabled:state.createMilestones.disabled,
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createMilestone: bindActionCreators(createMilestone, dispatch)
+        createMilestone: bindActionCreators(createMilestone, dispatch),
+        getMoreMilestones:bindActionCreators(getMoreMilestones, dispatch),
     }
 }
 

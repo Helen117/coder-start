@@ -10,6 +10,7 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 import milestones from '../containers/milestones/reducers/milestones-reducer';
 import milestonesDetail from '../containers/milestones/reducers/milestones-table-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
+import moreMilestonesData from  '../containers/milestones/reducers/more-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -21,6 +22,8 @@ import getGroupMembers from '../containers/project-mgr/reducers/group_members_re
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
+import {fetchMergeData,fetchTargetProject} from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
+import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-reducer'
 
 
 const reducer = combineReducers({
@@ -29,6 +32,7 @@ const reducer = combineReducers({
     milestones,
     getGroupTree,
     createMilestones,
+    moreMilestonesData,
     createGroup,
     createProject,
     getGroupMembers,
@@ -40,7 +44,10 @@ const reducer = combineReducers({
     getProjectStar,
     getGroupInfo,
     getProjectInfo,
-    milestonesDetail
+    milestonesDetail,
+    fetchMergeData,
+    fetchTargetProject,
+    createMr
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

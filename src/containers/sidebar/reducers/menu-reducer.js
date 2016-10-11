@@ -20,31 +20,42 @@ export default function menu(state = initialState, action = {}) {
             //console.log('获取侧边栏的数据',action.payload);
             return Object.assign({}, initialState, {items: action.payload});
         case UPDATE_NAVPATH:
+            //console.log("action.payload.data:",action.payload.data);
             let navpath = [], tmpOb, tmpKey, child;
             if (action.payload.data) {
                 action.payload.data.reverse().map((item)=> {
-                    if (item.indexOf('sub') != -1) {
-                        tmpKey = item.replace('sub', '');
+                    // if (item.indexOf('sub') != -1) {
+                    //     tmpKey = item.replace('sub', '');
+                    //     tmpOb = _.find(state.items, function (o) {
+                    //         return o.id == tmpKey
+                    //     });
+                    //     child = tmpOb.subMenu;
+                    //     navpath.push({
+                    //         key: tmpOb.id,
+                    //         name: tmpOb.cname
+                    //     })
+                    // }
+                    // if (item.indexOf('menu') != -1) {
+                    //     tmpKey = item.replace('menu', '');
+                    //     if (child) {
+                    //         tmpOb = _.find(child, function (o) {
+                    //             return o.id == tmpKey
+                    //         });
+                    //     }
+                    //     navpath.push({
+                    //         key: tmpOb.id,
+                    //         name: tmpOb.name
+                    //     })
+                    // }
+                    if (item.indexOf('menu') != -1) {
+                        tmpKey = item.replace('menu', '');
                         tmpOb = _.find(state.items, function (o) {
                             return o.id == tmpKey
                         });
-                        child = tmpOb.subMenu;
-                        navpath.push({
-                            key: tmpOb.id,
-                            name: tmpOb.cname
-                        })
-                    }
-                    if (item.indexOf('menu') != -1) {
-                        tmpKey = item.replace('menu', '');
-                        if (child) {
-                            tmpOb = _.find(child, function (o) {
-                                return o.id == tmpKey
-                            });
-                        }
                         navpath.push({
                             key: tmpOb.id,
                             name: tmpOb.name
-                        })
+                        });
                     }
                 })
             }
