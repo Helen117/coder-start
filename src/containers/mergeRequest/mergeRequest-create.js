@@ -20,25 +20,8 @@ class createMergeRequest extends Component {
     }
 
     componentDidMount() {
-        if(this.props.getProjectInfo) {
-            this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
-
-        }else{
-            const {router} = this.context;
-            router.goBack();
-            this.errChosePro();
-        }
-        if(this.props.targetProData){
-            this.props.fetchMessage.fetchSourceProData(this.props.targetProData.id);
-        }
-    }
-
-    errChosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
-            duration: 2
-        });
+        this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
+        this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
     }
 
     insertCallback(){
@@ -60,7 +43,7 @@ class createMergeRequest extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage } = nextProps;
-        if (this.props.result != inserted && inserted){
+        if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
@@ -126,21 +109,21 @@ class createMergeRequest extends Component {
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout} label="source branch">
-                            <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath})} >
-                                <Option key={projectId}>{sourcePath}</Option>
-                            </Select>
-                            <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('source_branch',{initialValue: 'master'})} >
-                                <Option value="master">master</Option>
-                            </Select>
+                        <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath})} >
+                            <Option key={projectId}>{sourcePath}</Option>
+                        </Select>
+                        <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('source_branch',{initialValue: 'master'})} >
+                            <Option value="master">master</Option>
+                        </Select>
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="target branch" >
-                            <Select style={{ width: 200 }} {...getFieldProps('target_project_path',{initialValue: targetPath})} >
-                                <Option value={targetPath}>{targetPath}</Option>
-                            </Select>
-                            <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('target_branch',{initialValue: initialTargetBranch})} >
-                                {targetBranch}
-                            </Select>
+                        <Select style={{ width: 200 }} {...getFieldProps('target_project_path',{initialValue: targetPath})} >
+                            <Option value={targetPath}>{targetPath}</Option>
+                        </Select>
+                        <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('target_branch',{initialValue: initialTargetBranch})} >
+                            {targetBranch}
+                        </Select>
                     </FormItem>
 
 
@@ -148,11 +131,11 @@ class createMergeRequest extends Component {
                         <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写MR名称'}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="MR描述" >
-                        <Input type="textarea" placeholder="请输入MR描述" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
+                        <Input type="请输入MR描述" placeholder="description" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select size="large"   {...getFieldProps('milestone.id')} >
+                        <Select size="large"  {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
                     </FormItem>
@@ -188,7 +171,7 @@ function mapStateToProps(state) {
         getProjectInfo:state.getProjectInfo.projectInfo,
         loading:state.createMr.loading,
         disabled:state.createMr.disabled,
-        result: state.createMr.result,
+        inserted: state.createMr.result,
         errMessage:state.createMr.errors,
     };
 }

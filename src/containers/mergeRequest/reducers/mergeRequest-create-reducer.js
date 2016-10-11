@@ -4,6 +4,12 @@
 /**
  * Created by zhaojp on 2016/9/21.
  */
+/**
+ * Created by zhaojp on 2016/10/10.
+ */
+/**
+ * Created by zhaojp on 2016/9/21.
+ */
 import _ from 'lodash';
 import {
     CREATE_MR_PENDING,
@@ -24,7 +30,7 @@ export default function createMr(state = initialState, action = {}) {
 
         case CREATE_MR_PENDING:
             return Object.assign({}, initialState, {loading:true,disabled:true});
-        
+
         case CREATE_MR_SUCCESS:
             return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
 

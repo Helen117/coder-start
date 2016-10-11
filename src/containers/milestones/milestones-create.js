@@ -1,7 +1,3 @@
-/**
- * Created by zhaojp on 2016/9/19.
- */
-
 import React,{ PropTypes } from 'react';
 import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
@@ -65,10 +61,9 @@ class MilestoneCreate extends React.Component {
         });
     }
 
-
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage } = nextProps;
-        if (this.props.result != inserted && inserted){
+        if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback();
@@ -107,39 +102,21 @@ class MilestoneCreate extends React.Component {
         }
     }
 
-    dateFormate(date) {
-        return new Date(parseInt(date)).toLocaleDateString();
-    }
-
-    //中国标准时间转换
-    formatTen(num) {
-        return num > 9 ? (num + "") : ("0" + num);
-    }
-
-    formatDate(date) {
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        var day = date.getDate();
-        return year + "/" + this.formatTen(month) + "/" + this.formatTen(day);
-    }
-
     checkCreateDate(rule, value, callback){
         const {milestones} = this.props;
-        const lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
-        const lastDuedateFormate = this.dateFormate(lastMilestoneDuedate);
 
+        var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
         if (!value) {
             callback();
         } else {
-           setTimeout(() => {
-
-                    if (this.formatDate(value) < lastDuedateFormate) {
-                        callback([new Error('开始时间不能早于上一里程碑的结束时间:'+lastDuedateFormate)]);
-                    }if (this.formatDate(value) > lastDuedateFormate) {
-                        callback([new Error('上一里程碑的结束时间:'+lastDuedateFormate+',日程安排存在时间间隙')]);
-                    } else {
-                        callback();
-                    }
+            setTimeout(() => {
+                if (value < lastMilestoneDuedate) {
+                    callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
+                }if (value > lastMilestoneDuedate+(24 * 60 * 60 * 1000)) {
+                    callback([new Error('上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString()+',日程安排存在时间间隙')]);
+                } else {
+                    callback();
+                }
             }, 800);
         }
 
@@ -165,8 +142,7 @@ class MilestoneCreate extends React.Component {
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
-                { required: true, message: '请填写里程碑名称' },
-                {max: 30,message: '里程碑名称需在30字符以内'},
+                { required: true,min:1 ,max: 30, message: '名称长度为 1~30 个字符' },
                 { validator: this.titleExists.bind(this) },
             ],
         });
@@ -196,46 +172,46 @@ class MilestoneCreate extends React.Component {
 
 
         return(
-        <Box title="创建里程碑">
-            <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                <FormItem   {...formItemLayout} label="名称">
-                    <Input {...titleProps} placeholder="请输入名称" />
-                </FormItem>
-                <FormItem {...formItemLayout} label="备注" >
-                    <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description',{rules:[{ max: 100,message:'描述信息需在100个字符以内'}]})} />
-                </FormItem>
-                <FormItem
-                    label="日期"
-                    labelCol={{ span: 6 }}
-                    required
-                >
-                    <Col span="4">
-                        <FormItem>
-                            <DatePicker
-                                placeholder="开始日期"
-                                {...createDateProps}
-                                disabledDate={this.disabledStartDate.bind(this)}
-                            />
-                        </FormItem>
-                    </Col>
-                    <Col span="1">
-                        <p className="ant-form-split" >-</p>
-                    </Col>
-                    <Col span="6">
-                        <FormItem>
-                            <DatePicker
-                                placeholder="结束日期"
-                                {...dueDateProps}
-                                disabledDate={this.disabledEndDate.bind(this)}/>
-                        </FormItem>
-                    </Col>
-                </FormItem>
-                <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                </FormItem>
-            </Form>
-        </Box>
+            <Box title="创建里程碑">
+                <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
+                    <FormItem   {...formItemLayout} label="名称">
+                        <Input {...titleProps} placeholder="请输入名称" />
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="备注" >
+                        <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
+                    </FormItem>
+                    <FormItem
+                        label="日期"
+                        labelCol={{ span: 6 }}
+                        required
+                    >
+                        <Col span="4">
+                            <FormItem>
+                                <DatePicker
+                                    placeholder="开始日期"
+                                    {...createDateProps}
+                                    disabledDate={this.disabledStartDate.bind(this)}
+                                />
+                            </FormItem>
+                        </Col>
+                        <Col span="1">
+                            <p className="ant-form-split" >-</p>
+                        </Col>
+                        <Col span="6">
+                            <FormItem>
+                                <DatePicker
+                                    placeholder="结束日期"
+                                    {...dueDateProps}
+                                    disabledDate={this.disabledEndDate.bind(this)}/>
+                            </FormItem>
+                        </Col>
+                    </FormItem>
+                    <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    </FormItem>
+                </Form>
+            </Box>
 
         );
     }
@@ -254,7 +230,7 @@ function mapStateToProps(state) {
         moreMilestoneData:state.moreMilestonesData.moreData,
         milestones: state.milestones.items,
         logInfo: state.login.profile,
-        result: state.createMilestones.items,
+        inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
