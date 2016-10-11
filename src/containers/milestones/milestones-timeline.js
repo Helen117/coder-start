@@ -64,7 +64,7 @@ class Milestones extends React.Component {
 
     //时间戳转换成日期
     getTime(date) {
-        return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+        return new Date(parseInt(date)).toLocaleDateString().replace(/年|月/g, "-").replace(/日/g, " ");
     }
 
     //根据状态及完成情况设置时间轴颜色
@@ -104,14 +104,16 @@ class Milestones extends React.Component {
                 let i = 0;
                 return (
                     <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
-                        <p style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</p>
+                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</h4>
+                        <p>{item.gitlabMilestone.description}</p>
                         <div style={{marginLeft:12,width:500}}>
                             <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
                             <p>创建人：{item.owner}</p>
-                            <p>待解决的问题:</p>
-                            {item.issues.map((node) => {
+                            <span>待解决的问题：</span>
+
+                            {item.issues.length>0?item.issues.map((node) => {
                                 i++;
-                                return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)})
+                                return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)}):<span>无</span>
                             }
                             <Progress percent={item.rate} />
                             <a onClick={this.milestonesDetail.bind(this, item.gitlabMilestone.id)}>查看更多</a>

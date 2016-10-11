@@ -65,9 +65,10 @@ class MilestoneCreate extends React.Component {
         });
     }
 
+
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage } = nextProps;
-        if (this.props.inserted != inserted && inserted){
+        if (this.props.result != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback();
@@ -106,18 +107,36 @@ class MilestoneCreate extends React.Component {
         }
     }
 
+    dateFormate(date) {
+        return new Date(parseInt(date)).toLocaleDateString();
+    }
+
+    //中国标准时间转换
+    formatTen(num) {
+        return num > 9 ? (num + "") : ("0" + num);
+    }
+
+    formatDate(date) {
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        return year + "/" + this.formatTen(month) + "/" + this.formatTen(day);
+    }
+
     checkCreateDate(rule, value, callback){
         const {milestones} = this.props;
+        const lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
+        const lastDuedateFormate = this.dateFormate(lastMilestoneDuedate);
 
-        var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
         if (!value) {
             callback();
         } else {
-            setTimeout(() => {
-                    if (value < lastMilestoneDuedate) {
-                        callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleString())]);
-                    }if (value > lastMilestoneDuedate+(24 * 60 * 60 * 1000)) {
-                        callback([new Error('上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleString()+',日程安排存在时间间隙')]);
+           setTimeout(() => {
+
+                    if (this.formatDate(value) < lastDuedateFormate) {
+                        callback([new Error('开始时间不能早于上一里程碑的结束时间:'+lastDuedateFormate)]);
+                    }if (this.formatDate(value) > lastDuedateFormate) {
+                        callback([new Error('上一里程碑的结束时间:'+lastDuedateFormate+',日程安排存在时间间隙')]);
                     } else {
                         callback();
                     }
@@ -146,7 +165,8 @@ class MilestoneCreate extends React.Component {
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
-                { required: true,min:1 ,max: 30, message: '名称长度为 1~30 个字符' },
+                { required: true, message: '请填写里程碑名称' },
+                {max: 30,message: '里程碑名称需在30字符以内'},
                 { validator: this.titleExists.bind(this) },
             ],
         });
@@ -182,7 +202,7 @@ class MilestoneCreate extends React.Component {
                     <Input {...titleProps} placeholder="请输入名称" />
                 </FormItem>
                 <FormItem {...formItemLayout} label="备注" >
-                    <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
+                    <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description',{rules:[{ max: 100,message:'描述信息需在100个字符以内'}]})} />
                 </FormItem>
                 <FormItem
                     label="日期"
@@ -234,7 +254,7 @@ function mapStateToProps(state) {
         moreMilestoneData:state.moreMilestonesData.moreData,
         milestones: state.milestones.items,
         logInfo: state.login.profile,
-        inserted: state.createMilestones.items,
+        result: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
