@@ -61,7 +61,7 @@ class IssueList extends Component {
         const {issueList,projectInfo,groupInfo} = this.props;
         //console.log('获取表格数据：',issueList);
         const data = [];
-        if(issueList){
+        if(issueList&&projectInfo&&groupInfo){
             for (let i = 0; i < issueList.length; i++) {
                 var assign_name = issueList[i].assignee?issueList[i].assignee.name:null;
                 var assign_id = issueList[i].assignee?issueList[i].assignee.id:null;
