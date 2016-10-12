@@ -15,17 +15,33 @@ import * as issue from './actions/issue-action';
     }
 
      componentWillMount() {
-         console.log('record:',this.props.location.state);
+         //console.log('record:',this.props.location.state.record);
          const {actions} = this.props;
          actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
+
+         if(this.props.location.state.record.state=='closed'){
+             this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''}});
+         }else{
+             this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'}});
+         }
      }
 
      componentWillReceiveProps(nextProps) {
          const result = nextProps.issue.comment;
-         console.log('result:',result);
+         const issueState = nextProps.issue.updateIssue;
          if(result){
              document.getElementById("body").value="";
              this.setState({'hasValue':false});
+             const {actions} = this.props;
+             actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
+         }
+
+         if(issueState){
+             if(issueState.state=='closed'){
+                 this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''}});
+             }else{
+                 this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'}});
+             }
              const {actions} = this.props;
              actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
          }
@@ -47,8 +63,22 @@ import * as issue from './actions/issue-action';
         }
     }
 
-    closeIssue(){
-        this.props.actions.closeIssue(this.props.location.state.record.id);
+    editIssue(type){
+        const {actions,loginInfo} = this.props;
+        var issue_data = this.props.location.state.record;
+        if(type=='close'){
+            issue_data.state='close';
+        }else{
+            issue_data.state='reopen';
+        }
+        var data = {
+            state:issue_data.state,
+            project_id : issue_data.project_id,
+            id : issue_data.id,
+            updated_at : Date.now(),
+            username : loginInfo.username
+        };
+        actions.updateIssue(data);
     }
 
     change(){
@@ -62,7 +92,7 @@ import * as issue from './actions/issue-action';
     }
     render() {
         const { issue } = this.props;
-        console.log('issue:',issue.issueNotes);
+        //console.log('issue:',issue.issueNotes);
         const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>
             <div className={styles.notes_ul} >
                 <span>{data.author.name}@{data.author.username} {new Date(parseInt(data.created_at)).toLocaleString()}</span>
@@ -75,7 +105,7 @@ import * as issue from './actions/issue-action';
         return(
             <div>
                 <ul>
-                    <div className={styles.notes_ul}>
+                    <div className={styles.notes_head}>
                         <h2>
                             {this.props.location.state.record.title}
                         </h2>
@@ -84,8 +114,7 @@ import * as issue from './actions/issue-action';
                         </p>
                     </div>
                 </ul>
-                <br/>
-                <ul>
+                <ul  className={styles.notes_ul}>
                     {list}
                 </ul>
                 <br/>
@@ -96,7 +125,8 @@ import * as issue from './actions/issue-action';
                                        rows="10" id="body" onChange={this.change.bind(this)}/>
                             <br/>
                             <Button type='primary' htmlType='submit' disabled={!hasBody}>提交</Button>
-                            <Button type="ghost" onClick={this.closeIssue.bind(this)} >关闭问题</Button>
+                            <Button type="ghost" onClick={this.editIssue.bind(this,'close')} style={this.state.closeButtonStyle}>关闭问题</Button>
+                            <Button type="ghost" onClick={this.editIssue.bind(this,'reopen')} style={this.state.reopenButtonStyle}>重开问题</Button>
                         </Form>
                     </li>
                 </ul>
