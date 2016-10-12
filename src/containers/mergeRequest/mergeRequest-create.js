@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/8.
  */
 import React,{ PropTypes, Component } from 'react';
-import { Col, Button, Modal, Form, Input, Select,notification} from 'antd';
+import { Col, Button, Modal, Form, Input, Select,notification,Cascader } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -20,14 +20,16 @@ class createMergeRequest extends Component {
     }
 
     componentDidMount() {
-        if(this.props.getProjectInfo) {
+        this.props.fetchMessage.fetchTargetProData(17);
+        this.props.fetchMessage.fetchSourceProData(17);
+        /*if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
         }else{
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
-        }
+        }*/
     }
 
     errChoosePro(){
@@ -84,30 +86,34 @@ class createMergeRequest extends Component {
         e.preventDefault();
         const {getProjectInfo,targetProData,loginInfo} = this.props;
         const author = {};
-        author.username= loginInfo.username;
+        //author.username= loginInfo.username;
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.project_id=getProjectInfo.gitlabProject.id;
+                data.project_id=17//getProjectInfo.gitlabProject.id;
                 //data.target_project_id = targetProData.id;
-                data.author = author;
+                //data.author = author;
                 console.log('表单提交内容',data);
                 this.props.createMr(data);
             }
         })
 
     }
+    onSelect(value,option){
+        console.log('option',option);
+    }
 
     render(){
+        console.log('targetProData',this.props.targetProData);
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
         const {getProjectInfo,targetProData} = this.props;
         const projectId = getProjectInfo? getProjectInfo.gitlabProject.id:null;
         const sourcePath = getProjectInfo? getProjectInfo.gitlabProject.path_with_namespace:null
-        const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option value={data.title} key={data.id}>{data.title}</Option>):[];
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
         const targetBranch =targetProData? targetProData.branch.map(data => <Option key={data}>{data}</Option>):[];
         const targetPath = targetProData? targetProData.path_with_namespace:null;
@@ -125,10 +131,12 @@ class createMergeRequest extends Component {
                         <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath})} >
                             <Option key={projectId}>{sourcePath}</Option>
                         </Select>
-                        <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('source_branch',{initialValue: 'master'})} >
-                            <Option value="master">master</Option>
-                        </Select>
                     </FormItem>
+
+                    <FormItem {...formItemLayout} label="dataSam">
+                        <Cascader options={targetProData} placeholder="Please select" {...getFieldProps('dataSim')} />
+                    </FormItem>
+
 
                     <FormItem {...formItemLayout}  label="target branch" >
                         <Select style={{ width: 200 }} {...getFieldProps('target_project_path',{initialValue: targetPath})} >
@@ -139,6 +147,11 @@ class createMergeRequest extends Component {
                         </Select>
                     </FormItem>
 
+
+
+
+
+
                     <FormItem {...formItemLayout}  label="MR名称" >
                         <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写MR名称'}]})} />
                     </FormItem>
@@ -147,7 +160,7 @@ class createMergeRequest extends Component {
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select showSearch labelInValue  size="large" placeholder="请选择里程碑" {...getFieldProps('milestone.id')} >
+                        <Select showSearch onSelect={this.onSelect.bind(this)} labelInValue  size="large" placeholder="请选择里程碑" {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
                     </FormItem>

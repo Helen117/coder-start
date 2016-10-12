@@ -19,7 +19,7 @@ class MilestoneCreate extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {form,logInfo,milestones } = this.props;
+        const {form,logInfo } = this.props;
 
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -86,24 +86,11 @@ class MilestoneCreate extends React.Component {
         })
     }
 
-    titleExists(rule, value, callback){
-        const {milestones} = this.props;
-        if (!value) {
-            callback();
-        } else {
-            setTimeout(() => {
-                for( let i=0; i<milestones.length;i++){
-                    if (value === milestones[i].gitlabMilestone.title) {
-                        callback([new Error('里程碑已存在')]);
-                    }}
-            }, 800);
-        }
-    }
 
     checkCreateDate(rule, value, callback){
-        const {milestones} = this.props;
+        const {moreMilestoneData} = this.props;
 
-        var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
+        var lastMilestoneDuedate = moreMilestoneData[0].gitlabMilestone.due_date;
         if (!value) {
             callback();
         } else {
@@ -141,7 +128,6 @@ class MilestoneCreate extends React.Component {
         const titleProps = getFieldProps('title', {
             rules: [
                 { required: true,min:1 ,max: 30, message: '名称长度为 1~30 个字符' },
-                { validator: this.titleExists.bind(this) },
             ],
         });
 
@@ -226,7 +212,6 @@ MilestoneCreate.contextTypes = {
 function mapStateToProps(state) {
     return {
         moreMilestoneData:state.moreMilestonesData.moreData,
-        milestones: state.milestones.items,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
