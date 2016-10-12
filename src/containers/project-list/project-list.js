@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon} from 'antd';
+import {Switch,Icon, Row, Col} from 'antd';
 import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -30,15 +30,16 @@ class ProjectList extends Component {
 
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
-        PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
+        //PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
+
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
-        PubSub.unsubscribe("evtTreeClick");
+        //PubSub.unsubscribe("evtTreeClick");
     }
 
-    showProjectList(msg,data){
+    showProjectList(data){
         if(data.isLeaf == false && (data.id.indexOf("_p") < 0)){
             this.setState({
                 listType:true,
@@ -89,10 +90,18 @@ class ProjectList extends Component {
     }
 
     memberCountClick(record,groupInfo){
-        PubSub.publish("evtMemberCountClick",{record:record, groupInfo:groupInfo});
+        this.context.router.push({
+            pathname: '/project-mgr/project-list/project-member',
+            state: {record:record, groupInfo:groupInfo}
+        });
+        //PubSub.publish("evtMemberCountClick",{record:record, groupInfo:groupInfo});
     }
 
     componentWillReceiveProps(nextProps) {
+        const {node} = nextProps.location.state;
+        if(node){
+            this.showProjectList(node);
+        }
         const {loginInfo,} = this.props;
         const { consernedInfo, unconsernedInfo } = nextProps;
         if (this.props.consernedInfo != consernedInfo && consernedInfo){
@@ -174,18 +183,25 @@ class ProjectList extends Component {
                     }
                 ];
                 return (
-                    <div className ={styles.project_list_div}>
-                        <div>
-                            <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
-                        </div>
-                        <TableView columns={groupColumns(this)}
-                                   dataSource={dataSource}
-                        ></TableView>
+                    <div>
+                        <Row>
+                            <div className ={styles.project_list_div}>
+                                <div>
+                                    <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                                </div>
+                                <TableView columns={groupColumns(this)}
+                                           dataSource={dataSource}
+                                ></TableView>
+                            </div>
+                        </Row>
+                        <Row>
+                            {this.props.children}
+                        </Row>
                     </div>
                 )
             }
             return null;
-        }else if(this.state.nullType == true){
+        } else if(this.state.nullType == true){
             return(
                 <div className={styles.null_type_div}>
                     <span><Icon type="frown-circle" />&nbsp;&nbsp;&nbsp;当前项目组下没有项目！</span>
@@ -196,6 +212,12 @@ class ProjectList extends Component {
         }
     }
 }
+
+ProjectList.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {

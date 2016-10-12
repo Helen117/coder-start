@@ -155,12 +155,14 @@ class createMergeRequest extends Component {
                         <Select size="large"  {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
+
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
                         <Select multiple size="large"  {...getFieldProps('labels')} >
                             {label}
                         </Select>
+
                     </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>

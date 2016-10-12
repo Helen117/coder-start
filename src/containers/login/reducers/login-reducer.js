@@ -3,6 +3,7 @@ import {
     LOGIN_SUCCESS,
     LOGIN_ERROR,
     LOGOUT,
+    COOKIES_LOGIN_STATE,
     FETCH_PROFILE_PENDING,
     FETCH_PROFILE_SUCCESS,
     UID_NOT_FOUND
@@ -43,6 +44,11 @@ export default function auth(state = initialState, action = {}) {
                 uid: null,
                 loginErrors: null
             };
+        case COOKIES_LOGIN_STATE:
+            const uid = parseInt(Cookies.get('uid'));
+            const profile = Cookies.getJSON('profile');
+            console.info('login-reducer='+uid);
+            return Object.assign({}, initialState, {profile:profile,uid: uid, loggingIn: false, loginErrors: null});
         case FETCH_PROFILE_SUCCESS:
             return Object.assign({}, initialState, {profile: action.payload, uid: state.uid});
         case UID_NOT_FOUND:

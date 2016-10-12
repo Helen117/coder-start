@@ -15,7 +15,7 @@ class mergeRequestList extends React.Component {
 
     createMergeRequest(type){
             this.context.router.push({
-                pathname: '/createMergeRequest.html',
+                pathname: '/createMergeRequest',
                 state: {editType: type}
             });
     }

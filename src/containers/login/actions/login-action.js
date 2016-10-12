@@ -1,5 +1,5 @@
 import api from '../../../api';
-import {UID_NOT_FOUND, FETCH_PROFILE, LOGIN, LOGOUT} from '../constants/login-action-types';
+import {UID_NOT_FOUND, FETCH_PROFILE, LOGIN, LOGOUT, COOKIES_LOGIN_STATE} from '../constants/login-action-types';
 
 
 export function fetchProfile(uid) {
@@ -32,5 +32,11 @@ export function login(user, password) {
 export function logout() {
     return {
         type: LOGOUT
+    }
+}
+
+export function cookiesToReduxLoginState() {
+    return {
+        type: COOKIES_LOGIN_STATE
     }
 }

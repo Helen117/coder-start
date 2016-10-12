@@ -13,6 +13,7 @@ import {Menu, Icon, Button, Affix} from 'antd';
 import {Link} from 'react-router';
 import {getAllMenu, updateNavPath} from './actions/menu-action';
 //import authUtils from '../../utils/auth'
+import 'pubsub-js';
 import './index.less';
 
 const SubMenu = Menu.SubMenu;
@@ -42,6 +43,7 @@ class Sidebar extends React.Component {
 
     menuClickHandle(item) {
         this.props.updateNavPath(item.keyPath, item.key);
+        PubSub.publish("refreshMenuOne",{refreshed:true});
     }
 
     clickSideBar(){
@@ -55,29 +57,27 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        //console.log("this.state.openSideBar:",this.state.openSideBar);
         const {items} = this.props;
         let openKey = [];
         let selectedKeys = ['menu1'];
 
         const menu = items.map((item) => {
             openKey.push('sub' + item.id);
+            let link;
+            if (item.subMenu.length>0){
+                if (item.subMenu[0].subMenu.length==0){
+                    link = item.subMenu[0].link;
+                }else{
+                    link = item.subMenu[0].subMenu[0].link;
+                }
+            }else{
+                link = item.link;
+            }
             return (
                 <Menu.Item key={'menu' + item.id}>
-                    <Link to={item.link}><Icon type='user'/>{item.name}</Link>
+                    <Link to={link}><Icon type='user'/>{item.name}</Link>
                 </Menu.Item>
             )
-            // return (
-            //     <SubMenu key={'sub' + item.id} title={<span><Icon type='user'/>{item.name}</span>}>
-            //         {item.subMenu.map((node) => {
-            //             return (
-            //                 <Menu.Item key={'menu' + node.id}>
-            //                     <Link to={node.link}>{node.name}</Link>
-            //                 </Menu.Item>
-            //             );
-            //         })}
-            //     </SubMenu>
-            // )
         });
         return (
             <aside className={this.state.openSideBar ? "ant-layout-sider" : "ant-layout-sider-off"}  onMouseLeave={this.clickSideBar.bind(this)}>

@@ -45,9 +45,9 @@ class Login extends React.Component {
             });
         }
         if (uid) {
+            this.context.router.replace('/home');
             Cookies.set('uid', uid);
             Cookies.set('profile', nextProps.profile);
-            this.context.router.replace('/home.html');
         }
     }
 
@@ -70,7 +70,7 @@ class Login extends React.Component {
     }
 
     register(){
-        this.context.router.replace('/register.html');
+        this.context.router.replace('/register');
     }
 
     render() {

@@ -27,20 +27,24 @@ class IssueList extends Component {
         actions.getIssueList(17);
     }
 
+    // editIssue() {
+    //     this.context.router.replace('/issueEdit');
+    // }
 
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
         this.context.router.push({
-            pathname: '/issueEdit.html',
+            pathname: '/issueEdit',
             state: {editType: type, selectedRow}
         });
     }
 
     issueNotes(record) {
+        //this.context.router.replace('/issueNotes');
         //this.context.router.replace('/issueNotes.html');
         //console.log('record:',record);
         this.context.router.push({
-            pathname: '/issueNotes.html',
+            pathname: '/issueNotes',
             state: {record}
         });
     }

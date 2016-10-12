@@ -54,7 +54,7 @@ class AddIssue extends Component{
         }
         if (!error && result) {
             message.success('新增成功');
-            this.context.router.replace('/issue.html');
+            this.context.router.replace('/issue');
         }
 
         if(nextProps.issue.updateIssueError && nextProps.issue.updateIssueError!= this.props.issue.updateIssueError){
@@ -115,7 +115,7 @@ class AddIssue extends Component{
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.replace('/issue.html');
+                router.replace('/issue');
                 form.resetFields();
             },
             onCancel() {
@@ -162,7 +162,7 @@ class AddIssue extends Component{
                             {mileStoneOptions}
                         </Select>
                         <br/>
-                        <a href="/createMilestones.html">Create new mileStone</a>
+                        <a href="mileStone">Create new mileStone</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题标签" >
@@ -170,7 +170,7 @@ class AddIssue extends Component{
                             {label}
                         </Select>
                         <br/>
-                        <a href="/label.html">Create new label</a>
+                        <a href="label">Create new label</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="上传" >
