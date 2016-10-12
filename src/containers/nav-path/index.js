@@ -35,7 +35,7 @@ class NavPath extends React.Component {
         return (
             <div className="ant-layout-breadcrumb">
                 <Breadcrumb>
-                    {/*<Breadcrumb.Item key='bc-0'><Link to={'/home.html'} state={null}>首页</Link></Breadcrumb.Item>*/}
+                    {/*<Breadcrumb.Item key='bc-0'><Link to={'/home'} state={null}>首页</Link></Breadcrumb.Item>*/}
                     {bread.length>0?bread:(<Breadcrumb.Item key='bc-0'>首页</Breadcrumb.Item>)}
                 </Breadcrumb>
                 <br />

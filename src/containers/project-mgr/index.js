@@ -44,15 +44,14 @@ class ProjectMgr extends React.Component{
     }
 
     editGroup(type, selectedRow) {
-        console.log("888");
         this.context.router.push({
-            pathname: '/group-detail.html',
+            pathname: '/project-mgr/group-detail',
             state: {editType: type, selectedRow}
         });
     }
     editProject(type, selectedRow) {
         this.context.router.push({
-            pathname: '/project-detail.html',
+            pathname: '/project-mgr/project-detail',
             state: {editType: type, selectedRow,
                     /*selectGroupName:this.state.selectGroupName,
                     selectGroupId:this.state.selectGroupId*/}
@@ -92,16 +91,24 @@ class ProjectMgr extends React.Component{
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
             this.props.getGroupInfo(groupInfo);
+            this.context.router.push({
+                pathname: '/project-mgr/project-list',
+                state: {node}
+            });
         }else{
             var node_p = node.id.replace("_p","");
             const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
             this.props.getProjectInfo(projectInfo);
             this.props.getGroupInfo(groupInfo);
+            this.context.router.push({
+                pathname: '/project-mgr/project-item',
+                state: {node}
+            });
         }
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
         }
-        PubSub.publish("evtTreeClick",node);
+        //PubSub.publish("evtTreeClick",node);
     }
 
     render(){
@@ -125,12 +132,9 @@ class ProjectMgr extends React.Component{
                         <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
                             新建项目
                         </Button>
-                        <span className="pull-right">新建项目之前请先选择一个你创建的组！</span>
                     </Row>
                     <Row>
-                        <ProjectList />
-                        <ProjectItem />
-                        <ProjectMember />
+                        {this.props.children}
                     </Row>
                 </Col>
             </Row>

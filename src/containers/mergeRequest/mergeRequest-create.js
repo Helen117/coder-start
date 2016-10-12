@@ -144,7 +144,7 @@ class createMergeRequest extends Component {
                             {mileStoneOptions}
                         </Select>
                         <br/>
-                        <a href="mileStone.html">Create new mileStone</a>
+                        <a href="mileStone">Create new mileStone</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
@@ -152,7 +152,7 @@ class createMergeRequest extends Component {
                             {label}
                         </Select>
                         <br/>
-                        <a href="label.html">Create new label</a>
+                        <a href="label">Create new label</a>
                     </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
