@@ -26,6 +26,9 @@ class ProjectMember extends Component {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtMemberCountClick",this.showProjectMember.bind(this) );
         //PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
+        if(this.props.location.state){
+            this.showProjectMember(this.props.location.state);
+        }
     }
 
     componentWillMount(){
@@ -66,7 +69,6 @@ class ProjectMember extends Component {
 
     componentWillReceiveProps(nextProps){
         //const {node} = nextProps.location.state;
-        console.log("nextProps.location.state:",nextProps.location.state);
         if(nextProps.location.state){
             this.showProjectMember(nextProps.location.state);
         }
