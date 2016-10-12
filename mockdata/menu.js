@@ -38,7 +38,7 @@ module.exports.menu = {
                             "name": "项目代码",
                             "link": "/project-mgr.html",
                             "description": "",
-                            "subMenu": null
+                            "subMenu": []
                         },
                         {
                             "id": 13,
@@ -65,7 +65,7 @@ module.exports.menu = {
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "测试案例",
-                    "link": "",
+                    "link": "/milestones.html",
                     "description": "",
                     "subMenu": []
                 },
@@ -74,7 +74,7 @@ module.exports.menu = {
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "代码质量管理",
-                    "link": "",
+                    "link": "/issue.html",
                     "description": "",
                     "subMenu": []
                 }

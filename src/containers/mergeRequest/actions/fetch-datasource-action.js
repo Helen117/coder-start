@@ -4,7 +4,7 @@
 import api from '../../../api';
 import {FETCH_DATA,FETCH_NAMESPACE} from '../constants/action-types';
 
-export function fetchDataSource(projectId) {
+export function fetchSourceProData(projectId) {
     return {
         type: 'FETCH_DATA',
         payload: {
@@ -16,16 +16,15 @@ export function fetchDataSource(projectId) {
         }
     }
 }
-/*
-export function fetchNamespace(projectId) {
+export function fetchTargetProData(projectId) {
     return {
-        type: 'FETCH_NAMESPACE',
+        type: 'FETCH_TARGET_PROJECT',
         payload: {
-            promise: api.post('/project/assign', {
+            promise: api.post('/project/fork-info', {
                 params: {
                     projectId: projectId
                 }
             })
         }
     }
-}*/
+}

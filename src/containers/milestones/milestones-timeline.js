@@ -22,24 +22,25 @@ class Milestones extends React.Component {
     componentDidMount() {
         let projectId = 17;
         const {moreMilestoneData} = this.props;
-        PubSub.subscribe("evtRefreshTimeilne");
-        if (!moreMilestoneData){
-        this.props.getMilestones(projectId,page);
+        //PubSub.subscribe("evtRefreshTimeilne",this.clearData.bind(this));
+        if (!moreMilestoneData || moreMilestoneData==''){
+            data =[];
+            this.props.getMilestones(projectId,page);
         }
 
     }
 
-    clearData(){
-        data = [];
-        this.props.getMilestones(17,1)
-    }
+
 
     componentWillReceiveProps(nextProps) {
         const actionType = this.props.actionType;
         const acquireData = nextProps.acquireData;
         if(this.props.milestoneData != nextProps.milestoneData && nextProps.milestoneData != '') {
             const moreMilestoneData = nextProps.milestoneData;
-            this.props.getMoreMilestones(data,moreMilestoneData);
+            for(let i=0; i<moreMilestoneData.length; i++) {
+                data.push(moreMilestoneData[i]);
+            }
+            this.props.getMoreMilestones(data);
         }
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && acquireData ){
             this.warnCallback();
@@ -96,10 +97,9 @@ class Milestones extends React.Component {
 
     //gouz
     timelineItemConst(){
-        const {milestoneData} = this.props;
-        console.log('data',data);
-        if (data != '' && milestoneData!= 'data'){
-            var timeLine = data.map((item) => {
+        const {moreMilestoneData} = this.props;
+        if (moreMilestoneData){
+            var timeLine = moreMilestoneData.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
@@ -161,7 +161,6 @@ Milestones.propTypes = {
 };
 
 function mapStateToProps(state) {
-    //console.log('获取到的item：',state.milestones.items);
     return {
         moreMilestoneData:state.moreMilestonesData.moreData,
         milestoneData: state.milestones.items,

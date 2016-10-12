@@ -88,7 +88,7 @@ class Sidebar extends React.Component {
                 <Icon className="action-button-sidebar"
                       type="bars"
                       onClick={this.clickSideBar.bind(this)}/>
-                <Menu mode="inline" theme="light" openKeys={openKey} defaultSelectedKeys={selectedKeys} onSelect={this.menuClickHandle.bind(this)}>
+                <Menu mode="inline" theme="light" openKeys={openKey} defaultSelectedKeys={selectedKeys} onSelect={this.menuClickHandle.bind(this)} className="side-bar-menu">
                     {menu}
                 </Menu>
             </aside>

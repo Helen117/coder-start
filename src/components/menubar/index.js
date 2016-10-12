@@ -28,7 +28,7 @@ export default class MenuBar extends React.Component {
 
     render(){
         const {menuData, navpath} = this.props;
-        let selectNaviOne = [];var topMenu,topMenuTwo;
+        let selectNaviOne = [];
         for(var i=0;i<menuData.length;i++){
             if(navpath.length != 0){
                 if(navpath[0].key == menuData[i].id){
@@ -36,7 +36,8 @@ export default class MenuBar extends React.Component {
                 }
             }
         }
-        topMenu = selectNaviOne.map((item) => {
+        const topMenu = selectNaviOne.map((item) => {
+            var menuone_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
                     var topMenuCount = 0;
@@ -49,10 +50,17 @@ export default class MenuBar extends React.Component {
                         )
                     })
                     return menuOneData;
-                }
-            }
+                }else{return menuone_null;}
+            }else{return menuone_null;}
         });
-        topMenuTwo = selectNaviOne.map((item) => {
+        var topMenu_1;
+        if(topMenu.length > 0){
+            if(topMenu[0].length > 0){
+                topMenu_1 = topMenu[0];
+            }
+        }
+        const topMenuTwo = selectNaviOne.map((item) => {
+            var menutwo_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
                     let topMenuData = item.subMenu;
@@ -64,46 +72,70 @@ export default class MenuBar extends React.Component {
                                 const topTwo = menuTwoData.map((itemTwo) => {
                                     var menuTwoKey = 'menuTwo'+menuTwoCount++;
                                     return (
-                                        <li key={menuTwoKey}
-                                            className={(menuTwoKey == this.state.currentMenuTwo) ? "active" : ""}>
+                                        <Menu.Item key={menuTwoKey}>
                                             <Link to={itemTwo.link}>{itemTwo.name}</Link>
-                                        </li>
+                                        </Menu.Item>
                                     )
                                 });
                                 return topTwo;
-                            }
-                        }
+                            }else{return menutwo_null;}
+                        }else{return menutwo_null;}
                     });
                     return topTwoMenu;
-                }
-            }
+                }else{return menutwo_null;}
+            }else{return menutwo_null;}
         });
         var haveMenuOne = false;
+        var haveMenuTwo = false;
         if(selectNaviOne.length != 0){
             if(selectNaviOne[0].subMenu){
                 if(selectNaviOne[0].subMenu.length != 0){
                     haveMenuOne = true;
+                    if(selectNaviOne[0].subMenu[0].subMenu){
+                        if(selectNaviOne[0].subMenu[0].subMenu.length != 0){
+                            haveMenuTwo = true;
+                        }
+                    }
                 }
             }
         }
-
+        var topMenuTwo_1;
+        var selectMenuOne = this.state.currentMenuOne.replace("menuOne","");
+        if(topMenuTwo.length > 0){
+            if(topMenuTwo[0].length > 0){
+                var topMenuTwo_tmp = topMenuTwo[0];
+                topMenuTwo_1 = topMenuTwo_tmp[selectMenuOne];
+            }
+        }
 
         return (
             <div className="menu-area">
-                <div className="menu-bar-wrapper">
-                    <Menu mode="horizontal" className="menu-bar"
-                          selectedKeys={haveMenuOne ? [this.state.currentMenuOne] : [""]}
-                          >
-                        {topMenu}
-                    </Menu>
-                </div>
-                <div style={{clear:'both'}}/>
-                <div className="nav-links sub-nav">
-                    <ul className="container-fluid container-limited"
-                        onClick={this.clickMenuTwo.bind(this)}>
-                        {topMenuTwo}
-                    </ul>
-                </div>
+                {topMenu.length>0?(topMenu[0].length>0?(
+                    <div className="menu-bar-2nd-bg">
+                        <div className="menu-bar-wrapper">
+                            <Menu mode="horizontal" className="menu-bar"
+                                  selectedKeys={haveMenuOne ? [this.state.currentMenuOne] : [""]}
+                                  onClick={this.clickMenuOne.bind(this)}>
+                                {topMenu_1}
+                            </Menu>
+                        </div>
+                    </div>
+                ):(<div/>)):(<div/>)}
+                {
+                    topMenuTwo.length>0?(topMenuTwo[0].length>0?(
+                        <div className="menu-bar-3rd-bg">
+                            <div style={{clear:'both'}}/>
+                            <div className="menu-bar-wrapper">
+                                <Menu mode="horizontal" className="menu-bar-3rd"
+                                      selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
+                                      onClick={this.clickMenuTwo.bind(this)}>
+                                    {topMenuTwo_1}
+                                </Menu>
+                            </div>
+                        </div>
+                    ):(<div/>)):(<div/>)
+                }
+
             </div>
         );
     }

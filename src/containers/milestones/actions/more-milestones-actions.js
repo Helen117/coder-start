@@ -6,9 +6,8 @@ import {MORE_MILESTONES_SUCCESS,
     MORE_MILESTONES_ERROR} from '../constants/more-milestones-action-type';
 
 export function getMoreMilestonesSuss(data,moreMilestoneData) {
-    for(let i=0; i<moreMilestoneData.length; i++) {
-        data.push(moreMilestoneData[i]);
-    }
+
+
     return {
         type:MORE_MILESTONES_SUCCESS,
         data:data
@@ -22,11 +21,11 @@ export function getMoreMilestonesFail() {
     }
 }
 
-export function getMoreMilestones(data,moreMilestoneData) {
+export function getMoreMilestones(data) {
     return (dispatch) => {
-        if(moreMilestoneData){
+        if(data){
 
-            dispatch(getMoreMilestonesSuss(data,moreMilestoneData));
+            dispatch(getMoreMilestonesSuss(data));
         }else{
             dispatch(getMoreMilestonesFail());
         }
