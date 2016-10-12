@@ -23,7 +23,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            isOpened:false
+            isOpened:false,
+            isRefresh:false
         }
     }
 
@@ -53,6 +54,12 @@ class App extends React.Component {
         //console.log("!this.state.isOpened:",!this.state.isOpened);
     }
 
+    sideMenuClick(isRefresh){
+        this.setState = ({
+            isRefresh:isRefresh
+        })
+    }
+
     render() {
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
@@ -61,6 +68,7 @@ class App extends React.Component {
             <div className="ant-layout-aside">
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
                          isOpened={this.state.isOpened}
+                         sideMenuClick={this.sideMenuClick.bind(this)}
                          />
                 <Affix>
                     <Header profile={profile} logout={this.logout.bind(this)}
@@ -70,7 +78,8 @@ class App extends React.Component {
                     <Affix offsetTop={66}>
                         <NavPath />
                         <MenuBar menuData={this.props.menuData}
-                                 navpath={this.props.navpath}/>
+                                 navpath={this.props.navpath}
+                        />
                     </Affix>
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}

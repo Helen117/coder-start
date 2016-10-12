@@ -4,6 +4,7 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
 import { Menu, Icon } from 'antd';
+import 'pubsub-js';
 import './index.less';
 
 export default class MenuBar extends React.Component {
@@ -12,16 +13,27 @@ export default class MenuBar extends React.Component {
         this.state = {
             currentMenuOne:"menuOne0",
             currentMenuTwo:"menuTwo0",
+            refreshMenuOne:false,
         }
+    }
+
+    componentDidMount() {
+        PubSub.subscribe("refreshMenuOne",()=>{this.setState({
+            refreshMenuOne:true,
+            currentMenuOne:"menuOne0",
+            currentMenuTwo:"menuTwo0",
+        })});
     }
 
     clickMenuOne(e){
         this.setState({
+            refreshMenuOne:false,
             currentMenuOne:e.key,
         })
     }
     clickMenuTwo(e){
         this.setState({
+            refreshMenuOne:false,
             currentMenuTwo:e.key,
         })
     }
@@ -53,10 +65,10 @@ export default class MenuBar extends React.Component {
                 }else{return menuone_null;}
             }else{return menuone_null;}
         });
-        var topMenu_1;
+        var topMenu_1=[];
         if(topMenu.length > 0){
             if(topMenu[0].length > 0){
-                topMenu_1 = topMenu[0];
+                topMenu_1[0] = topMenu[0];
             }
         }
         const topMenuTwo = selectNaviOne.map((item) => {
@@ -99,18 +111,22 @@ export default class MenuBar extends React.Component {
                 }
             }
         }
-        var topMenuTwo_1;
+        var topMenuTwo_1=[], topMenuTwo_tmp;
         var selectMenuOne = this.state.currentMenuOne.replace("menuOne","");
         if(topMenuTwo.length > 0){
             if(topMenuTwo[0].length > 0){
-                var topMenuTwo_tmp = topMenuTwo[0];
-                topMenuTwo_1 = topMenuTwo_tmp[selectMenuOne];
+                topMenuTwo_tmp = topMenuTwo[0];
+                if(topMenuTwo_tmp[selectMenuOne]){
+                    if(topMenuTwo_tmp[selectMenuOne].length > 0){
+                        topMenuTwo_1[0] = topMenuTwo_tmp[selectMenuOne];
+                    }
+                }
             }
         }
 
         return (
             <div className="menu-area">
-                {topMenu.length>0?(topMenu[0].length>0?(
+                {topMenu_1.length>0?(
                     <div className="menu-bar-2nd-bg">
                         <div className="menu-bar-wrapper">
                             <Menu mode="horizontal" className="menu-bar"
@@ -120,20 +136,20 @@ export default class MenuBar extends React.Component {
                             </Menu>
                         </div>
                     </div>
-                ):(<div/>)):(<div/>)}
+                ):(<div/>)}
                 {
-                    topMenuTwo.length>0?(topMenuTwo[0].length>0?(
-                        <div className="menu-bar-3rd-bg">
-                            <div style={{clear:'both'}}/>
-                            <div className="menu-bar-wrapper">
-                                <Menu mode="horizontal" className="menu-bar-3rd"
-                                      selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
-                                      onClick={this.clickMenuTwo.bind(this)}>
-                                    {topMenuTwo_1}
-                                </Menu>
+                    topMenuTwo_1.length>0?(
+                            <div className="menu-bar-3rd-bg">
+                                <div style={{clear:'both'}}/>
+                                <div className="menu-bar-wrapper">
+                                    <Menu mode="horizontal" className="menu-bar-3rd"
+                                          selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
+                                          onClick={this.clickMenuTwo.bind(this)}>
+                                        {topMenuTwo_1}
+                                    </Menu>
+                                </div>
                             </div>
-                        </div>
-                    ):(<div/>)):(<div/>)
+                    ):(<div/>)
                 }
 
             </div>

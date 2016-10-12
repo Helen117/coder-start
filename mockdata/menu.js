@@ -76,7 +76,23 @@ module.exports.menu = {
                     "name": "代码质量管理",
                     "link": "/issue.html",
                     "description": "",
-                    "subMenu": []
+                    "subMenu": [{
+                        "id": 15,
+                        "parentId": 12,
+                        "cLevel": 3,
+                        "name": "项目代码",
+                        "link": "/project-mgr.html",
+                        "description": "",
+                        "subMenu": []
+                    },{
+                        "id": 16,
+                        "parentId": 12,
+                        "cLevel": 3,
+                        "name": "问题管理",
+                        "link": "/issue.html",
+                        "description": "",
+                        "subMenu": []
+                    }]
                 }
             ]
         },

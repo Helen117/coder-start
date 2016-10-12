@@ -159,7 +159,8 @@ class GroupDetail extends React.Component {
                         <FormItem {...formItemLayout} label="项目组名称">
                             <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
                         </FormItem>
-                        <FormItem {...formItemLayout} label="项目组路径">
+                        <FormItem {...formItemLayout} label="项目组路径"
+                            help="允许英文、数字、下划线">
                             <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="描述">

@@ -44,6 +44,7 @@ class ProjectMgr extends React.Component{
     }
 
     editGroup(type, selectedRow) {
+        console.log("888");
         this.context.router.push({
             pathname: '/group-detail.html',
             state: {editType: type, selectedRow}
@@ -124,6 +125,7 @@ class ProjectMgr extends React.Component{
                         <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
                             新建项目
                         </Button>
+                        <span className="pull-right">新建项目之前请先选择一个你创建的组！</span>
                     </Row>
                     <Row>
                         <ProjectList />

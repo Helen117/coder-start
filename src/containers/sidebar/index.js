@@ -13,6 +13,7 @@ import {Menu, Icon, Button, Affix} from 'antd';
 import {Link} from 'react-router';
 import {getAllMenu, updateNavPath} from './actions/menu-action';
 //import authUtils from '../../utils/auth'
+import 'pubsub-js';
 import './index.less';
 
 const SubMenu = Menu.SubMenu;
@@ -42,6 +43,7 @@ class Sidebar extends React.Component {
 
     menuClickHandle(item) {
         this.props.updateNavPath(item.keyPath, item.key);
+        PubSub.publish("refreshMenuOne",{refreshed:true});
     }
 
     clickSideBar(){
