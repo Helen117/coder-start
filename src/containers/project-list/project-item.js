@@ -77,13 +77,13 @@ class ProjectItem extends Component {
         }
 
         if(getProjectInfo && this.getProjectInfo!=getProjectInfo){
-            if(this.state.value=='ssh'){
+            if(this.state.value=='http'){
                 this.setState({
-                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                    url: getProjectInfo.gitlabProject.http_url_to_repo,
                 });
             }else {
                 this.setState({
-                    url: getProjectInfo.gitlabProject.http_url_to_repo,
+                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
                 });
             }
         }

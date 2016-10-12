@@ -6,6 +6,7 @@ import { Form, Input, Button, message} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import styles from './index.css';
+import Box from '../../components/box';
 import * as issue from './actions/issue-action';
 
  class IssueNotes extends Component {
@@ -17,33 +18,35 @@ import * as issue from './actions/issue-action';
      componentWillMount() {
          //console.log('record:',this.props.location.state.record);
          const {actions} = this.props;
-         actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
+         const record = this.props.location.state.record;
+         actions.issueNotes(record.project_id,record.id);
 
-         if(this.props.location.state.record.state=='closed'){
-             this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''}});
+         if(record.state=='closed'){
+             this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''},color:{'color':'red'}});
          }else{
-             this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'}});
+             this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'},color:{'color':'green'}});
          }
      }
 
      componentWillReceiveProps(nextProps) {
          const result = nextProps.issue.comment;
          const issueState = nextProps.issue.updateIssue;
+         const record = this.props.location.state.record;
          if(result){
              document.getElementById("body").value="";
              this.setState({'hasValue':false});
              const {actions} = this.props;
-             actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
+             actions.issueNotes(record.project_id,record.id);
          }
 
          if(issueState){
              if(issueState.state=='closed'){
-                 this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''}});
+                 this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''},color:{'color':'red'}});
              }else{
-                 this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'}});
+                 this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'},color:{'color':'green'}});
              }
              const {actions} = this.props;
-             actions.issueNotes(this.props.location.state.record.project_id,this.props.location.state.record.id);
+             actions.issueNotes(record.project_id,record.id);
          }
      }
 
@@ -51,9 +54,10 @@ import * as issue from './actions/issue-action';
         e.preventDefault();
         var body = document.getElementById("body").value;
         const {actions,loginInfo} = this.props;
+        const record = this.props.location.state.record;
         var notes = {
-            projectId:this.props.location.state.record.project_id,
-            issueId:this.props.location.state.record.id,
+            projectId:record.project_id,
+            issueId:record.id,
             body:body,
             username:loginInfo.username,
             create_at:Date.now()
@@ -92,9 +96,10 @@ import * as issue from './actions/issue-action';
     }
     render() {
         const { issue } = this.props;
+        const record = this.props.location.state.record;
         //console.log('issue:',issue.issueNotes);
         const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>
-            <div className={styles.notes_ul} >
+            <div className={styles.notes_list} >
                 <span>{data.author.name}@{data.author.username} {new Date(parseInt(data.created_at)).toLocaleString()}</span>
                 <p>
                     {data.body}
@@ -103,35 +108,46 @@ import * as issue from './actions/issue-action';
         </li>):[];
         const hasBody=this.state.hasValue;
         return(
-            <div>
-                <ul>
-                    <div className={styles.notes_head}>
+            <Box title="问题讨论">
+                <div>
+                    <div className={styles.notes_header}>
+                        <span style={this.state.color}>{record.state}</span>
+                        <strong> Issue #{record.id}</strong>
+                        <span> opened {record.created_at} by </span>
+                        <strong>{record.assignee_name}</strong>
+                    </div>
+
+                    <div className={styles.notes_body}>
                         <h2>
-                            {this.props.location.state.record.title}
+                            {record.title}
                         </h2>
                         <p>
-                            {this.props.location.state.record.description}
+                            {record.description}
                         </p>
                     </div>
-                </ul>
-                <ul  className={styles.notes_ul}>
-                    {list}
-                </ul>
-                <br/>
-                <ul>
-                    <li>
-                        <Form onSubmit={this.handleSubmit.bind(this)}>
-                                <Input type="textarea" placeholder="Write a comment"
-                                       rows="10" id="body" onChange={this.change.bind(this)}/>
-                            <br/>
-                            <Button type='primary' htmlType='submit' disabled={!hasBody}>提交</Button>
-                            <Button type="ghost" onClick={this.editIssue.bind(this,'close')} style={this.state.closeButtonStyle}>关闭问题</Button>
-                            <Button type="ghost" onClick={this.editIssue.bind(this,'reopen')} style={this.state.reopenButtonStyle}>重开问题</Button>
-                        </Form>
-                    </li>
-                </ul>
 
-            </div>
+                    <div>
+                        <ul>
+                            <li>
+                                {list}
+                            </li>
+                        </ul>
+                        <br/>
+                        <ul>
+                            <li>
+                                <Form onSubmit={this.handleSubmit.bind(this)}>
+                                        <Input type="textarea" placeholder="Write a comment"
+                                               rows="10" id="body" onChange={this.change.bind(this)}/>
+                                    <br/>
+                                    <Button type='primary' htmlType='submit' disabled={!hasBody}>提交</Button>
+                                    <Button type="ghost" onClick={this.editIssue.bind(this,'close')} style={this.state.closeButtonStyle}>关闭问题</Button>
+                                    <Button type="ghost" onClick={this.editIssue.bind(this,'reopen')} style={this.state.reopenButtonStyle}>重开问题</Button>
+                                </Form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </Box>
         )
     }
 }
