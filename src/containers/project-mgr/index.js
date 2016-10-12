@@ -82,7 +82,6 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        //console.log("node:",node);
         const {loginInfo, starList, list} = this.props;
         if(node.id.indexOf("_p") < 0){
             this.props.getGroupMembers(node.id);

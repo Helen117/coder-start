@@ -28,8 +28,7 @@ class ProjectItem extends Component {
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
-        const {node} = nextProps.location.state;
-        //console.log("nextProps-node:",node);
+        const {node} = this.props.location.state;
         if(node){
             this.showProjectItem(node);
         }
@@ -41,7 +40,6 @@ class ProjectItem extends Component {
     }
 
     showProjectItem(data){
-        //console.log("data:",data);
         if(data.isLeaf == true && data.id.indexOf("_p") > 0){
             this.setState({
                 itemType:true,
@@ -70,7 +68,6 @@ class ProjectItem extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {node} = nextProps.location.state;
-        console.log("nextProps-node:",node);
         if(node){
             this.showProjectItem(node);
         }
@@ -98,12 +95,10 @@ class ProjectItem extends Component {
                 });
             }
         }
-
     }
 
     fork(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-       // console.log('actions:',getProjectInfo);
         actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
     }
     handleChange(value){
