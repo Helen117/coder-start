@@ -35,7 +35,8 @@ import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 
 //import authUtils from './utils/auth';
-import {getCookie} from './utils';
+//import {getCookie} from './utils';
+import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
 const history = useRouterHistory(createHistory)({basename: ''});
@@ -44,7 +45,8 @@ const store = configureStore();
 
 const validate = function (next, replace, callback) {
     //const isLoggedIn = authUtils.getToken()
-    const isLoggedIn = getCookie('uid');
+    //const isLoggedIn = getCookie('uid');
+    const isLoggedIn = Cookies.get('uid');
     if (!isLoggedIn && next.location.pathname != '/login.html') {
         replace('/login.html')
     }

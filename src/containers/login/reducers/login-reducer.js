@@ -8,7 +8,8 @@ import {
     UID_NOT_FOUND
 } from '../constants/login-action-types';
 
-import authUtils from '../../../utils/auth';
+//import authUtils from '../../../utils/auth';
+import * as Cookies from "js-cookie";
 
 const initialState = {
     uid: null,
@@ -33,7 +34,8 @@ export default function auth(state = initialState, action = {}) {
                 loginErrors: action.payload.errorMsg
             };
         case LOGOUT:
-            authUtils.logout();
+            Cookies.remove('uid');
+            //authUtils.logout();
             return {
                 ...state,
                 loggingOut: false,
