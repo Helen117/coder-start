@@ -23,8 +23,11 @@ class IssueList extends Component {
     }
 
     componentDidMount() {
-        const {actions} = this.props;
-        actions.getIssueList(17);
+        const {actions,projectInfo} = this.props;
+        if(projectInfo){
+            actions.getIssueList(projectInfo.gitlabProject.id);
+        }
+
     }
 
     // editIssue() {
