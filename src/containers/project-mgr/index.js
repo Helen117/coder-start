@@ -82,33 +82,32 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
+        //console.log("node:",node);
         const {loginInfo, starList, list} = this.props;
         if(node.id.indexOf("_p") < 0){
-            /*this.setState({
-                selectGroupName:node.name,
-                selectGroupId:node.id
-            });*/
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
             this.props.getGroupInfo(groupInfo);
-            this.context.router.push({
-                pathname: '/project-mgr/project-list',
-                state: {node}
-            });
         }else{
             var node_p = node.id.replace("_p","");
             const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
             this.props.getProjectInfo(projectInfo);
             this.props.getGroupInfo(groupInfo);
+        }
+        if(!starList){
+            this.props.getProjectStar(loginInfo.username);
+        }
+        if(node.id.indexOf("_p") < 0){
+            this.context.router.push({
+                pathname: '/project-mgr/project-list',
+                state: {node}
+            });
+        }else{
             this.context.router.push({
                 pathname: '/project-mgr/project-item',
                 state: {node}
             });
         }
-        if(!starList){
-            this.props.getProjectStar(loginInfo.username);
-        }
-        //PubSub.publish("evtTreeClick",node);
     }
 
     render(){

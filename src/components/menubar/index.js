@@ -136,20 +136,19 @@ export default class MenuBar extends React.Component {
                             </Menu>
                         </div>
                     </div>
-                ):(<div/>)}
-                {
-                    topMenuTwo_1.length>0?(
-                            <div className="menu-bar-3rd-bg">
-                                <div style={{clear:'both'}}/>
-                                <div className="menu-bar-wrapper">
-                                    <Menu mode="horizontal" className="menu-bar-3rd"
-                                          selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
-                                          onClick={this.clickMenuTwo.bind(this)}>
-                                        {topMenuTwo_1}
-                                    </Menu>
-                                </div>
-                            </div>
-                    ):(<div/>)
+                ):(<div></div>)}
+                {topMenuTwo_1.length>0?(
+                    <div className="menu-bar-3rd-bg">
+                        <div style={{clear:'both'}}/>
+                        <div className="menu-bar-wrapper">
+                            <Menu mode="horizontal" className="menu-bar-3rd"
+                                  selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
+                                  onClick={this.clickMenuTwo.bind(this)}>
+                                {topMenuTwo_1}
+                            </Menu>
+                        </div>
+                    </div>
+                ):(<div className="menu-bar-bg"></div>)
                 }
 
             </div>
