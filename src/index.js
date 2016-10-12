@@ -24,7 +24,6 @@ import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
-
 import NotFound from './components/page/not-found';
 
 
@@ -36,7 +35,8 @@ import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 
 //import authUtils from './utils/auth';
-import {getCookie} from './utils';
+//import {getCookie} from './utils';
+import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
 const history = useRouterHistory(createHistory)({basename: ''});
@@ -45,7 +45,8 @@ const store = configureStore();
 
 const validate = function (next, replace, callback) {
     //const isLoggedIn = authUtils.getToken()
-    const isLoggedIn = getCookie('uid');
+    //const isLoggedIn = getCookie('uid');
+    const isLoggedIn = Cookies.get('uid');
     if (!isLoggedIn && next.location.pathname != '/login.html') {
         replace('/login.html')
     }
@@ -75,7 +76,6 @@ ReactDOM.render(
                         <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
-                        <Route name="issueNotes" breadcrumbName="测试" path="test.html" component={AddIssue}/>
                         <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>

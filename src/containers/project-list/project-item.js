@@ -6,9 +6,14 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
+import { Select,Input, Button, message} from 'antd';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
+import * as fork from '../project-list/actions/fork-project-action';
 import styles from './index.css';
+
+const Option = Select.Option;
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -57,9 +62,59 @@ class ProjectItem extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {forkResult,getProjectInfo} = nextProps;
+
+        if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
+            PubSub.publish("evtRefreshGroupTree",{});
+            this.setState({
+                itemType:false,
+                itemNode:null,
+            });
+            message.success('Fork成功!',3);
+        }else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
+            message.error('Fork失败!'+forkResult.errors,3);
+        }
+
+        if(getProjectInfo && this.getProjectInfo!=getProjectInfo){
+            if(this.state.value=='ssh'){
+                this.setState({
+                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                });
+            }else {
+                this.setState({
+                    url: getProjectInfo.gitlabProject.http_url_to_repo,
+                });
+            }
+        }
+
+    }
+
+    fork(){
+        const {actions,getProjectInfo,loginInfo} = this.props;
+       // console.log('actions:',getProjectInfo);
+        actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
+    }
+    handleChange(value){
+        const {getProjectInfo} = this.props;
+        if(value=='ssh'){
+            this.setState({
+                value:'ssh',
+                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+            });
+        }else{
+            this.setState({
+                value:'http',
+                url: getProjectInfo.gitlabProject.http_url_to_repo,
+            });
+        }
+
+    }
+
     render() {
         if(this.state.itemType == true){//展示项目信息
             const {list,loginInfo,fetchProjectStar,starList} = this.props;
+
             if(fetchProjectStar || false){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
@@ -106,6 +161,12 @@ class ProjectItem extends Component {
 
                 return (
                     <div className={styles.project_list_div}>
+                        <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                        <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
+                            <Option value="ssh">SSH</Option>
+                            <Option value="http">HTTP</Option>
+                        </Select>
+                        <Input style={{ width: 300 }}  value={this.state.url}/>
                         <TableView columns={columns}
                                    dataSource={dataSource}
                         ></TableView>
@@ -126,8 +187,15 @@ function mapStateToProps(state) {
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
+        forkResult:state.forkProject,
     }
 }
 
-export default connect(mapStateToProps)(ProjectItem);
+function mapDispatchToProps(dispatch){
+    return{
+        actions : bindActionCreators(fork,dispatch)
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ProjectItem);
 

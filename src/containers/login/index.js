@@ -11,6 +11,8 @@ import {Form, Input, Button, Row, Col, notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {login} from './actions/login-action';
+//import 'js-cookie';
+import * as Cookies from "js-cookie";
 
 const FormItem = Form.Item;
 
@@ -43,6 +45,8 @@ class Login extends React.Component {
             });
         }
         if (uid) {
+            Cookies.set('uid', uid);
+            Cookies.set('profile', nextProps.profile);
             this.context.router.replace('/home.html');
         }
     }
@@ -112,9 +116,9 @@ Login = Form.create()(Login);
 function mapStateToProps(state) {
     const {login} = state;
     if (login.uid) {
-        return {uid: login.uid, loggingIn: login.loggingIn, loginErrors: ''};
+        return {uid: login.uid, loggingIn: login.loggingIn, loginErrors: '', profile:login.profile};
     }
-    return {uid: null, loggingIn: login.loggingIn, loginErrors: login.loginErrors};
+    return {uid: null, loggingIn: login.loggingIn, loginErrors: login.loginErrors, profile:login.profile};
 }
 
 function mapDispatchToProps(dispatch) {
