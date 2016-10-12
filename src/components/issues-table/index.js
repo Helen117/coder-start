@@ -24,7 +24,6 @@ export default class IssuesTable extends React.Component {
     }
     onChange(pagination, filters, sorter) {
         // 点击分页、筛选、排序时触发
-        console.log('各类参数是', pagination, filters, sorter);
     }
 
     //处理表格数据源
@@ -64,18 +63,22 @@ IssuesTable.prototype.milestoneListColumns = (self)=>[{
     title: '问题名称',
     dataIndex: 'title',
     width: '12.5%',
+    sorter: (a, b) => a.title - b.title,
 }, {
     title: '创建人',
     dataIndex: 'author_name',
     width: '12.5%',
+    sorter: (a, b) => a.author_name - b.author_name,
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
     width: '12.5%',
+    sorter: (a, b) => a.assignee_name - b.assignee_name,
 },{
     title: '问题标签',
     dataIndex: 'labels',
     width: '12.5%',
+    sorter: (a, b) => a.labels - b.labels,
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
@@ -90,4 +93,5 @@ IssuesTable.prototype.milestoneListColumns = (self)=>[{
     title: '状态',
     dataIndex: 'state',
     width: '12.5%',
+    sorter: (a, b) => a.state - b.state,
 }];

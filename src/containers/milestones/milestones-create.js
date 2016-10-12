@@ -95,8 +95,6 @@ class MilestoneCreate extends React.Component {
                 for( let i=0; i<milestones.length;i++){
                     if (value === milestones[i].gitlabMilestone.title) {
                         callback([new Error('里程碑已存在')]);
-                    } else {
-                        callback();
                     }}
             }, 800);
         }
@@ -175,17 +173,17 @@ class MilestoneCreate extends React.Component {
             <Box title="创建里程碑">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                     <FormItem   {...formItemLayout} label="名称">
-                        <Input {...titleProps} placeholder="请输入名称" />
+                        <Input {...titleProps} placeholder="请输入里程碑名称" />
                     </FormItem>
                     <FormItem {...formItemLayout} label="备注" >
-                        <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
+                        <Input type="textarea" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                     </FormItem>
                     <FormItem
                         label="日期"
                         labelCol={{ span: 6 }}
                         required
                     >
-                        <Col span="4">
+                        <Col span="3">
                             <FormItem>
                                 <DatePicker
                                     placeholder="开始日期"

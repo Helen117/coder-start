@@ -22,18 +22,15 @@ class createMergeRequest extends Component {
     componentDidMount() {
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
-
+            this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
         }else{
             const {router} = this.context;
             router.goBack();
-            this.errChosePro();
-        }
-        if(this.props.targetProData){
-            this.props.fetchMessage.fetchSourceProData(this.props.targetProData.id);
+            this.errChoosePro();
         }
     }
 
-    errChosePro(){
+    errChoosePro(){
         notification.error({
             message: '未选择项目',
             description:'请先在“代码管理“中选择一个项目！',
@@ -95,8 +92,9 @@ class createMergeRequest extends Component {
             } else {
                 const data = form.getFieldsValue();
                 data.project_id=getProjectInfo.gitlabProject.id;
-                data.target_project_id = targetProData.id;
+                //data.target_project_id = targetProData.id;
                 data.author = author;
+                console.log('表单提交内容',data);
                 this.props.createMr(data);
             }
         })
@@ -107,10 +105,8 @@ class createMergeRequest extends Component {
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
         const {getProjectInfo,targetProData} = this.props;
-
         const projectId = getProjectInfo? getProjectInfo.gitlabProject.id:null;
         const sourcePath = getProjectInfo? getProjectInfo.gitlabProject.path_with_namespace:null
-        const assignee =this.props.members? this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
         const targetBranch =targetProData? targetProData.branch.map(data => <Option key={data}>{data}</Option>):[];
@@ -143,22 +139,21 @@ class createMergeRequest extends Component {
                         </Select>
                     </FormItem>
 
-
                     <FormItem {...formItemLayout}  label="MR名称" >
                         <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写MR名称'}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="MR描述" >
-                        <Input type="请输入MR描述" placeholder="description" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
+                        <Input type="请输入MR描述" placeholder="请输入MR描述" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select size="large"  {...getFieldProps('milestone.id')} >
+                        <Select showSearch labelInValue  size="large" placeholder="请选择里程碑" {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
-                        <Select multiple size="large"  {...getFieldProps('labels')} >
+                        <Select multiple size="large" placeholder="请选择标签" {...getFieldProps('labels')} >
                             {label}
                         </Select>
                     </FormItem>
