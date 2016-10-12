@@ -11,6 +11,8 @@ import {Form, Input, Button, Row, Col, notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {login} from './actions/login-action';
+//import 'js-cookie';
+import * as Cookies from "js-cookie";
 
 const FormItem = Form.Item;
 
@@ -43,6 +45,7 @@ class Login extends React.Component {
             });
         }
         if (uid) {
+            Cookies.set('uid', uid);
             this.context.router.replace('/home.html');
         }
     }
