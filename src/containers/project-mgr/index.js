@@ -20,7 +20,7 @@ import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 //import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import 'pubsub-js';
-
+import * as Cookies from "js-cookie";
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';

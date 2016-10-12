@@ -76,7 +76,7 @@ class GroupDetail extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const {inserted, errMessage} = nextProps;
-        if (this.props.inserted != inserted && inserted) {
+        if (this.props.result != inserted && inserted) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
             this.errCallback(errMessage);
@@ -196,7 +196,7 @@ GroupDetail = Form.create()(GroupDetail);
 
 function mapStateToProps(state) {
     return {
-        inserted: state.createGroup.result,
+        result: state.createGroup.result,
         errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,

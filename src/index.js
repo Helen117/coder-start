@@ -20,9 +20,9 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {Milestones,MilestoneDetail,MilestoneCreate} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
+import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
-
 
 import NotFound from './components/page/not-found';
 
@@ -36,7 +36,8 @@ import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 
 //import authUtils from './utils/auth';
-import {getCookie} from './utils';
+//import {getCookie} from './utils';
+import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
 const history = useRouterHistory(createHistory)({basename: ''});
@@ -45,10 +46,12 @@ const store = configureStore();
 
 const validate = function (next, replace, callback) {
     //const isLoggedIn = authUtils.getToken()
-    const isLoggedIn = getCookie('uid');
+    //const isLoggedIn = getCookie('uid');
+    const isLoggedIn = Cookies.get('uid');
     if (!isLoggedIn && next.location.pathname != '/login') {
-        replace('/login')
+        replace('/login');
     }
+    //const isLoggedIn = getCookie('uid');
     callback();
 };
 
@@ -85,6 +88,8 @@ ReactDOM.render(
                         <Route name="issueNotes" breadcrumbName="测试" path="test" component={AddIssue}/>
                         <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest" component={createMergeRequest}/>
 
+                        <Route name="branches" breadcrumbName="分支管理" path="branches.html" component={branchesList}/>
+                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches.html" component={createBranches}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

@@ -1,1 +1,13 @@
-.notes_ul{border-bottom: 1px solid}
+.notes_ul{
+    border-bottom: 1px solid;
+    position: relative;
+    padding: 16px 10px 11px;
+    border-color: #ececec;
+    background-color: #faf9f9;
+}
+.notes_head{
+    font-size: 15px;
+    border-bottom: 1px solid;
+    border-color: #ececec;
+    background-color: #faf9f9;
+}

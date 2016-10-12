@@ -1,7 +1,3 @@
-/**
- * Created by zhaojp on 2016/9/19.
- */
-
 import React,{ PropTypes } from 'react';
 import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
@@ -57,10 +53,10 @@ class MilestoneCreate extends React.Component {
         this.props.getMoreMilestones(data);
     }
 
-    errCallback(){
+    errCallback(errMessage){
         notification.error({
             message: '创建失败',
-            description: '创建失败!',
+            description: errMessage,
             duration: 2
         });
     }
@@ -70,7 +66,7 @@ class MilestoneCreate extends React.Component {
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback();
+            this.errCallback(errMessage);
         }
     }
 
@@ -114,13 +110,13 @@ class MilestoneCreate extends React.Component {
             callback();
         } else {
             setTimeout(() => {
-                    if (value < lastMilestoneDuedate) {
-                        callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleString())]);
-                    }if (value > lastMilestoneDuedate+(24 * 60 * 60 * 1000)) {
-                        callback([new Error('上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleString()+',日程安排存在时间间隙')]);
-                    } else {
-                        callback();
-                    }
+                if (value < lastMilestoneDuedate) {
+                    callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
+                }if (value > lastMilestoneDuedate+(24 * 60 * 60 * 1000)) {
+                    callback([new Error('上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString()+',日程安排存在时间间隙')]);
+                } else {
+                    callback();
+                }
             }, 800);
         }
 
@@ -176,46 +172,46 @@ class MilestoneCreate extends React.Component {
 
 
         return(
-        <Box title="创建里程碑">
-            <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                <FormItem   {...formItemLayout} label="名称">
-                    <Input {...titleProps} placeholder="请输入名称" />
-                </FormItem>
-                <FormItem {...formItemLayout} label="备注" >
-                    <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
-                </FormItem>
-                <FormItem
-                    label="日期"
-                    labelCol={{ span: 6 }}
-                    required
-                >
-                    <Col span="4">
-                        <FormItem>
-                            <DatePicker
-                                placeholder="开始日期"
-                                {...createDateProps}
-                                disabledDate={this.disabledStartDate.bind(this)}
-                            />
-                        </FormItem>
-                    </Col>
-                    <Col span="1">
-                        <p className="ant-form-split" >-</p>
-                    </Col>
-                    <Col span="6">
-                        <FormItem>
-                            <DatePicker
-                                placeholder="结束日期"
-                                {...dueDateProps}
-                                disabledDate={this.disabledEndDate.bind(this)}/>
-                        </FormItem>
-                    </Col>
-                </FormItem>
-                <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                </FormItem>
-            </Form>
-        </Box>
+            <Box title="创建里程碑">
+                <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
+                    <FormItem   {...formItemLayout} label="名称">
+                        <Input {...titleProps} placeholder="请输入名称" />
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="备注" >
+                        <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
+                    </FormItem>
+                    <FormItem
+                        label="日期"
+                        labelCol={{ span: 6 }}
+                        required
+                    >
+                        <Col span="4">
+                            <FormItem>
+                                <DatePicker
+                                    placeholder="开始日期"
+                                    {...createDateProps}
+                                    disabledDate={this.disabledStartDate.bind(this)}
+                                />
+                            </FormItem>
+                        </Col>
+                        <Col span="1">
+                            <p className="ant-form-split" >-</p>
+                        </Col>
+                        <Col span="6">
+                            <FormItem>
+                                <DatePicker
+                                    placeholder="结束日期"
+                                    {...dueDateProps}
+                                    disabledDate={this.disabledEndDate.bind(this)}/>
+                            </FormItem>
+                        </Col>
+                    </FormItem>
+                    <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    </FormItem>
+                </Form>
+            </Box>
 
         );
     }

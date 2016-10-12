@@ -18,3 +18,5 @@ export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const UID_NOT_FOUND = 'UID_NOT_FOUND';
 
 export const LOGOUT = 'LOGOUT';
+
+export const COOKIES_LOGIN_STATE = 'COOKIES_LOGIN_STATE';

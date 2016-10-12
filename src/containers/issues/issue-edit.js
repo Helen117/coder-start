@@ -19,12 +19,33 @@ class AddIssue extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
-    componentDidMount() {
+    componentWillMount(){
         const {actions} = this.props;
         actions.fetchDataSource(17);
     }
+    componentDidMount() {
+
+        const {selectedRow} = this.props.location.state;
+        //console.log('selectedRow:',selectedRow);
+        if (selectedRow){
+            const {setFieldsValue} = this.props.form;
+            //时间类型转换
+            if(selectedRow.due_date){
+                selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
+            }
+            //labels
+            selectedRow.labels = selectedRow.labels?selectedRow.labels.substr(0,selectedRow.labels.length-1).split(','):[];
+
+            setFieldsValue(selectedRow);
+            //this.setState({assign:selectedRow.assignee_name,milestone:selectedRow.milestone_id});
+            setFieldsValue({'assignee.id':selectedRow.assign_id.toString()});
+            setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
+        }
+
+    }
 
     componentWillReceiveProps(nextProps) {
+
         const result = nextProps.issue.addIssue;
         const error = nextProps.issue.addIssueError;
 
@@ -36,21 +57,44 @@ class AddIssue extends Component{
             this.context.router.replace('/issue');
         }
 
+        if(nextProps.issue.updateIssueError && nextProps.issue.updateIssueError!= this.props.issue.updateIssueError){
+            message.error('修改失败!'+nextProps.issue.updateIssueError);
+        }
+        if (!nextProps.issue.updateIssueError && nextProps.issue.updateIssue) {
+            message.success('修改成功');
+            this.context.router.replace('/issue.html');
+        }
+
     }
 
     handleSubmit(e) {
         e.preventDefault();
         const { actions,form ,loginInfo} = this.props;
+        const {editType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                console.log('收到表单值：', data);
-                data.project_id = 17;
                 data.username=loginInfo.username;
-                data.created_at = Date.now();
-                actions.addIssues(data);
+                //console.log('收到表单值：', data);
+                if(editType=='add'){
+                    data.project_id = 17;
+                    data.created_at = Date.now();
+                    actions.addIssues(data);
+                }else{
+                    if(data.title==selectedRow.title&&data.description==selectedRow.description&&data.due_date==selectedRow.due_date
+                        &&data.assignee.id==selectedRow.assign_id&&data.milestone.id==selectedRow.milestone_id){
+                        message.info('数据没有变更，不需提交',2);
+                    }else{
+                        data.updated_at = Date.now();
+                        data.project_id = selectedRow.project_id;
+                        data.id = selectedRow.id;
+                        actions.updateIssue(data);
+                    }
+
+                }
+
             }
         })
     }
@@ -80,6 +124,7 @@ class AddIssue extends Component{
     }
 
     render() {
+
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
         const formItemLayout = {
@@ -94,7 +139,7 @@ class AddIssue extends Component{
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
         return (
-            <Box title={editType == 'add' ? '添加问题' : '修改问题'}>
+            <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
                 <Form horizontal onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout}  label="问题名称" >
                         <Input placeholder="title" {...getFieldProps('title',{rules:[{ required:true,message:'问题名称不能为空'}]})} />
@@ -108,12 +153,12 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
-                        <Select size="large"  style={{ width: 200 }} {...getFieldProps('assignee.id',{rules:[{required:true,message:'请选择指派的人'}]})} >
+                        <Select style={{ width: 200 }}  {...getFieldProps('assignee.id',{rules:[{required:true,message:'请选择指派的人'}]})} >
                             {assignee}
                         </Select>
                     </FormItem>
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select size="large"  style={{ width: 200 }} {...getFieldProps('milestone.id')} >
+                        <Select  style={{ width: 200 }} {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
                         <br/>
@@ -121,7 +166,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题标签" >
-                        <Select multiple size="large"  style={{ width: 200 }} {...getFieldProps('labels')} >
+                        <Select multiple style={{ width: 200 }} {...getFieldProps('labels')} >
                             {label}
                         </Select>
                         <br/>

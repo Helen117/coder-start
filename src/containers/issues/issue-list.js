@@ -23,7 +23,6 @@ class IssueList extends Component {
     }
 
     componentDidMount() {
-        //console.info('componentDidMount');
         const {actions} = this.props;
         actions.getIssueList(17);
     }
@@ -31,6 +30,7 @@ class IssueList extends Component {
     // editIssue() {
     //     this.context.router.replace('/issueEdit');
     // }
+
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
         this.context.router.push({
@@ -41,7 +41,8 @@ class IssueList extends Component {
 
     issueNotes(record) {
         //this.context.router.replace('/issueNotes');
-        console.log('record:',record);
+        //this.context.router.replace('/issueNotes.html');
+        //console.log('record:',record);
         this.context.router.push({
             pathname: '/issueNotes',
             state: {record}
@@ -51,29 +52,40 @@ class IssueList extends Component {
 
     //时间戳转换成日期
     getTime(date) {
-        return new Date(parseInt(date)).toLocaleString();
+        if(date){
+            return new Date(parseInt(date)).toLocaleDateString();
+        }else{
+            return null;
+        }
+
     }
 
     //获取表格的数据源
     getDataSource(){
-        const {issueList} = this.props;
+        const {issueList,projectInfo,groupInfo} = this.props;
         //console.log('获取表格数据：',issueList);
         const data = [];
-        if(issueList){
+        if(issueList&&projectInfo&&groupInfo){
             for (let i = 0; i < issueList.length; i++) {
                 var assign_name = issueList[i].assignee?issueList[i].assignee.name:null;
+                var assign_id = issueList[i].assignee?issueList[i].assignee.id:null;
                 var labels = issueList[i].labels.length>0?issueList[i].labels+';':null;
                 var milestoneTitle = issueList[i].milestone?issueList[i].milestone.title:null;
+                var milestone_id = issueList[i].milestone?issueList[i].milestone.id:null;
                 var milestoneDueDate = issueList[i].milestone?issueList[i].milestone.due_date:null;
                 data.push({
-                    group_id:issueList[i].iid,
+                    group_id:groupInfo.id,
+                    group_name:groupInfo.name,
                     project_id:issueList[i].project_id,
+                    project_name:projectInfo.name,
                     id:issueList[i].id,
                     title: issueList[i].title,
                     description:issueList[i].description,
                     author_name: issueList[i].author.name,
                     assignee_name: assign_name,
+                    assign_id :assign_id,
                     milestoneTitle:milestoneTitle,
+                    milestone_id:milestone_id,
                     milestoneDueDate:milestoneDueDate,
                     created_at:  this.getTime(issueList[i].created_at),
                     due_date:this.getTime(issueList[i].due_date),
@@ -180,11 +192,11 @@ IssueList.contextTypes = {
 
 IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
-    dataIndex: 'group_id',
+    dataIndex: 'group_name',
     width: '8%',
 },{
     title: '所属项目',
-    dataIndex: 'project_id',
+    dataIndex: 'project_name',
     width: '8%',
     //fixed: 'left'
 },{
@@ -240,6 +252,9 @@ IssueList.prototype.issueListColumns = (self)=>[{
     }, {
         text: 'opened',
         value: 'opened',
+    },, {
+        text: 'reopened',
+        value: 'reopened',
     }],
     onFilter: (value, record) => record.state.indexOf(value) === 0
 },{
@@ -247,7 +262,10 @@ IssueList.prototype.issueListColumns = (self)=>[{
     dataIndex: 'key',
     width: '12%',
     render: (text, record, index)=> {
-        return <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>;
+        return <div>
+                    <Button type="ghost" onClick={self.editIssue.bind(self,'modify', record)}>修改</Button>
+                    <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>
+               </div>;
     }
 }];
 
@@ -257,6 +275,8 @@ function mapStateToProps(state) {
     return {
         issueList: state.issue.issueList,
         loading:state.issue.loading,
+        projectInfo:state.getProjectInfo.projectInfo,
+        groupInfo:state.getGroupInfo.groupInfo,
     };
 }
 

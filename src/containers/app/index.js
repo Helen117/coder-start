@@ -10,8 +10,9 @@ import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import {logout, fetchProfile} from '../login/actions/login-action';
+import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/login-action';
 import MenuBar from '../../components/menubar';
+import * as Cookies from "js-cookie";
 
 //import authUtils from '../../utils/auth'
 
@@ -33,6 +34,9 @@ class App extends React.Component {
         //let realUid = uid?uid:authUtils.getUid();
         //actions.fetchProfile(realUid);
         //actions.fetchProfile(uid);
+        if (uid == null){
+            actions.cookiesToReduxLoginState();
+        }
     }
 
     logout() {
@@ -64,6 +68,9 @@ class App extends React.Component {
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         //console.log("this.state.isOpened:",this.state.isOpened);
+        if (uid == null){
+            return <div className="ant-layout-aside"></div>;
+        }
         return (
             <div className="ant-layout-aside">
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
@@ -71,8 +78,7 @@ class App extends React.Component {
                          sideMenuClick={this.sideMenuClick.bind(this)}
                          />
                 <Affix>
-                    <Header profile={profile} logout={this.logout.bind(this)}
-                            showSideBar={this.clickBreadSideBar.bind(this)}/>
+                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
                 <div className="ant-layout-main" >
                     <Affix offsetTop={66}>
@@ -117,7 +123,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({logout, fetchProfile}, dispatch)
+        actions: bindActionCreators({logout, fetchProfile, cookiesToReduxLoginState}, dispatch)
     }
 }
 
