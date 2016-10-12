@@ -53,10 +53,10 @@ class MilestoneCreate extends React.Component {
         this.props.getMoreMilestones(data);
     }
 
-    errCallback(){
+    errCallback(errMessage){
         notification.error({
             message: '创建失败',
-            description: '创建失败!',
+            description: errMessage,
             duration: 2
         });
     }
@@ -66,7 +66,7 @@ class MilestoneCreate extends React.Component {
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback();
+            this.errCallback(errMessage);
         }
     }
 

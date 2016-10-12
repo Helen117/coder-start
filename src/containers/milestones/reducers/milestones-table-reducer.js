@@ -24,7 +24,7 @@ export default function milestonesDetail(state = initialState, action = {}) {
 
         case ACQUIRE_MILESTONES_DETAIL_ERROR:
             //console.log("acquire milestones detail error!");
-            return state;
+            return {state, loginErrors: action.payload.errorMsg};
 
         default:
             return state;
