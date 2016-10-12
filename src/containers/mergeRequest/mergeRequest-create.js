@@ -163,12 +163,14 @@ class createMergeRequest extends Component {
                         <Select showSearch onSelect={this.onSelect.bind(this)} labelInValue  size="large" placeholder="请选择里程碑" {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
+
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
                         <Select multiple size="large" placeholder="请选择标签" {...getFieldProps('labels')} >
                             {label}
                         </Select>
+
                     </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>

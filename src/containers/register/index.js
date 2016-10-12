@@ -42,7 +42,7 @@ class Register extends Component{
         }
         if (!registering && !error && result && result!=this.props.registerState.registerResult) {
             message.success('注册成功！');
-            this.context.router.replace('/login.html');
+            this.context.router.replace('/login');
         }
     }
 
@@ -85,7 +85,7 @@ class Register extends Component{
     }
     handleCancel(){
         this.props.form.resetFields();
-        this.context.router.replace('/login.html');
+        this.context.router.replace('/login');
     }
 
     handleReset(e) {
