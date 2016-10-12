@@ -10,8 +10,9 @@ import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import {logout, fetchProfile} from '../login/actions/login-action';
+import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/login-action';
 import MenuBar from '../../components/menubar';
+import * as Cookies from "js-cookie";
 
 //import authUtils from '../../utils/auth'
 
@@ -23,7 +24,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            isOpened:false
+            isOpened:false,
+            isRefresh:false
         }
     }
 
@@ -32,11 +34,14 @@ class App extends React.Component {
         //let realUid = uid?uid:authUtils.getUid();
         //actions.fetchProfile(realUid);
         //actions.fetchProfile(uid);
+        if (uid == null){
+            actions.cookiesToReduxLoginState();
+        }
     }
 
     logout() {
         this.props.actions.logout();
-        this.context.router.replace('/login.html');
+        this.context.router.replace('/login');
     }
 
     clickSideBar(isOpened){
@@ -53,22 +58,35 @@ class App extends React.Component {
         //console.log("!this.state.isOpened:",!this.state.isOpened);
     }
 
+    sideMenuClick(isRefresh){
+        this.setState = ({
+            isRefresh:isRefresh
+        })
+    }
+
     render() {
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         //console.log("this.state.isOpened:",this.state.isOpened);
+        if (uid == null){
+            return <div className="ant-layout-aside"></div>;
+        }
         return (
             <div className="ant-layout-aside">
-                <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)} isOpened={this.state.isOpened}/>
+                <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
+                         isOpened={this.state.isOpened}
+                         sideMenuClick={this.sideMenuClick.bind(this)}
+                         />
                 <Affix>
                     <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
                 <div className="ant-layout-main" >
                     <Affix offsetTop={66}>
                         <NavPath />
-                        <MenuBar />
+                        <MenuBar menuData={this.props.menuData}
+                                 navpath={this.props.navpath}
+                        />
                     </Affix>
-
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}
                         {this.props.children}
@@ -97,13 +115,15 @@ function mapStateToProps(state) {
     const {login} = state;
     return {
         uid: login.uid ? login.uid : null,
-        profile: login.profile ? login.profile : null
+        profile: login.profile ? login.profile : null,
+        menuData:state.menu.items,
+        navpath: state.menu.navpath,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({logout, fetchProfile}, dispatch)
+        actions: bindActionCreators({logout, fetchProfile, cookiesToReduxLoginState}, dispatch)
     }
 }
 

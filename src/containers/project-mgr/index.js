@@ -20,7 +20,7 @@ import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 //import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import 'pubsub-js';
-
+import * as Cookies from "js-cookie";
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -45,13 +45,13 @@ class ProjectMgr extends React.Component{
 
     editGroup(type, selectedRow) {
         this.context.router.push({
-            pathname: '/group-detail.html',
+            pathname: '/project-mgr/group-detail',
             state: {editType: type, selectedRow}
         });
     }
     editProject(type, selectedRow) {
         this.context.router.push({
-            pathname: '/project-detail.html',
+            pathname: '/project-mgr/project-detail',
             state: {editType: type, selectedRow,
                     /*selectGroupName:this.state.selectGroupName,
                     selectGroupId:this.state.selectGroupId*/}
@@ -91,16 +91,24 @@ class ProjectMgr extends React.Component{
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
             this.props.getGroupInfo(groupInfo);
+            this.context.router.push({
+                pathname: '/project-mgr/project-list',
+                state: {node}
+            });
         }else{
             var node_p = node.id.replace("_p","");
             const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
             this.props.getProjectInfo(projectInfo);
             this.props.getGroupInfo(groupInfo);
+            this.context.router.push({
+                pathname: '/project-mgr/project-item',
+                state: {node}
+            });
         }
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
         }
-        PubSub.publish("evtTreeClick",node);
+        //PubSub.publish("evtTreeClick",node);
     }
 
     render(){
@@ -126,9 +134,7 @@ class ProjectMgr extends React.Component{
                         </Button>
                     </Row>
                     <Row>
-                        <ProjectList />
-                        <ProjectItem />
-                        <ProjectMember />
+                        {this.props.children}
                     </Row>
                 </Col>
             </Row>

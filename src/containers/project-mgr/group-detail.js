@@ -69,7 +69,6 @@ class GroupDetail extends React.Component {
     errCallback(message){
         notification.error({
             message: '创建失败',
-            //description: '项目组名称或者路径已被占用!',
             description:message,
             duration: 1
         });
@@ -77,19 +76,9 @@ class GroupDetail extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const {inserted, errMessage} = nextProps;
-        if (this.props.inserted != inserted && inserted) {
+        if (this.props.result != inserted && inserted) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
-            /*var message ='';
-             if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") < 0)){
-             message = "项目组名称已被占用!";
-             }else if((errMessage.indexOf("path") > 0) && (errMessage.indexOf("name") < 0)){
-             message = "项目组路径已被占用!";
-             }else if((errMessage.indexOf("name") > 0) && (errMessage.indexOf("path") > 0)){
-             message = "项目组名称或者路径已被占用!";
-             }
-             this.errCallback(message);
-             }*/
             this.errCallback(errMessage);
         }
     }
@@ -170,7 +159,8 @@ class GroupDetail extends React.Component {
                         <FormItem {...formItemLayout} label="项目组名称">
                             <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
                         </FormItem>
-                        <FormItem {...formItemLayout} label="项目组路径">
+                        <FormItem {...formItemLayout} label="项目组路径"
+                            help="允许英文、数字、下划线">
                             <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="描述">
@@ -206,7 +196,7 @@ GroupDetail = Form.create()(GroupDetail);
 
 function mapStateToProps(state) {
     return {
-        inserted: state.createGroup.result,
+        result: state.createGroup.result,
         errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,

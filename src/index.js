@@ -20,6 +20,7 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {Milestones,MilestoneDetail,MilestoneCreate} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
+import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
@@ -28,13 +29,15 @@ import NotFound from './components/page/not-found';
 
 import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
 
-import ProjectList from './containers/project-list';
+import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
+//import ProjectItem from './containers/project-list';
 
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 
 
 //import authUtils from './utils/auth';
-import {getCookie} from './utils';
+//import {getCookie} from './utils';
+import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
 const history = useRouterHistory(createHistory)({basename: ''});
@@ -43,10 +46,12 @@ const store = configureStore();
 
 const validate = function (next, replace, callback) {
     //const isLoggedIn = authUtils.getToken()
-    const isLoggedIn = getCookie('uid');
-    if (!isLoggedIn && next.location.pathname != '/login.html') {
-        replace('/login.html')
+    //const isLoggedIn = getCookie('uid');
+    const isLoggedIn = Cookies.get('uid');
+    if (!isLoggedIn && next.location.pathname != '/login') {
+        replace('/login');
     }
+    //const isLoggedIn = getCookie('uid');
     callback();
 };
 
@@ -58,31 +63,36 @@ ReactDOM.render(
         <Provider store={store}>
             <Router history={history}>
                 <Route path="/" onEnter={validate}>
-                    <IndexRedirect to="home.html"/>
+                    <IndexRedirect to="home"/>
                     <Route component={App}>
 
-                        <Route name="home" breadcrumbName="首页" path="home.html" component={Home}/>
-                        <Route name="userMgr" breadcrumbName="用户列表" path="user.html" component={UserList}>
-                            <Route name="userDetail" breadcrumbName="用户明细" path="edit.html" component={UserDetail}/>
+                        <Route name="home" breadcrumbName="首页" path="home" component={Home}/>
+                        <Route name="userMgr" breadcrumbName="用户列表" path="user" component={UserList}>
+                            <Route name="userDetail" breadcrumbName="用户明细" path="edit" component={UserDetail}/>
                         </Route>
-                        <Route name="milestones" breadcrumbName="里程碑" path="milestones.html" component={Milestones}/>
-                        <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail.html" component={MilestoneDetail}/>
-                        <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones.html" component={MilestoneCreate}/>
-                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr.html" component={ProjectMgr}>
-                        </Route>
-                        <Route name="issueList" breadcrumbName="问题管理" path="issue.html" component={IssueList}/>
-                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit.html" component={AddIssue}/>
-                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes.html" component={IssueNotes}/>
-                        <Route name="projectList" breadcrumbName="项目列表" path="project-list.html" component={ProjectList}>
-                        </Route>
-                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail.html" component={GroupDetail}/>
-                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail.html" component={ProjectDetail}/>
-                        <Route name="mergeRequest" breadcrumbName="代码合并请求(MR)管理" path="mergeRequest.html" component={mergeRequestList}/>
-                        <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest.html" component={createMergeRequest}/>
 
+                        <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
+                            <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
+                                <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
+                            </Route>
+                            <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}></Route>
+                            <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
+                            <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
+                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
+                            <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
+                            <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
+                        </Route>
+                        <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
+                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
+                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
+                        <Route name="issueNotes" breadcrumbName="测试" path="test" component={AddIssue}/>
+                        <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest" component={createMergeRequest}/>
+
+                        <Route name="branches" breadcrumbName="分支管理" path="branches.html" component={branchesList}/>
+                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches.html" component={createBranches}/>
                     </Route>
-                    <Route path="register.html" component={Register}/>
-                    <Route path="login.html" component={Login}/>
+                    <Route path="register" component={Register}/>
+                    <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>
                     </Route>
             </Router>

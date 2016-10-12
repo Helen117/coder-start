@@ -1,4 +1,7 @@
 /**
+ * Created by zhaojp on 2016/10/11.
+ */
+/**
  * Created by zhaojp on 2016/10/8.
  */
 
@@ -8,32 +11,32 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-class mergeRequestList extends React.Component {
+class branchesList extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    createMergeRequest(type){
-            this.context.router.push({
-                pathname: '/createMergeRequest',
-                state: {editType: type}
-            });
+    createBranches(type){
+        this.context.router.push({
+            pathname: '/createBranches.html',
+            state: {editType: type}
+        });
     }
 
     render(){
         return(
-            <Box title="MR查看">
+            <Box title="分支查看">
                 <div style={{marginBottom: 16}}>
-                    <Button className="pull-right" type="primary"  onClick={this.createMergeRequest.bind(this,'add')}>创建MR</Button>
+                    <Button className="pull-right" type="primary"  onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
                 </div>
             </Box>)
     }
 }
 
-mergeRequestList.contextTypes = {
+branchesList.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
-export default (mergeRequestList);
+export default (branchesList);

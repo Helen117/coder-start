@@ -26,12 +26,12 @@ export default function createMilestones(state = initialState, action = {}) {
             //console.log("CREATE milestones error!");
             return {
                 ...state,
-                errors: action.payload.message,
+                errors: action.payload.errorMsg,
                 loading:false,
                 disabled:false
 
             };
-        
+
         default:
             return state;
     }

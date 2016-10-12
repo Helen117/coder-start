@@ -3,12 +3,14 @@ import {
     LOGIN_SUCCESS,
     LOGIN_ERROR,
     LOGOUT,
+    COOKIES_LOGIN_STATE,
     FETCH_PROFILE_PENDING,
     FETCH_PROFILE_SUCCESS,
     UID_NOT_FOUND
 } from '../constants/login-action-types';
 
-import authUtils from '../../../utils/auth';
+//import authUtils from '../../../utils/auth';
+import * as Cookies from "js-cookie";
 
 const initialState = {
     uid: null,
@@ -33,13 +35,20 @@ export default function auth(state = initialState, action = {}) {
                 loginErrors: action.payload.errorMsg
             };
         case LOGOUT:
-            authUtils.logout();
+            Cookies.remove('uid');
+            Cookies.remove('profile');
+            //authUtils.logout();
             return {
                 ...state,
                 loggingOut: false,
                 uid: null,
                 loginErrors: null
             };
+        case COOKIES_LOGIN_STATE:
+            const uid = parseInt(Cookies.get('uid'));
+            const profile = Cookies.getJSON('profile');
+            console.info('login-reducer='+uid);
+            return Object.assign({}, initialState, {profile:profile,uid: uid, loggingIn: false, loginErrors: null});
         case FETCH_PROFILE_SUCCESS:
             return Object.assign({}, initialState, {profile: action.payload, uid: state.uid});
         case UID_NOT_FOUND:

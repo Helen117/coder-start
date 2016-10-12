@@ -27,15 +27,20 @@ class ProjectItem extends Component {
 
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
-        PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
+        //PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
+        /*const {node} = this.props.location.state;
+        console.log("node:",node);
+        if(node){
+            this.showProjectItem(node);
+        }*/
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
-        PubSub.unsubscribe("evtTreeClick");
+        //PubSub.unsubscribe("evtTreeClick");
     }
 
-    showProjectItem(msg,data){
+    showProjectItem(data){
         if(data.isLeaf == true && data.id.indexOf("_p") > 0){
             this.setState({
                 itemType:true,
@@ -63,6 +68,10 @@ class ProjectItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const {node} = nextProps.location.state;
+        if(node){
+            this.showProjectItem(node);
+        }
         const {forkResult,getProjectInfo} = nextProps;
 
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
@@ -108,7 +117,6 @@ class ProjectItem extends Component {
                 url: getProjectInfo.gitlabProject.http_url_to_repo,
             });
         }
-
     }
 
     render() {
@@ -179,6 +187,12 @@ class ProjectItem extends Component {
         }
     }
 }
+
+ProjectItem.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {

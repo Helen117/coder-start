@@ -24,17 +24,17 @@ class ProjectMember extends Component {
 
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
-        PubSub.subscribe("evtMemberCountClick",this.showProjectMember.bind(this) );
-        PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
+        //PubSub.subscribe("evtMemberCountClick",this.showProjectMember.bind(this) );
+        //PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
     }
 
     componentWillMount(){
         //在此处注销对其他控件发送消息的响应
-        PubSub.unsubscribe("evtMemberCountClick");
-        PubSub.unsubscribe("evtTreeClick");
+        //PubSub.unsubscribe("evtMemberCountClick");
+        //PubSub.unsubscribe("evtTreeClick");
     }
 
-    showProjectMember(msg,data){
+    showProjectMember(data){
         this.setState({
             memberType:true,
             selectRow:data.record.projectName,
@@ -65,6 +65,11 @@ class ProjectMember extends Component {
     }
 
     componentWillReceiveProps(nextProps){
+        //const {node} = nextProps.location.state;
+        console.log("nextProps.location.state:",nextProps.location.state);
+        if(nextProps.location.state){
+            this.showProjectMember(nextProps.location.state);
+        }
         const { getGroupInfo } = nextProps;
         if(this.props.getGroupInfo != getGroupInfo && getGroupInfo){
             this.notShowMember();
@@ -113,6 +118,11 @@ class ProjectMember extends Component {
         }
     }
 }
+ProjectMember.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {

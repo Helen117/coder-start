@@ -86,7 +86,7 @@ class ProjectDetail extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage } = nextProps;
-        if (this.props.inserted != inserted && inserted){
+        if (this.props.result != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
@@ -208,7 +208,7 @@ ProjectDetail = Form.create()(ProjectDetail);
 
 function mapStateToProps(state) {
     return {
-        inserted: state.createProject.result,
+        result: state.createProject.result,
         errMessage:state.createProject.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,
