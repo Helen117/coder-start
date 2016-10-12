@@ -35,6 +35,7 @@ export default function auth(state = initialState, action = {}) {
             };
         case LOGOUT:
             Cookies.remove('uid');
+            Cookies.remove('profile');
             //authUtils.logout();
             return {
                 ...state,
