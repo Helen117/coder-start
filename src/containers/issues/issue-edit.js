@@ -20,8 +20,11 @@ class AddIssue extends Component{
 
     }
     componentWillMount(){
-        const {actions} = this.props;
-        actions.fetchDataSource(17);
+        const {actions,projectInfo} = this.props;
+        if(projectInfo){
+            actions.fetchDataSource(projectInfo.gitlabProject.id);
+        }
+
     }
     componentDidMount() {
 
@@ -69,7 +72,7 @@ class AddIssue extends Component{
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions,form ,loginInfo} = this.props;
+        const { actions,form ,loginInfo,projectInfo} = this.props;
         const {editType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -79,7 +82,7 @@ class AddIssue extends Component{
                 data.username=loginInfo.username;
                 //console.log('收到表单值：', data);
                 if(editType=='add'){
-                    data.project_id = 17;
+                    data.project_id = projectInfo.gitlabProject.id;
                     data.created_at = Date.now();
                     actions.addIssues(data);
                 }else{
@@ -216,7 +219,8 @@ function mapStateToProps(state) {
         labels:state.issue.labels,
         members : state.issue.members,
         issue:state.issue,
-        loginInfo:state.login.profile
+        loginInfo:state.login.profile,
+        projectInfo:state.getProjectInfo.projectInfo,
     };
 }
 
