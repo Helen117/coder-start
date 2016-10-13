@@ -96,14 +96,14 @@ class Milestones extends React.Component {
     milestonesDetail(milestonesId){
         const projectId = this.props.getProjectInfo.gitlabProject.id;
         this.context.router.push({
-            pathname: '/milestonesDetail',
+            pathname: '/project-mgr/milestonesDetail',
             state: {milestonesId,projectId}
         });
     }
 
     createMilestones(){
         this.context.router.push({
-            pathname: '/createMilestones',
+            pathname: '/project-mgr/createMilestones',
             //state: {}
         });
     }
