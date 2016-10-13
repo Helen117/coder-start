@@ -89,11 +89,11 @@ class MilestoneCreate extends React.Component {
 
     checkCreateDate(rule, value, callback){
         const {moreMilestoneData} = this.props;
-
-        var lastMilestoneDuedate = moreMilestoneData[0].gitlabMilestone.due_date;
-        if (!value) {
+        console.log('moreMilestoneData',moreMilestoneData)
+        var lastMilestoneDuedate = (moreMilestoneData.length>0)?moreMilestoneData[0].gitlabMilestone.due_date:null;
+        if (!value ) {
             callback();
-        } else {
+        } else if(value && moreMilestoneData.length>0) {
             setTimeout(() => {
                 if (value < lastMilestoneDuedate) {
                     callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
@@ -103,6 +103,8 @@ class MilestoneCreate extends React.Component {
                     callback();
                 }
             }, 800);
+        }else {
+            callback();
         }
 
     }
@@ -127,7 +129,8 @@ class MilestoneCreate extends React.Component {
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
-                { required: true,min:1 ,max: 30, message: '名称长度为 1~30 个字符' },
+                { required: true, message:'请输入里程碑名称'},
+                {max: 30, message: '名称长度为 1~30 个字符' },
             ],
         });
 
@@ -145,7 +148,7 @@ class MilestoneCreate extends React.Component {
                 { required: true,
                     type: 'date',
                     message: '请选择结束日期', },
-                //{ validator: this.checkCreateDate.bind(this) },
+                { validator: this.checkCreateDate.bind(this) },
             ],
         });
 
@@ -156,7 +159,7 @@ class MilestoneCreate extends React.Component {
 
 
         return(
-            <Box title="创建里程碑">
+            <div style={{marginTop:5,marginLeft:5}}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                     <FormItem   {...formItemLayout} label="名称">
                         <Input {...titleProps} placeholder="请输入里程碑名称" />
@@ -169,7 +172,7 @@ class MilestoneCreate extends React.Component {
                         labelCol={{ span: 6 }}
                         required
                     >
-                        <Col span="3">
+                        <Col span="5">
                             <FormItem>
                                 <DatePicker
                                     placeholder="开始日期"
@@ -190,12 +193,12 @@ class MilestoneCreate extends React.Component {
                             </FormItem>
                         </Col>
                     </FormItem>
-                    <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
+                    <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </Box>
+            </div>
 
         );
     }

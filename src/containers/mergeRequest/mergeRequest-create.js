@@ -20,22 +20,20 @@ class createMergeRequest extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchMessage.fetchTargetProData(17);
-        this.props.fetchMessage.fetchSourceProData(17);
-        /*if(this.props.getProjectInfo) {
+        if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchTargetProData(this.props.getProjectInfo.gitlabProject.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
         }else{
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
-        }*/
+        }
     }
 
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
+            description:'请先选择一个项目！',
             duration: 2
         });
     }
@@ -84,86 +82,74 @@ class createMergeRequest extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {getProjectInfo,targetProData,loginInfo} = this.props;
+        const {targetProData,loginInfo} = this.props;
         const author = {};
-        //author.username= loginInfo.username;
+        author.username= loginInfo.username;
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.project_id=17//getProjectInfo.gitlabProject.id;
-                //data.target_project_id = targetProData.id;
-                //data.author = author;
-                console.log('表单提交内容',data);
+                const milestone={}
+                milestone.id= data.source_milestone?data.source_milestone.label[2]:null;
+                data.milestone = milestone;
+                data.target_project_id = data.targetProData[0];
+                data.target_branch = data.targetProData[1];
+                data.project_id = data.sourceProData[0];
+                data.source_branch = data.sourceProData[1];
+                data.author = author;
                 this.props.createMr(data);
             }
         })
 
     }
-    onSelect(value,option){
-        console.log('option',option);
+
+
+    onSelect(value){
+        var id =value.label[2];
+
     }
 
     render(){
-        console.log('targetProData',this.props.targetProData);
+
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
-        const {getProjectInfo,targetProData} = this.props;
-        const projectId = getProjectInfo? getProjectInfo.gitlabProject.id:null;
-        const sourcePath = getProjectInfo? getProjectInfo.gitlabProject.path_with_namespace:null
-        const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option value={data.title} key={data.id}>{data.title}</Option>):[];
+        const {targetProData} = this.props;
+        const sourceProData = targetProData?[targetProData[0]]:[];
+        const initialPath = targetProData?sourceProData[0].label:null;
+        const initialBranch = targetProData?sourceProData[0].children[0].label:null;
+        const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option value={data.title+data.id} key={data.id}>{data.title}({data.id})</Option>):[];
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
-        const targetBranch =targetProData? targetProData.branch.map(data => <Option key={data}>{data}</Option>):[];
-        const targetPath = targetProData? targetProData.path_with_namespace:null;
-        const initialTargetBranch = targetProData? targetProData.branch[0]:null;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
 
         return (
-            <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
+            <div style={{marginTop:5,marginLeft:5}}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout} label="source branch">
-                        <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath})} >
-                            <Option key={projectId}>{sourcePath}</Option>
-                        </Select>
+                        <Cascader options={sourceProData} placeholder="请选择source branch" {...getFieldProps('sourceProData',{rules:[{ required:true,type: 'array',message:'请选择 source branch'}]})} />
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="dataSam">
-                        <Cascader options={targetProData} placeholder="Please select" {...getFieldProps('dataSim')} />
+                    <FormItem {...formItemLayout} label="target branch">
+                        <Cascader options={targetProData} placeholder="请选择target branch" {...getFieldProps('targetProData',{rules:[{ required:true,type: 'array',message:'请选择 target branch'}]})} />
                     </FormItem>
-
-
-                    <FormItem {...formItemLayout}  label="target branch" >
-                        <Select style={{ width: 200 }} {...getFieldProps('target_project_path',{initialValue: targetPath})} >
-                            <Option value={targetPath}>{targetPath}</Option>
-                        </Select>
-                        <Select style={{ width: 80,marginLeft:5 }} {...getFieldProps('target_branch',{initialValue: initialTargetBranch})} >
-                            {targetBranch}
-                        </Select>
-                    </FormItem>
-
-
-
-
-
 
                     <FormItem {...formItemLayout}  label="MR名称" >
-                        <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写MR名称'}]})} />
+                        <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写 MR 名称'}]})} />
                     </FormItem>
+
                     <FormItem {...formItemLayout} label="MR描述" >
-                        <Input type="请输入MR描述" placeholder="请输入MR描述" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
+                        <Input type="请输入MR描述" placeholder="请输入MR描述" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写 MR 描述'}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select showSearch onSelect={this.onSelect.bind(this)} labelInValue  size="large" placeholder="请选择里程碑" {...getFieldProps('milestone.id')} >
+                        <Select showSearch labelInValue={true}  onSelect={this.onSelect.bind(this)}  size="large" placeholder="请选择里程碑" {...getFieldProps('source_milestone')} >
                             {mileStoneOptions}
                         </Select>
-
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
@@ -178,7 +164,7 @@ class createMergeRequest extends Component {
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </Box>
+            </div>
         );
     }
 }

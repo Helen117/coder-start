@@ -17,7 +17,7 @@ export default class IssuesTable extends React.Component {
     //时间戳转换成日期
     getTime(date) {
         if(date != null) {
-            return new Date(parseInt(date)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+            return new Date(parseInt(date)).toLocaleDateString();
         }else{
             return '';
         }
@@ -29,13 +29,13 @@ export default class IssuesTable extends React.Component {
     //处理表格数据源
     getDataSource(dataSource){
         const data = [];
-        if(dataSource !=null){
+        if(dataSource != []){
             for (let i = 0; i < dataSource.length; i++) {
                 data.push({
                     title: dataSource[i].title,
-                    author_name: dataSource[i].author.name,
-                    assignee_name: dataSource[i].assignee.name,
-                    created_at:  this.getTime(dataSource[i].created_at),
+                    author_name: dataSource[i].author?dataSource[i].author.name:null,
+                    assignee_name: dataSource[i].assignee?dataSource[i].assignee.name:null,
+                    created_at: this.getTime(dataSource[i].created_at),
                     due_date: this.getTime(dataSource[i].due_date),
                     labels: dataSource[i].labels,
                     state: dataSource[i].state,
@@ -62,22 +62,22 @@ export default class IssuesTable extends React.Component {
 IssuesTable.prototype.milestoneListColumns = (self)=>[{
     title: '问题名称',
     dataIndex: 'title',
-    width: '12.5%',
+    width: '15%',
     sorter: (a, b) => a.title - b.title,
 }, {
     title: '创建人',
     dataIndex: 'author_name',
-    width: '12.5%',
+    width: '10%',
     sorter: (a, b) => a.author_name - b.author_name,
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
-    width: '12.5%',
+    width: '10%',
     sorter: (a, b) => a.assignee_name - b.assignee_name,
 },{
     title: '问题标签',
     dataIndex: 'labels',
-    width: '12.5%',
+    width: '15%',
     sorter: (a, b) => a.labels - b.labels,
 }, {
     title: '问题创建时间',
