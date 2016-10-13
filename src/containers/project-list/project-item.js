@@ -32,6 +32,12 @@ class ProjectItem extends Component {
         if(node){
             this.showProjectItem(node);
         }
+
+        if(this.props.getProjectInfo){
+                this.setState({
+                    url: this.props.getProjectInfo.gitlabProject.ssh_url_to_repo,
+                });
+            }
     }
 
     componentWillMount(){
@@ -84,7 +90,7 @@ class ProjectItem extends Component {
             message.error('Fork失败!'+forkResult.errors,3);
         }
 
-        if(getProjectInfo && this.getProjectInfo!=getProjectInfo){
+        if(getProjectInfo){
             if(this.state.value=='http'){
                 this.setState({
                     url: getProjectInfo.gitlabProject.http_url_to_repo,
