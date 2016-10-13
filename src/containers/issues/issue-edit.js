@@ -20,8 +20,11 @@ class AddIssue extends Component{
 
     }
     componentWillMount(){
-        const {actions} = this.props;
-        actions.fetchDataSource(17);
+        const {actions,projectInfo} = this.props;
+        if(projectInfo){
+            actions.fetchDataSource(projectInfo.gitlabProject.id);
+        }
+
     }
     componentDidMount() {
 
@@ -33,13 +36,18 @@ class AddIssue extends Component{
             if(selectedRow.due_date){
                 selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
             }
-            //labels
-            selectedRow.labels = selectedRow.labels?selectedRow.labels.substr(0,selectedRow.labels.length-1).split(','):[];
+            //labels substr(0,selectedRow.labels.length-1)
+            selectedRow.labels = selectedRow.labels?selectedRow.labels.split(','):[];
 
             setFieldsValue(selectedRow);
             //this.setState({assign:selectedRow.assignee_name,milestone:selectedRow.milestone_id});
-            setFieldsValue({'assignee.id':selectedRow.assign_id.toString()});
-            setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
+            if(selectedRow.assign_id){
+                setFieldsValue({'assignee.id':selectedRow.assign_id.toString()});
+            }
+           if(selectedRow.milestone_id){
+               setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
+           }
+
         }
 
     }
@@ -54,7 +62,7 @@ class AddIssue extends Component{
         }
         if (!error && result) {
             message.success('新增成功');
-            this.context.router.replace('/issue');
+            this.context.router.replace('/project-mgr/issue');
         }
 
         if(nextProps.issue.updateIssueError && nextProps.issue.updateIssueError!= this.props.issue.updateIssueError){
@@ -62,14 +70,14 @@ class AddIssue extends Component{
         }
         if (!nextProps.issue.updateIssueError && nextProps.issue.updateIssue) {
             message.success('修改成功');
-            this.context.router.replace('/issue.html');
+            this.context.router.replace('/project-mgr/issue');
         }
 
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions,form ,loginInfo} = this.props;
+        const { actions,form ,loginInfo,projectInfo} = this.props;
         const {editType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -79,7 +87,7 @@ class AddIssue extends Component{
                 data.username=loginInfo.username;
                 //console.log('收到表单值：', data);
                 if(editType=='add'){
-                    data.project_id = 17;
+                    data.project_id = projectInfo.gitlabProject.id;
                     data.created_at = Date.now();
                     actions.addIssues(data);
                 }else{
@@ -115,7 +123,7 @@ class AddIssue extends Component{
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.replace('/issue');
+                router.replace('/project-mgr/issue');
                 form.resetFields();
             },
             onCancel() {
@@ -133,7 +141,7 @@ class AddIssue extends Component{
         };
 
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
-        console.log('assignee',assignee);
+
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
@@ -162,7 +170,7 @@ class AddIssue extends Component{
                             {mileStoneOptions}
                         </Select>
                         <br/>
-                        <a href="mileStone">Create new mileStone</a>
+                        <a href="/project-mgr/createMilestones">Create new mileStone</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题标签" >
@@ -216,7 +224,8 @@ function mapStateToProps(state) {
         labels:state.issue.labels,
         members : state.issue.members,
         issue:state.issue,
-        loginInfo:state.login.profile
+        loginInfo:state.login.profile,
+        projectInfo:state.getProjectInfo.projectInfo,
     };
 }
 

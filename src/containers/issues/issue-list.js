@@ -2,7 +2,7 @@
  * Created by helen on 15016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table ,Button,Input } from 'antd';
+import { Table ,Button,Input,notification } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -19,12 +19,26 @@ class IssueList extends Component {
     }
 
     componentWillMount() {
-
+        const {actions,projectInfo} = this.props;
+        if(projectInfo){
+            actions.getIssueList(projectInfo.gitlabProject.id);
+        }else{
+            const {router} = this.context;
+            router.goBack();
+            this.errChosePro();
+        }
     }
 
     componentDidMount() {
-        const {actions} = this.props;
-        actions.getIssueList(17);
+
+    }
+
+    errChosePro(){
+        notification.error({
+            message: '未选择项目',
+            description:'请先在“代码管理“中选择一个项目！',
+            duration: 2
+        });
     }
 
     // editIssue() {
@@ -34,17 +48,16 @@ class IssueList extends Component {
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
         this.context.router.push({
-            pathname: '/issueEdit',
+            pathname: '/project-mgr/issueEdit',
             state: {editType: type, selectedRow}
         });
     }
 
     issueNotes(record) {
         //this.context.router.replace('/issueNotes');
-        //this.context.router.replace('/issueNotes.html');
         //console.log('record:',record);
         this.context.router.push({
-            pathname: '/issueNotes',
+            pathname: '/project-mgr/issueNotes',
             state: {record}
         });
     }
@@ -69,7 +82,7 @@ class IssueList extends Component {
             for (let i = 0; i < issueList.length; i++) {
                 var assign_name = issueList[i].assignee?issueList[i].assignee.name:null;
                 var assign_id = issueList[i].assignee?issueList[i].assignee.id:null;
-                var labels = issueList[i].labels.length>0?issueList[i].labels+';':null;
+                var labels = issueList[i].labels&&issueList[i].labels.length>0?issueList[i].labels+'':null;
                 var milestoneTitle = issueList[i].milestone?issueList[i].milestone.title:null;
                 var milestone_id = issueList[i].milestone?issueList[i].milestone.id:null;
                 var milestoneDueDate = issueList[i].milestone?issueList[i].milestone.due_date:null;
@@ -160,7 +173,7 @@ class IssueList extends Component {
 
     render() {
         const pagination = {
-            pageSize:6,
+            pageSize:10,
         };
 
         return (
@@ -210,13 +223,13 @@ IssueList.prototype.issueListColumns = (self)=>[{
 }, {
     title: '创建人',
     dataIndex: 'author_name',
-    width: '8%',
+    width: '7%',
     filters:authName,
     onFilter: (value, record) => record.author_name.indexOf(value) === 0
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
-    width: '8%',
+    width: '7%',
     filters:assigneeName,
     onFilter: (value, record) => record.assignee_name && record.assignee_name.indexOf(value) === 0
 },{
@@ -245,14 +258,14 @@ IssueList.prototype.issueListColumns = (self)=>[{
 },{
     title: '状态',
     dataIndex: 'state',
-    width: '7%',
+    width: '8%',
     filters: [{
         text: 'closed',
         value: 'closed',
     }, {
         text: 'opened',
         value: 'opened',
-    },, {
+    },{
         text: 'reopened',
         value: 'reopened',
     }],
@@ -260,7 +273,7 @@ IssueList.prototype.issueListColumns = (self)=>[{
 },{
     title: '操作',
     dataIndex: 'key',
-    width: '12%',
+    width: '13%',
     render: (text, record, index)=> {
         return <div>
                     <Button type="ghost" onClick={self.editIssue.bind(self,'modify', record)}>修改</Button>

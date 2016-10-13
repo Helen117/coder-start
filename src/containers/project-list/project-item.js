@@ -28,11 +28,10 @@ class ProjectItem extends Component {
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
-        /*const {node} = this.props.location.state;
-        console.log("node:",node);
+        const {node} = this.props.location.state;
         if(node){
             this.showProjectItem(node);
-        }*/
+        }
     }
 
     componentWillMount(){
@@ -86,22 +85,20 @@ class ProjectItem extends Component {
         }
 
         if(getProjectInfo && this.getProjectInfo!=getProjectInfo){
-            if(this.state.value=='ssh'){
-                this.setState({
-                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
-                });
-            }else {
+            if(this.state.value=='http'){
                 this.setState({
                     url: getProjectInfo.gitlabProject.http_url_to_repo,
                 });
+            }else {
+                this.setState({
+                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                });
             }
         }
-
     }
 
     fork(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-       // console.log('actions:',getProjectInfo);
         actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
     }
     handleChange(value){
