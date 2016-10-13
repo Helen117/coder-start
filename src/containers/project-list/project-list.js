@@ -117,6 +117,7 @@ class ProjectList extends Component {
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
+            //console.log("starList:",starList);
             if (fetchProjectStar || false) {
                 var groupId = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupId,list);
@@ -152,6 +153,7 @@ class ProjectList extends Component {
                     {title: "是否关注", dataIndex: "consern", key: "consern",
                         render(text,record){
                             var count = 0, count2 = 0,recordPrijectId='';
+                            //console.log("record:",record);
                             for(i=0;i<groupInfo.children.length;i++){
                                 if(record.projectName == groupInfo.children[i].gitlabProject.name){
                                     recordPrijectId = groupInfo.children[i].gitlabProject.id;

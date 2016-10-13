@@ -119,6 +119,7 @@ class ProjectItem extends Component {
     render() {
         if(this.state.itemType == true){//展示项目信息
             const {list,loginInfo,fetchProjectStar,starList} = this.props;
+            //console.log("starList-item:",starList);
             if(fetchProjectStar || false){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);

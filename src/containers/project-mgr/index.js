@@ -11,14 +11,10 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import ProjectList from '../project-list/project-list';
-import ProjectMember from '../project-list/member';
-import ProjectItem from '../project-list/project-item';
 import {getGroupTree} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
-//import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 
@@ -82,31 +78,48 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        const {loginInfo, starList, list} = this.props;
-        if(node.id.indexOf("_p") < 0){
-            this.props.getGroupMembers(node.id);
-            const groupInfo = this.searchGroupByGroupId(node.id, list);
-            this.props.getGroupInfo(groupInfo);
-        }else{
-            var node_p = node.id.replace("_p","");
-            const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
-            this.props.getProjectInfo(projectInfo);
-            this.props.getGroupInfo(groupInfo);
+        const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
+        //var rootPath =
+        if(currentOneInfo){
+            if(currentTwoInfo){
+                console.log("currentTwoInfo.link:",currentTwoInfo.link);
+                if(currentTwoInfo.link == '/project-mgr'){
+                    if(node.id.indexOf("_p") < 0){
+                        this.props.getGroupMembers(node.id);
+                        const groupInfo = this.searchGroupByGroupId(node.id, list);
+                        this.props.getGroupInfo(groupInfo);
+                    }else{
+                        var node_p = node.id.replace("_p","");
+                        const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
+                        this.props.getProjectInfo(projectInfo);
+                        this.props.getGroupInfo(groupInfo);
+                    }
+                    if(!starList){
+                        this.props.getProjectStar(loginInfo.username);
+                    }
+                    if(node.id.indexOf("_p") < 0){
+                        this.context.router.push({
+                            pathname: '/project-mgr/project-list',
+                            state: {node}
+                        });
+                    }else{
+                        this.context.router.push({
+                            pathname: '/project-mgr/project-item',
+                            state: {node}
+                        });
+                    }
+                }else{
+                    this.context.router.push({
+                        pathname: currentTwoInfo.link,
+                    });
+                }
+            }else{
+                this.context.router.push({
+                    pathname: currentTwoInfo.link,
+                });
+            }
         }
-        if(!starList){
-            this.props.getProjectStar(loginInfo.username);
-        }
-        if(node.id.indexOf("_p") < 0){
-            this.context.router.push({
-                pathname: '/project-mgr/project-list',
-                state: {node}
-            });
-        }else{
-            this.context.router.push({
-                pathname: '/project-mgr/project-item',
-                state: {node}
-            });
-        }
+
     }
 
     render(){
@@ -154,6 +167,8 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
+        currentOneInfo:state.getMenuBarInfo.currentOne,
+        currentTwoInfo:state.getMenuBarInfo.currentTwo,
     }
 }
 

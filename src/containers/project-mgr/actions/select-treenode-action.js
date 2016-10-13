@@ -1,7 +1,6 @@
 /**
  * Created by Administrator on 2016-09-29.
  */
-import api from '../../../api';
 import {GET_GROUP_INFO_SUCCESS,
         GET_GROUP_INFO_ERROR,
         GET_PROJECT_INFO_SUCCESS,
@@ -37,9 +36,9 @@ export function getProjectInfoFail() {
 
 export function getGroupInfo(groupInfo) {
     return (dispatch) => {
-        if(groupInfo){
+        if (groupInfo) {
             dispatch(getGroupInfoSuss(groupInfo));
-        }else{
+        } else {
             dispatch(getGroupInfoFail());
         }
     }
