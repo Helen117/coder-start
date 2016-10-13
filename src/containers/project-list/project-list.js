@@ -31,7 +31,10 @@ class ProjectList extends Component {
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
-
+        const {node} = this.props.location.state;
+        if(node){
+            this.showProjectList(node);
+        }
     }
 
     componentWillMount(){
@@ -131,7 +134,7 @@ class ProjectList extends Component {
 
                     dataSource.push({
                         key:i+1,
-                        projectName:groupInfo.children[i].gitlabProject.name,
+                        projectName:groupInfo.children[i].name,
                         manager:manager,
                         memberNum:"共"+groupInfo.children[i].gitlabProjectMember.length+"人",
                         owner:groupInfo.children[i].gitlabProject.owner

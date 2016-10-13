@@ -75,6 +75,7 @@ ReactDOM.render(
                             <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
+                            <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}></Route>
                             <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                             <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
@@ -82,7 +83,6 @@ ReactDOM.render(
                             <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                             <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
                         </Route>
-                        <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="issueNotes" breadcrumbName="测试" path="test" component={AddIssue}/>
