@@ -18,7 +18,7 @@ class branchesList extends React.Component {
 
     createBranches(type){
         this.context.router.push({
-            pathname: '/createBranches.html',
+            pathname: '/createBranches',
             state: {editType: type}
         });
     }
