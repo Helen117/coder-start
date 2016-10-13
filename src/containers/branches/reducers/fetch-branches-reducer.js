@@ -22,7 +22,6 @@ export default function fetchBranches(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true});
 
         case FETCH_BRANCHES_SUCCESS:
-            console.log('action.payload2222',action.payload);
             return Object.assign({}, initialState, {branchesData: action.payload,fetchErrors: null});
 
         case FETCH_BRANCHES_ERROR:

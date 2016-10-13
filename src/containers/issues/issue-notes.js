@@ -114,7 +114,7 @@ import * as issue from './actions/issue-action';
                         <span style={this.state.color}>{record.state}</span>
                         <strong> Issue #{record.id}</strong>
                         <span> opened {record.created_at} by </span>
-                        <strong>{record.assignee_name}</strong>
+                        <strong>{record.author_name}</strong>
                     </div>
 
                     <div className={styles.notes_body}>
@@ -128,9 +128,7 @@ import * as issue from './actions/issue-action';
 
                     <div>
                         <ul>
-                            <li>
-                                {list}
-                            </li>
+                            {list}
                         </ul>
                         <br/>
                         <ul>

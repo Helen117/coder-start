@@ -27,15 +27,15 @@ class createBranches extends Component {
         }else{
             const {router} = this.context;
             router.goBack();
-            this.errChosePro();
+            this.errChoosePro();
         }
 
     }
 
-    errChosePro(){
+    errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
+            description:'请先选择一个项目！',
             duration: 2
         });
     }
@@ -60,7 +60,6 @@ class createBranches extends Component {
     componentWillReceiveProps(nextProps) {
         const { result, errMessage } = nextProps;
         if (this.props.result != result && result){
-            console.log('1111111111');
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
@@ -74,12 +73,11 @@ class createBranches extends Component {
         } else {
             setTimeout(() => {
                 for( let i=0; i<branchesData.branch.length;i++){
-                    if (value === branchesData.branch[i]) {
-                        callback([new Error('分支已存在')]);
-                    } else {
-                        callback();
-                    }}
-            }, 800);
+                    if (value == branchesData.branch[i]) {
+                        callback([new Error('该分支已存在')]);
+                    }
+                }
+            }, 500);
         }
     }
 
@@ -138,7 +136,7 @@ class createBranches extends Component {
         };
 
         return (
-            <Box title={editType == 'add' ? '添加分支' : '修改分支'}>
+            <div style={{marginTop:5,marginLeft:5}}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout}  label="new_branch" >
@@ -156,7 +154,7 @@ class createBranches extends Component {
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </Box>
+            </div>
         );
     }
 }

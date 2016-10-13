@@ -79,24 +79,22 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
-        //var rootPath =
+        if(node.id.indexOf("_p") < 0){
+            this.props.getGroupMembers(node.id);
+            const groupInfo = this.searchGroupByGroupId(node.id, list);
+            this.props.getGroupInfo(groupInfo);
+        }else{
+            var node_p = node.id.replace("_p","");
+            const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
+            this.props.getProjectInfo(projectInfo);
+            this.props.getGroupInfo(groupInfo);
+        }
+        if(!starList){
+            this.props.getProjectStar(loginInfo.username);
+        }
         if(currentOneInfo){
             if(currentTwoInfo){
-                console.log("currentTwoInfo.link:",currentTwoInfo.link);
                 if(currentTwoInfo.link == '/project-mgr'){
-                    if(node.id.indexOf("_p") < 0){
-                        this.props.getGroupMembers(node.id);
-                        const groupInfo = this.searchGroupByGroupId(node.id, list);
-                        this.props.getGroupInfo(groupInfo);
-                    }else{
-                        var node_p = node.id.replace("_p","");
-                        const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
-                        this.props.getProjectInfo(projectInfo);
-                        this.props.getGroupInfo(groupInfo);
-                    }
-                    if(!starList){
-                        this.props.getProjectStar(loginInfo.username);
-                    }
                     if(node.id.indexOf("_p") < 0){
                         this.context.router.push({
                             pathname: '/project-mgr/project-list',
@@ -115,7 +113,7 @@ class ProjectMgr extends React.Component{
                 }
             }else{
                 this.context.router.push({
-                    pathname: currentTwoInfo.link,
+                    pathname: currentOneInfo.link,
                 });
             }
         }

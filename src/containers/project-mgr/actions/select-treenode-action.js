@@ -35,22 +35,18 @@ export function getProjectInfoFail() {
 }
 
 export function getGroupInfo(groupInfo) {
-    return (dispatch) => {
         if (groupInfo) {
-            dispatch(getGroupInfoSuss(groupInfo));
+            return getGroupInfoSuss(groupInfo);
         } else {
-            dispatch(getGroupInfoFail());
+            return getGroupInfoFail();
         }
-    }
 }
 
 export function getProjectInfo(projectInfo) {
-    return (dispatch) => {
-        if(projectInfo){
-            dispatch(getProjectInfoSuss(projectInfo));
-        }else{
-            dispatch(getProjectInfoFail());
-        }
+    if(projectInfo){
+        return getProjectInfoSuss(projectInfo);
+    }else{
+        return getProjectInfoFail();
     }
 }
 
