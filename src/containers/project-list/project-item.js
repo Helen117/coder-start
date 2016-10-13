@@ -28,11 +28,10 @@ class ProjectItem extends Component {
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
-        /*const {node} = this.props.location.state;
-        console.log("node:",node);
+        const {node} = this.props.location.state;
         if(node){
             this.showProjectItem(node);
-        }*/
+        }
     }
 
     componentWillMount(){
@@ -96,12 +95,10 @@ class ProjectItem extends Component {
                 });
             }
         }
-
     }
 
     fork(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-       // console.log('actions:',getProjectInfo);
         actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
     }
     handleChange(value){

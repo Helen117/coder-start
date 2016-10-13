@@ -87,8 +87,8 @@ ReactDOM.render(
                         </Route>
                         <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest" component={createMergeRequest}/>
 
-                        <Route name="branches" breadcrumbName="分支管理" path="branches.html" component={branchesList}/>
-                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches.html" component={createBranches}/>
+                        <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
+                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
