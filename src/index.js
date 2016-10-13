@@ -81,11 +81,10 @@ ReactDOM.render(
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                             <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
+                            <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
+                            <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
+                            <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         </Route>
-                        <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
-                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
-                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
-                        <Route name="issueNotes" breadcrumbName="测试" path="test" component={AddIssue}/>
                         <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest" component={createMergeRequest}/>
 
                         <Route name="branches" breadcrumbName="分支管理" path="branches.html" component={branchesList}/>
