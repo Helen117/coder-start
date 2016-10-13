@@ -136,7 +136,7 @@ class createBranches extends Component {
         };
 
         return (
-            <div style={{marginTop:5,marginLeft:5}}>
+            <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout}  label="new_branch" >
@@ -154,7 +154,7 @@ class createBranches extends Component {
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </div>
+            </Box>
         );
     }
 }

@@ -23,6 +23,7 @@ export default function createMilestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {items: action.payload,loading:false,disabled:false});
 
         case CREATE_MILESTONES_ERROR:
+            console.log('errorMsg',action.payload.errorMsg);
             return {
                 ...state,
                 errors: action.payload.errorMsg,

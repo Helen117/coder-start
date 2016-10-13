@@ -31,10 +31,10 @@ class MilestoneDetail extends React.Component {
         const milestoneDetail = this.props.milestoneDetail;
         const isLoading = this.props.loading
         return(
-            <div style={{marginTop:5,marginLeft:5}}>
+            <Box title="里程碑详细信息">
                 <IssuesTable loading = {isLoading} dataSource={milestoneDetail}>
                 </IssuesTable>
-            </div>
+            </Box>
         )
     }
 }
