@@ -90,7 +90,6 @@ class MilestoneCreate extends React.Component {
 
     checkCreateDate(rule, value, callback){
         const {moreMilestoneData} = this.props;
-        console.log('moreMilestoneData',moreMilestoneData)
         var lastMilestoneDuedate = (moreMilestoneData.length>0)?moreMilestoneData[0].gitlabMilestone.due_date:null;
         if (!value ) {
             callback();

@@ -29,7 +29,6 @@ class Milestones extends React.Component {
             const {moreMilestoneData} = this.props;
             const projectId = this.props.getProjectInfo.gitlabProject.id;
             this.data =[];
-            console.log('projectId',projectId);
             this.props.getMilestones(projectId,this.page);
         }else{
             const {router} = this.context;
@@ -126,14 +125,13 @@ class Milestones extends React.Component {
 
     timelineItemConst(){
         const {moreMilestoneData} = this.props;
-        console.log('moreMilestoneData',moreMilestoneData)
         if (moreMilestoneData){
             var timeLine = moreMilestoneData.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
                     <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
-                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</h4>
+                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
                         <p>{item.gitlabMilestone.description}</p>
                         <div style={{marginLeft:12,width:"70%"}}>
                             <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
