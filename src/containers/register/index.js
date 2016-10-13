@@ -6,7 +6,7 @@ import { Form, Input, Button, Select,message} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-//import {checkName} from '../../utils/regValidate'
+import {checkName} from '../../utils/regValidate'
 import * as register from './actions/register-action';
 
 const FormItem = Form.Item;
@@ -48,17 +48,19 @@ class Register extends Component{
     }
 
     userExists(rule, value, callback) {
-        // var reg =new RegExp ('/^[A-Za-z]{1}[A-Za-z0-9_]{4,16}$/');
+        var reg = /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/;
         if (!value) {
             callback();
         } else {
-            // if(!reg.test(value)){
-            //     callback('字母开头，允许4-16字节，允许字母数字下划线');
-            // }
-            // console.log('userName:',userName);
-            if(!(userName.length>0)){
+            if(!reg.test(value)){
+                callback('用户名可以由字母、数字、下划线组成，以字母开头，长度为4-16位。');
+            }else {
                 callback();
             }
+            // console.log('userName:',userName);
+            // if(!(userName.length>0)){
+            //     callback();
+            // }
             // for(var i =0;i<userName.length;i++){
             //     if (value == userName[i]) {
             //         callback([new Error('抱歉，该用户名已被占用。')]);
@@ -100,22 +102,15 @@ class Register extends Component{
             labelCol: { span: 8 },
             wrapperCol: { span: 8 },
         };
-        const selectAfter = (
-            <Select defaultValue="@asiainfo.com" style={{ width: 100 }}>
-                <Option value="@shpso.com">@shpso.com</Option>
-                <Option value="@boss.com">@boss.com</Option>
-                <Option value="@163.com">@163.com</Option>
-                <Option value="@qq.com">@qq.com</Option>
-            </Select>
-        );
+
         return (
             <Box title='新用户注册'>
                 <Form horizontal onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout}  label="用户名" >
-                        <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,min:4,message:'用户名至少为4个字符'},{validator:this.userExists}]})} />
+                        <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout}  label="中文名" >
-                        <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'}]})} />
+                        <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout}  label="邮箱" >
                         <Input id="email" placeholder="email" {...getFieldProps('email',{rules:[{required:true,type: 'email', message: '请输入正确的邮箱地址' }]})} />
