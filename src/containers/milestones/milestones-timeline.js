@@ -17,26 +17,22 @@ import './index.less';
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
-        this.isMoreData=false;
         this.page =1;
-        this.data = [];
-        console.log('调用构造函数');
+        this.timeLineData = [];
+        //console.log('调用构造函数');
     }
 
 
     componentDidMount() {
         //首页初始化数据
         if(this.props.getProjectInfo) {
-            const {moreMilestoneData} = this.props;
             const projectId = this.props.getProjectInfo.gitlabProject.id;
-            this.data =[];
-            this.props.getMilestones(projectId,this.page);
+            this.props.getMilestones(projectId,this.page,this.timeLineData);
         }else{
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
         }
-
     }
 
     errChoosePro(){
@@ -49,40 +45,24 @@ class Milestones extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        const actionType = this.props.actionType;
-        const acquireData = nextProps.acquireData;
-        const {errMessage } = nextProps;
+        const acquireData = this.props.acquireData;
+        const errMessage = nextProps.errMessage;
+        //切换项目，重新加载数据
+        if(this.props.getProjectInfo.gitlabProject.id != nextProps.getProjectInfo.gitlabProject.id){
+            this.page =1;
+            this.timeLineData = [];
+            this.props.getMilestones(nextProps.getProjectInfo.gitlabProject.id,this.page,this.timeLineData);
+            //console.log('componentWillReceiveProps');
+        }
         //点击查看更多无新数据时提醒
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page != 1 && acquireData){
             this.warnCallback();
-        }
-        //切换项目时首页初始化数据
-        if(this.page == 1) {
-
-            if (this.props.getProjectInfo) {
-                const {moreMilestoneData} = this.props;
-                const projectId = this.props.getProjectInfo.gitlabProject.id;
-                this.data = [];console.log()
-                console.log('切换项目时首页初始化数据');
-                this.props.getMilestones(projectId, this.page);
-            } else {
-                const {router} = this.context;
-                router.goBack();
-                this.errChoosePro();
-            }
-        }
-        //将新获取到的数据拼接合并
-        if(this.props.milestoneData != nextProps.milestoneData ) {
-            const moreMilestoneData = nextProps.milestoneData;
-            for(let i=0; i<moreMilestoneData.length; i++) {
-                    this.data.push(moreMilestoneData[i]);
-            }
-            this.props.getMoreMilestones(this.data);
         }
         if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
         }
     }
+
 
     errCallback(errMessage){
         notification.error({
@@ -104,7 +84,7 @@ class Milestones extends React.Component {
     moreMilestones(){
         const projectId = this.props.getProjectInfo.gitlabProject.id;
         this.page ++;
-        this.props.getMilestones(projectId,this.page);
+        this.props.getMilestones(projectId,this.page,this.props.timeLineData);
 
     }
 
@@ -142,9 +122,10 @@ class Milestones extends React.Component {
     }
 
     timelineItemConst(){
-        const {moreMilestoneData} = this.props;
-        if (moreMilestoneData){
-            var timeLine = moreMilestoneData.map((item) => {
+
+        const {timeLineData} = this.props;
+        if (timeLineData && timeLineData.length>0){
+            var timeLine = timeLineData.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
@@ -171,7 +152,6 @@ class Milestones extends React.Component {
     }
 
     render(){
-        this.timeline =[];
         const {loading, loadingMsg,notFoundMsg} = this.props;
         const timeLine = this.timelineItemConst();
         return (
@@ -210,12 +190,11 @@ Milestones.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        moreMilestoneData: state.moreMilestonesData.moreData,
+        timeLineData: state.milestones.timeLineData,
         milestoneData: state.milestones.items,
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
         loadErrors: state.milestones.loadErrors,
-        actionType: state.moreMilestonesData.actionType,
         getProjectInfo: state.getProjectInfo.projectInfo,
     };
 }
