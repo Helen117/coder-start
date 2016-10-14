@@ -75,8 +75,8 @@ class GroupDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {inserted, errMessage} = nextProps;
-        if (this.props.result != inserted && inserted) {
+        const {result, errMessage} = nextProps;
+        if (this.props.result != result && result) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
             this.errCallback(errMessage);
