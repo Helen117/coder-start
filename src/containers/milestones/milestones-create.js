@@ -165,7 +165,7 @@ class MilestoneCreate extends React.Component {
                         labelCol={{ span: 6 }}
                         required
                     >
-                        <Col span="5">
+                        <Col span="3">
                             <FormItem>
                                 <DatePicker
                                     placeholder="开始日期"
@@ -177,7 +177,7 @@ class MilestoneCreate extends React.Component {
                         <Col span="1">
                             <p className="ant-form-split" >-</p>
                         </Col>
-                        <Col span="6">
+                        <Col span="3">
                             <FormItem>
                                 <DatePicker
                                     placeholder="结束日期"
