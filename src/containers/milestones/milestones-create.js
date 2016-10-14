@@ -141,7 +141,6 @@ class MilestoneCreate extends React.Component {
                 { required: true,
                     type: 'date',
                     message: '请选择结束日期', },
-                { validator: this.checkCreateDate.bind(this) },
             ],
         });
 
