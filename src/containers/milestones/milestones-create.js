@@ -26,8 +26,9 @@ class MilestoneCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                const projectId = this.props.getProjectInfo.gitlabProject.id;
                 var gitlabMilestone = formData;
-                gitlabMilestone.project_id= 17;
+                gitlabMilestone.project_id= projectId;
                 var userId = logInfo.userId;
                 var owner = logInfo.username;
                 var milestoneData = {owner,userId,gitlabMilestone};
@@ -89,7 +90,6 @@ class MilestoneCreate extends React.Component {
 
     checkCreateDate(rule, value, callback){
         const {moreMilestoneData} = this.props;
-        console.log('moreMilestoneData',moreMilestoneData)
         var lastMilestoneDuedate = (moreMilestoneData.length>0)?moreMilestoneData[0].gitlabMilestone.due_date:null;
         if (!value ) {
             callback();
@@ -159,7 +159,7 @@ class MilestoneCreate extends React.Component {
 
 
         return(
-            <div style={{marginTop:5,marginLeft:5}}>
+            <Box title="创建里程碑">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                     <FormItem   {...formItemLayout} label="名称">
                         <Input {...titleProps} placeholder="请输入里程碑名称" />
@@ -198,7 +198,7 @@ class MilestoneCreate extends React.Component {
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </div>
+            </Box>
 
         );
     }
@@ -214,6 +214,7 @@ MilestoneCreate.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        getProjectInfo: state.getProjectInfo.projectInfo,
         moreMilestoneData:state.moreMilestonesData.moreData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
