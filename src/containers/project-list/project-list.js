@@ -85,7 +85,7 @@ class ProjectList extends Component {
         };
         starInfo.username = loginInfo.username;
         starInfo.projectId = projectId;
-        if(is_conserned == 'no'){
+        if(is_conserned == '关注'){
             starActions.consernProject(starInfo);
         }else{
             starActions.unconsernProject(starInfo);
@@ -97,7 +97,6 @@ class ProjectList extends Component {
             pathname: '/project-mgr/project-list/project-member',
             state: {record:record, groupInfo:groupInfo}
         });
-        //PubSub.publish("evtMemberCountClick",{record:record, groupInfo:groupInfo});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -117,7 +116,6 @@ class ProjectList extends Component {
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
-            //console.log("starList:",starList);
             if (fetchProjectStar || false) {
                 var groupId = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupId,list);
@@ -131,14 +129,34 @@ class ProjectList extends Component {
                                 manager = groupMembers[j].name;
                             }
                         }
-                    }//else if(groupInfo.nama == )
-
+                    }
+                    var count = 0, count2 = 0,recordPrijectId='';
+                    recordPrijectId = groupInfo.children[i].gitlabProject.id;
+                    for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
+                        if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
+                            count2++;//当前用户是此项目下成员
+                        }
+                    }
+                    for(var j=0;j<starList.length;j++){
+                        if(recordPrijectId == starList[j].id){
+                            count++;
+                        }
+                    }
+                    var is_conserned;
+                    if(count == 0 && count2 == 0){//未关注
+                        is_conserned = '关注';
+                    }else if(count != 0 && count2 == 0){//已关注
+                        is_conserned = '取消关注';
+                    }else{//项目成员
+                        is_conserned = '项目成员禁止取关';
+                    }
                     dataSource.push({
                         key:i+1,
                         projectName:groupInfo.children[i].name,
                         manager:manager,
                         memberNum:"共"+groupInfo.children[i].gitlabProjectMember.length+"人",
-                        owner:groupInfo.children[i].gitlabProject.owner
+                        owner:groupInfo.children[i].gitlabProject.owner,
+                        consern:is_conserned
                     });
                 }
                 const groupColumns = (self)=>[
@@ -153,7 +171,34 @@ class ProjectList extends Component {
                     {title: "是否关注", dataIndex: "consern", key: "consern",
                         render(text,record){
                             var count = 0, count2 = 0,recordPrijectId='';
-                            //console.log("record:",record);
+                            for(i=0;i<groupInfo.children.length;i++){
+                                if(record.projectName == groupInfo.children[i].gitlabProject.name){
+                                    recordPrijectId = groupInfo.children[i].gitlabProject.id;
+                                    for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
+                                        if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
+                                            count2++;//当前用户是此项目下成员
+                                        }
+                                    }
+                                }
+                            }
+                            for(var j=0;j<starList.length;j++){
+                                if(recordPrijectId == starList[j].id){
+                                    count++;
+                                }
+                            }
+                            if(count == 0 && count2 == 0){//未关注
+                                var is_conserned = '关注';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                            }else if(count != 0 && count2 == 0){//已关注
+                                var is_conserned = '取消关注';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                            }else{//项目成员
+                                var is_conserned = '项目成员禁止取关';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)} disabled>{text}</a>
+                            }
+                        }
+                        /*render(text,record){
+                            var count = 0, count2 = 0,recordPrijectId='';
                             for(i=0;i<groupInfo.children.length;i++){
                                 if(record.projectName == groupInfo.children[i].gitlabProject.name){
                                     recordPrijectId = groupInfo.children[i].gitlabProject.id;
@@ -171,20 +216,23 @@ class ProjectList extends Component {
                             }
                             if(count == 0 && count2 == 0){//未关注
                                 var is_conserned = 'no';
+                                console.log("未关注");
                                 return <Switch checkedChildren="是" unCheckedChildren="否"
                                                onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
                             }else if(count != 0 && count2 == 0){//已关注
                                 var is_conserned = 'yes';
+                                console.log("已关注");
                                 return <Switch checkedChildren="是" unCheckedChildren="否"
-                                               defaultChecked="true"
+                                               checked="true"
                                                onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
                             }else{//项目成员
+                                console.log("项目成员");
                                 var is_conserned = 'yes';
                                 return <Switch disabled checkedChildren="是" unCheckedChildren="否"
-                                               defaultChecked="true"
+                                               checked="true"
                                                onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
                             }
-                        }
+                        }*/
                     }
                 ];
                 return (
