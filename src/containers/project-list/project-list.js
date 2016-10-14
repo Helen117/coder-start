@@ -31,7 +31,10 @@ class ProjectList extends Component {
     componentDidMount() {
         //在此处注册对其他控件发送的消息的响应
         //PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
-
+        const {node} = this.props.location.state;
+        if(node){
+            this.showProjectList(node);
+        }
     }
 
     componentWillMount(){
@@ -114,6 +117,7 @@ class ProjectList extends Component {
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,loginInfo,groupMembers,fetchGroupMembers,fetchProjectStar,starList} = this.props;
+            //console.log("starList:",starList);
             if (fetchProjectStar || false) {
                 var groupId = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupId,list);
@@ -131,7 +135,7 @@ class ProjectList extends Component {
 
                     dataSource.push({
                         key:i+1,
-                        projectName:groupInfo.children[i].gitlabProject.name,
+                        projectName:groupInfo.children[i].name,
                         manager:manager,
                         memberNum:"共"+groupInfo.children[i].gitlabProjectMember.length+"人",
                         owner:groupInfo.children[i].gitlabProject.owner
@@ -149,6 +153,7 @@ class ProjectList extends Component {
                     {title: "是否关注", dataIndex: "consern", key: "consern",
                         render(text,record){
                             var count = 0, count2 = 0,recordPrijectId='';
+                            //console.log("record:",record);
                             for(i=0;i<groupInfo.children.length;i++){
                                 if(record.projectName == groupInfo.children[i].gitlabProject.name){
                                     recordPrijectId = groupInfo.children[i].gitlabProject.id;

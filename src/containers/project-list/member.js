@@ -54,7 +54,7 @@ class ProjectMember extends Component {
     searchGroupByProjectName(projectName,groupInfo){
         var projectInfo;
         for(var i=0;i<groupInfo.children.length;i++){
-            if(projectName == groupInfo.children[i].gitlabProject.name){
+            if(projectName == groupInfo.children[i].name){
                 projectInfo = groupInfo.children[i];
                 return {projectInfo}
             }
@@ -93,7 +93,7 @@ class ProjectMember extends Component {
             ];
             const dataSource = [];
             for(var i=0;i<projectInfo.gitlabProjectMember.length;i++){
-                if(projectName == projectInfo.gitlabProject.name){
+                if(projectName == projectInfo.name){
                     dataSource.push({
                         key:i+1,
                         name:projectInfo.gitlabProjectMember[i].name,
@@ -107,7 +107,7 @@ class ProjectMember extends Component {
             return (
                 <div className={styles.project_list_div}>
                     <div>
-                        <p>项目创建时间:{this.transformDate(projectInfo.gitlabProject.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                        <p>项目名称:{projectName}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.gitlabProject.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                     </div>
                     <TableView columns={columns}
                                dataSource={dataSource}

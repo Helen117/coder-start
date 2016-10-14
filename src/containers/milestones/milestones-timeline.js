@@ -25,6 +25,7 @@ class Milestones extends React.Component {
 
 
     componentDidMount() {
+        //首页初始化数据
         if(this.props.getProjectInfo) {
             const {moreMilestoneData} = this.props;
             const projectId = this.props.getProjectInfo.gitlabProject.id;
@@ -51,9 +52,26 @@ class Milestones extends React.Component {
         const actionType = this.props.actionType;
         const acquireData = nextProps.acquireData;
         const {errMessage } = nextProps;
+        //点击查看更多无新数据时提醒
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page != 1 && acquireData){
             this.warnCallback();
         }
+        //切换项目时首页初始化数据
+        if(this.page == 1) {
+
+            if (this.props.getProjectInfo) {
+                const {moreMilestoneData} = this.props;
+                const projectId = this.props.getProjectInfo.gitlabProject.id;
+                this.data = [];console.log()
+                console.log('切换项目时首页初始化数据');
+                this.props.getMilestones(projectId, this.page);
+            } else {
+                const {router} = this.context;
+                router.goBack();
+                this.errChoosePro();
+            }
+        }
+        //将新获取到的数据拼接合并
         if(this.props.milestoneData != nextProps.milestoneData ) {
             const moreMilestoneData = nextProps.milestoneData;
             for(let i=0; i<moreMilestoneData.length; i++) {
