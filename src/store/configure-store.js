@@ -26,8 +26,7 @@ import {fetchMergeData,fetchTargetProject} from '../containers/mergeRequest/redu
 import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
-
-
+import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 
 const reducer = combineReducers({
     login,
@@ -52,7 +51,8 @@ const reducer = combineReducers({
     fetchTargetProject,
     createMr,
     fetchBranches,
-    createBranch
+    createBranch,
+    getMenuBarInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

@@ -11,14 +11,10 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import ProjectList from '../project-list/project-list';
-import ProjectMember from '../project-list/member';
-import ProjectItem from '../project-list/project-item';
 import {getGroupTree} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
-//import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 
@@ -82,7 +78,7 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        const {loginInfo, starList, list} = this.props;
+        const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
         if(node.id.indexOf("_p") < 0){
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
@@ -96,17 +92,34 @@ class ProjectMgr extends React.Component{
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
         }
-        if(node.id.indexOf("_p") < 0){
-            this.context.router.push({
-                pathname: '/project-mgr/project-list',
-                state: {node}
-            });
-        }else{
-            this.context.router.push({
-                pathname: '/project-mgr/project-item',
-                state: {node}
-            });
+        if(currentOneInfo){
+            if(currentTwoInfo){
+                if(currentTwoInfo.link == '/project-mgr'){
+                    if(node.id.indexOf("_p") < 0){
+                        this.context.router.push({
+                            pathname: '/project-mgr/project-list',
+                            state: {node}
+                        });
+                    }else{
+                        this.context.router.push({
+                            pathname: '/project-mgr/project-item',
+                            state: {node}
+                        });
+                    }
+                }else{
+                    if(node.id.indexOf("_p") >= 0){
+                        this.context.router.push({
+                            pathname: currentTwoInfo.link,
+                        });
+                    }
+                }
+            }else{
+                this.context.router.push({
+                    pathname: currentOneInfo.link,
+                });
+            }
         }
+
     }
 
     render(){
@@ -154,6 +167,8 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
+        currentOneInfo:state.getMenuBarInfo.currentOne,
+        currentTwoInfo:state.getMenuBarInfo.currentTwo,
     }
 }
 

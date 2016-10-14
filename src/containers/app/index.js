@@ -11,7 +11,7 @@ import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/login-action';
-import MenuBar from '../../components/menubar';
+import MenuBar from '../../containers/menubar';
 import * as Cookies from "js-cookie";
 
 //import authUtils from '../../utils/auth'
