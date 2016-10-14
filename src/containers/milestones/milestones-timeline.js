@@ -17,26 +17,22 @@ import './index.less';
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
-        this.isMoreData=false;
         this.page =1;
-        this.data = [];
-        console.log('调用构造函数');
+        this.timeLineData = [];
+        //console.log('调用构造函数');
     }
 
 
     componentDidMount() {
+        //首页初始化数据
         if(this.props.getProjectInfo) {
-            const {moreMilestoneData} = this.props;
             const projectId = this.props.getProjectInfo.gitlabProject.id;
-            this.data =[];
-            console.log('projectId',projectId);
-            this.props.getMilestones(projectId,this.page);
+            this.props.getMilestones(projectId,this.page,this.timeLineData);
         }else{
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
         }
-
     }
 
     errChoosePro(){
@@ -49,23 +45,24 @@ class Milestones extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        const actionType = this.props.actionType;
-        const acquireData = nextProps.acquireData;
-        const {errMessage } = nextProps;
+        const acquireData = this.props.acquireData;
+        const errMessage = nextProps.errMessage;
+        //切换项目，重新加载数据
+        if(this.props.getProjectInfo.gitlabProject.id != nextProps.getProjectInfo.gitlabProject.id){
+            this.page =1;
+            this.timeLineData = [];
+            this.props.getMilestones(nextProps.getProjectInfo.gitlabProject.id,this.page,this.timeLineData);
+            //console.log('componentWillReceiveProps');
+        }
+        //点击查看更多无新数据时提醒
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page != 1 && acquireData){
             this.warnCallback();
-        }
-        if(this.props.milestoneData != nextProps.milestoneData ) {
-            const moreMilestoneData = nextProps.milestoneData;
-            for(let i=0; i<moreMilestoneData.length; i++) {
-                    this.data.push(moreMilestoneData[i]);
-            }
-            this.props.getMoreMilestones(this.data);
         }
         if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
         }
     }
+
 
     errCallback(errMessage){
         notification.error({
@@ -87,7 +84,7 @@ class Milestones extends React.Component {
     moreMilestones(){
         const projectId = this.props.getProjectInfo.gitlabProject.id;
         this.page ++;
-        this.props.getMilestones(projectId,this.page);
+        this.props.getMilestones(projectId,this.page,this.props.timeLineData);
 
     }
 
@@ -112,28 +109,28 @@ class Milestones extends React.Component {
     milestonesDetail(milestonesId){
         const projectId = this.props.getProjectInfo.gitlabProject.id;
         this.context.router.push({
-            pathname: '/project-mgr/milestonesDetail',
+            pathname: '/milestonesDetail',
             state: {milestonesId,projectId}
         });
     }
 
     createMilestones(){
         this.context.router.push({
-            pathname: '/project-mgr/createMilestones',
+            pathname: '/createMilestones',
             //state: {}
         });
     }
 
     timelineItemConst(){
-        const {moreMilestoneData} = this.props;
-        console.log('moreMilestoneData',moreMilestoneData)
-        if (moreMilestoneData){
-            var timeLine = moreMilestoneData.map((item) => {
+
+        const {timeLineData} = this.props;
+        if (timeLineData && timeLineData.length>0){
+            var timeLine = timeLineData.map((item) => {
                 const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
                     <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
-                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑{item.gitlabMilestone.title}</h4>
+                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
                         <p>{item.gitlabMilestone.description}</p>
                         <div style={{marginLeft:12,width:"70%"}}>
                             <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
@@ -155,7 +152,6 @@ class Milestones extends React.Component {
     }
 
     render(){
-        this.timeline =[];
         const {loading, loadingMsg,notFoundMsg} = this.props;
         const timeLine = this.timelineItemConst();
         return (
@@ -194,12 +190,11 @@ Milestones.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        moreMilestoneData: state.moreMilestonesData.moreData,
+        timeLineData: state.milestones.timeLineData,
         milestoneData: state.milestones.items,
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
         loadErrors: state.milestones.loadErrors,
-        actionType: state.moreMilestonesData.actionType,
         getProjectInfo: state.getProjectInfo.projectInfo,
     };
 }
