@@ -107,9 +107,11 @@ class ProjectMgr extends React.Component{
                         });
                     }
                 }else{
-                    this.context.router.push({
-                        pathname: currentTwoInfo.link,
-                    });
+                    if(node.id.indexOf("_p") >= 0){
+                        this.context.router.push({
+                            pathname: currentTwoInfo.link,
+                        });
+                    }
                 }
             }else{
                 this.context.router.push({
