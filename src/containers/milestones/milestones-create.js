@@ -3,7 +3,6 @@ import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
-import {getMoreMilestones} from './actions/more-milestones-actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -44,15 +43,9 @@ class MilestoneCreate extends React.Component {
             description: '',
             duration: 2
         });
-        this.clearData();
         this.context.router.goBack();
-
     }
 
-    clearData(){
-        let data = [];
-        this.props.getMoreMilestones(data);
-    }
 
     errCallback(errMessage){
         notification.error({
@@ -89,11 +82,11 @@ class MilestoneCreate extends React.Component {
 
 
     checkCreateDate(rule, value, callback){
-        const {moreMilestoneData} = this.props;
-        var lastMilestoneDuedate = (moreMilestoneData.length>0)?moreMilestoneData[0].gitlabMilestone.due_date:null;
+        const {timeLineData} = this.props;
+        var lastMilestoneDuedate = (timeLineData.length>0)?timeLineData[0].gitlabMilestone.due_date:null;
         if (!value ) {
             callback();
-        } else if(value && moreMilestoneData.length>0) {
+        } else if(value && timeLineData.length>0) {
             setTimeout(() => {
                 if (value < lastMilestoneDuedate) {
                     callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
@@ -215,7 +208,7 @@ MilestoneCreate.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo: state.getProjectInfo.projectInfo,
-        moreMilestoneData:state.moreMilestonesData.moreData,
+        timeLineData: state.milestones.timeLineData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
@@ -228,7 +221,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
-        getMoreMilestones:bindActionCreators(getMoreMilestones, dispatch),
     }
 }
 

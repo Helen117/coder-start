@@ -35,7 +35,7 @@ class createBranches extends Component {
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先选择一个项目！',
+            description:'请先在左侧项目树中选择一个项目！',
             duration: 2
         });
     }

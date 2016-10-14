@@ -8,7 +8,6 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestones} from './actions/milestones-action';
-import {getMoreMilestones} from './actions/more-milestones-actions';
 
 import './index.less';
 
@@ -19,16 +18,14 @@ class Milestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        //console.log('调用构造函数');
     }
 
 
     componentDidMount() {
-        //首页初始化数据
-        if(this.props.getProjectInfo) {
+        if (this.props.getProjectInfo) {
             const projectId = this.props.getProjectInfo.gitlabProject.id;
-            this.props.getMilestones(projectId,this.page,this.timeLineData);
-        }else{
+            this.props.getMilestones(projectId, this.page, this.timeLineData);
+        } else {
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
@@ -38,14 +35,14 @@ class Milestones extends React.Component {
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
+            description:'请先在左侧项目树中选择一个项目！',
             duration: 2
         });
     }
 
 
     componentWillReceiveProps(nextProps) {
-        const acquireData = this.props.acquireData;
+        const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
         //切换项目，重新加载数据
         if(this.props.getProjectInfo.gitlabProject.id != nextProps.getProjectInfo.gitlabProject.id){
@@ -55,9 +52,10 @@ class Milestones extends React.Component {
             //console.log('componentWillReceiveProps');
         }
         //点击查看更多无新数据时提醒
-        if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page != 1 && acquireData){
+        if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page > 1 && acquireData){
             this.warnCallback();
         }
+        //数据加载错误提示
         if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
         }
@@ -202,7 +200,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getMilestones: bindActionCreators(getMilestones, dispatch),
-       getMoreMilestones: bindActionCreators(getMoreMilestones, dispatch),
     }
 }
 
