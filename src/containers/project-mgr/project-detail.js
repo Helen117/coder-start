@@ -27,7 +27,7 @@ class ProjectDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo, getGroupInfo } = this.props;
+        const { actions, form, loginInfo } = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -44,7 +44,7 @@ class ProjectDetail extends React.Component {
                 data.userId = loginInfo.userId;
                 data.gitlabProject.name = formData.name;
                 data.gitlabProject.description = formData.description;
-                data.groupId = getGroupInfo.id;
+                data.groupId = this.state.selectGroupId;
                 actions.createProject(data);
             }
         })
@@ -85,8 +85,8 @@ class ProjectDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage } = nextProps;
-        if (this.props.result != inserted && inserted){
+        const { result, errMessage } = nextProps;
+        if (this.props.result != result && result){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
@@ -104,6 +104,9 @@ class ProjectDetail extends React.Component {
         }
         if(getGroupInfo){
             setFieldsValue({groupid:getGroupInfo.name});
+            this.setState({
+                selectGroupId:getGroupInfo.id
+            });
         }
     }
 

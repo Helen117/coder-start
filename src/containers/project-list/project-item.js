@@ -125,7 +125,7 @@ class ProjectItem extends Component {
     render() {
         if(this.state.itemType == true){//展示项目信息
             const {list,loginInfo,fetchProjectStar,starList} = this.props;
-
+            //console.log("starList-item:",starList);
             if(fetchProjectStar || false){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
@@ -149,7 +149,7 @@ class ProjectItem extends Component {
                     }
                 }
                 for(var j=0;j<starList.length;j++){
-                    if(projectInfo.id == starList[j].id){
+                    if(projectInfo.id.replace("_p",'') == starList[j].id){
                         count++;
                     }
                 }

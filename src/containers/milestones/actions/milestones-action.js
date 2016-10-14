@@ -4,11 +4,12 @@
 import {ACQUIRE_MILESTONES,ACQUIRE_MILESTONES_DETAIL} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getMilestones(projectId,page) {
+export function getMilestones(projectId,page,timeLineData) {
     //var path='/milestones';
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
+        meta:timeLineData,
         payload: {
             promise: api.post(path, {
                 params: {

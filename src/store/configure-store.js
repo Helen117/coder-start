@@ -10,7 +10,6 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 import milestones from '../containers/milestones/reducers/milestones-reducer';
 import milestonesDetail from '../containers/milestones/reducers/milestones-table-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
-import moreMilestonesData from  '../containers/milestones/reducers/more-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import issue from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -26,8 +25,7 @@ import {fetchMergeData,fetchTargetProject} from '../containers/mergeRequest/redu
 import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
-
-
+import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 
 const reducer = combineReducers({
     login,
@@ -35,7 +33,6 @@ const reducer = combineReducers({
     milestones,
     getGroupTree,
     createMilestones,
-    moreMilestonesData,
     createGroup,
     createProject,
     getGroupMembers,
@@ -52,7 +49,8 @@ const reducer = combineReducers({
     fetchTargetProject,
     createMr,
     fetchBranches,
-    createBranch
+    createBranch,
+    getMenuBarInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

@@ -3,7 +3,6 @@ import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
-import {getMoreMilestones} from './actions/more-milestones-actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -19,15 +18,16 @@ class MilestoneCreate extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {form,logInfo,milestones } = this.props;
+        const {form,logInfo } = this.props;
 
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                const projectId = this.props.getProjectInfo.gitlabProject.id;
                 var gitlabMilestone = formData;
-                gitlabMilestone.project_id= 17;
+                gitlabMilestone.project_id= projectId;
                 var userId = logInfo.userId;
                 var owner = logInfo.username;
                 var milestoneData = {owner,userId,gitlabMilestone};
@@ -43,15 +43,9 @@ class MilestoneCreate extends React.Component {
             description: '',
             duration: 2
         });
-        this.clearData();
         this.context.router.goBack();
-
     }
 
-    clearData(){
-        let data = [];
-        this.props.getMoreMilestones(data);
-    }
 
     errCallback(errMessage){
         notification.error({
@@ -86,29 +80,13 @@ class MilestoneCreate extends React.Component {
         })
     }
 
-    titleExists(rule, value, callback){
-        const {milestones} = this.props;
-        if (!value) {
-            callback();
-        } else {
-            setTimeout(() => {
-                for( let i=0; i<milestones.length;i++){
-                    if (value === milestones[i].gitlabMilestone.title) {
-                        callback([new Error('里程碑已存在')]);
-                    } else {
-                        callback();
-                    }}
-            }, 800);
-        }
-    }
 
     checkCreateDate(rule, value, callback){
-        const {milestones} = this.props;
-
-        var lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
-        if (!value) {
+        const {timeLineData} = this.props;
+        var lastMilestoneDuedate = (timeLineData.length>0)?timeLineData[0].gitlabMilestone.due_date:null;
+        if (!value ) {
             callback();
-        } else {
+        } else if(value && timeLineData.length>0) {
             setTimeout(() => {
                 if (value < lastMilestoneDuedate) {
                     callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
@@ -118,6 +96,8 @@ class MilestoneCreate extends React.Component {
                     callback();
                 }
             }, 800);
+        }else {
+            callback();
         }
 
     }
@@ -142,8 +122,8 @@ class MilestoneCreate extends React.Component {
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
-                { required: true,min:1 ,max: 30, message: '名称长度为 1~30 个字符' },
-                { validator: this.titleExists.bind(this) },
+                { required: true, message:'请输入里程碑名称'},
+                {max: 30, message: '名称长度为 1~30 个字符' },
             ],
         });
 
@@ -161,7 +141,6 @@ class MilestoneCreate extends React.Component {
                 { required: true,
                     type: 'date',
                     message: '请选择结束日期', },
-                //{ validator: this.checkCreateDate.bind(this) },
             ],
         });
 
@@ -175,17 +154,17 @@ class MilestoneCreate extends React.Component {
             <Box title="创建里程碑">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                     <FormItem   {...formItemLayout} label="名称">
-                        <Input {...titleProps} placeholder="请输入名称" />
+                        <Input {...titleProps} placeholder="请输入里程碑名称" />
                     </FormItem>
                     <FormItem {...formItemLayout} label="备注" >
-                        <Input type="textarea" placeholder="请输入描述信息" {...getFieldProps('description')} />
+                        <Input type="textarea" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                     </FormItem>
                     <FormItem
                         label="日期"
                         labelCol={{ span: 6 }}
                         required
                     >
-                        <Col span="4">
+                        <Col span="3">
                             <FormItem>
                                 <DatePicker
                                     placeholder="开始日期"
@@ -197,7 +176,7 @@ class MilestoneCreate extends React.Component {
                         <Col span="1">
                             <p className="ant-form-split" >-</p>
                         </Col>
-                        <Col span="6">
+                        <Col span="3">
                             <FormItem>
                                 <DatePicker
                                     placeholder="结束日期"
@@ -206,7 +185,7 @@ class MilestoneCreate extends React.Component {
                             </FormItem>
                         </Col>
                     </FormItem>
-                    <FormItem wrapperCol={{span: 16, offset: 11}} style={{marginTop: 24}}>
+                    <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
@@ -227,8 +206,8 @@ MilestoneCreate.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        moreMilestoneData:state.moreMilestonesData.moreData,
-        milestones: state.milestones.items,
+        getProjectInfo: state.getProjectInfo.projectInfo,
+        timeLineData: state.milestones.timeLineData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
@@ -241,7 +220,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
-        getMoreMilestones:bindActionCreators(getMoreMilestones, dispatch),
     }
 }
 

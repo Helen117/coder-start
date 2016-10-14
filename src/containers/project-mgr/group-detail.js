@@ -60,7 +60,7 @@ class GroupDetail extends React.Component {
         notification.success({
             message: '创建成功',
             description: '',
-            duration: 1
+            duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
@@ -70,13 +70,13 @@ class GroupDetail extends React.Component {
         notification.error({
             message: '创建失败',
             description:message,
-            duration: 1
+            duration: 4
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        const {inserted, errMessage} = nextProps;
-        if (this.props.result != inserted && inserted) {
+        const {result, errMessage} = nextProps;
+        if (this.props.result != result && result) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
             this.errCallback(errMessage);
@@ -132,7 +132,7 @@ class GroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldProps} = this.props.form;
+        const {getFieldProps, getFieldError} = this.props.form;
         const {list} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
@@ -160,7 +160,7 @@ class GroupDetail extends React.Component {
                             <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目组路径"
-                            help="允许英文、数字、下划线">
+                            help={getFieldError('path') == undefined ? "允许英文、数字、下划线": getFieldError('path')}>
                             <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="描述">
@@ -174,7 +174,7 @@ class GroupDetail extends React.Component {
                             </RadioGroup>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit">确定</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -200,6 +200,8 @@ function mapStateToProps(state) {
         errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,
+        loading:state.createGroup.loading,
+        disabled:state.createGroup.disabled,
     }
 }
 

@@ -2,12 +2,18 @@
  * Created by Administrator on 2016-10-11.
  */
 import React, {PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import { Menu, Icon } from 'antd';
+import {getMenuBarInfo} from './actions/menubar-action';
 import 'pubsub-js';
 import './index.less';
 
-export default class MenuBar extends React.Component {
+var currentOne,currentTwo;
+let selectNaviOne = [];
+
+class MenuBar extends React.Component {
     constructor(){
         super();
         this.state = {
@@ -23,6 +29,18 @@ export default class MenuBar extends React.Component {
             currentMenuOne:"menuOne0",
             currentMenuTwo:"menuTwo0",
         })});
+    }
+    componentDidUpdate(){
+        var currentOneInfo = {},currentTwoInfo = {};
+        if(currentOne.length > 0){
+            var currentOne_temp = currentOne[0].replace("menuOne","");
+            currentOneInfo = selectNaviOne[0].subMenu[currentOne_temp];
+            if(currentTwo.length > 0){
+                var currentTwo_temp = currentTwo[0].replace("menuTwo","");
+                currentTwoInfo = currentOneInfo.subMenu[currentTwo_temp];
+            }
+        }
+        this.props.menuBarInfo(currentOneInfo,currentTwoInfo);
     }
 
     clickMenuOne(e){
@@ -40,7 +58,6 @@ export default class MenuBar extends React.Component {
 
     render(){
         const {menuData, navpath} = this.props;
-        let selectNaviOne = [];
         for(var i=0;i<menuData.length;i++){
             if(navpath.length != 0){
                 if(navpath[0].key == menuData[i].id){
@@ -123,6 +140,8 @@ export default class MenuBar extends React.Component {
                 }
             }
         }
+        currentOne = haveMenuOne ? [this.state.currentMenuOne] : [];
+        currentTwo = haveMenuTwo ? [this.state.currentMenuTwo] : [];
 
         return (
             <div className="menu-area">
@@ -130,7 +149,7 @@ export default class MenuBar extends React.Component {
                     <div className="menu-bar-2nd-bg">
                         <div className="menu-bar-wrapper">
                             <Menu mode="horizontal" className="menu-bar"
-                                  selectedKeys={haveMenuOne ? [this.state.currentMenuOne] : [""]}
+                                  selectedKeys={currentOne}
                                   onClick={this.clickMenuOne.bind(this)}>
                                 {topMenu_1}
                             </Menu>
@@ -142,7 +161,7 @@ export default class MenuBar extends React.Component {
                         <div style={{clear:'both'}}/>
                         <div className="menu-bar-wrapper">
                             <Menu mode="horizontal" className="menu-bar-3rd"
-                                  selectedKeys={haveMenuTwo ? [this.state.currentMenuTwo] : [""]}
+                                  selectedKeys={currentTwo}
                                   onClick={this.clickMenuTwo.bind(this)}>
                                 {topMenuTwo_1}
                             </Menu>
@@ -150,7 +169,6 @@ export default class MenuBar extends React.Component {
                     </div>
                 ):(<div className="menu-bar-bg"></div>)
                 }
-
             </div>
         );
     }
@@ -160,3 +178,16 @@ MenuBar.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
+
+function mapStateToProps(state) {
+    return {
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        menuBarInfo: bindActionCreators(getMenuBarInfo, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuBar);

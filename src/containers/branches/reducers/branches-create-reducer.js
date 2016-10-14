@@ -23,7 +23,7 @@ export default function createBranch(state = initialState, action = {}) {
             return Object.assign({}, initialState, {result: null,loading:true,disabled:true});
 
         case CREATE_BRANCHES_SUCCESS:
-            console.log('action.payload',action.payload);
+
             return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
 
         case CREATE_BRANCHES_ERROR:
