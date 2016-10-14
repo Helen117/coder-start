@@ -136,7 +136,7 @@ class createBranches extends Component {
         };
 
         return (
-            <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
+            <Box title={editType == 'add' ? '添加分支' : '修改分支'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout}  label="new_branch" >
