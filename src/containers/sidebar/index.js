@@ -43,7 +43,6 @@ class Sidebar extends React.Component {
 
     menuClickHandle(item) {
         this.props.updateNavPath(item.keyPath, item.key);
-        PubSub.publish("refreshMenuOne",{refreshed:true});
     }
 
     clickSideBar(){
@@ -106,6 +105,12 @@ Sidebar.propTypes = {
 Sidebar.defaultProps = {
     items: [],
     currentIndex: 0
+};
+
+Sidebar.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

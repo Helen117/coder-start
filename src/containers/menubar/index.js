@@ -24,13 +24,17 @@ class MenuBar extends React.Component {
         }
     }
 
-    componentDidMount() {
-        PubSub.subscribe("refreshMenuOne",()=>{this.setState({
-            refreshMenuOne:true,
-            currentMenuOne:"menuOne0",
-            currentMenuTwo:"menuTwo0",
-        })});
+    componentWillReceiveProps(nextProps){
+        const {navpath} = nextProps;
+        if(this.props.navpath != navpath && navpath){
+            this.setState({
+                refreshMenuOne:true,
+                currentMenuOne:"menuOne0",
+                currentMenuTwo:"menuTwo0",
+            })
+        }
     }
+
     componentDidUpdate(){
         var currentOneInfo = {},currentTwoInfo = {};
         if(currentOne.length > 0){

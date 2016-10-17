@@ -34,7 +34,7 @@ class ProjectMgr extends React.Component{
         const {loginInfo} =this.props;
         PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
         const {treeData} = this.props;
-        if (!treeData){
+        if (treeData.length == 0){
             this.props.getGroupTree(loginInfo.username);
         }
     }

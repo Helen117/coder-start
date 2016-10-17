@@ -11,7 +11,7 @@ module.exports.menu = {
             "parentId": 0,
             "cLevel": 1,
             "name": "首页",
-            "link": "/home.html",
+            "link": "/home",
             "description": "",
             "subMenu": []
         },
@@ -28,7 +28,7 @@ module.exports.menu = {
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "代码管理",
-                    "link": "/project-mgr.html",
+                    "link": "/project-mgr",
                     "description": "",
                     "subMenu": [
                         {
@@ -36,7 +36,7 @@ module.exports.menu = {
                             "parentId": 6,
                             "cLevel": 3,
                             "name": "项目代码",
-                            "link": "/project-mgr.html",
+                            "link": "/project-mgr",
                             "description": "",
                             "subMenu": []
                         },
@@ -45,7 +45,7 @@ module.exports.menu = {
                             "parentId": 6,
                             "cLevel": 3,
                             "name": "里程碑管理",
-                            "link": "/milestones.html",
+                            "link": "/project-mgr/milestones",
                             "description": "",
                             "subMenu": []
                         },
@@ -54,7 +54,7 @@ module.exports.menu = {
                             "parentId": 6,
                             "cLevel": 3,
                             "name": "问题管理",
-                            "link": "/issue.html",
+                            "link": "/project-mgr/issue",
                             "description": "",
                             "subMenu": []
                         }
@@ -65,7 +65,7 @@ module.exports.menu = {
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "测试案例",
-                    "link": "/milestones.html",
+                    "link": "/project-mgr/milestones",
                     "description": "",
                     "subMenu": []
                 },
@@ -74,14 +74,14 @@ module.exports.menu = {
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "代码质量管理",
-                    "link": "/issue.html",
+                    "link": "/project-mgr/issue",
                     "description": "",
                     "subMenu": [{
                         "id": 15,
                         "parentId": 12,
                         "cLevel": 3,
                         "name": "项目代码",
-                        "link": "/project-mgr.html",
+                        "link": "/project-mgr",
                         "description": "",
                         "subMenu": []
                     },{
@@ -89,48 +89,90 @@ module.exports.menu = {
                         "parentId": 12,
                         "cLevel": 3,
                         "name": "问题管理",
-                        "link": "/issue.html",
+                        "link": "/project-mgr/issue",
                         "description": "",
                         "subMenu": []
                     }]
                 }
             ]
-        },
-        {
+        },{
             "id": 3,
             "parentId": 0,
             "cLevel": 1,
-            "name": "里程碑",
-            "link": "/milestones.html",
+            "name": "代码管理-1",
+            "link": "",
             "description": "",
             "subMenu": [
                 {
-                    "id": 8,
+                    "id": 4,
                     "parentId": 3,
                     "cLevel": 2,
-                    "name": "里程碑管理",
-                    "link": "/milestones.html",
+                    "name": "代码管理-1",
+                    "link": "/project-mgr",
                     "description": "",
-                    "subMenu": []
-                }
-            ]
-        },
-        {
-            "id": 4,
-            "parentId": 0,
-            "cLevel": 1,
-            "name": "问题管理",
-            "link": "/issue.html",
-            "description": "",
-            "subMenu": [
+                    "subMenu": [
+                        {
+                            "id": 20,
+                            "parentId": 4,
+                            "cLevel": 3,
+                            "name": "项目代码-1",
+                            "link": "/project-mgr",
+                            "description": "",
+                            "subMenu": []
+                        },
+                        {
+                            "id": 21,
+                            "parentId": 4,
+                            "cLevel": 3,
+                            "name": "里程碑管理-1",
+                            "link": "/project-mgr/milestones",
+                            "description": "",
+                            "subMenu": []
+                        },
+                        {
+                            "id": 22,
+                            "parentId": 4,
+                            "cLevel": 3,
+                            "name": "问题管理-1",
+                            "link": "/project-mgr/issue",
+                            "description": "",
+                            "subMenu": []
+                        }
+                    ]
+                },
                 {
-                    "id": 10,
-                    "parentId": 4,
+                    "id": 11,
+                    "parentId": 2,
                     "cLevel": 2,
-                    "name": "问题查看",
-                    "link": "/issue.html",
+                    "name": "测试案例",
+                    "link": "/project-mgr/milestones",
                     "description": "",
                     "subMenu": []
+                },
+                {
+                    "id": 12,
+                    "parentId": 2,
+                    "cLevel": 2,
+                    "name": "代码质量管理",
+                    "link": "/project-mgr/issue",
+                    "description": "",
+                    "subMenu": [{
+                        "id": 15,
+                        "parentId": 12,
+                        "cLevel": 3,
+                        "name": "项目代码",
+                        "link": "/project-mgr",
+                        "description": "",
+                        "subMenu": []
+                    },{
+                        "id": 16,
+                        "parentId": 12,
+                        "cLevel": 3,
+                        "name": "问题管理",
+                        "link": "/project-mgr/issue",
+                        "description": "",
+                        "subMenu": []
+                    }]
                 }
             ]
         },
@@ -139,7 +181,7 @@ module.exports.menu = {
             "parentId": 0,
             "cLevel": 1,
             "name": "代码合并请求(MR)管理",
-            "link": "/mergeRequest.html",
+            "link": "/mergeRequest",
             "description": "",
             "subMenu": [
                 {
@@ -147,7 +189,7 @@ module.exports.menu = {
                     "parentId": 5,
                     "cLevel": 2,
                     "name": "代码合并请求(MR)管理",
-                    "link": "/mergeRequest.html",
+                    "link": "/mergeRequest",
                     "description": "",
                     "subMenu": []
                 }

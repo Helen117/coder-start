@@ -11,8 +11,10 @@ import {
     GET_GROUP_TREE_SUCCESS,
     GET_GROUP_TREE_ERROR,
 } from '../constants/group-tree-types';
+import {LOGOUT} from '../../login/constants/login-action-types';
 
 const initialState = {
+   treeData: []
 };
 
 export default function getGroupTree(state = initialState, action = {}) {
@@ -26,6 +28,8 @@ export default function getGroupTree(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.message, loading: false
             };
+        case LOGOUT:
+            return initialState;
         default:
             return state;
     }

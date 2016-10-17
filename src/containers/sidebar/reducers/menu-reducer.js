@@ -6,6 +6,7 @@ import {
     GET_ALL_MENU_SUCCESS,
     UPDATE_NAVPATH
 } from '../constants/menu-action-types';
+import {LOGOUT} from '../../login/constants/login-action-types';
 
 const initialState = {
     currentIndex: 0,
@@ -62,6 +63,8 @@ export default function menu(state = initialState, action = {}) {
                 currentIndex: action.payload.key * 1,
                 navpath: navpath
             });
+        case LOGOUT:
+            return initialState;
         default:
             return state
     }
