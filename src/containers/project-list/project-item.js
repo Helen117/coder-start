@@ -91,15 +91,15 @@ class ProjectItem extends Component {
         }
 
         if(getProjectInfo){
-            if(this.state.value=='http'){
-                this.setState({
-                    url: getProjectInfo.gitlabProject.http_url_to_repo,
-                });
-            }else {
+            // if(this.state.value=='http'){
+            //     this.setState({
+            //         url: getProjectInfo.gitlabProject.http_url_to_repo,
+            //     });
+            // }else {
                 this.setState({
                     url: getProjectInfo.gitlabProject.ssh_url_to_repo,
                 });
-            }
+            // }
         }
     }
 
@@ -175,7 +175,6 @@ class ProjectItem extends Component {
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
-                            <Option value="http">HTTP</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
                         <TableView columns={columns}

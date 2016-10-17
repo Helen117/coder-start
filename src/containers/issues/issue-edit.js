@@ -2,7 +2,7 @@
  * Created by helen on 2016/9/19.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon} from 'antd';
+import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -75,17 +75,38 @@ class AddIssue extends Component{
 
     }
 
+    getMilestoneDueDate(id){
+        const {milestones} = this.props;
+        for(let i=0; i<milestones.length;i++){
+            if(id==milestones[i].id){
+                return milestones[i].due_date;
+            }
+        }
+    }
+
     handleSubmit(e) {
         e.preventDefault();
         const { actions,form ,loginInfo,projectInfo} = this.props;
         const {editType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
+                message.error(errors,2);
                 return;
+
             } else {
                 const data = form.getFieldsValue();
                 data.username=loginInfo.username;
                 //console.log('收到表单值：', data);
+
+                if(data.milestone){
+                    const due_date = this.getMilestoneDueDate(data.milestone.id);
+                    if(data.due_date<=new Date(parseInt(due_date))){
+                    }else{
+                        message.error('问题计划完成时间不能大于里程碑时间！',2);
+                        return;
+                    }
+                }
+
                 if(editType=='add'){
                     data.project_id = projectInfo.gitlabProject.id;
                     data.created_at = Date.now();
@@ -109,7 +130,7 @@ class AddIssue extends Component{
 
     checkDueDay(rule, value, callback) {
         if (value && value.getTime() <= Date.now()) {
-            callback(new Error('时间得大于现在吧!'));
+            callback(new Error('时间得大于现在!'));
         } else {
             callback();
         }
@@ -132,7 +153,6 @@ class AddIssue extends Component{
     }
 
     render() {
-
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
         const formItemLayout = {
