@@ -48,9 +48,7 @@ class ProjectMgr extends React.Component{
     editProject(type, selectedRow) {
         this.context.router.push({
             pathname: '/project-mgr/project-detail',
-            state: {editType: type, selectedRow,
-                    /*selectGroupName:this.state.selectGroupName,
-                    selectGroupId:this.state.selectGroupId*/}
+            state: {editType: type, selectedRow,}
         });
     }
 
@@ -77,6 +75,13 @@ class ProjectMgr extends React.Component{
         }
     }
 
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     onSelectNode(node){
         const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
         if(node.id.indexOf("_p") < 0){
@@ -93,7 +98,7 @@ class ProjectMgr extends React.Component{
             this.props.getProjectStar(loginInfo.username);
         }
         if(currentOneInfo){
-            if(currentTwoInfo){
+            if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/project-mgr'){
                     if(node.id.indexOf("_p") < 0){
                         this.context.router.push({
@@ -123,7 +128,7 @@ class ProjectMgr extends React.Component{
     }
 
     render(){
-        const {treeData, loading} = this.props;
+        const {treeData, loading, currentTwoInfo} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -136,14 +141,16 @@ class ProjectMgr extends React.Component{
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
-                    <Row>
-                        <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
-                            新建项目组
-                        </Button>
-                        <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
-                            新建项目
-                        </Button>
-                    </Row>
+                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr')?(
+                        <Row>
+                            <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
+                                新建项目组
+                            </Button>
+                            <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
+                                新建项目
+                            </Button>
+                        </Row>
+                    ):(<div></div>)}
                     <Row>
                         {this.props.children}
                     </Row>
