@@ -61,7 +61,7 @@ document.body.appendChild(root);
 ReactDOM.render(
     <div>
         <Provider store={store}>
-            <Router history={history}>
+            <Router history={history} onUpdate={() => window.scrollTo(0, 0)}>
                 <Route path="/" onEnter={validate}>
                     <IndexRedirect to="home"/>
                     <Route component={App}>

@@ -20,6 +20,7 @@ export default class TreeFilter extends React.Component {
         this.state = {
             filterValue: '',
             _expandedKeys: [],
+            _selectedKeys: [],
             fireOnExpand: false
         }
     }
@@ -30,6 +31,9 @@ export default class TreeFilter extends React.Component {
     onSelectNode(selectedKeys, e){
         const selectedNode = e.selectedNodes[0];
         if (selectedNode){
+            this.setState({
+                _selectedKeys: selectedKeys
+            });
             const {onSelect} = this.props;
             if (onSelect){
                 const node = {id: selectedNode.key, name: selectedNode.props.title};
@@ -133,6 +137,10 @@ export default class TreeFilter extends React.Component {
         }
 
         const trProps = {
+            selectable: true,
+            showLine: true,
+            selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
+            defaultSelectedKeys: this.props.defaultSelectedKeys,
             onSelect: this.onSelectNode.bind(this),
             defaultExpandAll: true,
             filterTreeNode: this.highlightTreeNode.bind(this),
@@ -171,9 +179,11 @@ TreeFilter.propTypes = {
     notFoundMsg: PropTypes.string,
     loading: PropTypes.bool,
     nodesData: PropTypes.array,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
+    defaultSelectedKeys: PropTypes.array
 };
 
 TreeFilter.defaultProps = {
-    nodesData: []
+    nodesData: [],
+    defaultSelectedKeys: []
 };

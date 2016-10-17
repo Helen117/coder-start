@@ -9,9 +9,9 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification } from 'antd';
+import { Button, Row, Col, notification, Affix } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import {getGroupTree} from './actions/group-tree-action';
+import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
@@ -87,12 +87,12 @@ class ProjectMgr extends React.Component{
         if(node.id.indexOf("_p") < 0){
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
-            this.props.getGroupInfo(groupInfo);
+            this.props.getGroupInfo(groupInfo, node.id);
         }else{
             var node_p = node.id.replace("_p","");
             const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
             this.props.getProjectInfo(projectInfo);
-            this.props.getGroupInfo(groupInfo);
+            this.props.getGroupInfo(groupInfo, node.id);
         }
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
@@ -124,11 +124,12 @@ class ProjectMgr extends React.Component{
                 });
             }
         }
+        //this.props.setSelectNode(node.id);
 
     }
 
     render(){
-        const {treeData, loading, currentTwoInfo} = this.props;
+        const {treeData, loading, currentTwoInfo, selectNodeKey} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -138,6 +139,7 @@ class ProjectMgr extends React.Component{
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={treeData}
+                        defaultSelectedKeys={[selectNodeKey]}
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
@@ -174,6 +176,7 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
+        selectNodeKey: state.getGroupInfo.selectedNode,
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
     }
@@ -182,6 +185,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
+        //setSelectNode: bindActionCreators(setSelectNode, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
         getProjectStar:bindActionCreators(getProjectStar, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
