@@ -71,6 +71,7 @@ class App extends React.Component {
         if (uid == null){
             return <div className="ant-layout-aside"></div>;
         }
+        //console.log("this.props.navpath:",this.props.navpath);
         return (
             <div className="ant-layout-aside">
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
