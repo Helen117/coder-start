@@ -21,7 +21,7 @@ import getGroupMembers from '../containers/project-mgr/reducers/group_members_re
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
-import {fetchMergeData,fetchTargetProject} from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
+import {fetchMergeData,fetchMergeBranchData} from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
 import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
@@ -46,7 +46,7 @@ const reducer = combineReducers({
     getProjectInfo,
     milestonesDetail,
     fetchMergeData,
-    fetchTargetProject,
+    fetchMergeBranchData,
     createMr,
     fetchBranches,
     createBranch,

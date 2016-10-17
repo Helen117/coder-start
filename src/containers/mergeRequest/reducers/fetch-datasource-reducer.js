@@ -36,17 +36,17 @@ export function fetchMergeData(state = initialState, action = {}) {
     }
 }
 
-export function fetchTargetProject(state = initialState, action = {}) {
+export function fetchMergeBranchData(state = initialState, action = {}) {
         switch (action.type){
             //获取target project 信息
             case FETCH_TARGET_PROJECT_PENDING:
                 return Object.assign({}, initialState, {loading: true});
 
             case FETCH_TARGET_PROJECT_SUCCESS:
-                return Object.assign({}, initialState, {targetProData: action.payload,fetchErrors: null});
+                return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null});
 
             case FETCH_TARGET_PROJECT_ERROR:
-                return Object.assign({}, initialState, {targetProData:null, fetchErrors: action.payload.errorMsg});
+                return Object.assign({}, initialState, {mergeBranch:null, fetchErrors: action.payload.errorMsg});
 
             default:
                 return state;
