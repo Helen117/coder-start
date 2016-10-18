@@ -20,3 +20,16 @@
     padding: 10px 0;
     border-color:#e5e5e5;
 }
+
+.close{
+      background-color: #e0f7d9;
+  }
+
+.open{
+      background-color: #f7d9d9;
+  }
+
+.reopen{
+      background-color: #f7f6d9;
+  }
+
