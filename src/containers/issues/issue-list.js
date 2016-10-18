@@ -7,6 +7,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
+import style from './index.css';
 
 const authName =[];
 const assigneeName =[];
@@ -178,6 +179,18 @@ class IssueList extends Component {
         return data;
     }
 
+    rowClassName(record, index) {
+        if (record.state == 'opened') {
+            return style.open;
+        }
+        if (record.state == 'closed') {
+            return style.close;
+        }
+        if (record.state == 'reopened') {
+            return style.reopen;
+        }
+    }
+
 
     render() {
         const pagination = {
@@ -192,6 +205,7 @@ class IssueList extends Component {
                        size="middle"
                        loading={this.props.loading}
                        pagination={pagination}
+                       rowClassName={this.rowClassName}
                        //onRowClick ={this.editIssue.bind(this,'modify')}
                        //scroll={{y:300}}
                 >
@@ -216,10 +230,36 @@ IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
     dataIndex: 'group_name',
     width: '8%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (index === 0) {
+            obj.props.rowSpan = 20;
+        }
+        if (index > 0) {
+            obj.props.rowSpan = 0;
+        }
+        return obj;
+    }
 },{
     title: '所属项目',
     dataIndex: 'project_name',
     width: '8%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (index === 0) {
+            obj.props.rowSpan = 20;
+        }
+        if (index > 0) {
+            obj.props.rowSpan = 0;
+        }
+        return obj;
+    }
     //fixed: 'left'
 },{
     title: '问题名称',
@@ -279,14 +319,14 @@ IssueList.prototype.issueListColumns = (self)=>[{
         value: 'reopened',
     }],
     onFilter: (value, record) => record.state.indexOf(value) === 0,
-    sorter: (a, b) => a.state.length - b.state.length
+    sorter: (a, b) => a.state - b.state
 },{
     title: '操作',
     dataIndex: 'key',
     width: '13%',
     render: (text, record, index)=> {
         return <div>
-                    <a href="#" onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+                    <a onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
                     <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
                </div>;
     }
