@@ -12,7 +12,6 @@ import {getMilestones} from './actions/milestones-action';
 import './index.less';
 
 
-
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
@@ -45,6 +44,9 @@ class Milestones extends React.Component {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
         //切换项目，重新加载数据
+/*        const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.gitlabProject.id:null;
+        const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.gitlabProject.id:null;
+        console.log('this.props.getProjectInfo',this.props.getProjectInfo)*/
         if(this.props.getProjectInfo.gitlabProject.id != nextProps.getProjectInfo.gitlabProject.id){
             this.page =1;
             this.timeLineData = [];
@@ -130,7 +132,7 @@ class Milestones extends React.Component {
                     <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
                         <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
                         <p>{item.gitlabMilestone.description}</p>
-                        <div style={{marginLeft:12,width:"70%"}}>
+                        <div style={{marginLeft:12,width:"50%"}}>
                             <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
                             <p>创建人：{item.owner}</p>
                             <span>待解决的问题：</span>
@@ -153,7 +155,7 @@ class Milestones extends React.Component {
         const {loading, loadingMsg,notFoundMsg} = this.props;
         const timeLine = this.timelineItemConst();
         return (
-            <div style={{marginTop:5,marginLeft:5}}>
+            <div style={{marginTop:5,marginLeft:30}}>
                 <div style={{marginBottom: 16}}>
                     <Button onClick={this.createMilestones.bind(this,'add',null)}>新建里程碑</Button>
                 </div>

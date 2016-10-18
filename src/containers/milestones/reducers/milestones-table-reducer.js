@@ -9,22 +9,22 @@ import {
 } from '../constants/milestones-action-types';
 
 const initialState = {
-    milestoneDetail: [],
+    milestoneIssues: [],
+    loading: false,
+    loadIssuesErrors:null
 };
 
-export default function milestonesDetail(state = initialState, action = {}) {
-    //console.log('action.type:',action.type);
+export default function getMilestonesIssues(state = initialState, action = {}) {
     switch (action.type) {
         //获取里程碑详细信息
         case ACQUIRE_MILESTONES_DETAIL_PENDING:
             return Object.assign({}, initialState, {loading: true});
+
         case ACQUIRE_MILESTONES_DETAIL_SUCCESS:
-            //console.log('reducer里获取里程碑详细的数据为',action.payload);
-            return Object.assign({}, initialState, {milestoneDetail: action.payload});
+            return Object.assign({}, initialState, {milestoneIssues: action.payload});
 
         case ACQUIRE_MILESTONES_DETAIL_ERROR:
-            //console.log("acquire milestones detail error!");
-            return {state, loginErrors: action.payload.errorMsg};
+            return {state, loadIssuesErrors: action.payload.errorMsg};
 
         default:
             return state;
