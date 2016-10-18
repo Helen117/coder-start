@@ -75,8 +75,8 @@ class GroupDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {inserted, errMessage} = nextProps;
-        if (this.props.result != inserted && inserted) {
+        const {result, errMessage} = nextProps;
+        if (this.props.result != result && result) {
             this.insertCallback();
         } else if (this.props.errMessage != errMessage && errMessage) {
             this.errCallback(errMessage);
@@ -110,25 +110,6 @@ class GroupDetail extends React.Component {
         }
     }
 
-    groupPathExists(rule, value, callback){
-        var reg =new RegExp ('^[a-zA-Z0-9_]{1,10}$');
-        const {list} = this.props;
-        if(!value){
-            callback();
-        }else{
-            if(!reg.test(value)){
-                     callback('允许1-10字节，允许字母数字下划线');
-            }
-            for(var i=0;i<list.length;i++){
-                if(value == list[i].path){
-                    callback([new Error('项目组路径已被占用')]);
-                }else{
-                    callback();
-                }
-            }
-        }
-    }
-
 
     render() {
         const {editType} = this.props.location.state;
@@ -144,12 +125,6 @@ class GroupDetail extends React.Component {
                     {required:true, message:'请输入项目组名称！'},
                     {validator:this.groupNameExists.bind(this)},
                 ]});
-            const pathProps = getFieldProps('path',
-                {rules: [
-                    { required:true, message:'请输入项目组路径！'},
-                    //{test:^[a-zA-Z0-9]{1-10}$},
-                    {validator:this.groupPathExists.bind(this)},
-                ]});
             const descriptionProps = getFieldProps('description',);
             const visibilityProps = getFieldProps('visibility_level',);
 
@@ -159,18 +134,13 @@ class GroupDetail extends React.Component {
                         <FormItem {...formItemLayout} label="项目组名称">
                             <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
                         </FormItem>
-                        <FormItem {...formItemLayout} label="项目组路径"
-                            help={getFieldError('path') == undefined ? "允许英文、数字、下划线": getFieldError('path')}>
-                            <Input type="text" {...pathProps} placeholder="请输入项目路径"/>
-                        </FormItem>
                         <FormItem {...formItemLayout} label="描述">
                             <Input type="textarea" {...descriptionProps} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="可见级别">
                             <RadioGroup {...visibilityProps}>
-                                <Radio value="0">Private</Radio>
-                                <Radio value="10">Intenal</Radio>
-                                <Radio value="20">Public</Radio>
+                                <Radio value="0">仅对自己可见</Radio>
+                                <Radio value="20">所有人可见</Radio>
                             </RadioGroup>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>

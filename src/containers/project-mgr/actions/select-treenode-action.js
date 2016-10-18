@@ -6,10 +6,11 @@ import {GET_GROUP_INFO_SUCCESS,
         GET_PROJECT_INFO_SUCCESS,
         GET_PROJECT_INFO_ERROR} from '../constants/select-treenode-types';
 
-export function getGroupInfoSuss(groupInfo) {
+export function getGroupInfoSuss(groupInfo, selectedNode) {
     return {
         type:GET_GROUP_INFO_SUCCESS,
-        data:groupInfo
+        data:groupInfo,
+        selectNodeData: selectedNode
     }
 }
 
@@ -34,9 +35,9 @@ export function getProjectInfoFail() {
     }
 }
 
-export function getGroupInfo(groupInfo) {
+export function getGroupInfo(groupInfo, selectedNode) {
         if (groupInfo) {
-            return getGroupInfoSuss(groupInfo);
+            return getGroupInfoSuss(groupInfo, selectedNode);
         } else {
             return getGroupInfoFail();
         }
