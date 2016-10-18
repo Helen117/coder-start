@@ -21,7 +21,7 @@ export function getMilestones(projectId,page,timeLineData) {
     }
 }
 
-export function getMilestonesDetail(milestonesId,projectId) {
+export function getMilestonesIssues(milestonesId,projectId) {
     var path ='/milestone/issues'
     //var path ='/milestoneDetail'
     return {

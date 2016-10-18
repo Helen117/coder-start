@@ -9,7 +9,11 @@ import {
 
     FETCH_DATA_PENDING,
     FETCH_DATA_SUCCESS,
-    FETCH_DATA_ERROR
+    FETCH_DATA_ERROR,
+
+    FETCH_ISSUES_DATA_PENDING,
+    FETCH_ISSUES_DATA_SUCCESS,
+    FETCH_ISSUES_DATA_ERROR
 } from '../constants/action-types';
 
 
@@ -43,7 +47,11 @@ export function fetchMergeBranchData(state = initialState, action = {}) {
                 return Object.assign({}, initialState, {loading: true});
 
             case FETCH_TARGET_PROJECT_SUCCESS:
-                return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null});
+                let isMR = false;
+                if(action.payload.length > 1){
+                    isMR = true;
+                }
+                return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null, isMR:isMR});
 
             case FETCH_TARGET_PROJECT_ERROR:
                 return Object.assign({}, initialState, {mergeBranch:null, fetchErrors: action.payload.errorMsg});
@@ -51,4 +59,21 @@ export function fetchMergeBranchData(state = initialState, action = {}) {
             default:
                 return state;
         }
+}
+
+export function fetchIssuesData(state = initialState, action = {}) {
+    switch (action.type) {
+        //获取里程碑详细信息
+        case FETCH_ISSUES_DATA_PENDING:
+            return Object.assign({}, initialState, {loading: true,Issues:[], loadIssuesErrors:null});
+
+        case FETCH_ISSUES_DATA_SUCCESS:
+            return Object.assign({}, initialState, {Issues: action.payload, loading: false, loadIssuesErrors:null });
+
+        case FETCH_ISSUES_DATA_ERROR:
+            return {state, loadIssuesErrors: action.payload.errorMsg, loading: false, Issues:[] };
+
+        default:
+            return state;
+    }
 }

@@ -3,6 +3,7 @@ import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
+import {getMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -14,6 +15,25 @@ const confirm = Modal.confirm;
 class MilestoneCreate extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        if (this.props.getProjectInfo) {
+            const projectId = this.props.getProjectInfo.gitlabProject.id;
+            this.props.getMilestones(projectId, 1, []);
+        } else {
+            const {router} = this.context;
+            router.goBack();
+            this.errChoosePro();
+        }
+    }
+
+    errChoosePro(){
+        notification.error({
+            message: '未选择项目',
+            description:'请先在左侧项目树中选择一个项目！',
+            duration: 2
+        });
     }
 
     handleSubmit(e) {
@@ -36,7 +56,6 @@ class MilestoneCreate extends React.Component {
         })
     }
 
-
     insertCallback(){
         notification.success({
             message: '创建成功',
@@ -45,7 +64,6 @@ class MilestoneCreate extends React.Component {
         });
         this.context.router.goBack();
     }
-
 
     errCallback(errMessage){
         notification.error({
@@ -62,6 +80,7 @@ class MilestoneCreate extends React.Component {
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
         }
+
     }
 
     handleCancel() {
@@ -82,11 +101,11 @@ class MilestoneCreate extends React.Component {
 
 
     checkCreateDate(rule, value, callback){
-        const {timeLineData} = this.props;
-        var lastMilestoneDuedate = (timeLineData.length>0)?timeLineData[0].gitlabMilestone.due_date:null;
+        const {milestones} = this.props;
+        var lastMilestoneDuedate = (milestones.length>0)?milestones[0].gitlabMilestone.due_date:null;
         if (!value ) {
             callback();
-        } else if(value && timeLineData.length>0) {
+        } else if(value && milestones.length>0) {
             setTimeout(() => {
                 if (value < lastMilestoneDuedate) {
                     callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
@@ -207,7 +226,7 @@ MilestoneCreate.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo: state.getProjectInfo.projectInfo,
-        timeLineData: state.milestones.timeLineData,
+        milestones: state.milestones.timeLineData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,
@@ -220,6 +239,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
+        getMilestones: bindActionCreators(getMilestones, dispatch),
     }
 }
 

@@ -17,7 +17,6 @@ class Milestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        console.log('调用构造函数');
     }
 
 
