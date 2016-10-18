@@ -11,11 +11,12 @@ import 'pubsub-js';
 import './index.less';
 
 var currentOne,currentTwo;
-let selectNaviOne = [];
+//let selectNaviOne = [];
 
 class MenuBar extends React.Component {
     constructor(){
         super();
+        this.selectNaviOne=[];
         this.state = {
             currentMenuOne:"menuOne0",
             currentMenuTwo:"menuTwo0",
@@ -23,18 +24,22 @@ class MenuBar extends React.Component {
         }
     }
 
-    componentDidMount() {
-        PubSub.subscribe("refreshMenuOne",()=>{this.setState({
-            refreshMenuOne:true,
-            currentMenuOne:"menuOne0",
-            currentMenuTwo:"menuTwo0",
-        })});
+    componentWillReceiveProps(nextProps){
+        const {navpath} = nextProps;
+        if(this.props.navpath != navpath && navpath){
+            this.setState({
+                refreshMenuOne:true,
+                currentMenuOne:"menuOne0",
+                currentMenuTwo:"menuTwo0",
+            })
+        }
     }
+
     componentDidUpdate(){
         var currentOneInfo = {},currentTwoInfo = {};
         if(currentOne.length > 0){
             var currentOne_temp = currentOne[0].replace("menuOne","");
-            currentOneInfo = selectNaviOne[0].subMenu[currentOne_temp];
+            currentOneInfo = this.selectNaviOne[0].subMenu[currentOne_temp];
             if(currentTwo.length > 0){
                 var currentTwo_temp = currentTwo[0].replace("menuTwo","");
                 currentTwoInfo = currentOneInfo.subMenu[currentTwo_temp];
@@ -61,11 +66,11 @@ class MenuBar extends React.Component {
         for(var i=0;i<menuData.length;i++){
             if(navpath.length != 0){
                 if(navpath[0].key == menuData[i].id){
-                    selectNaviOne[0] = menuData[i];
+                    this.selectNaviOne[0] = menuData[i];
                 }
             }
         }
-        const topMenu = selectNaviOne.map((item) => {
+        const topMenu = this.selectNaviOne.map((item) => {
             var menuone_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
@@ -88,7 +93,7 @@ class MenuBar extends React.Component {
                 topMenu_1[0] = topMenu[0];
             }
         }
-        const topMenuTwo = selectNaviOne.map((item) => {
+        const topMenuTwo = this.selectNaviOne.map((item) => {
             var menutwo_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
@@ -116,12 +121,12 @@ class MenuBar extends React.Component {
         });
         var haveMenuOne = false;
         var haveMenuTwo = false;
-        if(selectNaviOne.length != 0){
-            if(selectNaviOne[0].subMenu){
-                if(selectNaviOne[0].subMenu.length != 0){
+        if(this.selectNaviOne.length != 0){
+            if(this.selectNaviOne[0].subMenu){
+                if(this.selectNaviOne[0].subMenu.length != 0){
                     haveMenuOne = true;
-                    if(selectNaviOne[0].subMenu[0].subMenu){
-                        if(selectNaviOne[0].subMenu[0].subMenu.length != 0){
+                    if(this.selectNaviOne[0].subMenu[0].subMenu){
+                        if(this.selectNaviOne[0].subMenu[0].subMenu.length != 0){
                             haveMenuTwo = true;
                         }
                     }

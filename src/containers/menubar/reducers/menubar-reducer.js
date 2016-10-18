@@ -4,8 +4,9 @@
 import {
     TOP_MENU_INFO_SUCCESS, TOP_MENU_INFO_ERROR
 } from '../constants/menubar-action-types';
+import {LOGOUT} from '../../login/constants/login-action-types';
 
-const initialState = {};
+const initialState = {currentOne:{},currentTwo:{}};
 
 export default function getMenuBarInfo(state = initialState, action = {}){
     switch (action.type){
@@ -16,6 +17,8 @@ export default function getMenuBarInfo(state = initialState, action = {}){
                 ...state,
                 errors: action.errMessage
             };
+        case LOGOUT:
+            return initialState;
         default:
             return state;
     }
