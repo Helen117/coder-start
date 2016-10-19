@@ -197,42 +197,6 @@ class ProjectList extends Component {
                                 return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)} disabled>{text}</a>
                             }
                         }
-                        /*render(text,record){
-                            var count = 0, count2 = 0,recordPrijectId='';
-                            for(i=0;i<groupInfo.children.length;i++){
-                                if(record.projectName == groupInfo.children[i].gitlabProject.name){
-                                    recordPrijectId = groupInfo.children[i].gitlabProject.id;
-                                    for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
-                                        if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
-                                            count2++;//当前用户是此项目下成员
-                                        }
-                                    }
-                                }
-                            }
-                            for(var j=0;j<starList.length;j++){
-                                if(recordPrijectId == starList[j].id){
-                                    count++;
-                                }
-                            }
-                            if(count == 0 && count2 == 0){//未关注
-                                var is_conserned = 'no';
-                                console.log("未关注");
-                                return <Switch checkedChildren="是" unCheckedChildren="否"
-                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
-                            }else if(count != 0 && count2 == 0){//已关注
-                                var is_conserned = 'yes';
-                                console.log("已关注");
-                                return <Switch checkedChildren="是" unCheckedChildren="否"
-                                               checked="true"
-                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
-                            }else{//项目成员
-                                console.log("项目成员");
-                                var is_conserned = 'yes';
-                                return <Switch disabled checkedChildren="是" unCheckedChildren="否"
-                                               checked="true"
-                                               onChange={self.concernedChange.bind(self,record,groupInfo,is_conserned)}/>
-                            }
-                        }*/
                     }
                 ];
                 return (

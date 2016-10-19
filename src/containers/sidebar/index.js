@@ -42,7 +42,8 @@ class Sidebar extends React.Component {
     }
 
     menuClickHandle(item) {
-        this.props.updateNavPath(item.keyPath, item.key);
+        var is_menuclick = true;
+        this.props.updateNavPath(item.keyPath, item.key, is_menuclick);
     }
 
     clickSideBar(){
