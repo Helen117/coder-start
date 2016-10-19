@@ -136,7 +136,7 @@ import * as issue from './actions/issue-action';
                                 <Form onSubmit={this.handleSubmit.bind(this)}>
                                         <Input type="textarea" placeholder="Write a comment"
                                                rows="10" id="body" onChange={this.change.bind(this)}/>
-                                    <br/>
+                                    <br/><br/>
                                     <Button type='primary' htmlType='submit' disabled={!hasBody}>提交</Button>
                                     <Button type="ghost" onClick={this.editIssue.bind(this,'close')} style={this.state.closeButtonStyle}>关闭问题</Button>
                                     <Button type="ghost" onClick={this.editIssue.bind(this,'reopen')} style={this.state.reopenButtonStyle}>重开问题</Button>

@@ -9,7 +9,7 @@ import {
 } from '../constants/create-milestones-action-types';
 
 const initialState = {
-    items: [],
+
 };
 
 export default function createMilestones(state = initialState, action = {}) {
