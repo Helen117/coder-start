@@ -54,7 +54,6 @@ const validate = function (next, replace, callback) {
     //const isLoggedIn = getCookie('uid');
     callback();
 };
-
 const root = document.createElement('div');
 document.body.appendChild(root);
 

@@ -6,12 +6,13 @@
 import api from '../../../api';
 import {UPDATE_NAVPATH, GET_ALL_MENU} from '../constants/menu-action-types';
 
-export function updateNavPath(path, key) {
+export function updateNavPath(path, key, is_menuclick) {
     return {
         type: UPDATE_NAVPATH,
         payload: {
             data: path,
-            key: key
+            key: key,
+            is_menuclick:is_menuclick
         }
     }
 }

@@ -57,7 +57,7 @@ export default class Home extends React.Component {
                             <MyProjectProgress label="我今日在该项目中需完成工作的百分比" percent={0}/>
                         </Col>
                         <Col span={12}>
-                            <MyProjectProgress label="我在本里程碑完成工作的百分比（不参与竞赛的员工由项目经理设定）" percent={75}/>
+                            <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={75}/>
                         </Col>
                     </Row>
                 </Row>

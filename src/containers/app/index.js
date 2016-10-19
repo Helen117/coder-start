@@ -11,6 +11,7 @@ import Sidebar from '../../containers/sidebar';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/login-action';
+import { updateNavPath} from '../sidebar/actions/menu-action';
 import MenuBar from '../../containers/menubar';
 import * as Cookies from "js-cookie";
 
@@ -39,13 +40,77 @@ class App extends React.Component {
         }
     }
 
+    findMenuByLocation(data,pathName){//根据url找到对应的一级菜单，作为面包屑
+        var navi_keypath_return = [], navi_key_return, find_path = 0;
+        for(var i=0; i<data.length;i++){
+            if(find_path == 0){
+                if(pathName == data[i].link){//url对应一级菜单
+                    navi_key_return = "menu"+data[i].id;
+                    navi_keypath_return[0] = navi_key_return;
+                    find_path++;
+                    break;
+                }else if(pathName != data[i].link && data[i].subMenu.length > 0){
+                    var menuTwo = data[i].subMenu;
+                    for(var j=0; j<menuTwo.length; j++){
+                        if(pathName == menuTwo[j].link){//url对应二级菜单
+                            navi_key_return = "menu"+data[i].id;
+                            navi_keypath_return[0] = navi_key_return;
+                            find_path++;
+                            break;
+                        }else if(pathName != menuTwo[j].link && menuTwo[j].subMenu.length > 0){
+                            var menuTree = menuTwo[j].subMenu;
+                            for(var k=0; k< menuTree.length; k++){
+                                if(pathName == menuTree[k].link){//url对应三级菜单
+                                    navi_key_return = "menu"+data[i].id;
+                                    navi_keypath_return[0] = navi_key_return;
+                                    find_path++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{break;}
+        }
+        return {navi_keypath_return, navi_key_return}
+    }
+
+    componentWillReceiveProps(nextProps){
+        const {menuData} = nextProps;
+        var path_return,key_return;
+        var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, window.location.pathname);
+        path_return = navi_keypath_return;
+        key_return = navi_key_return;
+        if(!navi_key_return){
+            var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
+            var pathName_temp = window.location.pathname;
+            pathName_temp = pathName_temp.substr(0,secondIndex);
+            var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, pathName_temp);
+            path_return = navi_keypath_return;
+            key_return = navi_key_return;
+        }
+        /*console.log("nextProps.navpath:",nextProps.navpath)
+        console.log("path_return:",path_return)
+        console.log("key_return:",key_return)*/
+        if(nextProps.navpath.length == 0 && navi_key_return){
+            console.log("9")
+            var is_menuclick = false;
+            this.props.updateNavPath(path_return, key_return, is_menuclick);
+        }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
+            if(this.props.selectedNode == nextProps.selectedNode && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
+                console.log("8")
+                var is_menuclick = false;
+                this.props.updateNavPath(path_return, key_return, is_menuclick);
+            }
+        }
+    }
+
     logout() {
         this.props.actions.logout();
         this.context.router.replace('/login');
     }
 
     clickSideBar(isOpened){
-        //console.log("isOpened:",isOpened);
         this.setState({
             isOpened:isOpened
         });
@@ -55,7 +120,6 @@ class App extends React.Component {
         this.setState({
             isOpened: this.state.isOpened ? false : true
         });
-        //console.log("!this.state.isOpened:",!this.state.isOpened);
     }
 
     sideMenuClick(isRefresh){
@@ -65,13 +129,12 @@ class App extends React.Component {
     }
 
     render() {
+        console.log("this.props.navpath:",this.props.navpath)
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
-        //console.log("this.state.isOpened:",this.state.isOpened);
         if (uid == null){
             return <div className="ant-layout-aside"></div>;
         }
-        //console.log("this.props.navpath:",this.props.navpath);
         return (
             <div className="ant-layout-aside">
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
@@ -86,6 +149,7 @@ class App extends React.Component {
                         <NavPath />
                         <MenuBar menuData={this.props.menuData}
                                  navpath={this.props.navpath}
+                                 is_menuclick={this.props.is_menuclick}
                         />
                     </Affix>
                     <div className="ant-layout-container">
@@ -119,12 +183,16 @@ function mapStateToProps(state) {
         profile: login.profile ? login.profile : null,
         menuData:state.menu.items,
         navpath: state.menu.navpath,
+        is_menuclick:state.menu.is_menuclick,
+        selectedNode:state.getGroupInfo.selectedNode,
+        getMenuBarInfo:state.getMenuBarInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({logout, fetchProfile, cookiesToReduxLoginState}, dispatch)
+        actions: bindActionCreators({logout, fetchProfile, cookiesToReduxLoginState}, dispatch),
+        updateNavPath: bindActionCreators(updateNavPath, dispatch)
     }
 }
 
