@@ -89,11 +89,16 @@ class App extends React.Component {
             path_return = navi_keypath_return;
             key_return = navi_key_return;
         }
+        /*console.log("nextProps.navpath:",nextProps.navpath)
+        console.log("path_return:",path_return)
+        console.log("key_return:",key_return)*/
         if(nextProps.navpath.length == 0 && navi_key_return){
+            console.log("9")
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
             if(this.props.selectedNode == nextProps.selectedNode && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
+                console.log("8")
                 var is_menuclick = false;
                 this.props.updateNavPath(path_return, key_return, is_menuclick);
             }
@@ -124,6 +129,7 @@ class App extends React.Component {
     }
 
     render() {
+        console.log("this.props.navpath:",this.props.navpath)
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         if (uid == null){
