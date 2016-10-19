@@ -7,6 +7,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
+import style from './index.css';
 
 const authName =[];
 const assigneeName =[];
@@ -19,6 +20,10 @@ class IssueList extends Component {
     }
 
     componentWillMount() {
+
+    }
+
+    componentDidMount() {
         const {actions,projectInfo} = this.props;
         if(projectInfo){
             actions.getIssueList(projectInfo.gitlabProject.id);
@@ -29,16 +34,20 @@ class IssueList extends Component {
         }
     }
 
-    componentDidMount() {
-
-    }
-
     errChosePro(){
         notification.error({
             message: '未选择项目',
             description:'请先在“代码管理“中选择一个项目！',
             duration: 2
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {actions,projectInfo} = this.props;
+
+        if(projectInfo && projectInfo.gitlabProject.id != nextProps.projectInfo.gitlabProject.id) {
+            actions.getIssueList(nextProps.projectInfo.gitlabProject.id);
+        }
     }
 
     // editIssue() {
@@ -94,7 +103,7 @@ class IssueList extends Component {
                     id:issueList[i].id,
                     title: issueList[i].title,
                     description:issueList[i].description,
-                    author_name: issueList[i].author.name,
+                    author_name: issueList[i].author?issueList[i].author.name:null,
                     assignee_name: assign_name,
                     assign_id :assign_id,
                     milestoneTitle:milestoneTitle,
@@ -109,12 +118,12 @@ class IssueList extends Component {
                 //过滤创建人
                 var isRepeated = false;
                 for (var j = 0, len = authName.length; j < len; j++) {
-                    if (issueList[i].author.name == authName[j].value) {
+                    if (issueList[i].author&&issueList[i].author.name == authName[j].value) {
                         isRepeated = true;
                          break;
                         }
                     }
-                if (!isRepeated) {
+                if (!isRepeated&&issueList[i].author) {
                     authName.push({text:issueList[i].author.name,
                         value:issueList[i].author.name});
                    }
@@ -170,10 +179,22 @@ class IssueList extends Component {
         return data;
     }
 
+    rowClassName(record, index) {
+        if (record.state == 'opened') {
+            return style.open;
+        }
+        if (record.state == 'closed') {
+            return style.close;
+        }
+        if (record.state == 'reopened') {
+            return style.reopen;
+        }
+    }
+
 
     render() {
         const pagination = {
-            pageSize:10,
+            pageSize:20,
         };
 
         return (
@@ -184,7 +205,9 @@ class IssueList extends Component {
                        size="middle"
                        loading={this.props.loading}
                        pagination={pagination}
-                       scroll={{y:300}}
+                       rowClassName={this.rowClassName}
+                       //onRowClick ={this.editIssue.bind(this,'modify')}
+                       //scroll={{y:300}}
                 >
                 </Table>
             </Box>
@@ -207,10 +230,36 @@ IssueList.prototype.issueListColumns = (self)=>[{
     title: '所属项目组',
     dataIndex: 'group_name',
     width: '8%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (index === 0) {
+            obj.props.rowSpan = 20;
+        }
+        if (index > 0) {
+            obj.props.rowSpan = 0;
+        }
+        return obj;
+    }
 },{
     title: '所属项目',
     dataIndex: 'project_name',
     width: '8%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (index === 0) {
+            obj.props.rowSpan = 20;
+        }
+        if (index > 0) {
+            obj.props.rowSpan = 0;
+        }
+        return obj;
+    }
     //fixed: 'left'
 },{
     title: '问题名称',
@@ -269,15 +318,16 @@ IssueList.prototype.issueListColumns = (self)=>[{
         text: 'reopened',
         value: 'reopened',
     }],
-    onFilter: (value, record) => record.state.indexOf(value) === 0
+    onFilter: (value, record) => record.state.indexOf(value) === 0,
+    sorter: (a, b) => a.state - b.state
 },{
     title: '操作',
     dataIndex: 'key',
     width: '13%',
     render: (text, record, index)=> {
         return <div>
-                    <Button type="ghost" onClick={self.editIssue.bind(self,'modify', record)}>修改</Button>
-                    <Button type="ghost" onClick={self.issueNotes.bind(self, record)}>讨论历史</Button>
+                    <a onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+                    <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
                </div>;
     }
 }];

@@ -73,6 +73,23 @@ class Register extends Component{
 
     }
 
+    // handleChange(value) {
+    //     console.log('value:',value);
+    //     let options;
+    //     if (!value || value.indexOf('@') >= 0) {
+    //         options = [];
+    //     } else {
+    //         options = ['shpso.com', 'boss.com'].map((domain) => {
+    //             const email = `${value}@${domain}`;
+    //             return <Option key={email}>{email}</Option>;
+    //         });
+    //     }
+    //     this.setState({
+    //         options
+    //     });
+    //
+    // }
+
     handleSubmit(e) {
         e.preventDefault();
         const { actions, form } = this.props;
@@ -81,7 +98,8 @@ class Register extends Component{
                 return;
             } else {
                 const data = form.getFieldsValue();
-                console.log('收到表单值：', data);
+                data.email = data.email+data.option;
+               // console.log('收到表单值：', data);
                 actions.register(data);
             }
         })
@@ -102,6 +120,12 @@ class Register extends Component{
             labelCol: { span: 8 },
             wrapperCol: { span: 8 },
         };
+        const selectAfter = (
+            <Select {...getFieldProps('option',{initialValue:'@shpso.com'})} style={{ width: 100 }}>
+                <Option value="@shpso.com">@shpso.com</Option>
+                <Option value="@boss.com">@boss.com</Option>
+            </Select>
+        );
 
         return (
             <Box title='新用户注册'>
@@ -113,7 +137,7 @@ class Register extends Component{
                         <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout}  label="邮箱" >
-                        <Input id="email" placeholder="email" {...getFieldProps('email',{rules:[{required:true,type: 'email', message: '请输入正确的邮箱地址' }]})} />
+                        <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'邮箱不能为空'}]})} addonAfter={selectAfter}/>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="密码" >
@@ -121,9 +145,10 @@ class Register extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="ssh key" >
-                        <Input type="textarea" placeholder="1、下载Git-Bash;
+                        <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="1、下载Git-Bash;
                         2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
                         3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来." rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                        <a href="/assets/tool/Git-Bash.exe">Git-Bash 下载</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="申请角色" >
