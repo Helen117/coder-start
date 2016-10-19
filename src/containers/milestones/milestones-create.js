@@ -28,6 +28,33 @@ class MilestoneCreate extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { inserted, errMessage } = nextProps;
+        if (this.props.inserted != inserted && inserted){
+            this.insertCallback();
+        }else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback(errMessage);
+        }
+
+    }
+
+    insertCallback(){
+        notification.success({
+            message: '创建成功',
+            description: '创建成功',
+            duration: 2
+        });
+        this.context.router.goBack();
+    }
+
+    errCallback(errMessage){
+        notification.error({
+            message: '创建失败',
+            description: errMessage,
+            duration: 2
+        });
+    }
+
     errChoosePro(){
         notification.error({
             message: '未选择项目',
@@ -45,6 +72,13 @@ class MilestoneCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                console.log('formData',formData);
+
+                const due_date2 = new Date(due_date).toLocaleDateString()
+
+                console.log('date',Date.parse(formData.due_date))
+                console.log('date int',due_date);
+                console.log('data fromate',due_date2);
                 const projectId = this.props.getProjectInfo.gitlabProject.id;
                 var gitlabMilestone = formData;
                 gitlabMilestone.project_id= projectId;
@@ -54,33 +88,6 @@ class MilestoneCreate extends React.Component {
                 this.props.createMilestone(milestoneData);
             }
         })
-    }
-
-    insertCallback(){
-        notification.success({
-            message: '创建成功',
-            description: '',
-            duration: 2
-        });
-        this.context.router.goBack();
-    }
-
-    errCallback(errMessage){
-        notification.error({
-            message: '创建失败',
-            description: errMessage,
-            duration: 2
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage } = nextProps;
-        if (this.props.inserted != inserted && inserted){
-            this.insertCallback();
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
-        }
-
     }
 
     handleCancel() {
@@ -99,67 +106,49 @@ class MilestoneCreate extends React.Component {
         })
     }
 
-
-    checkCreateDate(rule, value, callback){
+    checkDuedate(rule, value, callback){
         const {milestones} = this.props;
-        var lastMilestoneDuedate = (milestones.length>0)?milestones[0].gitlabMilestone.due_date:null;
-        if (!value ) {
-            callback();
-        } else if(value && milestones.length>0) {
-            setTimeout(() => {
-                if (value < lastMilestoneDuedate) {
-                    callback([new Error('开始时间不能早于上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString())]);
-                }if (value > lastMilestoneDuedate+(24 * 60 * 60 * 1000)) {
-                    callback([new Error('上一里程碑的结束时间:'+new Date(parseInt(lastMilestoneDuedate)).toLocaleDateString()+',日程安排存在时间间隙')]);
-                } else {
+        let lastMilestoneDuedate = null;
+        if(milestones){
+            if(milestones.length>0){
+                let lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
+                lastMilestoneDuedate = lastMilestoneDuedate+(1 * 24 * 60 * 60 * 1000);
+                lastMilestoneDuedate = new Date(lastMilestoneDuedate).toLocaleDateString();
+                console.log('lastMilestoneDuedate',lastMilestoneDuedate);
+                value = Date.parse(value);
+                value = new Date(value).toLocaleDateString();
+                console.log('value',value);
+                console.log(value < lastMilestoneDuedate);
+                if (!value ) {
                     callback();
+                } else if(value) {
+                    setTimeout(() => {
+                        if (value < lastMilestoneDuedate) {
+                            callback([new Error('时间需迟于上一里程碑的计划完成时间: '+new Date(milestones[0].gitlabMilestone.due_date).toLocaleDateString())]);
+                        }else {
+                            callback();
+                        }
+                    }, 500);
                 }
-            }, 800);
-        }else {
-            callback();
+            }
         }
 
-    }
-
-    disabledStartDate(startValue) {
-        const { getFieldValue } = this.props.form;
-        if (!startValue || !getFieldValue('due_date')) {
-            return false;
-        }
-        return startValue.getTime() >= getFieldValue('due_date');
-    }
-
-    disabledEndDate(endValue) {
-        const { getFieldValue } = this.props.form;
-        if (!endValue || !getFieldValue('created_date')) {
-            return false;
-        }
-        return endValue.getTime() <= getFieldValue('created_date');
     }
 
     render(){
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
-                { required: true, message:'请输入里程碑名称'},
-                {max: 30, message: '名称长度为 1~30 个字符' },
+                { required: true, message:'请输入里程碑名称' },
+                { max: 30, message: '名称长度为 1~30 个字符' },
             ],
         });
 
-        const createDateProps = getFieldProps('created_date', {
-            rules: [
-                { required: true,
-                    type: 'date',
-                    message: '请选择开始日期', },
-                { validator: this.checkCreateDate.bind(this) },
-            ],
-        });
 
         const dueDateProps = getFieldProps('due_date', {
             rules: [
-                { required: true,
-                    type: 'date',
-                    message: '请选择结束日期', },
+                { required: true, type: 'date', message: '请选择结束日期' },
+                { validator: this.checkDuedate.bind(this) }
             ],
         });
 
@@ -172,37 +161,14 @@ class MilestoneCreate extends React.Component {
         return(
             <Box title="创建里程碑">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                    <FormItem   {...formItemLayout} label="名称">
+                    <FormItem   {...formItemLayout} label="里程碑名称">
                         <Input {...titleProps} placeholder="请输入里程碑名称" />
                     </FormItem>
-                    <FormItem {...formItemLayout} label="备注" >
+                    <FormItem {...formItemLayout} label="描述" >
                         <Input type="textarea" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                     </FormItem>
-                    <FormItem
-                        label="日期"
-                        labelCol={{ span: 6 }}
-                        required
-                    >
-                        <Col span="3">
-                            <FormItem>
-                                <DatePicker
-                                    placeholder="开始日期"
-                                    {...createDateProps}
-                                    disabledDate={this.disabledStartDate.bind(this)}
-                                />
-                            </FormItem>
-                        </Col>
-                        <Col span="1">
-                            <p className="ant-form-split" >-</p>
-                        </Col>
-                        <Col span="3">
-                            <FormItem>
-                                <DatePicker
-                                    placeholder="结束日期"
-                                    {...dueDateProps}
-                                    disabledDate={this.disabledEndDate.bind(this)}/>
-                            </FormItem>
-                        </Col>
+                    <FormItem {...formItemLayout} label="计划完成时间">
+                            <DatePicker placeholder="计划完成时间" {...dueDateProps}/>
                     </FormItem>
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>

@@ -21,10 +21,13 @@ class Milestones extends React.Component {
 
 
     componentDidMount() {
-        if (this.props.getProjectInfo) {
+        console.log('1111');
+        console.log(this.props.timeLineData);
+        if (this.props.getProjectInfo && !this.props.timeLineData) {
+            console.log('222');
             const projectId = this.props.getProjectInfo.gitlabProject.id;
             this.props.getMilestones(projectId, this.page, this.timeLineData);
-        } else {
+        } else if(!this.props.getProjectInfo) {
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
