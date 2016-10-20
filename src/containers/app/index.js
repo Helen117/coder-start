@@ -76,11 +76,13 @@ class App extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {menuData} = nextProps;
+        const {menuData, navpath} = nextProps;
         var path_return,key_return;
+        //根据url找到面包屑的key
         var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, window.location.pathname);
         path_return = navi_keypath_return;
         key_return = navi_key_return;
+        //如果没有找到key,则取url前两个"/"之间的路径
         if(!navi_key_return){
             var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
             var pathName_temp = window.location.pathname;
@@ -88,17 +90,21 @@ class App extends React.Component {
             var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, pathName_temp);
             path_return = navi_keypath_return;
             key_return = navi_key_return;
+            if(pathName_temp){
+                var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, pathName_temp);
+                path_return = navi_keypath_return;
+                key_return = navi_key_return;
+            }else{
+                key_return = "menu"+navpath[0].key;
+                path_return = [key_return];
+            }
         }
-        /*console.log("nextProps.navpath:",nextProps.navpath)
-        console.log("path_return:",path_return)
-        console.log("key_return:",key_return)*/
-        if(nextProps.navpath.length == 0 && navi_key_return){
-            console.log("9")
+        if(nextProps.navpath.length == 0 && navi_key_return){//登录，刷新时更新面包屑
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
+            //返回时更新面包屑，除去点击项目树和顶部导航的情况
             if(this.props.selectedNode == nextProps.selectedNode && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
-                console.log("8")
                 var is_menuclick = false;
                 this.props.updateNavPath(path_return, key_return, is_menuclick);
             }
