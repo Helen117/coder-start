@@ -46,6 +46,7 @@ class createBranches extends Component {
             description: '',
             duration: 1
         });
+        this.props.fetchBranchesData(this.props.getProjectInfo.gitlabProject.id);
         this.context.router.goBack();
     }
 

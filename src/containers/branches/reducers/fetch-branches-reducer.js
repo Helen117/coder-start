@@ -11,7 +11,9 @@ import {
 
 
 const initialState = {
-
+    loading:false,
+    branchesData:null,
+    fetchErrors:null,
 };
 
 export default function fetchBranches(state = initialState, action = {}) {
@@ -22,10 +24,10 @@ export default function fetchBranches(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true});
 
         case FETCH_BRANCHES_SUCCESS:
-            return Object.assign({}, initialState, {branchesData: action.payload,fetchErrors: null});
+            return Object.assign({}, initialState, {branchesData: action.payload});
 
         case FETCH_BRANCHES_ERROR:
-            return Object.assign({}, initialState, {branchesData:null, fetchErrors: action.payload.errorMsg});
+            return Object.assign({}, initialState, {fetchErrors: action.payload.errorMsg});
 
         default:
             return state;
