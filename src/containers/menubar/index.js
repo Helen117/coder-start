@@ -107,9 +107,22 @@ class MenuBar extends React.Component {
                         var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
                         var pathName_temp = window.location.pathname;
                         pathName_temp = pathName_temp.substr(0,secondIndex);
-                        var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData, pathName_temp);
-                        oneKey_return = menuOneKey;
-                        twoKey_return = menuTwoKey;
+                        if(pathName_temp){
+                            var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData, pathName_temp);
+                            oneKey_return = menuOneKey;
+                            twoKey_return = menuTwoKey;
+                        }else{
+                            if(currentTwo.length != 0){
+                                oneKey_return = currentOne[0];
+                                twoKey_return = currentTwo[0];
+                            }else if(currentOne.length != 0 && currentTwo.length == 0){
+                                oneKey_return = currentOne[0];
+                                twoKey_return = "";
+                            }else if(currentOne.length == 0 && currentTwo.length == 0){
+                                oneKey_return = "";
+                                twoKey_return = "";
+                            }
+                        }
                     }
                     this.setState({
                         refreshMenuOne:true,
@@ -119,6 +132,13 @@ class MenuBar extends React.Component {
                 }
             }
         }
+    }
+
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
     }
 
     componentDidUpdate(){
@@ -291,7 +311,7 @@ MenuBar.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-
+        //getMenuBarInfo:state.getMenuBarInfo,
     }
 }
 

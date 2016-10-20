@@ -76,7 +76,7 @@ class App extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {menuData} = nextProps;
+        const {menuData, navpath} = nextProps;
         var path_return,key_return;
         //根据url找到面包屑的key
         var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, window.location.pathname);
@@ -90,6 +90,14 @@ class App extends React.Component {
             var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, pathName_temp);
             path_return = navi_keypath_return;
             key_return = navi_key_return;
+            if(pathName_temp){
+                var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, pathName_temp);
+                path_return = navi_keypath_return;
+                key_return = navi_key_return;
+            }else{
+                key_return = "menu"+navpath[0].key;
+                path_return = [key_return];
+            }
         }
         if(nextProps.navpath.length == 0 && navi_key_return){//登录，刷新时更新面包屑
             var is_menuclick = false;
