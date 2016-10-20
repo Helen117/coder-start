@@ -27,7 +27,7 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 
-import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
+import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
@@ -81,6 +81,7 @@ ReactDOM.render(
                             <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
+                            <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                             <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         </Route>

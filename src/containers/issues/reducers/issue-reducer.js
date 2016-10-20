@@ -7,14 +7,20 @@ const initialState = {
     labels: null
 };
 
-export default function issue(state = initialState, action = {}) {
+export function GetIssueDependent(state = initialState, action = {}) {
     switch (action.type) {
 
         case 'FETCH_DATA_SUCCESS':
             return Object.assign({}, initialState, {milestones: action.payload.milestones,members:action.payload.members,labels:action.payload.labels,fetchErrors: null});
         case 'FETCH_DATA_ERROR':
             return Object.assign({}, initialState, {milestones:null,members:null,labels:null, fetchErrors: action.payload.errorMsg});
+        default:
+            return state;
+    }
+}
 
+export function issue(state = initialState, action = {}) {
+    switch (action.type) {
         case 'ADD_ISSUE_SUCCESS':
             return Object.assign({}, initialState, {addIssue: action.payload, addIssueError: null});
         case 'ADD_ISSUE_ERROR':

@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/9/18.
  */
 import React, {PropTypes} from 'react';
-import IssuesTable from '../../components/issues-table';
+import IssuesList from '../../components/issues-list';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -31,10 +31,8 @@ class MilestoneDetail extends React.Component {
         const milestoneDetail = this.props.milestoneDetail;
         const isLoading = this.props.loading
         return(
-            <Box title="里程碑详细信息">
-                <IssuesTable loading = {isLoading} dataSource={milestoneDetail}>
-                </IssuesTable>
-            </Box>
+                <IssuesList loading = {isLoading} dataSource={milestoneDetail}>
+                </IssuesList>
         )
     }
 }

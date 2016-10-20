@@ -11,7 +11,7 @@ import milestones from '../containers/milestones/reducers/milestones-reducer';
 import milestonesDetail from '../containers/milestones/reducers/milestones-table-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
-import issue from '../containers/issues/reducers/issue-reducer';
+import {issue,GetIssueDependent} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
@@ -38,6 +38,7 @@ const reducer = combineReducers({
     getGroupMembers,
     register,
     issue,
+    GetIssueDependent,
     forkProject,
     consernProject,
     unconsernProject,
