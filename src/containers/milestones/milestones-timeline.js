@@ -12,7 +12,6 @@ import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
 
-
 class Milestones extends React.Component {
     constructor(props) {
         super(props);
@@ -20,28 +19,20 @@ class Milestones extends React.Component {
         this.timeLineData = [];
     }
 
-
     componentDidMount() {
         if (this.props.getProjectInfo ) {
             const projectId = this.props.getProjectInfo.gitlabProject.id;
             if(!this.props.timeLineData){
                 this.props.getMilestones(projectId, this.page, this.timeLineData);
-            }
+            }/*else if(this.props.timeLineData[0].gitlabMilestone.project_id != projectId){
+                this.props.getMilestones(projectId, this.page, this.timeLineData);
+            }*/
         } else {
             const {router} = this.context;
             router.goBack();
             this.errChoosePro();
         }
     }
-
-    errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目！',
-            duration: 2
-        });
-    }
-
 
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
@@ -64,6 +55,13 @@ class Milestones extends React.Component {
         }
     }
 
+    errChoosePro(){
+        notification.error({
+            message: '未选择项目',
+            description:'请先在左侧项目树中选择一个项目',
+            duration: 2
+        });
+    }
 
     errCallback(errMessage){
         notification.error({
@@ -73,44 +71,40 @@ class Milestones extends React.Component {
         });
     }
 
-
     warnCallback(){
         notification.warning({
             message: '无更多数据',
-            description: '无更多数据!',
+            description: '该项目的全部里程碑都已展示',
             duration: 2
-});
-}
+        });
+    }
 
-moreMilestones(){
-    const projectId = this.props.getProjectInfo.gitlabProject.id;
-    this.page ++;
-    this.props.getMilestones(projectId,this.page,this.props.timeLineData);
+    moreMilestones(){
+        const projectId = this.props.getProjectInfo.gitlabProject.id;
+        this.page ++;
+        this.props.getMilestones(projectId,this.page,this.props.timeLineData);
+    }
 
-}
-
-createMilestones(){
-    this.context.router.push({
-        pathname: '/createMilestones',
-    });
-}
+    createMilestones(){
+        this.context.router.push({
+            pathname: '/createMilestones',
+        });
+    }
 
     render(){
         const {loading,notFoundMsg,timeLineData} = this.props;
         const projectId=this.props.getProjectInfo?this.props.getProjectInfo.gitlabProject.id:null;
         return (
-            <div style={{marginTop:5,marginLeft:5}}>
-                <div style={{marginBottom: 16}}>
-                    <Button onClick={this.createMilestones.bind(this,'add',null)}>新建里程碑</Button>
+            <div style={{margin:15}}>
+                <div >
+                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add',null)}>创建里程碑</Button>
                 </div>
-
                 <TimelineMilestone timeLineData={timeLineData}
                                loading = {loading}
                                notFoundMsg = {notFoundMsg}
                                pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
                                projectId = {projectId}
-
-            ></TimelineMilestone>
+                ></TimelineMilestone>
             </div>
         )
     }
@@ -134,7 +128,7 @@ function mapStateToProps(state) {
         milestoneData: state.milestones.items,
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
-        loadErrors: state.milestones.loadErrors,
+        errMessage: state.milestones.errMessage,
         getProjectInfo: state.getProjectInfo.projectInfo,
     };
 }

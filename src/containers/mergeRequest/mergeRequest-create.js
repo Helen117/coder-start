@@ -162,7 +162,7 @@ class createMergeRequest extends Component {
     render(){
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
-        const {getProjectInfo,mergeBranch} = this.props;
+        const {mergeBranch} = this.props;
         let targetPath,sourceBranch,initialSourceBranch;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch){
@@ -199,21 +199,28 @@ class createMergeRequest extends Component {
                         </Col>
                         <Col span="3" offset="1">
                             <FormItem  {...formItemLayout} label="" >
-                                <Select style={{ width: 100,marginLeft:5 }} onSelect={this.changeTargetBranch.bind(this)} {...getFieldProps('source_branch',{initialValue: initialSourceBranch})} >
-                                    {sourceBranch}
-                            </Select>
+                                <Select style={{ width: 100,marginLeft:5 }}
+                                        onSelect={this.changeTargetBranch.bind(this)}
+                                        {...getFieldProps('source_branch',{initialValue: initialSourceBranch})} >
+                                        {sourceBranch}
+                                </Select>
                             </FormItem>
                         </Col>
                         <Col span="4">
                             <FormItem  {...formItemLayout} label="目标分支" >
-                                <Select disabled={true} style={{ width: 200 }} {...getFieldProps('target_project_path',{initialValue: targetPath})} >
+                                <Select disabled={true}
+                                        style={{ width: 200 }}
+                                        {...getFieldProps('target_project_path',{initialValue: targetPath})} >
                                     <Option value={targetPath}>{targetPath}</Option>
                                 </Select>
                             </FormItem>
                         </Col>
                         <Col span="6" offset="1">
                             <FormItem required={true} {...formItemLayout} label="">
-                               <Select disabled={true} style={{ width: 100,marginLeft:5 }} {...getFieldProps('target_branch',{initialValue: initialTargetBranch, rules:[{required:true,message:'找不到与之对应的源分支'}]})} >
+                               <Select disabled={true}
+                                       style={{ width: 100,marginLeft:5 }}
+                                       {...getFieldProps('target_branch',
+                                           {initialValue: initialTargetBranch, rules:[{required:true,message:'找不到与之对应的源分支'}]})} >
                                     {targetBranch}
                                 </Select>
                             </FormItem>
@@ -221,19 +228,31 @@ class createMergeRequest extends Component {
                     </Row>
 
                     <FormItem {...formItemLayout}  label="MR名称" >
-                        <Input placeholder="请输入MR名称" {...getFieldProps('title',{rules:[{ required:true,message:'请填写MR名称'},{ max:30,message:'MR名称长度最大30个字符'}]})} />
+                        <Input placeholder="请输入MR名称"
+                               {...getFieldProps('title',
+                                   {rules:[{ required:true,message:'请填写MR名称'},{ max:30,message:'MR名称长度最大30个字符'}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="MR描述" >
-                        <Input type="textarea" placeholder="请输入MR描述" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'请填写MR描述'}]})} />
+                        <Input type="textarea"
+                               placeholder="请输入MR描述"
+                               rows="5"
+                               {...getFieldProps('description',
+                                   {rules:[{required:true,message:'请填写MR描述'}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑"  >
-                        <Select size="large"  allowClear={true} {...getFieldProps('milestone.id')} onSelect={this.loadIssues.bind(this)}>
+                        <Select size="large"
+                                allowClear={true}
+                                {...getFieldProps('milestone.id')}
+                                onSelect={this.loadIssues.bind(this)}>
                             {mileStoneOptions}
                         </Select>
                     </FormItem>
+
                     <FormItem {...formItemLayout} label="问题">
-                        <Select size="large"  allowClear={true} {...getFieldProps('issue_id')} >
+                        <Select size="large"
+                                allowClear={true}
+                                {...getFieldProps('issue_id')} >
                             {issuesOptions}
                         </Select>
                     </FormItem>

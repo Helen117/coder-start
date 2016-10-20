@@ -44,21 +44,23 @@ export default class TimelineMilestone extends React.Component {
             const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
                 let i = 0;
                 return (
-                    <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
-                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
-                        <p>{item.gitlabMilestone.description}</p>
-                        <div style={{marginLeft:12,width:"50%"}}>
-                            <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
-                            <p>创建人：{item.owner}</p>
-                            <span>待解决的问题：</span>
-                            {item.issues.length>0?item.issues.map((node) => {
-                                i++;
-                                return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)}):<span>无</span>
-                            }
-                            <Progress percent={item.rate} />
-                            <a onClick={this.milestonesDetail.bind(this, item.gitlabMilestone.id)}>查看更多</a>
-                        </div>
-                    </Timeline.Item>)
+
+                        <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
+                            <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
+                            <p>{item.gitlabMilestone.description}</p>
+                            <div >
+                                <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
+                                <p>创建人：{item.owner}</p>
+                                <p>当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项</p>
+                                <span>问题：</span>
+                                {item.issues.length>0?item.issues.map((node) => {
+                                    i++;
+                                    return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)}):<span>无</span>
+                                }
+                                <Progress percent={item.rate} />
+                                <a onClick={this.milestonesDetail.bind(this, item.gitlabMilestone.id)}>查看更多</a>
+                            </div>
+                        </Timeline.Item>)
             })
         };
         return timeLine;
@@ -70,7 +72,7 @@ export default class TimelineMilestone extends React.Component {
         const loading = this.props.loading;
         const pending = this.props.pending;
         return(
-        <div>
+        <div style={{width:"50%"}}>
             {loading?
                 (<span className="filter-not-found">
                         <i className="anticon anticon-loading">
