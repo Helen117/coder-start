@@ -42,7 +42,8 @@ class Sidebar extends React.Component {
     }
 
     menuClickHandle(item) {
-        this.props.updateNavPath(item.keyPath, item.key);
+        var is_menuclick = true;
+        this.props.updateNavPath(item.keyPath, item.key, is_menuclick);
     }
 
     clickSideBar(){
@@ -89,7 +90,7 @@ class Sidebar extends React.Component {
                 <Icon className="action-button-sidebar"
                       type="bars"
                       onClick={this.clickSideBar.bind(this)}/>
-                <Menu mode="inline" theme="light" openKeys={openKey} defaultSelectedKeys={selectedKeys} onSelect={this.menuClickHandle.bind(this)} className="side-bar-menu">
+                <Menu mode="inline" theme="light" openKeys={openKey} selectedKeys={this.props.navpath.length==0?["menu1"]:["menu"+this.props.navpath[0].key]} onSelect={this.menuClickHandle.bind(this)} className="side-bar-menu">
                     {menu}
                 </Menu>
             </aside>
@@ -116,7 +117,8 @@ Sidebar.contextTypes = {
 function mapStateToProps(state) {
     return {
         items: state.menu.items,
-        currentIndex: state.menu.currentIndex
+        currentIndex: state.menu.currentIndex,
+        navpath:state.menu.navpath,
     }
 }
 
