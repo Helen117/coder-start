@@ -29,7 +29,7 @@ export default class IssuesTable extends React.Component {
     //处理表格数据源
     getDataSource(dataSource){
         const data = [];
-        if(dataSource != []){
+        if(dataSource != [] && dataSource){
             for (let i = 0; i < dataSource.length; i++) {
                 data.push({
                     title: dataSource[i].title,

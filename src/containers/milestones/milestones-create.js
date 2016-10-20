@@ -15,12 +15,12 @@ const confirm = Modal.confirm;
 class MilestoneCreate extends React.Component {
     constructor(props) {
         super(props);
+        this.projectId = this.props.getProjectInfo.gitlabProject.id;
     }
 
     componentDidMount() {
         if (this.props.getProjectInfo) {
-            const projectId = this.props.getProjectInfo.gitlabProject.id;
-            this.props.getMilestones(projectId, 1, []);
+            this.props.getMilestones(this.projectId, 1, []);
         } else {
             const {router} = this.context;
             router.goBack();
@@ -44,6 +44,7 @@ class MilestoneCreate extends React.Component {
             description: '创建成功',
             duration: 2
         });
+        this.props.getMilestones(this.projectId, 1, []);
         this.context.router.goBack();
     }
 
@@ -66,19 +67,11 @@ class MilestoneCreate extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const {form,logInfo } = this.props;
-
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                console.log('formData',formData);
-
-                const due_date2 = new Date(due_date).toLocaleDateString()
-
-                console.log('date',Date.parse(formData.due_date))
-                console.log('date int',due_date);
-                console.log('data fromate',due_date2);
                 const projectId = this.props.getProjectInfo.gitlabProject.id;
                 var gitlabMilestone = formData;
                 gitlabMilestone.project_id= projectId;
@@ -113,24 +106,22 @@ class MilestoneCreate extends React.Component {
             if(milestones.length>0){
                 let lastMilestoneDuedate = milestones[0].gitlabMilestone.due_date;
                 lastMilestoneDuedate = lastMilestoneDuedate+(1 * 24 * 60 * 60 * 1000);
-                lastMilestoneDuedate = new Date(lastMilestoneDuedate).toLocaleDateString();
-                console.log('lastMilestoneDuedate',lastMilestoneDuedate);
                 value = Date.parse(value);
-                value = new Date(value).toLocaleDateString();
-                console.log('value',value);
-                console.log(value < lastMilestoneDuedate);
                 if (!value ) {
                     callback();
                 } else if(value) {
                     setTimeout(() => {
                         if (value < lastMilestoneDuedate) {
-                            callback([new Error('时间需迟于上一里程碑的计划完成时间: '+new Date(milestones[0].gitlabMilestone.due_date).toLocaleDateString())]);
+                            callback([new Error('时间需迟于上一里程碑的计划完成时间:'+new Date(milestones[0].gitlabMilestone.due_date).toLocaleDateString())]);
                         }else {
                             callback();
                         }
                     }, 500);
                 }
-            }
+            }else{
+                callback();}
+        }else{
+            callback();
         }
 
     }
@@ -161,7 +152,7 @@ class MilestoneCreate extends React.Component {
         return(
             <Box title="创建里程碑">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                    <FormItem   {...formItemLayout} label="里程碑名称">
+                    <FormItem   {...formItemLayout} label="名称">
                         <Input {...titleProps} placeholder="请输入里程碑名称" />
                     </FormItem>
                     <FormItem {...formItemLayout} label="描述" >
