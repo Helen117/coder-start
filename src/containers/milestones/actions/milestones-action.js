@@ -23,7 +23,6 @@ export function getMilestones(projectId,page,timeLineData) {
 
 export function getMilestonesIssues(milestonesId,projectId) {
     var path ='/milestone/issues'
-    //var path ='/milestoneDetail'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {

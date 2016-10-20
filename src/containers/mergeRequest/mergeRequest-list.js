@@ -22,11 +22,10 @@ class mergeRequestList extends React.Component {
 
     render(){
         return(
-            <Box title="MR查看">
-                <div style={{marginBottom: 16}}>
+            <div style={{marginTop:15,marginLeft:30}}>
                     <Button className="pull-right" type="primary"  onClick={this.createMergeRequest.bind(this,'add')}>创建MR</Button>
                 </div>
-            </Box>)
+                )
     }
 }
 

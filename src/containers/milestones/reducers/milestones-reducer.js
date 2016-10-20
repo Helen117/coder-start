@@ -12,7 +12,7 @@ import {
 const initialState = {
     items: [],
     loading:false,
-    loadErrors:null,
+    errMessage:null,
     acquireData:false
 };
 
@@ -30,7 +30,7 @@ export default function milestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {items: action.payload,timeLineData:timeLineData, loading: false,acquireData:true});
 
         case ACQUIRE_MILESTONES_ERROR:
-            return {state, loadErrors: action.payload.errorMsg};
+            return {state, errMessage: action.payload.errorMsg};
 
         default:
             return state;

@@ -129,7 +129,6 @@ class App extends React.Component {
     }
 
     render() {
-        console.log("this.props.navpath:",this.props.navpath)
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         if (uid == null){
