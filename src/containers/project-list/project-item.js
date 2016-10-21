@@ -34,10 +34,10 @@ class ProjectItem extends Component {
         }
 
         if(this.props.getProjectInfo){
-                this.setState({
-                    url: this.props.getProjectInfo.gitlabProject.ssh_url_to_repo,
-                });
-            }
+            this.setState({
+                url: this.props.getProjectInfo.gitlabProject.ssh_url_to_repo,
+            });
+        }
     }
 
     componentWillMount(){
@@ -96,9 +96,9 @@ class ProjectItem extends Component {
             //         url: getProjectInfo.gitlabProject.http_url_to_repo,
             //     });
             // }else {
-                this.setState({
-                    url: getProjectInfo.gitlabProject.ssh_url_to_repo,
-                });
+            this.setState({
+                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+            });
             // }
         }
     }
