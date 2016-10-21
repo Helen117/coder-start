@@ -7,7 +7,7 @@
  * Created by william.xu on 2016/9/14
  */
 import React, {PropTypes} from 'react';
-import { Tree, Input } from 'antd';
+import { Tree, Input, Icon } from 'antd';
 
 import { loopAllChildren, flatToHierarchy, getPropValue, labelCompatible } from './util';
 import './index.less';
@@ -37,6 +37,9 @@ export default class TreeFilter extends React.Component {
             const {onSelect} = this.props;
             if (onSelect){
                 const node = {id: selectedNode.key, name: selectedNode.props.title};
+                if (selectedNode.props.title.props && selectedNode.props.title.props.children && selectedNode.props.title.props.children.length == 2){
+                    node.name = selectedNode.props.title.props.children[1].props.children;
+                }
                 if (selectedNode.props.children){
                     node.isLeaf = false;
                 }else{
@@ -63,7 +66,16 @@ export default class TreeFilter extends React.Component {
     highlightTreeNode(treeNode) {
         const value = treeNode.props[labelCompatible('title')];
         const {filterValue} = this.state;
-        return filterValue && value.indexOf(filterValue) > -1;
+        if (filterValue){
+            if (value.props && value.props.children && value.props.children.length == 2){
+                return value.props.children[1].props.children.indexOf(filterValue) > -1;
+            }else{
+                return value.indexOf(filterValue) > -1;
+            }
+        }else{
+            return false;
+        }
+        //return filterValue && value.indexOf(filterValue) > -1;
     }
 
     onExpand(expandedKeys) {
@@ -77,12 +89,14 @@ export default class TreeFilter extends React.Component {
         return data.map((item) => {
             if (item.children && item.children.length>0) {
                 return (
-                    <TreeNode key={item.id} title={item.name}>
+                    //<TreeNode key={item.id} title={item.name}>
+                    <TreeNode key={item.id} title={<span><Icon type="appstore" /><span>{item.name}</span></span>}>
                         {this.getTreeNodes(item.children, filterValue)}
                     </TreeNode>
                 );
             }
-            return <TreeNode key={item.id} title={item.name} />;
+            //return <TreeNode key={item.id} title={item.name} />;
+            return <TreeNode key={item.id} title={<span><Icon type="file-ppt" /><span>{item.name}</span></span>} />;
         });
     }
 

@@ -6,3 +6,21 @@
     margin-left: 150px;
     margin-top: 150px;
 }
+
+.count{
+    border-color: #dcdcdc;
+    color: #313236;
+    display: inline-block;
+    background: white;
+    border-radius: 2px;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 13px;
+    padding: 6px 10px;
+    letter-spacing: .4px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 10px 0 1px;
+}
