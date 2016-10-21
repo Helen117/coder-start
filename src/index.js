@@ -94,7 +94,7 @@ ReactDOM.render(
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>
-                    </Route>
+                </Route>
             </Router>
         </Provider>
         {process.env.NODE_ENV=='development'?(<DevTools store={store}/>):(<div/>)}

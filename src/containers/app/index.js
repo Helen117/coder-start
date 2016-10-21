@@ -99,6 +99,7 @@ class App extends React.Component {
                 path_return = [key_return];
             }
         }
+
         if(nextProps.navpath.length == 0 && navi_key_return){//登录，刷新时更新面包屑
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
@@ -145,7 +146,7 @@ class App extends React.Component {
                 <Sidebar uid={uid} clickSideBar={this.clickSideBar.bind(this)}
                          isOpened={this.state.isOpened}
                          sideMenuClick={this.sideMenuClick.bind(this)}
-                         />
+                />
                 <Affix>
                     <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
                 </Affix>
