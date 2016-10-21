@@ -22,7 +22,7 @@ export default class IssueList extends Component {
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
         this.context.router.push({
-            pathname: '/project-mgr/issueEdit',
+            pathname: '/issueEdit',
             state: {editType: type, selectedRow}
         });
     }
@@ -31,7 +31,7 @@ export default class IssueList extends Component {
         //this.context.router.replace('/issueNotes');
         //console.log('record:',record);
         this.context.router.push({
-            pathname: '/project-mgr/issueNotes',
+            pathname: '/issueNotes',
             state: {record}
         });
     }
@@ -163,7 +163,7 @@ export default class IssueList extends Component {
 
         return (
             <Box title="问题列表信息" >
-                <Button onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
+                <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
                 <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource(this.props.dataSource)}
                        bordered
                        size="middle"
