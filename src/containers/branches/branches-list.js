@@ -6,7 +6,7 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification} from 'antd';
+import {Button,Table, Modal,notification,Row} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchBranchesData from './actions/fetch-branches-action';
@@ -80,10 +80,9 @@ class branchesList extends React.Component {
         return(
 
             <div style={{margin:15}}>
-                <div>
-                    <Button type="primary"  onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
-
-                </div>
+                <Row>
+                    <Button className="pull-right" type="primary"  onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
+                </Row>
                 <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
@@ -100,7 +99,7 @@ const columns = [{
     title: '分支',
     dataIndex: 'branch',
     key: 'branch',
-    sorter: (a, b) => a.branch - b.branch
+    //sorter: (a, b) => a.branch - b.branch
 }]
 
 branchesList.contextTypes = {
