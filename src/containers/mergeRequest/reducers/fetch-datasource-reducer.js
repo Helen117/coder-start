@@ -29,10 +29,10 @@ export function fetchMergeData(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true});
 
         case FETCH_DATA_SUCCESS:
-            return Object.assign({}, initialState, {milestones: action.payload.milestones,members:action.payload.members,labels:action.payload.labels,fetchErrors: null});
+            return Object.assign({}, initialState, {milestones: action.payload.milestones,members:action.payload.members,labels:action.payload.labels,fetchErrors: null,loading: false});
 
         case FETCH_DATA_ERROR:
-            return Object.assign({}, initialState, {milestones:null,members:null,labels:null, fetchErrors: action.payload.errorMsg});
+            return Object.assign({}, initialState, {milestones:null,members:null,labels:null, fetchErrors: action.payload.errorMsg,loading: false});
 
         default:
             return state;
@@ -51,10 +51,10 @@ export function fetchMergeBranchData(state = initialState, action = {}) {
                 if(action.payload.length > 1){
                     isMR = true;
                 }
-                return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null, isMR:isMR});
+                return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null, isMR:isMR,loading: false});
 
             case FETCH_TARGET_PROJECT_ERROR:
-                return Object.assign({}, initialState, {mergeBranch:null, fetchErrors: action.payload.errorMsg});
+                return Object.assign({}, initialState, {mergeBranch:null, fetchErrors: action.payload.errorMsg,loading: false});
 
             default:
                 return state;
@@ -68,10 +68,10 @@ export function fetchIssuesData(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true,Issues:[], loadIssuesErrors:null});
 
         case FETCH_ISSUES_DATA_SUCCESS:
-            return Object.assign({}, initialState, {Issues: action.payload, loading: false, loadIssuesErrors:null });
+            return Object.assign({}, initialState, {Issues: action.payload, loading: false, loadIssuesErrors:null, loading: false });
 
         case FETCH_ISSUES_DATA_ERROR:
-            return {state, loadIssuesErrors: action.payload.errorMsg, loading: false, Issues:[] };
+            return {state, loadIssuesErrors: action.payload.errorMsg, loading: false, Issues:[], loading: false };
 
         default:
             return state;
