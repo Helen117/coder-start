@@ -80,7 +80,9 @@ class mergeRequestList extends React.Component {
                     mrTitle: mrList[i].title,
                     author: mrList[i].author.name,
                     assignee:mrList[i].assignee,
-                    mrPath:mrList[i].source_project_id+'/'+mrList[i].source_branch+' to '+ mrList[i].project_id+'/'+mrList[i].target_branch,
+                    mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
+
+                    //mrPath:mrList[i].source_project_id+'/'+mrList[i].source_branch+' to '+ mrList[i].project_id+'/'+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
                     state:mrList[i].state
