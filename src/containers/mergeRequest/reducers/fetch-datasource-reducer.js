@@ -44,7 +44,7 @@ export function fetchMergeBranchData(state = initialState, action = {}) {
         switch (action.type){
             //获取target project 信息
             case FETCH_TARGET_PROJECT_PENDING:
-                return Object.assign({}, initialState, {loading: true});
+                return Object.assign({}, initialState, {loading: true, isMR:true});
 
             case FETCH_TARGET_PROJECT_SUCCESS:
                 let isMR = false;

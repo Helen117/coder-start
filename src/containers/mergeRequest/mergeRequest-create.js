@@ -31,7 +31,7 @@ class createMergeRequest extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
-        if(isMR == false){
+        if(this.props.isMR != isMR && isMR==false){
             this.errRoot();
         }
         if (this.props.inserted != inserted && inserted){
@@ -192,7 +192,7 @@ class createMergeRequest extends Component {
                     <Row>
                         <Col span="9">
                             <FormItem  labelCol={{ span: 16 }} wrapperCol={{ span: 4 }} label="源分支">
-                                <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath})} >
+                                <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath,rules: [{ required: true, message: '请选择源分支' }]})} >
                                     <Option key={sourcePath}>{sourcePath}</Option>
                                 </Select>
                             </FormItem>
@@ -220,7 +220,7 @@ class createMergeRequest extends Component {
                                <Select disabled={true}
                                        style={{ width: 100,marginLeft:5 }}
                                        {...getFieldProps('target_branch',
-                                           {initialValue: initialTargetBranch, rules:[{required:true,message:'找不到与之对应的源分支'}]})} >
+                                           {initialValue: initialTargetBranch, rules:[{required:true,message:'没有与其对应的目标分支'}]})} >
                                     {targetBranch}
                                 </Select>
                             </FormItem>
@@ -230,7 +230,8 @@ class createMergeRequest extends Component {
                     <FormItem {...formItemLayout}  label="MR名称" >
                         <Input placeholder="请输入MR名称"
                                {...getFieldProps('title',
-                                   {rules:[{ required:true,message:'请填写MR名称'},{ max:30,message:'MR名称长度最大30个字符'}]})} />
+                                   {rules:[{ required:true,message:'请填写MR名称'},
+                                       { max:30,message:'MR名称长度最大30个字符'}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout} label="MR描述" >
                         <Input type="textarea"
@@ -279,9 +280,9 @@ createMergeRequest.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        isMR: state.fetchMergeBranchData.isMR,
         milestones:state.fetchMergeData.milestones,
         labels:state.fetchMergeData.labels,
+        isMR: state.fetchMergeBranchData.isMR,
         mergeBranch : state.fetchMergeBranchData.mergeBranch,
         loginInfo:state.login.profile,
         getProjectInfo:state.getProjectInfo.projectInfo,

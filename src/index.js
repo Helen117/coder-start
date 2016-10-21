@@ -27,7 +27,7 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 
-import  {AddIssue,IssueNotes,IssueList} from './containers/issues'
+import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
@@ -80,11 +80,12 @@ ReactDOM.render(
                             <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
-                            <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
-                            <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
+                            <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
                         </Route>
+                        <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
+                        <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
@@ -93,7 +94,7 @@ ReactDOM.render(
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
                     <Route path="*" component={NotFound}/>
-                    </Route>
+                </Route>
             </Router>
         </Provider>
         {process.env.NODE_ENV=='development'?(<DevTools store={store}/>):(<div/>)}
