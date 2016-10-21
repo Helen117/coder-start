@@ -98,6 +98,8 @@ import * as issue from './actions/issue-action';
         const { issue } = this.props;
         const record = this.props.location.state.record;
         //console.log('issue:',issue.issueNotes);
+        const assign =record.assignee_name?record.assignee_name:'XXX';
+
         const list =issue&&issue.issueNotes?issue.issueNotes.map(data => <li key={data.id}>
             <div className={styles.notes_list} >
                 <span>{data.author.name}@{data.author.username} {new Date(parseInt(data.created_at)).toLocaleString()}</span>
@@ -112,9 +114,12 @@ import * as issue from './actions/issue-action';
                 <div>
                     <div className={styles.notes_header}>
                         <span style={this.state.color}>{record.state}</span>
-                        <strong> Issue #{record.id}</strong>
-                        <span> opened {record.created_at} by </span>
-                        <strong>{record.author_name}</strong>
+                        <strong> {record.author_name}</strong>
+                        <span>在{record.created_at}创建了问题</span>
+                        <strong> #{record.id}</strong>
+                        <br/>
+                        <strong style={{marginLeft:56}}>{assign}</strong>
+                        <span>目前负责此问题</span>
                     </div>
 
                     <div className={styles.notes_body}>
