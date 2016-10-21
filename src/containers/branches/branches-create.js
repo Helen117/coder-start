@@ -27,15 +27,15 @@ class createBranches extends Component {
         }else{
             const {router} = this.context;
             router.goBack();
-            this.errChoosePro();
+            this.errChosePro();
         }
 
     }
 
-    errChoosePro(){
+    errChosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目！',
+            description:'请先在“代码管理“中选择一个项目！',
             duration: 2
         });
     }
@@ -44,8 +44,9 @@ class createBranches extends Component {
         notification.success({
             message: '创建成功',
             description: '',
-            duration: 2
+            duration: 1
         });
+        this.props.fetchBranchesData(this.props.getProjectInfo.gitlabProject.id);
         this.context.router.goBack();
     }
 
@@ -71,11 +72,18 @@ class createBranches extends Component {
         if (!value) {
             callback();
         } else {
+            let isExit  = false;
             setTimeout(() => {
-                for( let i=0; i<branchesData.branch.length;i++){
-                    if (value == branchesData.branch[i]) {
-                        callback([new Error('该分支已存在')]);
+                for( let i=0; i<=branchesData.branch.length;i++){
+                    if (value === branchesData.branch[i]) {
+                        isExit = true;
+                        break;
                     }
+                }
+                if(isExit == true){
+                    callback([new Error('该分支已经存在')]);
+                }else {
+                    callback();
                 }
             }, 500);
         }
@@ -125,7 +133,7 @@ class createBranches extends Component {
         const newBranchProps = getFieldProps('new_branch', {
             rules: [
                 { required: true,message: '请输入分支名称', },
-                { max: 30,message: '分支名称需在30字符以内'},
+                {max: 30,message: '分支名称需在30字符以内'},
                 { validator: this.titleExists.bind(this) },
             ],
         });
@@ -139,11 +147,11 @@ class createBranches extends Component {
             <Box title={editType == 'add' ? '添加分支' : '修改分支'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
-                    <FormItem {...formItemLayout}  label="new_branch" >
+                    <FormItem {...formItemLayout}  label="新分支名称" >
                         <Input placeholder="请输入分支名称" {...newBranchProps} />
                     </FormItem>
 
-                    <FormItem {...formItemLayout}  label="Create from" >
+                    <FormItem {...formItemLayout}  label="源分支名称" >
                         <Select  {...getFieldProps('ref_branch',{initialValue: initialBranch})} >
                             {branches}
                         </Select>

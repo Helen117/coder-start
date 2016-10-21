@@ -54,7 +54,6 @@ const validate = function (next, replace, callback) {
     //const isLoggedIn = getCookie('uid');
     callback();
 };
-
 const root = document.createElement('div');
 document.body.appendChild(root);
 
@@ -84,12 +83,12 @@ ReactDOM.render(
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                             <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
+                            <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
+                            <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
                         </Route>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
-                        <Route name="createMergeRequest" breadcrumbName="创建代码合并请求" path="createMergeRequest" component={createMergeRequest}/>
-                        <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
-                        <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
+                        <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
                     </Route>
                     <Route path="register" component={Register}/>

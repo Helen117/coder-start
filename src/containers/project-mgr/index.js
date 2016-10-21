@@ -84,11 +84,11 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
-        if(node.id.indexOf("_p") < 0){
+        if(node.id.indexOf("_p") < 0){//点击项目组节点
             this.props.getGroupMembers(node.id);
             const groupInfo = this.searchGroupByGroupId(node.id, list);
             this.props.getGroupInfo(groupInfo, node.id);
-        }else{
+        }else{//点击项目节点
             var node_p = node.id.replace("_p","");
             const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
             this.props.getProjectInfo(projectInfo);
@@ -97,7 +97,7 @@ class ProjectMgr extends React.Component{
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
         }
-        if(currentOneInfo){
+        if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/project-mgr'){
                     if(node.id.indexOf("_p") < 0){

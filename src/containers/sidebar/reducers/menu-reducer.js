@@ -61,7 +61,9 @@ export default function menu(state = initialState, action = {}) {
             }
             return Object.assign({}, state, {
                 currentIndex: action.payload.key * 1,
-                navpath: navpath
+                navpath: navpath,
+                //是否是点击侧边导航
+                is_menuclick:action.payload.is_menuclick
             });
         case LOGOUT:
             return initialState;
