@@ -42,6 +42,14 @@ class branchesList extends React.Component {
         }
     }
 
+    errCallback(errMessage){
+        notification.error({
+            message: '数据加载失败',
+            description: errMessage,
+            duration: 2
+        });
+    }
+
     errChosePro(){
         notification.error({
             message: '未选择项目',
