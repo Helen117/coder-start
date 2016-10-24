@@ -179,12 +179,24 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
-                        <Select style={{ width: 200 }}  {...getFieldProps('assignee.id',{rules:[{required:true,message:'请选择指派的人'}]})} >
+                        <Select showSearch
+                                showArrow={false}
+                                placeholder="请选择人员"
+                                optionFilterProp="children"
+                                notFoundContent="无法找到"
+                                style={{ width: 200 }}
+                                {...getFieldProps('assignee.id',{rules:[{required:true,message:'请选择指派的人'}]})} >
                             {assignee}
                         </Select>
                     </FormItem>
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select  style={{ width: 200 }} {...getFieldProps('milestone.id')} >
+                        <Select  showSearch
+                                 showArrow={false}
+                                 placeholder="请选择人员"
+                                 optionFilterProp="children"
+                                 notFoundContent="无法找到"
+                                 style={{ width: 200 }}
+                                 {...getFieldProps('milestone.id')} >
                             {mileStoneOptions}
                         </Select>
                         <br/>
@@ -192,7 +204,8 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题标签" >
-                        <Select multiple style={{ width: 200 }} {...getFieldProps('labels')} >
+                        <Select multiple
+                                style={{ width: 200 }} {...getFieldProps('labels')} >
                             {label}
                         </Select>
                         <br/>

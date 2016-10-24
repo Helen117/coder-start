@@ -173,6 +173,7 @@ class ProjectItem extends Component {
                 return (
                     <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                        <span className={styles.arrow}></span>
                         <a className={styles.count}>{this.props.getProjectInfo.gitlabProject.forks_count}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>

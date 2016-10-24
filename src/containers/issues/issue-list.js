@@ -2,11 +2,12 @@
  * Created by helen on 15016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table ,Button,Input,notification,Form,Select,DatePicker,Col,Row ,Icon} from 'antd';
+import { Table ,Button,Input,notification,Form,Select,DatePicker,Col,Row ,Icon } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
+import * as getAllUser from '../register/actions/register-action'
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
 
@@ -22,9 +23,10 @@ class ProjectIssueList extends Component {
     }
 
     componentWillMount() {
-        const {actions,projectInfo} = this.props;
+        const {actions,projectInfo,getUserAction} = this.props;
         if(projectInfo) {
             actions.fetchDataSource(projectInfo.gitlabProject.id);
+            getUserAction.getAllUser();
             actions.getIssueList(projectInfo.gitlabProject.id);
         }else{
             const {router} = this.context;
@@ -89,6 +91,8 @@ class ProjectIssueList extends Component {
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
+        const userInfo = this.props.user?this.props.user.map(data => <Option key={data.username}>{data.name}</Option>):[];
+
         return (
             <div><Icon type="shrink" onClick={this.onToggle.bind(this)} style={{float:'right',fontSize:18, margin:5}}/>
                 <Box title="查询条件">
@@ -96,12 +100,22 @@ class ProjectIssueList extends Component {
                     <Row gutter={16}>
                         <Col sm={8}>
                             <FormItem label="里程碑" {...formItemLayout} >
-                                <Select {...getFieldProps('milestone')}>
+                                <Select showSearch
+                                        showArrow={false}
+                                        placeholder="请选择人员"
+                                        optionFilterProp="children"
+                                        notFoundContent="无法找到"
+                                        {...getFieldProps('milestone')}>
                                     {mileStoneOptions}
                                 </Select>
                             </FormItem>
                             <FormItem label="修复人" {...formItemLayout} >
-                                <Select {...getFieldProps('assignee')}>
+                                <Select showSearch
+                                        showArrow={false}
+                                        placeholder="请选择人员"
+                                        optionFilterProp="children"
+                                        notFoundContent="无法找到"
+                                        {...getFieldProps('assignee')}>
                                     {assignee}
                                 </Select>
                             </FormItem>
@@ -115,7 +129,12 @@ class ProjectIssueList extends Component {
                         </Col>
                         <Col sm={8}>
                             <FormItem label="问题标签" {...formItemLayout}>
-                                <Select {...getFieldProps('label')}>
+                                <Select showSearch
+                                        showArrow={false}
+                                        placeholder="请选择人员"
+                                        optionFilterProp="children"
+                                        notFoundContent="无法找到"
+                                        {...getFieldProps('label')}>
                                     {label}
                                 </Select>
                             </FormItem>
@@ -128,8 +147,13 @@ class ProjectIssueList extends Component {
                         </Col>
                         <Col sm={8}>
                             <FormItem label="创建人"{...formItemLayout}>
-                                <Select {...getFieldProps('author')}>
-                                    {assignee}
+                                <Select showSearch
+                                        showArrow={false}
+                                        placeholder="请选择人员"
+                                        optionFilterProp="children"
+                                        notFoundContent="无法找到"
+                                        {...getFieldProps('author_name')}>
+                                    {userInfo}
                                 </Select>
                             </FormItem>
                         </Col>
@@ -174,12 +198,14 @@ function mapStateToProps(state) {
         projectInfo:state.getProjectInfo.projectInfo,
         groupInfo:state.getGroupInfo.groupInfo,
         loginInfo:state.login.profile,
+        user:state.register.users,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(issue, dispatch)
+        actions: bindActionCreators(issue, dispatch),
+        getUserAction : bindActionCreators(getAllUser, dispatch),
     }
 }
 
