@@ -2,7 +2,7 @@
  * Created by helen on 15016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table ,Button,Input,notification,Form,Select,DatePicker,Col,Row } from 'antd';
+import { Table ,Button,Input,notification,Form,Select,DatePicker,Col,Row ,Icon} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -18,6 +18,7 @@ class ProjectIssueList extends Component {
 
     constructor(props) {
         super(props);
+        this.state ={formSearch:{'display':''}};
     }
 
     componentWillMount() {
@@ -67,6 +68,14 @@ class ProjectIssueList extends Component {
         console.log('查询条件：',data);
     }
 
+    onToggle(){
+        if(!this.state.formSearch.display){
+            this.setState({formSearch:{'display':'none'}});
+        }else{
+            this.setState({formSearch:{'display':''}});
+        }
+    }
+
 
     render() {
         const { getFieldProps } = this.props.form;
@@ -81,8 +90,9 @@ class ProjectIssueList extends Component {
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
         return (
-            <div><Box title="查询条件">
-                <Form horizontal className={styles.ant_search_form} >
+            <div><Icon type="shrink" onClick={this.onToggle.bind(this)} style={{float:'right',fontSize:18, margin:5}}/>
+                <Box title="查询条件">
+                <Form horizontal style={this.state.formSearch} className={styles.ant_search_form} >
                     <Row gutter={16}>
                         <Col sm={8}>
                             <FormItem label="里程碑" {...formItemLayout} >
@@ -134,7 +144,8 @@ class ProjectIssueList extends Component {
                 </Box>
 
                 <IssueList  dataSource={this.props.issueList}
-                          loading={this.props.loading}
+                            loading={this.props.loading}
+                            loginInfo={this.props.loginInfo}
                 >
                 </IssueList>
             </div>
@@ -162,6 +173,7 @@ function mapStateToProps(state) {
         loading:state.issue.loading,
         projectInfo:state.getProjectInfo.projectInfo,
         groupInfo:state.getGroupInfo.groupInfo,
+        loginInfo:state.login.profile,
     };
 }
 

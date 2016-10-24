@@ -21,10 +21,20 @@ export default class IssueList extends Component {
 
     editIssue(type, selectedRow) {
         //console.log('window.location:',window.location);
-        this.context.router.push({
-            pathname: '/issueEdit',
-            state: {editType: type, selectedRow}
-        });
+        //查看我的问题不选择项目时不能新增问题
+        if(this.props.state=='myIssue' && !this.props.projectInfo){
+            notification.error({
+                message: '未选择项目',
+                description:'请先在“代码管理“中选择一个项目！',
+                duration: 2
+            });
+        }else{
+            this.context.router.push({
+                pathname: '/issueEdit',
+                state: {editType: type, selectedRow}
+            });
+        }
+
     }
 
     issueNotes(record) {
@@ -50,7 +60,6 @@ export default class IssueList extends Component {
     //获取表格的数据源
     getDataSource(issueList){
         //console.log('issueList:',issueList);
-
         const data = [];
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
@@ -68,6 +77,7 @@ export default class IssueList extends Component {
                     title: issueList[i].title,
                     description:issueList[i].description,
                     author_name: issueList[i].author?issueList[i].author.name:null,
+                    author_username: issueList[i].author?issueList[i].author.username:null,
                     assignee_name: assign_name,
                     assign_id :assign_id,
                     milestoneTitle:milestoneTitle,
@@ -77,6 +87,7 @@ export default class IssueList extends Component {
                     due_date:this.getTime(issueList[i].due_date),
                     labels: labels,
                     state: issueList[i].state,
+                    login_username: this.props.loginInfo.username,
                 });
 
                 //过滤创建人
@@ -265,7 +276,6 @@ IssueList.prototype.issueListColumns = (self)=>[
     title: '问题创建时间',
     dataIndex: 'created_at',
     width: '9%',
-    sorter: (a, b) => new Date(parseInt(a.created_at)) > new Date(parseInt(b.created_at)),
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',
@@ -291,8 +301,12 @@ IssueList.prototype.issueListColumns = (self)=>[
     dataIndex: 'key',
     width: '13%',
     render: (text, record, index)=> {
+        let style={'display':''};
+        if(record.author_username!= record.login_username){
+            style={'display':'none'}
+        }
         return <div>
-            <a onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+            <a style ={style} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
             <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
         </div>;
     }
