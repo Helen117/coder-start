@@ -1,5 +1,4 @@
 import React,{ PropTypes } from 'react';
-import InputPage from '../../components/input-page';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';

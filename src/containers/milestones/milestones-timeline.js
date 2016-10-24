@@ -22,9 +22,6 @@ class Milestones extends React.Component {
     componentDidMount() {
         if (this.props.getProjectInfo ) {
             const projectId = this.props.getProjectInfo.gitlabProject.id;
-            console.log('milestoneProId',this.props.milestoneProId);
-            console.log('projectId',projectId);
-
             if(!this.props.timeLineData || this.props.milestoneProId!=projectId && this.props.timeLineData){
                 this.props.getMilestones(projectId, this.page, this.timeLineData);
                 this.props.putProIdToState(projectId);

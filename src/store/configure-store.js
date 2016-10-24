@@ -27,6 +27,8 @@ import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-re
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
+import fetchProMsg from '../containers/virtual-group/reducers/fetch-project-msg-reducer';
+import createVirtualGroup from '../containers/virtual-group/reducers/virtual-group-create-reducers'
 
 const reducer = combineReducers({
     login,
@@ -55,7 +57,9 @@ const reducer = combineReducers({
     createMr,
     fetchBranches,
     createBranch,
-    getMenuBarInfo
+    getMenuBarInfo,
+    fetchProMsg,
+    createVirtualGroup
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
@@ -72,7 +76,7 @@ const enhancer = compose(
 );
 
 export default function configureStore(initialState) {
-    // return createStoreWithMiddleware(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() :f => f);
+    // return createStoreWithMiddleware(reducers, initialState, window.devToolsExtension ? window.devToolsExtension() :f => f);
     return createStore(
         reducer,
         initialState,

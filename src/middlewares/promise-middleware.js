@@ -19,7 +19,7 @@ export default function promiseMiddleware(config = {}) {
 
             /**
              * Dispatch the first async handler. This tells the
-             * reducer that an async action has been dispatched.
+             * reducers that an async action has been dispatched.
              */
             next({
                 type: `${type}_${PENDING}`,
