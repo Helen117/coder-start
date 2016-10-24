@@ -21,6 +21,7 @@ class MenuBar extends React.Component {
             currentMenuOne:"",
             currentMenuTwo:"",
             refreshMenuOne:false,
+            windowLocation:""
         }
     }
 
@@ -100,29 +101,44 @@ class MenuBar extends React.Component {
                 }else{//刷新、返回操作更新顶部导航
                     //根据url找到当前页面顶部导航的selectKeys
                     var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,window.location.pathname);
+                    /*console.log("window.location.pathname:",window.location.pathname)
+                    console.log("menuOneKey:",menuOneKey)
+                    console.log("menuTwoKey:",menuTwoKey)*/
                     var oneKey_return,twoKey_return;
-                    oneKey_return = menuOneKey;
-                    twoKey_return = menuTwoKey;
                     if(!menuOneKey && !menuTwoKey){//新建等一些操作，url在menu中找不到，截取url中前两个"/"之间的路径
-                        var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
-                        var pathName_temp = window.location.pathname;
-                        pathName_temp = pathName_temp.substr(0,secondIndex);
-                        if(pathName_temp){
-                            var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData, pathName_temp);
-                            oneKey_return = menuOneKey;
-                            twoKey_return = menuTwoKey;
-                        }else{
-                            if(currentTwo.length != 0){
-                                oneKey_return = currentOne[0];
-                                twoKey_return = currentTwo[0];
-                            }else if(currentOne.length != 0 && currentTwo.length == 0){
-                                oneKey_return = currentOne[0];
-                                twoKey_return = "";
-                            }else if(currentOne.length == 0 && currentTwo.length == 0){
+                        /*console.log("currentOne:",currentOne)
+                        console.log("currentTwo:",currentTwo)*/
+                        if(currentTwo.length != 0){
+                            oneKey_return = currentOne[0];
+                            twoKey_return = currentTwo[0];
+                            //console.log("twoKey_return-2:",twoKey_return)
+                        }else if(currentOne.length != 0 && currentTwo.length == 0){
+                            oneKey_return = currentOne[0];
+                            twoKey_return = "";
+                            //console.log("twoKey_return-3:",twoKey_return)
+                        }else if(currentOne.length == 0 && currentTwo.length == 0){
+                            var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
+                            var pathName_temp = window.location.pathname;
+                            pathName_temp = pathName_temp.substr(0,secondIndex);
+                            //window.location.href=pathName_temp;
+                            //console.log("pathName_temp-00:",pathName_temp)
+                            //console.log("window.location.pathname-pp:",window.location.pathname)
+                            if(pathName_temp){
+                                var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData, pathName_temp);
+                                oneKey_return = menuOneKey;
+                                twoKey_return = menuTwoKey;
+                                /*this.setState({
+                                    window
+                                })*/
+                                //console.log("twoKey_return-1-00:",twoKey_return)
+                            }else{
                                 oneKey_return = "";
                                 twoKey_return = "";
                             }
                         }
+                    }else{
+                        oneKey_return = menuOneKey;
+                        twoKey_return = menuTwoKey;
                     }
                     this.setState({
                         refreshMenuOne:true,

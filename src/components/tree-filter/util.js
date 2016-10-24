@@ -24,6 +24,9 @@ export function getPropValue(child, prop) {
     if (prop === 'value') {
         return getValuePropValue(child);
     }
+    if (child.props.title.props && child.props.title.props.children && child.props.title.props.children.length == 2){
+        return child.props.title.props.children[1].props.children;
+    }
     return child.props[prop];
 }
 

@@ -16,6 +16,7 @@ export function fetchSourceProData(projectId) {
         }
     }
 }
+
 export function fetchMergeBranchData(projectId) {
     return {
         type: 'FETCH_TARGET_PROJECT',
