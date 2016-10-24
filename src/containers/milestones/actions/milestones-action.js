@@ -1,7 +1,7 @@
 /**
  * Created by zhaojp on 2016/9/14.
  */
-import {ACQUIRE_MILESTONES,ACQUIRE_MILESTONES_DETAIL} from '../constants/milestones-action-types';
+import {ACQUIRE_MILESTONES,ACQUIRE_MILESTONES_DETAIL,PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
 export function getMilestones(projectId,page,timeLineData) {
@@ -9,7 +9,7 @@ export function getMilestones(projectId,page,timeLineData) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:timeLineData,
+        meta:{timeLineData,projectId},
         payload: {
             promise: api.post(path, {
                 params: {
@@ -33,5 +33,12 @@ export function getMilestonesIssues(milestonesId,projectId) {
                 }
             })
         }
+    }
+}
+
+export function putProIdToState(projectId) {
+    return {
+        type: PUT_MILESTONES_PROID,
+        data: projectId
     }
 }

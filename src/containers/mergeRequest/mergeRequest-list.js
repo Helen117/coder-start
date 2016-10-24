@@ -117,7 +117,7 @@ const columns = [{
     title: 'MR名称',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
-    width:'10%'
+    width:'30%'
 },{
     title: '申请人',
     dataIndex: 'author',
@@ -132,7 +132,7 @@ const columns = [{
     title: 'MR路径',
     dataIndex: 'mrPath',
     key: 'mrPath',
-    width:'30%'
+    width:'10%'
 },{
     title: '创建时间',
     dataIndex: 'created_at',

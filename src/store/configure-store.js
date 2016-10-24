@@ -7,7 +7,7 @@ import DevTools from '../tools/ReduxDevTools';
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
-import milestones from '../containers/milestones/reducers/milestones-reducer';
+import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
 import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
@@ -32,6 +32,7 @@ const reducer = combineReducers({
     login,
     menu,
     milestones,
+    putMilestonesProId,
     getGroupTree,
     createMilestones,
     createGroup,

@@ -7,7 +7,7 @@ import {Timeline,Button,Row,Col,Progress,notification,BackTop} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getMilestones} from './actions/milestones-action';
+import {getMilestones,putProIdToState} from './actions/milestones-action';
 import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
@@ -22,11 +22,13 @@ class Milestones extends React.Component {
     componentDidMount() {
         if (this.props.getProjectInfo ) {
             const projectId = this.props.getProjectInfo.gitlabProject.id;
-            if(!this.props.timeLineData){
+            console.log('milestoneProId',this.props.milestoneProId);
+            console.log('projectId',projectId);
+
+            if(!this.props.timeLineData || this.props.milestoneProId!=projectId && this.props.timeLineData){
                 this.props.getMilestones(projectId, this.page, this.timeLineData);
-            }/*else if(this.props.timeLineData[0].gitlabMilestone.project_id != projectId){
-                this.props.getMilestones(projectId, this.page, this.timeLineData);
-            }*/
+                this.props.putProIdToState(projectId);
+            }
         } else {
             const {router} = this.context;
             router.goBack();
@@ -44,6 +46,7 @@ class Milestones extends React.Component {
             this.page =1;
             this.timeLineData = [];
             this.props.getMilestones(nextProId,this.page,this.timeLineData);
+            this.props.putProIdToState(nextProId);
         }
         //点击查看更多无新数据时提醒
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page > 1 && acquireData){
@@ -130,12 +133,14 @@ function mapStateToProps(state) {
         loading: state.milestones.loading,
         errMessage: state.milestones.errMessage,
         getProjectInfo: state.getProjectInfo.projectInfo,
+        milestoneProId: state.putMilestonesProId.milestoneProId,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getMilestones: bindActionCreators(getMilestones, dispatch),
+        putProIdToState: bindActionCreators(putProIdToState, dispatch),
     }
 }
 
