@@ -2,7 +2,7 @@
  * Created by helen on 2016/9/14.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message} from 'antd';
+import { Form, Input, Button, Select,message,Tooltip } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -11,7 +11,7 @@ import * as register from './actions/register-action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const userName =[];
+// const userName =[];
 message.config({
     top: 100,
     duration: 2,
@@ -24,18 +24,22 @@ class Register extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
+
     // componentWillMount(){
     //     const { actions } = this.props;
-    //     actions.userExists();
+    //     actions.getAllUser();
     // }
+
     componentWillReceiveProps(nextProps) {
         const result = nextProps.registerState.registerResult;
         const error = nextProps.registerState.errors;
         const registering = nextProps.registerState.registering;
-        // const userExists = nextProps.registerState.userExists;
 
-        // if(userExists && this.props.registerState.userExists==null) {
-        //     userName.push(nextProps.registerState.userExists.username);
+        // const user = nextProps.registerState.users;
+        // if(userName&&userName.length<=0 && this.props.registerState.users) {
+        //     for(var i =0;i<user.length;i++){
+        //         userName.push(user[i].username);
+        //     }
         // }
 
         if(error&& error != this.props.registerState.errors){
@@ -48,6 +52,7 @@ class Register extends Component{
     }
 
     userExists(rule, value, callback) {
+
         var reg = /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/;
         if (!value) {
             callback();
@@ -57,13 +62,14 @@ class Register extends Component{
             }else {
                 callback();
             }
-            // console.log('userName:',userName);
+
+            // console.log('user:',userName);
             // if(!(userName.length>0)){
             //     callback();
             // }
             // for(var i =0;i<userName.length;i++){
             //     if (value == userName[i]) {
-            //         callback([new Error('抱歉，该用户名已被占用。')]);
+            //         callback(new Error('抱歉,该用户名已被占用!'));
             //     } else {
             //         callback();
             //     }
@@ -71,6 +77,19 @@ class Register extends Component{
 
         }
 
+    }
+
+    checkEmail(rule, value, callback){
+        var reg = /^[a-z0-9_\.\-]*$/;
+        if (!value) {
+            callback();
+        } else {
+            if (!reg.test(value)) {
+                callback('请输入正确的邮箱！');
+            } else {
+                callback();
+            }
+        }
     }
 
     // handleChange(value) {
@@ -137,7 +156,7 @@ class Register extends Component{
                         <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
                     </FormItem>
                     <FormItem {...formItemLayout}  label="邮箱" >
-                        <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'邮箱不能为空'}]})} addonAfter={selectAfter}/>
+                        <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})} addonAfter={selectAfter}/>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="密码" >
@@ -145,18 +164,20 @@ class Register extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="ssh key" >
-                        <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="1、下载Git-Bash;
+                        <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                        <Tooltip placement="right" title="1、下载Git-Bash;
                         2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
-                        3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来." rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
-                        <a href="/assets/tool/Git-Bash.exe">Git-Bash 下载</a>
+                        3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来.">
+                            <a href="/assets/tool/Git-Bash.exe" >Git-Bash 下载</a>
+                        </Tooltip>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="申请角色" >
-                        <Select id="role"  {...getFieldProps('role',{initialValue:'developer',rules:[{required:true,message:'请选择申请角色'}]})} >
+                        <Select id="role"  {...getFieldProps('role',{initialValue:'developer',rules:[{required:true,message:'请选择申请的角色'}]})} >
                             <Option value="tester">测试人员</Option>
                             <Option value="developer">开发人员</Option>
                             <Option value="compiler" >BM</Option>
-                            <Option value="master">负责人</Option>
+                            <Option value="projectManager">项目经理</Option>
                         </Select>
                     </FormItem>
 

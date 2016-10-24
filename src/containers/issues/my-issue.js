@@ -41,6 +41,9 @@ class MyIssueList extends Component {
         return (
             <IssueList  dataSource={this.props.issueList}
                         loading={this.props.loading}
+                        projectInfo={this.props.projectInfo}
+                        state="myIssue"
+                        loginInfo={this.props.loginInfo}
             >
             </IssueList>
         )
