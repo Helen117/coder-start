@@ -24,3 +24,34 @@
     vertical-align: middle;
     margin: 0 10px 0 1px;
 }
+
+.arrow:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    left: 110px;
+    top:8%;
+    margin-top: -6px;
+    border-width: 7px 5px 7px 0;
+    border-right-color: #dce0e5;
+    pointer-events: none;
+}
+
+.arrow:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    left: 1px;
+    top:50%;
+    margin-top: -9px;
+    border-width: 10px 7px 10px 0;
+    border-right-color: #fff;
+    pointer-events: none;
+}

@@ -26,7 +26,7 @@ import {UserList, UserDetail} from './containers/user';
 
 import NotFound from './components/page/not-found';
 
-
+import Forks from './containers/fork'
 import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
@@ -93,6 +93,7 @@ ReactDOM.render(
                                 <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
                             </Route>
                         </Route>
+                        <Route name="forks" breadcrumbName="Fork信息" path="forks" component={Forks}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>

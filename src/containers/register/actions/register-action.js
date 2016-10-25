@@ -13,11 +13,12 @@ export function register(message) {
     }
 }
 
-export function userExists() {
+
+export function getAllUser() {
     return {
-        type: 'USEREXISTS',
+        type: 'GET_ALL_USER',
         payload: {
-            promise: api.get('/userExists')
+            promise: api.post('/user/all')
         }
     }
 }

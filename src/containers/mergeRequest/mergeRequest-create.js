@@ -7,6 +7,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as fetchMessageAction from './actions/fetch-datasource-action';
+import fetchMrListData from './actions/mergeRequest-list-action'
 import createMr from './actions/mergeRequest-create-action';
 
 const createForm = Form.create;
@@ -67,6 +68,8 @@ class createMergeRequest extends Component {
             description: '',
             duration: 1
         });
+        console.log('fetchMergeBranchData',this.props.mergeBranch)
+        this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
 
@@ -296,6 +299,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
+        fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         fetchMessage : bindActionCreators(fetchMessageAction,dispatch),
         createMr: bindActionCreators(createMr,dispatch),
     }
