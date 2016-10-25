@@ -102,7 +102,7 @@ class ProjectIssueList extends Component {
                             <FormItem label="里程碑" {...formItemLayout} >
                                 <Select showSearch
                                         showArrow={false}
-                                        placeholder="请选择人员"
+                                        placeholder="请选择里程碑"
                                         optionFilterProp="children"
                                         notFoundContent="无法找到"
                                         {...getFieldProps('milestone')}>
@@ -131,7 +131,7 @@ class ProjectIssueList extends Component {
                             <FormItem label="问题标签" {...formItemLayout}>
                                 <Select showSearch
                                         showArrow={false}
-                                        placeholder="请选择人员"
+                                        placeholder="请选择标签"
                                         optionFilterProp="children"
                                         notFoundContent="无法找到"
                                         {...getFieldProps('label')}>

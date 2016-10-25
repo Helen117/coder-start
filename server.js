@@ -31,13 +31,18 @@ var milestones = milestones_.milestones;
 const milestones_detail_ = require('./mockdata/milestonesDetail');
 var milestoneDetail = milestones_detail_.milestoneDetail;
 
-const group_ = require('./mockdata/group');
+const group_ = require('./mockdata/issueDataSource');
 var dataSource = group_.assign;
 var issueNotes = group_.notes;
 
 const issueList_ =require('./mockdata/issueList');
 var issueList = issueList_.issueList;
 
+const forks =require('./mockdata/forks.json');
+
+const star_list =require('./mockdata/start_list.json');
+
+const userInfo =require('./mockdata/userInfo.json');
 
 const app = express();
 
@@ -139,9 +144,19 @@ app.post('/api/project-mgr/groupTree', function (req, res) {
     res.json(groupTree);
 });
 
+app.post('/gitlab/project/forks', function (req, res) {
+    res.json(forks);
+});
 
-app.post('/gitlab/groups/all', function (req, res) {
+app.post('/gitlab/user/all', function (req, res) {
+    res.json(userInfo);
+});
 
+app.post('/gitlab/project/star-list', function (req, res) {
+    res.json(star_list);
+});
+
+app.post('/gitlab/groups/user', function (req, res) {
     res.json(groupTree);
 });
 

@@ -1,0 +1,8 @@
+.forks_list{
+    position: relative;
+    padding: 16px 10px 11px 25px;
+    border-bottom: 1px solid;
+    border-color: #ececec;
+    background-color: #fdfdfd;
+    font-size: 14px;
+}

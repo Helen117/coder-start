@@ -26,7 +26,7 @@ import {UserList, UserDetail} from './containers/user';
 
 import NotFound from './components/page/not-found';
 
-
+import Forks from './containers/fork'
 import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
@@ -84,6 +84,7 @@ ReactDOM.render(
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
                         </Route>
+                        <Route name="forks" breadcrumbName="Fork信息" path="forks" component={Forks}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
