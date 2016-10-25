@@ -2,60 +2,50 @@
  * Created by helen on 2016/10/9.
  */
 import React, {PropTypes,Component} from 'react';
-import { Input, Button, message} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as fork from '../project-list/actions/fork-project-action';
+import Box from '../../components/box';
+import styles from './index.css';
 
-class Fork extends Component {
+class Forks extends Component {
     constructor(props) {
         super(props);
     }
 
-    componentDidMount() {
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const {forkResult} = nextProps;
-
-        if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
-            PubSub.publish("evtRefreshGroupTree",{});
-        }else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
-            message.error('Fork失败!'+forkResult.errors);
-        }
-
-    }
-
-    fork(){
-        const {actions,projectInfo,loginInfo} = this.props;
-        console.log('actions:',actions);
-        actions.forkProject(projectInfo.projectInfo.gitlabProject.id,loginInfo.username);
+    componentWillMount() {
+        const projectId = this.props.location.state.projectId;
+        const {actions} = this.props;
+        actions.getForks(projectId);
     }
 
     render() {
-        const { projectInfo } = this.props;
-        console.log('projectInfo:',projectInfo);
+        const { forks } = this.props;
+
+        const list =forks?forks.map(data => <li key={data.id}>
+            <div className={styles.forks_list} >
+                <span>{data.author_name}/{data.project_name}</span>
+                <p>
+                    {data.description}
+                </p>
+            </div>
+        </li>):[];
 
         return (
-            <div>
-                <h1>
-                    {projectInfo.projectInfo.name}
-                </h1>
-                <p>
-                    {projectInfo.projectInfo.gitlabProject.description}
-                </p>
-
-                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-            </div>
+            <Box title="Fork信息">
+                <div>
+                    <ul>
+                        {list}
+                    </ul>
+                </div>
+            </Box>
         )
     }
 }
 
 function mapStateToProps(state) {
     return {
-        projectInfo:state.getProjectInfo,
-        loginInfo:state.login.profile,
-        forkResult:state.forkProject
+        forks:state.forkProject.forksInfo
     };
 }
 
@@ -65,4 +55,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Fork);
+export default connect(mapStateToProps,mapDispatchToProps)(Forks);

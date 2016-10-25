@@ -16,3 +16,16 @@ export function forkProject(projectId,username) {
         }
     }
 }
+
+export function getForks(projectId) {
+    return {
+        type: 'GET_FORKS',
+        payload: {
+            promise: api.post('/project/forks', {
+                params: {
+                    projectId: projectId
+                }
+            })
+        }
+    }
+}

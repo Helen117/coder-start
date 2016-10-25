@@ -192,7 +192,7 @@ class AddIssue extends Component{
                     <FormItem {...formItemLayout} label="里程碑" >
                         <Select  showSearch
                                  showArrow={false}
-                                 placeholder="请选择人员"
+                                 placeholder="请选择里程碑"
                                  optionFilterProp="children"
                                  notFoundContent="无法找到"
                                  style={{ width: 200 }}
