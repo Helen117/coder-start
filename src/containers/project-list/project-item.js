@@ -35,12 +35,11 @@ class ProjectItem extends Component {
             this.showProjectItem(node);
         }
 
-        //暂时屏蔽fork信息
-        /*if(this.props.getProjectInfo){
+        if(this.props.getProjectInfo){
             this.setState({
-                url: this.props.getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: this.props.getProjectInfo.ssh_url_to_repo,
             });
-        }*/
+        }
     }
 
     componentWillMount(){
@@ -109,8 +108,8 @@ class ProjectItem extends Component {
         }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
             this.props.getProjectStar(loginInfo.username);
         }
-        //暂时屏蔽fork信息
-        /*const {forkResult,getProjectInfo} = nextProps;
+
+        const {forkResult,getProjectInfo} = nextProps;
 
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
@@ -126,24 +125,24 @@ class ProjectItem extends Component {
         if(getProjectInfo){
             // if(this.state.value=='http'){
             //     this.setState({
-            //         url: getProjectInfo.gitlabProject.http_url_to_repo,
+            //         url: getProjectInfo.http_url_to_repo,
             //     });
             // }else {
             this.setState({
-                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: getProjectInfo.ssh_url_to_repo,
             });
             // }
-        }*/
+        }
     }
 
     fork(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-        actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
+        actions.forkProject(getProjectInfo.id,loginInfo.username);
     }
 
     getForks(){
         const {getProjectInfo} = this.props;
-        const projectId = getProjectInfo.gitlabProject.id;
+        const projectId = getProjectInfo.id;
 
         this.context.router.push({
             pathname: '/forks',
@@ -156,12 +155,12 @@ class ProjectItem extends Component {
         if(value=='ssh'){
             this.setState({
                 value:'ssh',
-                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: getProjectInfo.ssh_url_to_repo,
             });
         }else{
             this.setState({
                 value:'http',
-                url: getProjectInfo.gitlabProject.http_url_to_repo,
+                url: getProjectInfo.http_url_to_repo,
             });
         }
     }
@@ -268,31 +267,18 @@ class ProjectItem extends Component {
                 }];
 
                 return (
-                    <div>
-                        <Row>
-                            <div className={styles.project_list_div}>
-                                <TableView columns={columns(this)}
-                                           dataSource={dataSource}
-                                ></TableView>
-                            </div>
-                        </Row>
-                        <Row>
-                            {this.props.children}
-                        </Row>
-                    </div>
-
-                    /*<div className={styles.project_list_div}>
+                    <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
                         <span className={styles.arrow}></span>
-                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.gitlabProject.forks_count}</a>
+                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forks_count}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
-                        <TableView columns={columns}
+                        <TableView columns={columns(this)}
                                    dataSource={dataSource}
                         ></TableView>
-                    </div>*/
+                    </div>
                 )
             }
             return null;

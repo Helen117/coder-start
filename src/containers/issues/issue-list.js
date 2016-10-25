@@ -25,9 +25,9 @@ class ProjectIssueList extends Component {
     componentWillMount() {
         const {actions,projectInfo,getUserAction} = this.props;
         if(projectInfo) {
-            actions.fetchDataSource(projectInfo.gitlabProject.id);
+            actions.fetchDataSource(projectInfo.id);
             getUserAction.getAllUser();
-            actions.getIssueList(projectInfo.gitlabProject.id);
+            actions.getIssueList(projectInfo.id);
         }else{
             const {router} = this.context;
             router.goBack();
@@ -53,9 +53,9 @@ class ProjectIssueList extends Component {
     componentWillReceiveProps(nextProps) {
         const {actions,projectInfo} = this.props;
 
-        if(projectInfo && projectInfo.gitlabProject.id != nextProps.projectInfo.gitlabProject.id) {
-            actions.getIssueList(nextProps.projectInfo.gitlabProject.id);
-            actions.fetchDataSource(nextProps.projectInfo.gitlabProject.id);
+        if(projectInfo && projectInfo.id != nextProps.projectInfo.id) {
+            actions.getIssueList(nextProps.projectInfo.id);
+            actions.fetchDataSource(nextProps.projectInfo.id);
         }
     }
 

@@ -20,7 +20,7 @@ export function getGroupInfo(groupInfo, selectedNode) {
 }
 
 export function getProjectInfo(projectId) {
-    var path = '/projects/info';
+    var path = '/project/info';
     return {
         type: GET_PROJECT_INFO,
         payload: {
