@@ -37,7 +37,7 @@ class ProjectItem extends Component {
 
         if(this.props.getProjectInfo){
             this.setState({
-                url: this.props.getProjectInfo.ssh_url_to_repo,
+                url: this.props.getProjectInfo.sshUrl,
             });
         }
     }
@@ -129,7 +129,7 @@ class ProjectItem extends Component {
             //     });
             // }else {
             this.setState({
-                url: getProjectInfo.ssh_url_to_repo,
+                url: getProjectInfo.sshUrl,
             });
             // }
         }
@@ -155,7 +155,7 @@ class ProjectItem extends Component {
         if(value=='ssh'){
             this.setState({
                 value:'ssh',
-                url: getProjectInfo.ssh_url_to_repo,
+                url: getProjectInfo.sshUrl,
             });
         }else{
             this.setState({
@@ -195,8 +195,8 @@ class ProjectItem extends Component {
 
     render() {
         if(this.state.itemType == true){//展示项目信息
-            const {list,loginInfo,fetchProjectStar,starList,projectMembers} = this.props;
-            if((fetchProjectStar || false) && (projectMembers.fetchPMStatus || false)){
+            const {list,loginInfo,fetchProjectStar,starList,projectMembers,fetchProjectStatus} = this.props;
+            if((fetchProjectStar || false) && (projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false)){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
                 const columns = (self)=>[
@@ -270,7 +270,7 @@ class ProjectItem extends Component {
                     <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
                         <span className={styles.arrow}></span>
-                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forks_count}</a>
+                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                         </Select>
@@ -305,6 +305,7 @@ function mapStateToProps(state) {
         projectMembers:state.getProjectMembers,
         consernedInfo:state.consernProject.consernedInfo,
         unconsernedInfo:state.unconsernProject.unconsernedInfo,
+        fetchProjectStatus:state.getProjectInfo.fetchProjectStatus
     }
 }
 
