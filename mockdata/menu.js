@@ -131,7 +131,7 @@ module.exports.menu ={
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "虚拟组管理",
-                    "link": "/virtual-group-mr",
+                    "link": "/virtual-group-tree",
                     "description": "",
                     "iconUrl": null,
                     "subMenu": [
@@ -140,7 +140,16 @@ module.exports.menu ={
                             "parentId": 13,
                             "cLevel": 3,
                             "name": "虚拟组",
-                            "link": "/virtual-group-mr",
+                            "link": "/virtual-group-tree",
+                            "description": "",
+                            "iconUrl": null,
+                            "subMenu": []
+                        },{
+                            "id": 15,
+                            "parentId": 13,
+                            "cLevel": 3,
+                            "name": "里程碑",
+                            "link": "/virtual-group-tree/milestones",
                             "description": "",
                             "iconUrl": null,
                             "subMenu": []

@@ -19,7 +19,7 @@ class branchesList extends React.Component {
     componentWillMount() {
         if(this.props.getProjectInfo) {
             if(!this.props.branchesData) {
-                this.props.fetchBranchesData(this.props.getProjectInfo.gitlabProject.id);
+                this.props.fetchBranchesData(this.props.getProjectInfo.id);
             }
         }else{
             const {router} = this.context;
@@ -30,7 +30,7 @@ class branchesList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.getProjectInfo.gitlabProject.id;
+        const thisProId = this.props.getProjectInfo.id;
         const nextProId = nextProps.getProjectInfo.gitlabProject.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){

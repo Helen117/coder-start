@@ -25,6 +25,7 @@ export default class TransferFilter extends React.Component {
         const targetKeys = [];
         const mockData = [];
         const dataSource = this.props.dataSource;
+        console.log('dataSource',dataSource);
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
                 const data = {
@@ -34,6 +35,7 @@ export default class TransferFilter extends React.Component {
                 mockData.push(data);
             }
         }
+        console.log('mockData',mockData);
 
         this.setState({ mockData, targetKeys });
 
@@ -57,7 +59,7 @@ export default class TransferFilter extends React.Component {
                 operations={['添加', '删除']}
                 targetKeys={this.state.targetKeys}
                 onChange={this.handleChange.bind(this)}
-                render={item => `${item.title}-${item.description}`}
+                render={item => `${item.projectName}`}
             />
         );
     }

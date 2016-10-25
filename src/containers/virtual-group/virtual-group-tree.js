@@ -6,9 +6,11 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer } from 'antd';
 import TreeFilter from '../../components/tree-filter';
+import putVirtualGroupToState from './actions/put-virtual-group-into-state-action';
+import fetchVirtualGroupTree from  './actions/fetch-virtual_group_tree_action';
 import 'pubsub-js';
 
-class virtualGroupMsg extends React.Component{
+class virtualGroupTree extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -18,11 +20,9 @@ class virtualGroupMsg extends React.Component{
     }
 
     componentDidMount() {
-        const {loginInfo} =this.props;
-        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
-        const {treeData} = this.props;
-        if (treeData && treeData.length == 0){
-            this.props.getGroupTree(loginInfo.username);
+        const {loginInfo,virtualGroupTree} =this.props;
+        if(!virtualGroupTree) {
+            this.props.fetchVirtualGroupTree(loginInfo.username);
         }
     }
 
@@ -32,28 +32,6 @@ class virtualGroupMsg extends React.Component{
         });
     }
 
-    searchGroupByGroupId(groupId,list){
-        var groupInfo;
-        for(var i=0;i<list.length;i++){
-            if(groupId == list[i].id){
-                groupInfo = list[i];
-                return groupInfo;
-            }
-        }
-    }
-
-    searchGroupByProjectId(projectId,list){
-        var projectInfo,groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                if(projectId == list[i].children[j].gitlabProject.id){
-                    groupInfo = list[i];
-                    projectInfo = list[i].children[j];
-                    return {projectInfo,groupInfo}
-                }
-            }
-        }
-    }
 
     isEmptyObject(obj){
         for(var key in obj){
@@ -63,15 +41,14 @@ class virtualGroupMsg extends React.Component{
     }
 
     onSelectNode(node){
-        const {currentOneInfo, currentTwoInfo} = this.props;
 
+        const {currentOneInfo, currentTwoInfo} = this.props;
+        this.props.putVirtualGroupToState(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
-                if(currentTwoInfo.link == '/project-mgr'){
-                    this.context.router.push({
-                        pathname: currentTwoInfo.link,
-                    });
-                }
+                this.context.router.push({
+                    pathname: currentTwoInfo.link,
+                });
             }
         }else{
                 this.context.router.push({
@@ -81,7 +58,7 @@ class virtualGroupMsg extends React.Component{
     }
 
     render(){
-        const {treeData, loading, currentTwoInfo, selectNodeKey} = this.props;
+        const {virtualGroupTree, loading, currentTwoInfo} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -90,12 +67,11 @@ class virtualGroupMsg extends React.Component{
                         notFoundMsg='找不到项目'
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
-                        nodesData={treeData}
-                        defaultSelectedKeys={[selectNodeKey]}
+                        nodesData={virtualGroupTree}
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
-                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/virtual-group-mr')?(
+                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/virtual-group-tree')?(
                         <Row>
                             <div style={{margin:15}}>
                                     <Button className="pull-right" type="primary"  onClick={this.createVirtualGroup.bind(this,'add',null)}>创建虚拟组</Button>
@@ -112,7 +88,7 @@ class virtualGroupMsg extends React.Component{
 
 }
 
-virtualGroupMsg.contextTypes = {
+virtualGroupTree.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -120,14 +96,18 @@ virtualGroupMsg.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        currentTwoInfo:state.getMenuBarInfo.currentTwo,
+        loginInfo: state.login.profile,
+        currentOneInfo:state.getMenuBarInfo.currentOne,
+        currentTwoInfo: state.getMenuBarInfo.currentTwo,
+        virtualGroupTree: state.fetchVirtualGroupTree.virtualGroupTree,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        fetchVirtualGroupTree: bindActionCreators(fetchVirtualGroupTree, dispatch),
+        putVirtualGroupToState: bindActionCreators(putVirtualGroupToState, dispatch),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(virtualGroupMsg);
+export default connect(mapStateToProps, mapDispatchToProps)(virtualGroupTree);

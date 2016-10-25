@@ -29,6 +29,8 @@ import createBranch from '../containers/branches/reducers/branches-create-reduce
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 import fetchProMsg from '../containers/virtual-group/reducers/fetch-project-msg-reducer';
 import createVirtualGroup from '../containers/virtual-group/reducers/virtual-group-create-reducers'
+import virtualGroupToState from '../containers/virtual-group/reducers/put_virtual_group_to_state_reducer';
+import fetchVirtualGroupTree from '../containers/virtual-group/reducers/fetch_virtual_group_tree_reducer';
 
 const reducer = combineReducers({
     login,
@@ -59,7 +61,9 @@ const reducer = combineReducers({
     createBranch,
     getMenuBarInfo,
     fetchProMsg,
-    createVirtualGroup
+    createVirtualGroup,
+    virtualGroupToState,
+    fetchVirtualGroupTree
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

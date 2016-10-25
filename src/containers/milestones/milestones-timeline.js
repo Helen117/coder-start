@@ -21,7 +21,7 @@ class Milestones extends React.Component {
 
     componentDidMount() {
         if (this.props.getProjectInfo ) {
-            const projectId = this.props.getProjectInfo.gitlabProject.id;
+            const projectId = this.props.getProjectInfo.id;
             if(!this.props.timeLineData || this.props.milestoneProId!=projectId && this.props.timeLineData){
                 this.props.getMilestones(projectId, this.page, this.timeLineData);
                 this.props.putProIdToState(projectId);
@@ -36,7 +36,7 @@ class Milestones extends React.Component {
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.getProjectInfo.gitlabProject.id;
+        const thisProId = this.props.getProjectInfo.id;
         const nextProId = nextProps.getProjectInfo.gitlabProject.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
@@ -80,7 +80,7 @@ class Milestones extends React.Component {
     }
 
     moreMilestones(){
-        const projectId = this.props.getProjectInfo.gitlabProject.id;
+        const projectId = this.props.getProjectInfo.id;
         this.page ++;
         this.props.getMilestones(projectId,this.page,this.props.timeLineData);
     }
@@ -93,7 +93,7 @@ class Milestones extends React.Component {
 
     render(){
         const {loading,notFoundMsg,timeLineData} = this.props;
-        const projectId=this.props.getProjectInfo?this.props.getProjectInfo.gitlabProject.id:null;
+        const projectId=this.props.getProjectInfo?this.props.getProjectInfo.id:null;
         return (
             <div style={{margin:15}}>
                 <div >

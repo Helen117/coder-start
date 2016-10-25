@@ -26,7 +26,7 @@ import {UserList, UserDetail} from './containers/user';
 
 import NotFound from './components/page/not-found';
 
-import {virtualGroupCreate,virtualGroupMsg} from './containers/virtual-group';
+import {virtualGroupCreate,virtualGroupTree} from './containers/virtual-group';
 
 import Forks from './containers/fork'
 
@@ -87,7 +87,7 @@ ReactDOM.render(
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
                         </Route>
-                        <Route name="virtualGroupMgr" breadcrumbName="虚拟组管理" path="virtual-group-mr" component={virtualGroupMsg}/>
+                        <Route name="virtualGroupTree" breadcrumbName="虚拟组管理" path="virtual-group-tree" component={virtualGroupTree}/>
                         <Route name="virtualGroupCreate" breadcrumbName="创建虚拟组" path="createVirtualGroup" component={virtualGroupCreate}/>
                         <Route name="forks" breadcrumbName="Fork信息" path="forks" component={Forks}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>

@@ -3,4 +3,4 @@
  */
 
  export virtualGroupCreate from './virtual-group-create';
- export virtualGroupMsg from './virtual-group-msg'
+ export virtualGroupTree from './virtual-group-tree'

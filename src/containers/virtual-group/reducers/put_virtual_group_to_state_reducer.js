@@ -5,38 +5,17 @@
  * Created by Administrator on 2016-09-29.
  */
 import {
-    GET_GROUP_INFO_SUCCESS,
-    GET_GROUP_INFO_ERROR,
-    GET_PROJECT_INFO_SUCCESS,
-    GET_PROJECT_INFO_ERROR,
-} from '../constants/select-treenode-types';
+    PUT_VIRTUAL_GROUP_TO_STATE
+} from '../constants/virtual-group-action-types';
 
 const initialState = {
 };
 
-export function getGroupInfo(state = initialState, action = {}) {
-    switch (action.type) {
-        case GET_GROUP_INFO_SUCCESS:
-            return Object.assign({}, initialState, {groupInfo: action.data, selectedNode: action.selectNodeData});
-        case GET_GROUP_INFO_ERROR:
-            return {
-                ...state,
-                errors: action.errMessage
-            };
-        default:
-            return state;
-    }
-}
+export default function virtualGroupToState(state = initialState, action = {}) {
 
-export function getProjectInfo(state = initialState, action = {}) {
     switch (action.type) {
-        case GET_PROJECT_INFO_SUCCESS:
-            return Object.assign({}, initialState, {projectInfo: action.data});
-        case GET_PROJECT_INFO_ERROR:
-            return {
-                ...state,
-                errors: action.errMessage
-            };
+        case PUT_VIRTUAL_GROUP_TO_STATE:
+            return Object.assign({}, initialState, {selectedVirtualGroup: action.payload.data});
         default:
             return state;
     }

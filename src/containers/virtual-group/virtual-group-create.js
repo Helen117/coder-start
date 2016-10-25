@@ -53,7 +53,6 @@ class virtualGroupCreate extends React.Component {
 
     handleChange(targetKeys){
         this.targetKeys = targetKeys;
-        console.log('project',this.targetKeys);
     }
 
     handleCancel() {
@@ -82,7 +81,6 @@ class virtualGroupCreate extends React.Component {
                 const formData = form.getFieldsValue();
                 formData.project_list = this.targetKeys;
                 formData.username = logInfo.username;
-                console.log('formData',formData);
             }
         })
     }

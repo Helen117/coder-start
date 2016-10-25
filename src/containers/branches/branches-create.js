@@ -23,7 +23,7 @@ class createBranches extends Component {
 
     componentDidMount() {
         if(this.props.getProjectInfo) {
-            this.props.fetchBranchesData(this.props.getProjectInfo.gitlabProject.id);
+            this.props.fetchBranchesData(this.props.getProjectInfo.id);
         }else{
             const {router} = this.context;
             router.goBack();
@@ -46,7 +46,7 @@ class createBranches extends Component {
             description: '',
             duration: 1
         });
-        this.props.fetchBranchesData(this.props.getProjectInfo.gitlabProject.id);
+        this.props.fetchBranchesData(this.props.getProjectInfo.id);
         this.context.router.goBack();
     }
 
