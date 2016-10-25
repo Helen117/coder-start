@@ -29,9 +29,9 @@ class MilestoneDetail extends React.Component {
 
     render(){
         const milestoneDetail = this.props.milestoneDetail;
-        const isLoading = this.props.loading
+        const isLoading = this.props.loading;
         return(
-                <IssuesList loading = {isLoading} dataSource={milestoneDetail}>
+                <IssuesList loading = {isLoading} dataSource={milestoneDetail} loginInfo={this.props.loginInfo}>
                 </IssuesList>
         )
     }
@@ -47,7 +47,8 @@ MilestoneDetail.contextTypes = {
 function mapStateToProps(state) {
     return {
         milestoneDetail: state.getMilestonesIssues.milestoneIssues,
-        loading:state.getMilestonesIssues.loading
+        loading:state.getMilestonesIssues.loading,
+        loginInfo:state.login.profile,
     };
 }
 

@@ -107,6 +107,17 @@ class ProjectItem extends Component {
         const {actions,getProjectInfo,loginInfo} = this.props;
         actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
     }
+
+    getForks(){
+        const {getProjectInfo} = this.props;
+        const projectId = getProjectInfo.gitlabProject.id;
+
+        this.context.router.push({
+            pathname: '/forks',
+            state: {projectId}
+        });
+    }
+
     handleChange(value){
         const {getProjectInfo} = this.props;
         if(value=='ssh'){
@@ -173,7 +184,8 @@ class ProjectItem extends Component {
                 return (
                     <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-                        <a className={styles.count}>{this.props.getProjectInfo.gitlabProject.forks_count}</a>
+                        <span className={styles.arrow}></span>
+                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.gitlabProject.forks_count}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                         </Select>

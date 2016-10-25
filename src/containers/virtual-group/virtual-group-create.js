@@ -89,6 +89,7 @@ class virtualGroupCreate extends React.Component {
 
     render(){
         const {getFieldProps} = this.props.form;
+        const spinning = this.props.loading? true: false;
         const titleProps = getFieldProps('title', {
             rules: [
                 { required: true, message:'请输入虚拟组名称' },
@@ -112,9 +113,11 @@ class virtualGroupCreate extends React.Component {
                     </FormItem>
 
                     <FormItem   {...formItemLayout} label="项目">
-                        {this.props.loading?
-                            <Spin ><TransferFilter dataSource = {this.props.projectInfo} {...getFieldProps('project_list')} onChange={this.handleChange.bind(this)}/></Spin>
-                            :<TransferFilter dataSource = {this.props.projectInfo} {...getFieldProps('project_list')} onChange={this.handleChange.bind(this)}/>}
+                            <Spin spinning={spinning}>
+                                <TransferFilter dataSource = {this.props.projectInfo}
+                                                {...getFieldProps('project_list')}
+                                                onChange={this.handleChange.bind(this)}/>
+                            </Spin>
                     </FormItem>
 
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>

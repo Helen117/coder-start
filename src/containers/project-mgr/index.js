@@ -83,6 +83,7 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
+        console.log('node',node);
         const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
         if(node.id.indexOf("_p") < 0){//点击项目组节点
             this.props.getGroupMembers(node.id);
@@ -130,6 +131,7 @@ class ProjectMgr extends React.Component{
 
     render(){
         const {treeData, loading, currentTwoInfo, selectNodeKey} = this.props;
+        console.log('treeData',treeData);
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>

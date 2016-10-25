@@ -28,6 +28,8 @@ import NotFound from './components/page/not-found';
 
 import {virtualGroupCreate,virtualGroupMsg} from './containers/virtual-group';
 
+import Forks from './containers/fork'
+
 import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
@@ -87,6 +89,7 @@ ReactDOM.render(
                         </Route>
                         <Route name="virtualGroupMgr" breadcrumbName="虚拟组管理" path="virtual-group-mr" component={virtualGroupMsg}/>
                         <Route name="virtualGroupCreate" breadcrumbName="创建虚拟组" path="createVirtualGroup" component={virtualGroupCreate}/>
+                        <Route name="forks" breadcrumbName="Fork信息" path="forks" component={Forks}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="createMilestones" breadcrumbName="创建里程碑" path="createMilestones" component={MilestoneCreate}/>
