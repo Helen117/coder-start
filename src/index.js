@@ -33,6 +33,9 @@ import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list
 //import ProjectItem from './containers/project-list';
 
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
+import CodeFiles from './containers/code-files/index';
+import FileTree from './containers/code-files/file-tree';
+import CodeView from './containers/code-files/code-view';
 
 
 //import authUtils from './utils/auth';
@@ -72,10 +75,12 @@ ReactDOM.render(
 
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
                             <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
-                                <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
+
                             </Route>
                             <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
-                            <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}></Route>
+                            <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
+                                <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
+                            </Route>
                             <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                             <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
@@ -83,6 +88,10 @@ ReactDOM.render(
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={mergeRequestList}/>
+                            <Route name="codeFile" breadcrumbName="项目代码" path="code-file" component={CodeFiles}>
+                                <Route name="fileTree" breadcrumbName="代码树" path="file-tree" component={FileTree}/>
+                                <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
+                            </Route>
                         </Route>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
