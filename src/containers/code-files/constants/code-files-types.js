@@ -1,0 +1,7 @@
+/**
+ * Created by Administrator on 2016-10-24.
+ */
+export const GET_CODE_FILES = 'GET_CODE_FILES';
+export const GET_CODE_FILES_PENDING = 'GET_CODE_FILES_PENDING';
+export const GET_CODE_FILES_SUCCESS = 'GET_CODE_FILES_SUCCESS';
+export const GET_CODE_FILES_ERROR = 'GET_CODE_FILES_ERROR';

@@ -21,7 +21,7 @@ class MyIssueList extends Component {
     componentDidMount() {
         const {actions,projectInfo,loginInfo} = this.props;
         if(projectInfo){
-            actions.getIssueList(projectInfo.gitlabProject.id,loginInfo.username);
+            actions.getIssueList(projectInfo.id,loginInfo.username);
         }else{
             actions.getIssueList(null,loginInfo.username);
         }
@@ -31,8 +31,8 @@ class MyIssueList extends Component {
     componentWillReceiveProps(nextProps) {
         const {actions,projectInfo,loginInfo} = this.props;
 
-        if(projectInfo && projectInfo.gitlabProject.id != nextProps.projectInfo.gitlabProject.id) {
-            actions.getIssueList(nextProps.projectInfo.gitlabProject.id,loginInfo.username);
+        if(projectInfo && projectInfo.id != nextProps.projectInfo.id) {
+            actions.getIssueList(nextProps.projectInfo.id,loginInfo.username);
         }
     }
 

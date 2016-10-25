@@ -10,7 +10,7 @@ import {getMenuBarInfo} from './actions/menubar-action';
 import 'pubsub-js';
 import './index.less';
 
-var currentOne,currentTwo,topMenuOne_temp=[];
+let currentOne,currentTwo,topMenuOne_temp=[];
 //let selectNaviOne = [];
 
 class MenuBar extends React.Component {
@@ -26,9 +26,10 @@ class MenuBar extends React.Component {
     }
 
     findDefaultMenuBar(menuData, navpath){
-        for(var i=0; i<menuData.length; i++){
+        let defaultMenuOne_id, defaultMenuTwo_id
+        for(let i=0; i<menuData.length; i++){
             if(menuData[i].id == navpath[0].key){
-                var item = menuData[i], defaultMenuOne_id, defaultMenuTwo_id;
+                let item = menuData[i];
                 if (item.subMenu.length>0){
                     defaultMenuOne_id = item.subMenu[0].id;
                     if (item.subMenu[0].subMenu.length==0){
@@ -46,8 +47,8 @@ class MenuBar extends React.Component {
     }
 
     findMenuBarInfoByLocation(menuData,pathName){//根据url找到二级菜单和三级菜单的选中项
-        var find_path = 0, menuOneKey, menuTwoKey;
-        for(var i=0; i<menuData.length;i++){
+        let find_path = 0, menuOneKey, menuTwoKey;
+        for(let i=0; i<menuData.length;i++){
             if(find_path == 0){
                 if(pathName == menuData[i].link){//url是一级菜单，选中项都是空
                     menuOneKey = "";
@@ -55,12 +56,12 @@ class MenuBar extends React.Component {
                     find_path++;
                     break;
                 }else if(pathName != menuData[i].link && menuData[i].subMenu.length > 0){
-                    var menuTwo = menuData[i].subMenu;
-                    for(var j=0; j<menuTwo.length; j++){
+                    let menuTwo = menuData[i].subMenu;
+                    for(let j=0; j<menuTwo.length; j++){
                         if(pathName == menuTwo[j].link){//url是二级菜单，继续在三级菜单中查找对应的url
                             if(menuTwo[j].subMenu.length > 0){
-                                var menuTree = menuTwo[j].subMenu;
-                                for(var k=0; k< menuTree.length; k++){
+                                let menuTree = menuTwo[j].subMenu;
+                                for(let k=0; k< menuTree.length; k++){
                                     if(pathName == menuTree[k].link){//找到对应的选中项
                                         menuOneKey = "menu"+menuTwo[j].id;
                                         menuTwoKey = "menu"+menuTree[k].id;
@@ -70,8 +71,8 @@ class MenuBar extends React.Component {
                                 }
                             }
                         }else if(pathName != menuTwo[j].link && menuTwo[j].subMenu.length > 0){
-                            var menuTree = menuTwo[j].subMenu;
-                            for(var k=0; k< menuTree.length; k++){
+                            let menuTree = menuTwo[j].subMenu;
+                            for(let k=0; k< menuTree.length; k++){
                                 if(pathName == menuTree[k].link){//url是三级菜单
                                     menuOneKey = "menu"+menuTwo[j].id;
                                     menuTwoKey = "menu"+menuTree[k].id;
@@ -92,7 +93,7 @@ class MenuBar extends React.Component {
         if(navpath.length != 0){
             if(this.props.navpath != navpath && navpath ){
                 if(nextProps.is_menuclick == true){//点击侧边导航，顶部导航恢复默认值
-                    var {defaultMenuOne_id, defaultMenuTwo_id} = this.findDefaultMenuBar(menuData, navpath);
+                    let {defaultMenuOne_id, defaultMenuTwo_id} = this.findDefaultMenuBar(menuData, navpath);
                     this.setState({
                         refreshMenuOne:true,
                         currentMenuOne:"menu"+defaultMenuOne_id,
@@ -100,43 +101,13 @@ class MenuBar extends React.Component {
                     })
                 }else{//刷新、返回操作更新顶部导航
                     //根据url找到当前页面顶部导航的selectKeys
-                    var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,window.location.pathname);
-                    /*console.log("window.location.pathname:",window.location.pathname)
-                    console.log("menuOneKey:",menuOneKey)
-                    console.log("menuTwoKey:",menuTwoKey)*/
-                    var oneKey_return,twoKey_return;
-                    if(!menuOneKey && !menuTwoKey){//新建等一些操作，url在menu中找不到，截取url中前两个"/"之间的路径
-                        /*console.log("currentOne:",currentOne)
-                        console.log("currentTwo:",currentTwo)*/
-                        if(currentTwo.length != 0){
-                            oneKey_return = currentOne[0];
-                            twoKey_return = currentTwo[0];
-                            //console.log("twoKey_return-2:",twoKey_return)
-                        }else if(currentOne.length != 0 && currentTwo.length == 0){
-                            oneKey_return = currentOne[0];
-                            twoKey_return = "";
-                            //console.log("twoKey_return-3:",twoKey_return)
-                        }else if(currentOne.length == 0 && currentTwo.length == 0){
-                            var secondIndex = window.location.pathname.indexOf("/",window.location.pathname.indexOf('/')+1);
-                            var pathName_temp = window.location.pathname;
-                            pathName_temp = pathName_temp.substr(0,secondIndex);
-                            //window.location.href=pathName_temp;
-                            //console.log("pathName_temp-00:",pathName_temp)
-                            //console.log("window.location.pathname-pp:",window.location.pathname)
-                            if(pathName_temp){
-                                var {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData, pathName_temp);
-                                oneKey_return = menuOneKey;
-                                twoKey_return = menuTwoKey;
-                                /*this.setState({
-                                    window
-                                })*/
-                                //console.log("twoKey_return-1-00:",twoKey_return)
-                            }else{
-                                oneKey_return = "";
-                                twoKey_return = "";
-                            }
-                        }
-                    }else{
+                    let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,window.location.pathname);
+                    let oneKey_return = menuOneKey,twoKey_return = menuTwoKey;
+                    let truePath = window.location.pathname;
+                    if(!menuOneKey && !menuTwoKey){//如果没有找到key,去掉最后一个“/”，继续找
+                        let trueIndex = truePath.lastIndexOf("/");
+                        truePath = truePath.substr(0,trueIndex);
+                        let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,truePath);
                         oneKey_return = menuOneKey;
                         twoKey_return = menuTwoKey;
                     }
@@ -151,7 +122,7 @@ class MenuBar extends React.Component {
     }
 
     isEmptyObject(obj){
-        for(var key in obj){
+        for(let key in obj){
             return false;
         }
         return true;
@@ -159,24 +130,44 @@ class MenuBar extends React.Component {
 
     componentDidUpdate(){
         //获取顶部导航的一级、二级菜单当前选中项，放到state中，用于点击项目树时，停留在当前页面
-        var currentOneInfo = {},currentTwoInfo = {};
+        let currentOneInfo = {},currentTwoInfo = {};
         if(currentOne.length > 0){
-            var currentOne_temp = currentOne[0].replace("menu","");
-            var menuOneIndex = this.findMenuOneIndex(currentOne_temp,topMenuOne_temp[0]);
+            let currentOne_temp = currentOne[0].replace("menu","");
+            let menuOneIndex = this.findMenuOneIndex(currentOne_temp,topMenuOne_temp[0]);
             currentOneInfo = this.selectNaviOne[0].subMenu[menuOneIndex];
             if(currentTwo.length > 0){
-                var currentTwo_temp = currentTwo[0].replace("menu","");
-                var menuTwoIndex = this.findMenuTwoIndex(currentTwo_temp, currentOneInfo);
-                currentTwoInfo = currentOneInfo.subMenu[menuTwoIndex];
+                let currentTwo_temp = currentTwo[0].replace("menu","");
+                let menuTwoIndex = this.findMenuTwoIndex(currentTwo_temp, currentOneInfo);
+                if(currentOneInfo){
+                    currentTwoInfo = currentOneInfo.subMenu[menuTwoIndex];
+                }
             }
         }
         this.props.menuBarInfo(currentOneInfo,currentTwoInfo);
     }
 
+    findDefaultMenuThree(menuTwoKey){
+        let defaultMenuTwo_id;
+        for(let i=0; i<this.selectNaviOne[0].subMenu.length; i++){
+            if(menuTwoKey.replace("menu","") == this.selectNaviOne[0].subMenu[i].id){
+                let selectNaviTwo = this.selectNaviOne[0].subMenu[i];
+                if(selectNaviTwo.subMenu.length > 0){
+                    defaultMenuTwo_id = selectNaviTwo.subMenu[0].id;
+                }else{
+                    defaultMenuTwo_id = "";
+                }
+            }
+        }
+        return {defaultMenuTwo_id}
+    }
+
     clickMenuOne(e){
+        //待修改内容，当点击二级菜单时，要默认展示三级菜单的第一个
+        let currentMenuTwo = this.findDefaultMenuThree(e.key);
         this.setState({
             refreshMenuOne:false,
             currentMenuOne:e.key,
+            currentMenuTwo:"menu"+currentMenuTwo
         })
     }
     clickMenuTwo(e){
@@ -187,7 +178,7 @@ class MenuBar extends React.Component {
     }
 
     findMenuOneIndex(menuOneKey,menuOne){//当前点击的顶部导航一级菜单在数组中的位置
-        for(var i=0; i<menuOne.length; i++){
+        for(let i=0; i<menuOne.length; i++){
             if(menuOneKey == menuOne[i].key.replace("menu","")){
                 return i;
             }
@@ -195,16 +186,18 @@ class MenuBar extends React.Component {
     }
 
     findMenuTwoIndex(menuTwoKey,currentOneInfo){//当前点击的顶部导航二级菜单在数组中的位置
-        for(var i=0; i<currentOneInfo.subMenu.length; i++){
-            if(menuTwoKey == currentOneInfo.subMenu[i].id){
-                return i;
+        if(currentOneInfo){
+            for(let i=0; i<currentOneInfo.subMenu.length; i++){
+                if(menuTwoKey == currentOneInfo.subMenu[i].id){
+                    return i;
+                }
             }
         }
     }
 
     render(){
         const {menuData, navpath} = this.props;
-        for(var i=0;i<menuData.length;i++){//当前点击的一级菜单
+        for(let i=0;i<menuData.length;i++){//当前点击的一级菜单
             if(navpath.length != 0){
                 if(navpath[0].key == menuData[i].id){
                     this.selectNaviOne[0] = menuData[i];
@@ -212,14 +205,20 @@ class MenuBar extends React.Component {
             }
         }
         const topMenu = this.selectNaviOne.map((item) => {//顶部一级导航，结构[[{},{},{}]]
-            var menuone_null = [];
+            let menuone_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
                     let topMenuData = item.subMenu;
                     const menuOneData = topMenuData.map(( itemTop ) => {
+                        let link;
+                        if(itemTop.subMenu.length > 0){
+                            link = itemTop.subMenu[0].link;
+                        }else{
+                            link = itemTop.link;
+                        }
                         return (
                             <Menu.Item key={'menu' + itemTop.id}>
-                                <Link to={itemTop.link}>{itemTop.name}</Link>
+                                <Link to={link}>{itemTop.name}</Link>
                             </Menu.Item>
                         )
                     })
@@ -227,7 +226,7 @@ class MenuBar extends React.Component {
                 }else{return menuone_null;}
             }else{return menuone_null;}
         });
-        var topMenu_1=[];
+        let topMenu_1=[];
         if(topMenu.length > 0){//顶部一级导航，结构[[{},{},{}]]
             if(topMenu[0].length > 0){
                 topMenu_1[0] = topMenu[0];
@@ -235,7 +234,7 @@ class MenuBar extends React.Component {
             }
         }
         const topMenuTwo = this.selectNaviOne.map((item) => {//顶部二级导航,结构[[[{},{},{}],[{},{}],[{}]]]
-            var menutwo_null = [];
+            let menutwo_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
                     let topMenuData = item.subMenu;
@@ -244,7 +243,7 @@ class MenuBar extends React.Component {
                             if(itemTopTwo.subMenu.length != 0){
                                 let menuTwoData = itemTopTwo.subMenu;
                                 const topTwo = menuTwoData.map((itemTwo) => {
-                                    var menuTwoKey = 'menu'+itemTwo.id;
+                                    let menuTwoKey = 'menu'+itemTwo.id;
                                     return (
                                         <Menu.Item key={menuTwoKey}>
                                             <Link to={itemTwo.link}>{itemTwo.name}</Link>
@@ -259,8 +258,8 @@ class MenuBar extends React.Component {
                 }else{return menutwo_null;}
             }else{return menutwo_null;}
         });
-        var haveMenuOne = false;
-        var haveMenuTwo = false;
+        let haveMenuOne = false;
+        let haveMenuTwo = false;
         if(this.selectNaviOne.length != 0){
             if(this.selectNaviOne[0].subMenu){
                 if(this.selectNaviOne[0].subMenu.length != 0){
@@ -273,12 +272,12 @@ class MenuBar extends React.Component {
                 }
             }
         }
-        var topMenuTwo_1=[], topMenuTwo_tmp;
-        var selectMenuOne = this.state.currentMenuOne.replace("menu","");
+        let topMenuTwo_1=[], topMenuTwo_tmp;
+        let selectMenuOne = this.state.currentMenuOne.replace("menu","");
         if(topMenuTwo.length > 0){//顶部二级菜单，结构[[{},{},{]]]
             if(topMenuTwo[0].length > 0){
                 topMenuTwo_tmp = topMenuTwo[0];
-                var menuOneIndex = this.findMenuOneIndex(selectMenuOne, topMenuOne_temp[0]);
+                let menuOneIndex = this.findMenuOneIndex(selectMenuOne, topMenuOne_temp[0]);
                 if(topMenuTwo_tmp[menuOneIndex]){
                     if(topMenuTwo_tmp[menuOneIndex].length > 0){
                         topMenuTwo_1[0] = topMenuTwo_tmp[menuOneIndex];

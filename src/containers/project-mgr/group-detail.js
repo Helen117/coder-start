@@ -98,8 +98,10 @@ class GroupDetail extends React.Component {
         }else{
             var count = 0;
             for(var i=0;i<list.length;i++){
-                if(value == list[i].name){
-                    count++;
+                for(var j=0; j<list[i].children.length; j++){
+                    if(value == list[i].children[j].name){
+                        count++;
+                    }
                 }
             }
             if(count != 0){
@@ -123,7 +125,7 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                    {validator:this.groupNameExists.bind(this)},
+                    //{validator:this.groupNameExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);
             const visibilityProps = getFieldProps('visibility_level',);

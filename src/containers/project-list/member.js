@@ -40,7 +40,7 @@ class ProjectMember extends Component {
     showProjectMember(data){
         this.setState({
             memberType:true,
-            selectRow:data.record.projectName,
+            selectRow:data.record.project_name,
             selectGroup:data.groupInfo,
         })
     }
@@ -80,7 +80,7 @@ class ProjectMember extends Component {
 
     render(){
         if(this.state.memberType == true){
-            const {list} = this.props;
+            const {list, projectMembers} = this.props;
             var projectName = this.state.selectRow;
             var groupInfo = this.state.selectGroup;
             var {projectInfo} = this.searchGroupByProjectName(projectName,groupInfo);
@@ -92,22 +92,20 @@ class ProjectMember extends Component {
                 {title: "人员状态", dataIndex: "state", key: "state"}
             ];
             const dataSource = [];
-            for(var i=0;i<projectInfo.gitlabProjectMember.length;i++){
-                if(projectName == projectInfo.name){
-                    dataSource.push({
-                        key:i+1,
-                        name:projectInfo.gitlabProjectMember[i].name,
-                        role:projectInfo.gitlabProjectMember[i].is_admin?"admin":"非admin",
-                        join_time:this.transformDate(projectInfo.gitlabProjectMember[i].created_at),
-                        state:projectInfo.gitlabProjectMember[i].state
-                    });
-                }
+            for(var i=0;i<projectMembers.projectMembers.length;i++){
+                dataSource.push({
+                    key:i+1,
+                    name:projectMembers.projectMembers[i].name,
+                    role:projectMembers.projectMembers[i].is_admin?"admin":"非admin",
+                    join_time:this.transformDate(projectMembers.projectMembers[i].created_at),
+                    state:projectMembers.projectMembers[i].state
+                });
             }
 
             return (
                 <div className={styles.project_list_div}>
                     <div>
-                        <p>项目名称:{projectName}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.gitlabProject.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                        <p>项目名称:{projectName}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                     </div>
                     <TableView columns={columns}
                                dataSource={dataSource}
@@ -131,6 +129,7 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
         getGroupInfo:state.getGroupInfo.groupInfo,
+        projectMembers:state.getProjectMembers,
     }
 }
 

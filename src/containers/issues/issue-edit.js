@@ -22,7 +22,7 @@ class AddIssue extends Component{
     componentWillMount(){
         const {actions,projectInfo} = this.props;
         if(projectInfo){
-            actions.fetchDataSource(projectInfo.gitlabProject.id);
+            actions.fetchDataSource(projectInfo.id);
         }
 
     }
@@ -105,7 +105,7 @@ class AddIssue extends Component{
                     }
                 }
                 if(editType=='add'){
-                    data.project_id = projectInfo.gitlabProject.id;
+                    data.project_id = projectInfo.id;
                     data.created_at = Date.now();
                     actions.addIssues(data);
                 }else{
