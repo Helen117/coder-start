@@ -9,7 +9,7 @@
 import api from '../../../api';
 import {GET_GROUP_TREE, } from '../constants/group-tree-types';
 
-export function getGroupTree(username) {
+export function getGroupTree(userId) {
     //var path = '/groups/all';
     var path = '/groups/user';
     //var path = 'http://10.10.156.110:11000/gitlab/groups/all';
@@ -19,7 +19,7 @@ export function getGroupTree(username) {
         payload: {
             promise: api.post(path, {
                 params: {
-                    username: username
+                    userId: userId
                 }
             })
         }

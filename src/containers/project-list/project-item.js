@@ -6,10 +6,12 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message} from 'antd';
+import { Select,Input, Button, message, Row} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
+import * as starActions from './actions/consern-project-actions';
+import {getProjectStar} from '../project-mgr/actions/project-star-action';
 import * as fork from '../project-list/actions/fork-project-action';
 import styles from './index.css';
 
@@ -35,7 +37,7 @@ class ProjectItem extends Component {
 
         if(this.props.getProjectInfo){
             this.setState({
-                url: this.props.getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: this.props.getProjectInfo.sshUrl,
             });
         }
     }
@@ -46,10 +48,10 @@ class ProjectItem extends Component {
     }
 
     showProjectItem(data){
-        if(data.isLeaf == true && data.id.indexOf("_p") > 0){
+        if(data.isLeaf == true && (data.id.indexOf("_") >= 0 && data.id.indexOf("_g") < 0)){
             this.setState({
                 itemType:true,
-                itemNode:data.id.replace("_p",""),
+                itemNode:data.id,
             });
         }else{
             this.setState({
@@ -59,14 +61,36 @@ class ProjectItem extends Component {
         }
     }
 
+    searchGroupByGroupName(groupName,list){
+        var groupInfo;
+        for(var i=0;i<list.length;i++){
+            for(var j=0;j<list[i].children.length;j++){
+                if(groupName == list[i].children[j].name){
+                    groupInfo = list[i].children[j];
+                    return groupInfo;
+                }
+            }
+        }
+    }
+
     searchGroupByProjectName(projectId,list){
         var projectInfo,groupInfo;
         for(var i=0;i<list.length;i++){
             for(var j=0;j<list[i].children.length;j++){
-                if(projectId == list[i].children[j].gitlabProject.id){
-                    groupInfo = list[i];
-                    projectInfo = list[i].children[j];
-                    return {projectInfo,groupInfo}
+                var project_cat = list[i].children[j];
+                for(var k=0; k<project_cat.children.length; k++){
+                    if(projectId == project_cat.children[k].id){
+                        projectInfo = project_cat.children[k];
+                        if((project_cat.id>0)||(project_cat.id.indexOf("_g")>0)){
+                            groupInfo = project_cat;
+                        }else{
+                            var group_index = projectInfo.name.indexOf("/");
+                            var group_name = projectInfo.name;
+                            group_name = group_name.substr(0,group_index);
+                            groupInfo = this.searchGroupByGroupName(group_name,list);
+                        }
+                        return {projectInfo,groupInfo}
+                    }
                 }
             }
         }
@@ -77,6 +101,14 @@ class ProjectItem extends Component {
         if(node){
             this.showProjectItem(node);
         }
+        const {loginInfo,} = this.props;
+        const { consernedInfo, unconsernedInfo } = nextProps;
+        if (this.props.consernedInfo != consernedInfo && consernedInfo){
+            this.props.getProjectStar(loginInfo.username);
+        }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
+            this.props.getProjectStar(loginInfo.username);
+        }
+
         const {forkResult,getProjectInfo} = nextProps;
 
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
@@ -93,11 +125,11 @@ class ProjectItem extends Component {
         if(getProjectInfo){
             // if(this.state.value=='http'){
             //     this.setState({
-            //         url: getProjectInfo.gitlabProject.http_url_to_repo,
+            //         url: getProjectInfo.http_url_to_repo,
             //     });
             // }else {
             this.setState({
-                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: getProjectInfo.sshUrl,
             });
             // }
         }
@@ -105,12 +137,12 @@ class ProjectItem extends Component {
 
     fork(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-        actions.forkProject(getProjectInfo.gitlabProject.id,loginInfo.username);
+        actions.forkProject(getProjectInfo.id,loginInfo.username);
     }
 
     getForks(){
         const {getProjectInfo} = this.props;
-        const projectId = getProjectInfo.gitlabProject.id;
+        const projectId = getProjectInfo.id;
 
         this.context.router.push({
             pathname: '/forks',
@@ -123,57 +155,110 @@ class ProjectItem extends Component {
         if(value=='ssh'){
             this.setState({
                 value:'ssh',
-                url: getProjectInfo.gitlabProject.ssh_url_to_repo,
+                url: getProjectInfo.sshUrl,
             });
         }else{
             this.setState({
                 value:'http',
-                url: getProjectInfo.gitlabProject.http_url_to_repo,
+                url: getProjectInfo.http_url_to_repo,
             });
         }
     }
 
+    concernedChange(consernedProject,groupInfo,is_conserned){
+        const {loginInfo,starActions,} = this.props;
+        var projectId = '';
+        for(var i=0;i<groupInfo.children.length;i++){
+            if(consernedProject.project_name == groupInfo.children[i].name){
+                projectId= groupInfo.children[i].id;
+            }
+        }
+        var starInfo={
+            username:null,
+            projectId:null,
+        };
+        starInfo.username = loginInfo.username;
+        starInfo.projectId = projectId.substr(0,projectId.length-2);
+        if(is_conserned == '关注'){
+            starActions.consernProject(starInfo);
+        }else{
+            starActions.unconsernProject(starInfo);
+        }
+    }
+
+    memberCountClick(record,groupInfo){
+        this.context.router.push({
+            pathname: '/project-mgr/project-item/project-member',
+            state: {record:record, groupInfo:groupInfo}
+        });
+    }
+
     render() {
         if(this.state.itemType == true){//展示项目信息
-            const {list,loginInfo,fetchProjectStar,starList} = this.props;
-            //console.log("starList-item:",starList);
-            if(fetchProjectStar || false){
+            const {list,loginInfo,fetchProjectStar,starList,projectMembers,fetchProjectStatus} = this.props;
+            if((fetchProjectStar || false) && (projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false)){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
-                const columns = [
+                const columns = (self)=>[
                     {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
+                        render(text,record){
+                            return <a onClick={self.memberCountClick.bind(self,record,groupInfo)}>{text}</a>
+                        }
+                    },
                     {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
-                    {title: "是否关注", dataIndex: "consern", key: "consern"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern",
+                        render(text,record){
+                            var count = 0, count2 = 0,recordPrijectId=projectId;
+                            for(var i=0; i<projectMembers.projectMembers.length; i++){
+                                if(loginInfo.username == projectMembers.projectMembers[i].username){
+                                    count2++;//当前用户是此项目下成员
+                                }
+                            }
+                            for(var j=0;j<starList.length;j++){
+                                if(recordPrijectId.substr(0,recordPrijectId.length-2) == starList[j].id){
+                                    count++;
+                                }
+                            }
+                            if(count == 0 && count2 == 0){//未关注
+                                var is_conserned = '关注';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                            }else if(count != 0 && count2 == 0){//已关注
+                                var is_conserned = '取消关注';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                            }else{//项目成员
+                                var is_conserned = '项目成员禁止取关';
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)} disabled>{text}</a>
+                            }
+                        }},
                     {title: "项目状态", dataIndex: "state", key: "state"},
                     {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
                     {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
                 ];
                 var count=0, count2=0;
-                for(var i=0;i<groupInfo.children.length;i++){
-                    if(projectInfo.name == groupInfo.children[i].gitlabProject.name){
-                        for(var j=0;j<groupInfo.children[i].gitlabProjectMember.length;j++){
-                            if(loginInfo.username == groupInfo.children[i].gitlabProjectMember[j].username){
-                                count2++;//当前用户是此项目下成员
-                            }
-                        }
+                for(var i=0; i<projectMembers.projectMembers.length; i++){
+                    if(loginInfo.username == projectMembers.projectMembers[i].username){
+                        count2++;//当前用户是此项目下成员
                     }
                 }
                 for(var j=0;j<starList.length;j++){
-                    if(projectInfo.id.replace("_p",'') == starList[j].id){
+                    var project_id = projectInfo.id;
+                    if(project_id.substr(0,project_id.length-2) == starList[j].id){
                         count++;
                     }
                 }
                 if(count == 0 && count2 == 0){//未关注
-                    var consern_desc = "尚未关注此项目";
-                }else if(count2 == 0){//已关注
-                    var consern_desc = "我关注了这个项目";
+                    var consern_desc = "关注";
+                }else if(count != 0 && count2 == 0){//已关注
+                    var consern_desc = "取消关注";
                 }else{//项目成员
-                    var consern_desc = "我是项目成员";
+                    var consern_desc = "项目成员禁止取关";
                 }
                 const dataSource = [{
                     group_name:groupInfo.name,
                     project_name:projectInfo.name,
+                    memberNum:"共"+projectMembers.projectMembers.length+"人",
                     //next_milestom:
                     consern:consern_desc,
                     //state:
@@ -185,12 +270,12 @@ class ProjectItem extends Component {
                     <div className={styles.project_list_div}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
                         <span className={styles.arrow}></span>
-                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.gitlabProject.forks_count}</a>
+                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
-                        <TableView columns={columns}
+                        <TableView columns={columns(this)}
                                    dataSource={dataSource}
                         ></TableView>
                     </div>
@@ -217,12 +302,18 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
         forkResult:state.forkProject,
+        projectMembers:state.getProjectMembers,
+        consernedInfo:state.consernProject.consernedInfo,
+        unconsernedInfo:state.unconsernProject.unconsernedInfo,
+        fetchProjectStatus:state.getProjectInfo.fetchProjectStatus
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(fork,dispatch)
+        actions : bindActionCreators(fork,dispatch),
+        starActions: bindActionCreators(starActions, dispatch),
+        getProjectStar:bindActionCreators(getProjectStar, dispatch),
     }
 }
 

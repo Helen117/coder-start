@@ -15,7 +15,7 @@ const confirm = Modal.confirm;
 class MilestoneCreate extends React.Component {
     constructor(props) {
         super(props);
-        this.projectId = this.props.getProjectInfo.gitlabProject.id;
+        this.projectId = this.props.getProjectInfo.id;
     }
 
     componentDidMount() {
@@ -72,7 +72,7 @@ class MilestoneCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                const projectId = this.props.getProjectInfo.gitlabProject.id;
+                const projectId = this.props.getProjectInfo.id;
                 var gitlabMilestone = formData;
                 gitlabMilestone.project_id= projectId;
                 var userId = logInfo.userId;

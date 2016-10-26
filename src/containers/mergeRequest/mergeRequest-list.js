@@ -17,7 +17,7 @@ class mergeRequestList extends React.Component {
     componentWillMount() {
         if(this.props.getProjectInfo) {
             if(!this.props.mrList) {
-                this.props.fetchMrListData(this.props.getProjectInfo.gitlabProject.id);
+                this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
         }else{
             const {router} = this.context;
@@ -28,8 +28,8 @@ class mergeRequestList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.getProjectInfo.gitlabProject.id;
-        const nextProId = nextProps.getProjectInfo.gitlabProject.id;
+        const thisProId = this.props.getProjectInfo.id;
+        const nextProId = nextProps.getProjectInfo.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.props.fetchMrListData(nextProId);

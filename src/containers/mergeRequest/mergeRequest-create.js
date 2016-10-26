@@ -23,8 +23,8 @@ class createMergeRequest extends Component {
     componentWillMount() {
         const {router} = this.context;
         if(this.props.getProjectInfo) {
-            this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.gitlabProject.id);
-            this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.gitlabProject.id);
+            this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
+            this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
         }else{
             this.errChoosePro();
         }
