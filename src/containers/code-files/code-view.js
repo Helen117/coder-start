@@ -5,12 +5,12 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Row, input} from 'antd';
-import SyntaxHighlighter from './syntaxhighlighter';
+//import SyntaxHighlighter from './syntaxhighlighter';
 
 class CodeView extends React.Component {
     constructor(){
         super();
-        const initialCodeString = `const woah = fun => fun + 1;
+        /*const initialCodeString = `const woah = fun => fun + 1;
 const dude = woah(2) + 3;
 function thisIsAFunction() {
   return [1,2,3].map(n => n + 1).filter(n !== 3);
@@ -25,7 +25,7 @@ function itIs() {
             selected: 'docco',
             style: require('./styles/docco').default,
             code: initialCodeString
-        }
+        }*/
     }
 
     render(){
@@ -39,7 +39,7 @@ function itIs() {
                 <Row>
                     <span>index.js 1.84kb</span>
                 </Row>
-                <Row>
+                {/*<Row>
                  <div >
                  <input
                  type="textarea"
@@ -54,7 +54,7 @@ function itIs() {
                  </SyntaxHighlighter>
                  </div>
                  </div>
-                </Row>
+                </Row>*/}
             </div>
         )
     }
