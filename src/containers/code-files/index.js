@@ -23,11 +23,12 @@ class CodeFiles extends React.Component {
     componentDidMount(){
         //初始化文件树第一级面包屑为项目名称
         //定义一个path数组？初始化为项目名称
-        //默认跳转fileTree路由，以项目路径为参数调后台接口，dataSource初始化为返回的数据.
+        //默认跳转fileTree路由，以项目名称为参数调后台接口，dataSource初始化为返回的第一级数据.
         const {projectInfo} = this.props;
         //this.props.getCodeFile(projectInfo.substr(0,projectInfo.length-2));
         this.context.router.push({
-            pathname: '/project-mgr/code-file/file-tree',
+            //pathname: '/project-mgr/code-file/file-tree',
+            pathname: '/project-mgr/code-file/code-view',
         });
     }
 
