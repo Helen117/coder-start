@@ -9,7 +9,6 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
-import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -31,6 +30,8 @@ import fetchProMsg from '../containers/virtual-group/reducers/fetch-project-msg-
 import createVirtualGroup from '../containers/virtual-group/reducers/virtual-group-create-reducers'
 import virtualGroupToState from '../containers/virtual-group/reducers/put_virtual_group_to_state_reducer';
 import fetchVirtualGroupTree from '../containers/virtual-group/reducers/fetch_virtual_group_tree_reducer';
+import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
+import createMilestones from '../containers/virtual-group-milestones/reducers/create-milestones-reducer'
 
 const reducer = combineReducers({
     login,
@@ -38,7 +39,6 @@ const reducer = combineReducers({
     milestones,
     putMilestonesProId,
     getGroupTree,
-    createMilestones,
     createGroup,
     createProject,
     getGroupMembers,
@@ -63,7 +63,9 @@ const reducer = combineReducers({
     fetchProMsg,
     createVirtualGroup,
     virtualGroupToState,
-    fetchVirtualGroupTree
+    fetchVirtualGroupTree,
+    getProjectMembers,
+    createMilestones
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

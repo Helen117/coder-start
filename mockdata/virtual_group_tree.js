@@ -7,7 +7,7 @@ module.exports.virtualGroupTree = {
     "errorMsg": null,
     "result": [
         {
-            "id": 12,
+            "id": "12_g",
             "name": "sunlei",
             "children": [
                 {
@@ -17,7 +17,7 @@ module.exports.virtualGroupTree = {
                     "id": "152",
                     "name": "devops-scm",}]
         },{
-            "id": 11,
+            "id": "11_g",
             "name": "digimonster",
             "children": [
                 {

@@ -4,14 +4,14 @@
 import {FETCH_PROJECT_MSG} from '../constants/virtual-group-action-types';
 import api from '../../../api';
 
-export default function fetchProjectMsg(userName) {
-    var path ='/project';
+export default function fetchProjectMsg(userId) {
+    var path ='/project/get-set-projects';
     return {
         type: FETCH_PROJECT_MSG,
         payload: {
             promise: api.post(path, {
                 params: {
-                    userName:userName
+                    userId:userId
                 }
             })
         }

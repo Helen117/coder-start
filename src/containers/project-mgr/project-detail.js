@@ -9,13 +9,14 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification,Menu, Dropdown, Icon} from 'antd';
+import {Form, Input, Button, Modal, notification,Menu, Icon, Radio} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
 import 'pubsub-js';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 class ProjectDetail extends React.Component {
     constructor(props) {
@@ -35,16 +36,15 @@ class ProjectDetail extends React.Component {
                 const formData = form.getFieldsValue();
                 var data={
                     username:'',
-                    gitlabProject:{
-                        name:'',
-                        description:'',
-                    }
+                    name:'',
+                    description:'',
                 };
                 data.username=loginInfo.username;
                 data.userId = loginInfo.userId;
-                data.gitlabProject.name = formData.name;
-                data.gitlabProject.description = formData.description;
+                data.name = formData.name;
+                data.description = formData.description;
                 data.groupId = this.state.selectGroupId;
+                data.visibility_level = formData.visibility_level;
                 actions.createProject(data);
             }
         })
@@ -95,6 +95,14 @@ class ProjectDetail extends React.Component {
 
     componentWillMount() {
     }
+
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     componentDidMount() {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
@@ -102,7 +110,7 @@ class ProjectDetail extends React.Component {
         if (selectedRow){
             setFieldsValue(selectedRow);
         }
-        if(getGroupInfo){
+        if(!this.isEmptyObject(getGroupInfo)){
             setFieldsValue({groupid:getGroupInfo.name});
             this.setState({
                 selectGroupId:getGroupInfo.id
@@ -118,8 +126,11 @@ class ProjectDetail extends React.Component {
             var count=0;
             for(var i=0;i<list.length;i++){
                 for(var j=0;j<list[i].children.length;j++){
-                    if(value == list[i].children[j].gitlabProject.name){
-                        count++;
+                    var project_cat = list[i].children[j];
+                    for(var k=0; k<project_cat.children.length; k++){
+                        if(value == project_cat.children[k].name){
+                            count++;
+                        }
                     }
                 }
             }
@@ -130,21 +141,6 @@ class ProjectDetail extends React.Component {
             }
         }
     }
-
-    handleMenuClick(e){
-        const {setFieldsValue} = this.props.form;
-        const {list} = this.props;
-        for(var i=0;i<list.length;i++){
-            if(e.key == list[i].id){
-               const groupName = list[i].name;
-               setFieldsValue({groupid:groupName});
-                this.setState({
-                    selectGroupId:list[i].id
-                });
-            }
-        }
-    }
-
 
     render() {
         const {editType} = this.props.location.state;
@@ -158,21 +154,12 @@ class ProjectDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
-                    {validator:this.projectNameExists.bind(this)},
+                    //{validator:this.projectNameExists.bind(this)},
                 ]
                 });
             const descriptionProps = getFieldProps('description',);
             const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
-
-            const loop = (data) => data.map((item) => {
-                return <Menu.Item key={item.id}>{item.name}</Menu.Item>;
-            });
-            const nodes = loop(list);
-            const menu = (
-                <Menu onClick={this.handleMenuClick.bind(this)}>
-                    {nodes}
-                </Menu>
-            );
+            const visibilityProps = getFieldProps('visibility_level',);
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
@@ -184,9 +171,13 @@ class ProjectDetail extends React.Component {
                             <Input type="textarea" {...descriptionProps} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
-                            <Dropdown overlay={menu}>
-                                <Input {...groupProps} placeholder="请选择项目组"/>
-                            </Dropdown>
+                            <Input {...groupProps} placeholder="请点击项目树选择项目组"/>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="可见级别">
+                            <RadioGroup {...visibilityProps}>
+                                <Radio value="0">仅对自己可见</Radio>
+                                <Radio value="20">所有人可见</Radio>
+                            </RadioGroup>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>

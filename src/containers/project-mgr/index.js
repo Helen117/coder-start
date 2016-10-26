@@ -15,6 +15,7 @@ import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
 import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
+import {getProjectMembers} from './actions/project-members-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 
@@ -32,10 +33,10 @@ class ProjectMgr extends React.Component{
 
     componentDidMount() {
         const {loginInfo} =this.props;
-        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.username));
+        PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.userId));
         const {treeData} = this.props;
         if (treeData.length == 0){
-            this.props.getGroupTree(loginInfo.username);
+            this.props.getGroupTree(loginInfo.userId);
         }
     }
 
@@ -55,9 +56,11 @@ class ProjectMgr extends React.Component{
     searchGroupByGroupId(groupId,list){
         var groupInfo;
         for(var i=0;i<list.length;i++){
-            if(groupId == list[i].id){
-                groupInfo = list[i];
-                return groupInfo;
+            for(var j=0;j<list[i].children.length;j++){
+                if(groupId == list[i].children[j].id){
+                    groupInfo = list[i].children[j];
+                    return groupInfo;
+                }
             }
         }
     }
@@ -66,10 +69,17 @@ class ProjectMgr extends React.Component{
         var projectInfo,groupInfo;
         for(var i=0;i<list.length;i++){
             for(var j=0;j<list[i].children.length;j++){
-                if(projectId == list[i].children[j].gitlabProject.id){
-                    groupInfo = list[i];
-                    projectInfo = list[i].children[j];
-                    return {projectInfo,groupInfo}
+                var project_cat = list[i].children[j];
+                for(var k=0; k<project_cat.children.length; k++){
+                    if(projectId == project_cat.children[k].id){
+                        if(project_cat.id > 0){
+                            groupInfo = project_cat;
+                        }else{
+                            groupInfo = {};
+                        }
+                        projectInfo = project_cat.children[k];
+                        return {projectInfo,groupInfo}
+                    }
                 }
             }
         }
@@ -84,15 +94,18 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
-        if(node.id.indexOf("_p") < 0){//点击项目组节点
-            this.props.getGroupMembers(node.id);
+        if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
+            if(node.id.indexOf("_g") < 0){
+                this.props.getGroupMembers(node.id);
+            }
             const groupInfo = this.searchGroupByGroupId(node.id, list);
             this.props.getGroupInfo(groupInfo, node.id);
-        }else{//点击项目节点
-            var node_p = node.id.replace("_p","");
-            const {projectInfo, groupInfo} = this.searchGroupByProjectId(node_p, list);
-            this.props.getProjectInfo(projectInfo);
+        }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
+            var node_temp = node.id;
+            const {projectInfo, groupInfo} = this.searchGroupByProjectId(node.id, list);
+            this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2));
             this.props.getGroupInfo(groupInfo, node.id);
+            this.props.getProjectMembers(node_temp.substr(0,node_temp.length-2));
         }
         if(!starList){
             this.props.getProjectStar(loginInfo.username);
@@ -100,19 +113,19 @@ class ProjectMgr extends React.Component{
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/project-mgr'){
-                    if(node.id.indexOf("_p") < 0){
+                    if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){
                         this.context.router.push({
                             pathname: '/project-mgr/project-list',
                             state: {node}
                         });
-                    }else{
+                    }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){
                         this.context.router.push({
                             pathname: '/project-mgr/project-item',
                             state: {node}
                         });
                     }
                 }else{
-                    if(node.id.indexOf("_p") >= 0){
+                    if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){
                         this.context.router.push({
                             pathname: currentTwoInfo.link,
                         });
@@ -190,6 +203,7 @@ function mapDispatchToProps(dispatch) {
         getProjectStar:bindActionCreators(getProjectStar, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
+        getProjectMembers:bindActionCreators(getProjectMembers, dispatch),
     }
 }
 

@@ -2,7 +2,7 @@ import React,{ PropTypes } from 'react';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
 import {createMilestone} from './actions/create-milestones-actions';
-import {getMilestones} from './actions/milestones-action';
+import {getVirtualGroupMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -11,15 +11,15 @@ const createForm = Form.create;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 
-class MilestoneCreate extends React.Component {
+class virtualGroupMilestonesCreate extends React.Component {
     constructor(props) {
         super(props);
-        this.projectId = this.props.getProjectInfo.id;
+        this.projectId = this.props.selectedVirtualGroup.id;
     }
 
     componentDidMount() {
-        if (this.props.getProjectInfo) {
-            this.props.getMilestones(this.projectId, 1, []);
+        if (this.props.selectedVirtualGroup) {
+            this.props.getVirtualGroupMilestones(this.projectId, 1, []);
         } else {
             const {router} = this.context;
             router.goBack();
@@ -71,7 +71,7 @@ class MilestoneCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                const projectId = this.props.getProjectInfo.id;
+                const projectId = this.props.selectedVirtualGroup.id;
                 var gitlabMilestone = formData;
                 gitlabMilestone.project_id= projectId;
                 var userId = logInfo.userId;
@@ -171,7 +171,7 @@ class MilestoneCreate extends React.Component {
     }
 }
 
-MilestoneCreate.contextTypes = {
+virtualGroupMilestonesCreate.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -181,6 +181,7 @@ MilestoneCreate.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        selectedVirtualGroup: state.virtualGroupToState.selectedVirtualGroup,
         getProjectInfo: state.getProjectInfo.projectInfo,
         milestones: state.milestones.timeLineData,
         logInfo: state.login.profile,
@@ -195,8 +196,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
-        getMilestones: bindActionCreators(getMilestones, dispatch),
+        getVirtualGroupMilestones: bindActionCreators(getVirtualGroupMilestones, dispatch),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(createForm()(MilestoneCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(virtualGroupMilestonesCreate));

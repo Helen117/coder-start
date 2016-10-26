@@ -25,7 +25,6 @@ export default class TransferFilter extends React.Component {
         const targetKeys = [];
         const mockData = [];
         const dataSource = this.props.dataSource;
-        console.log('dataSource',dataSource);
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
                 const data = {
@@ -35,7 +34,6 @@ export default class TransferFilter extends React.Component {
                 mockData.push(data);
             }
         }
-        console.log('mockData',mockData);
 
         this.setState({ mockData, targetKeys });
 

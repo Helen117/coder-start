@@ -6,6 +6,7 @@ import { Transfer, Button, Form ,Modal, Input,Spin, notification} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
 import fetchProjectMsg from './actions/fetch-project-msg-action';
+import createVirtualGroup from './actions/virtual-group-create-action'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -19,8 +20,8 @@ class virtualGroupCreate extends React.Component {
     }
 
     componentDidMount() {
-        const username = this.props.logInfo.username;
-        this.props.fetchProjectMsg(username);
+        const userId = this.props.logInfo.userId;
+        this.props.fetchProjectMsg(userId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -79,8 +80,10 @@ class virtualGroupCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                formData.project_list = this.targetKeys;
-                formData.username = logInfo.username;
+                formData.project_set = this.targetKeys;
+                formData.owner_id = logInfo.userId;
+                console.log(formData);
+                this.props.createVirtualGroup(formData);
             }
         })
     }
@@ -88,7 +91,7 @@ class virtualGroupCreate extends React.Component {
     render(){
         const {getFieldProps} = this.props.form;
         const spinning = this.props.loading? true: false;
-        const titleProps = getFieldProps('title', {
+        const titleProps = getFieldProps('name', {
             rules: [
                 { required: true, message:'请输入虚拟组名称' },
                 { max: 30, message: '名称长度最大 30 个字符' },
@@ -113,7 +116,7 @@ class virtualGroupCreate extends React.Component {
                     <FormItem   {...formItemLayout} label="项目">
                             <Spin spinning={spinning}>
                                 <TransferFilter dataSource = {this.props.projectInfo}
-                                                {...getFieldProps('project_list')}
+                                                {...getFieldProps('project_set')}
                                                 onChange={this.handleChange.bind(this)}/>
                             </Spin>
                     </FormItem>
@@ -138,14 +141,17 @@ function mapStateToProps(state) {
     return {
         logInfo: state.login.profile,
         projectInfo: state.fetchProMsg.items,
+        fetchProMsgErr: state.fetchProMsg.errMessage,
         inserted: state.createVirtualGroup.items,
         errMessage: state.createVirtualGroup.errors,
+
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         fetchProjectMsg: bindActionCreators(fetchProjectMsg, dispatch),
+        createVirtualGroup: bindActionCreators(createVirtualGroup, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(createForm()(virtualGroupCreate));

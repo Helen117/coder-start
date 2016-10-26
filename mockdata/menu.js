@@ -149,7 +149,7 @@ module.exports.menu ={
                             "parentId": 13,
                             "cLevel": 3,
                             "name": "里程碑",
-                            "link": "/virtual-group-tree/milestones",
+                            "link": "/virtual-group-tree/virtualGroupMilestones",
                             "description": "",
                             "iconUrl": null,
                             "subMenu": []

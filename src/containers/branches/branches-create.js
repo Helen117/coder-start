@@ -114,7 +114,7 @@ class createBranches extends Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.project_id=getProjectInfo.gitlabProject.id;
+                data.project_id=getProjectInfo.id;
                 data.username = loginInfo.username;
                 this.props.createBranch(data);
             }

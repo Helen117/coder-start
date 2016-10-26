@@ -29,7 +29,7 @@ class mergeRequestList extends React.Component {
     componentWillReceiveProps(nextProps) {
         const errMessage = nextProps.errMessage;
         const thisProId = this.props.getProjectInfo.id;
-        const nextProId = nextProps.getProjectInfo.gitlabProject.id;
+        const nextProId = nextProps.getProjectInfo.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.props.fetchMrListData(nextProId);
@@ -99,7 +99,7 @@ class mergeRequestList extends React.Component {
         return(
             <div style={{marginTop:15,marginLeft:30}}>
                 <Row>
-                <Button className="pull-right" type="primary"  onClick={this.createMergeRequest.bind(this,'add')}>创建MR</Button>
+                <Button className="pull-right" type="primary"  onClick={this.createMergeRequest.bind(this,'add')}>创建代码合并请求</Button>
                 </Row>
                     <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}

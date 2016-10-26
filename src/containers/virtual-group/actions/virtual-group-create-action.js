@@ -4,8 +4,8 @@
 import api from '../../../api';
 import {CREATE_VIRTUAL_GROUP} from '../constants/virtual-group-action-types';
 
-export function createVirtualGroup(virtualGroupData) {
-    var path = '';
+export default function createVirtualGroup(virtualGroupData) {
+    var path = '/project/create-set';
     return {
         type: CREATE_VIRTUAL_GROUP,
         payload: {

@@ -28,7 +28,7 @@ export function getGroupInfo(state = initialState, action = {}) {
 export function getProjectInfo(state = initialState, action = {}) {
     switch (action.type) {
         case GET_PROJECT_INFO_SUCCESS:
-            return Object.assign({}, initialState, {projectInfo: action.data});
+            return Object.assign({}, initialState, {projectInfo: action.payload});
         case GET_PROJECT_INFO_ERROR:
             return {
                 ...state,
