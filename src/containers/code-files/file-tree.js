@@ -14,8 +14,8 @@ class FileTree extends React.Component {
     clickFileTree(record){
         //更新文件树的面包屑
         //每次点击table，push一次
-        //判断点击的record是不是js文件，如果是，调后台接口，并且跳转路由
-        //如果不是，调后台接口，更新dataSource，重新渲染
+        //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
+        //如果不是，更新dataSource为下一级数据，重新渲染
     }
 
     clickTreePath(pathName){
