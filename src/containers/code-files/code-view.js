@@ -4,11 +4,28 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Row} from 'antd';
+import {Row, input} from 'antd';
+import SyntaxHighlighter from './syntaxhighlighter';
 
 class CodeView extends React.Component {
     constructor(){
         super();
+        const initialCodeString = `const woah = fun => fun + 1;
+const dude = woah(2) + 3;
+function thisIsAFunction() {
+  return [1,2,3].map(n => n + 1).filter(n !== 3);
+}
+console.log('making up fake code is really hard');
+
+function itIs() {
+  return 'no seriously really it is';
+}
+  `;
+        this.state = {
+            selected: 'docco',
+            style: require('./styles/docco').default,
+            code: initialCodeString
+        }
     }
 
     render(){
@@ -22,9 +39,22 @@ class CodeView extends React.Component {
                 <Row>
                     <span>index.js 1.84kb</span>
                 </Row>
-                {/*<Row>
-                    代码区
-                </Row>*/}
+                <Row>
+                 <div >
+                 <input
+                 type="textarea"
+                 rows={40}
+                 cols={100}
+                 value={this.state.code}
+                 onChange={(e) => this.setState({code: e.target.value})}
+                 />
+                 <div >
+                 <SyntaxHighlighter language='javascript' style={this.state.style}>
+                 {this.state.code}
+                 </SyntaxHighlighter>
+                 </div>
+                 </div>
+                </Row>
             </div>
         )
     }
@@ -38,15 +68,7 @@ CodeView.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        loginInfo:state.login.profile,
-        fetchProjectStar:state.getProjectStar.fetchStatus,
-        starList:state.getProjectStar.starList,
-        list: state.getGroupTree.treeData,
-        getProjectInfo:state.getProjectInfo.projectInfo,
-        forkResult:state.forkProject,
-        projectMembers:state.getProjectMembers,
-        consernedInfo:state.consernProject.consernedInfo,
-        unconsernedInfo:state.unconsernProject.unconsernedInfo,
+
     }
 }
 
