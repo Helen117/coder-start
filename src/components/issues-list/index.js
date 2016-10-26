@@ -59,7 +59,7 @@ export default class IssueList extends Component {
 
     //获取表格的数据源
     getDataSource(issueList){
-        //console.log('issueList:',issueList);
+        console.log('issueList:',issueList);
         const data = [];
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
@@ -151,6 +151,7 @@ export default class IssueList extends Component {
             }
 
         }
+        console.log('data:',data);
         return data;
     }
 
@@ -175,7 +176,7 @@ export default class IssueList extends Component {
         return (
             <Box title="问题列表信息" >
                 <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
-                <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource(this.props.dataSource)}
+                <Table columns={this.issueListColumns(this)} dataSource={this.props.dataSource}
                        bordered
                        size="middle"
                        loading={this.props.loading}
@@ -222,21 +223,21 @@ IssueList.prototype.issueListColumns = (self)=>[
 // },
     {
     title: '所属项目',
-    dataIndex: 'project_id',
-    width: '8%',
-    render(value, row, index) {
-        const obj = {
-            children: value,
-            props: {},
-        };
-        if (index === 0) {
-            obj.props.rowSpan = 20;
-        }
-        if (index > 0) {
-            obj.props.rowSpan = 0;
-        }
-        return obj;
-    }
+    dataIndex: 'project_name',
+    width: '15%',
+    // render(value, row, index) {
+    //     const obj = {
+    //         children: value,
+    //         props: {},
+    //     };
+    //     if (index === 0) {
+    //         obj.props.rowSpan = 20;
+    //     }
+    //     if (index > 0) {
+    //         obj.props.rowSpan = 0;
+    //     }
+    //     return obj;
+    // }
     //fixed: 'left'
 },{
     title: '里程碑',
@@ -302,12 +303,15 @@ IssueList.prototype.issueListColumns = (self)=>[
     width: '13%',
     render: (text, record, index)=> {
         let style={'display':''};
-        if(record.author_username!= record.login_username){
+        // if(record.author_username!= record.login_username){
+        //     style={'display':'none'}
+        // }
+        if(!record.id){
             style={'display':'none'}
         }
         return <div>
             <a style ={style} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
-            <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+            <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
         </div>;
     }
 }];
