@@ -51,7 +51,7 @@ export default class TimelineMilestone extends React.Component {
                             <p>{item.description}</p>
                             <div >
                                 <p >计划发布时间：{this.getTime(item.due_date)}</p>
-                                <p>创建人：{item.owner}</p>
+                                {/*<p>创建人：{item.owner}</p>*/}
                                 <p>当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项</p>
                                 <Progress percent={item.rate} />
                                 <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
