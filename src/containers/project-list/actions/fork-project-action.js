@@ -17,11 +17,11 @@ export function forkProject(projectId,username) {
     }
 }
 
-export function getForks(projectId) {
+export function getForkList(projectId) {
     return {
-        type: 'GET_FORKS',
+        type: 'GET_FORK_LIST',
         payload: {
-            promise: api.post('/project/forks', {
+            promise: api.post('/project/fork-list', {
                 params: {
                     projectId: projectId
                 }

@@ -26,10 +26,9 @@ import {UserList, UserDetail} from './containers/user';
 
 import NotFound from './components/page/not-found';
 
+import ForkList from './containers/fork';
 import {virtualGroupCreate,virtualGroupTree} from './containers/virtual-group';
 import {virtualGroupMilestones,virtualGroupMilestonesCreate,virtualGroupMilestonesDetail} from './containers/virtual-group-milestones'
-
-import Forks from './containers/fork'
 
 import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
@@ -97,11 +96,11 @@ ReactDOM.render(
                                 <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
                             </Route>
                         </Route>
+                        <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="virtualGroupTree" breadcrumbName="虚拟组管理" path="virtual-group-tree" component={virtualGroupTree}>
                             <Route name="virtualGroupMilestones" breadcrumbName="虚拟组里程碑" path="virtualGroupMilestones" component={virtualGroupMilestones}/>
                         </Route>
                         <Route name="virtualGroupCreate" breadcrumbName="创建虚拟组" path="createVirtualGroup" component={virtualGroupCreate}/>
-                        <Route name="forks" breadcrumbName="Fork信息" path="forks" component={Forks}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="virtualGroupMilestonesCreate" breadcrumbName="创建里程碑" path="virtualGroupMilestonesCreate" component={virtualGroupMilestonesCreate}/>

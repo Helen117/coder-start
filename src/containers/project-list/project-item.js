@@ -145,7 +145,7 @@ class ProjectItem extends Component {
         const projectId = getProjectInfo.id;
 
         this.context.router.push({
-            pathname: '/forks',
+            pathname: '/forkList',
             state: {projectId}
         });
     }
@@ -202,6 +202,7 @@ class ProjectItem extends Component {
                 const columns = (self)=>[
                     {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "项目描述", dataIndex: "description", key: "description"},
                     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
                         render(text,record){
                             return <a onClick={self.memberCountClick.bind(self,record,groupInfo)}>{text}</a>
@@ -258,6 +259,7 @@ class ProjectItem extends Component {
                 const dataSource = [{
                     group_name:groupInfo.name,
                     project_name:projectInfo.name,
+                    description:projectInfo.description,
                     memberNum:"共"+projectMembers.projectMembers.length+"人",
                     //next_milestom:
                     consern:consern_desc,
@@ -265,6 +267,8 @@ class ProjectItem extends Component {
                     //tech_debt:
                     //test_cover:
                 }];
+
+                const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
 
                 return (
                     <div className={styles.project_list_div}>
@@ -275,6 +279,7 @@ class ProjectItem extends Component {
                             <Option value="ssh">SSH</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
+                        {forkFrom}
                         <TableView columns={columns(this)}
                                    dataSource={dataSource}
                         ></TableView>
