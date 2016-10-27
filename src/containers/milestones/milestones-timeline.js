@@ -39,7 +39,7 @@ class Milestones extends React.Component {
         const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId){
+        if(thisProId != nextProId && nextProId!=''){
             this.page =1;
             this.timeLineData = [];
             this.props.getMilestones(nextProId,this.page,this.timeLineData);
@@ -83,13 +83,18 @@ class Milestones extends React.Component {
         const projectId = this.props.getProjectInfo.id;
         this.page ++;
         this.props.getMilestones(projectId,this.page,this.props.timeLineData);
+        let obj =  document.getElementById("里程碑");
+        let x= obj.offsetLeft;
+        let y= obj.offsetHeight;
+        console.log(x,y);
+        window.scrollTo(x ,y);
     }
 
     render(){
         const {loading,notFoundMsg,timeLineData} = this.props;
         const projectId=this.props.getProjectInfo?this.props.getProjectInfo.id:null;
         return (
-            <div style={{margin:15}}>
+            <div style={{margin:15}} id="里程碑">
                 <TimelineMilestone timeLineData={timeLineData}
                                loading = {loading}
                                notFoundMsg = {notFoundMsg}

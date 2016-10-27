@@ -30,7 +30,8 @@ export function milestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {items: action.payload, timeLineData:timeLineData, loading: false, acquireData:true, errMessage:null});
 
         case ACQUIRE_MILESTONES_ERROR:
-            return {state, errMessage: action.payload.errorMsg,items: [], loading: false, acquireData:false};
+            let timeLineData2 = action.meta.timeLineData;
+            return {state, errMessage: action.payload.errorMsg,items: [], timeLineData:timeLineData2, loading: false, acquireData:false};
 
         default:
             return state;
