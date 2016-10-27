@@ -7,9 +7,8 @@ import DevTools from '../tools/ReduxDevTools';
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
-import milestones from '../containers/milestones/reducers/milestones-reducer';
+import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
-import createMilestones from '../containers/milestones/reducers/create-milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -27,14 +26,19 @@ import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-re
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
+import fetchProMsg from '../containers/virtual-group/reducers/fetch-project-msg-reducer';
+import createVirtualGroup from '../containers/virtual-group/reducers/virtual-group-create-reducers'
+import virtualGroupToState from '../containers/virtual-group/reducers/put_virtual_group_to_state_reducer';
+import fetchVirtualGroupTree from '../containers/virtual-group/reducers/fetch_virtual_group_tree_reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
+import createMilestones from '../containers/virtual-group-milestones/reducers/create-milestones-reducer'
 
 const reducer = combineReducers({
     login,
     menu,
     milestones,
+    putMilestonesProId,
     getGroupTree,
-    createMilestones,
     createGroup,
     createProject,
     getGroupMembers,
@@ -56,7 +60,12 @@ const reducer = combineReducers({
     fetchBranches,
     createBranch,
     getMenuBarInfo,
-    getProjectMembers
+    fetchProMsg,
+    createVirtualGroup,
+    virtualGroupToState,
+    fetchVirtualGroupTree,
+    getProjectMembers,
+    createMilestones
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
@@ -73,7 +82,7 @@ const enhancer = compose(
 );
 
 export default function configureStore(initialState) {
-    // return createStoreWithMiddleware(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() :f => f);
+    // return createStoreWithMiddleware(reducers, initialState, window.devToolsExtension ? window.devToolsExtension() :f => f);
     return createStore(
         reducer,
         initialState,
