@@ -42,7 +42,7 @@ module.exports.issueList= {
                             "labels": [],
                             "assignee_name": "孙磊",
                             "assignee_id": 9,
-                            "author_name": "孙磊",
+                            "author_name": "赵静萍",
                             "author_id": 9,
                             "state": "opened",
                             "updated_at": 1477015513000,
@@ -66,6 +66,7 @@ module.exports.issueList= {
                     children: [
                         {
                             key: 211,
+                            "id": 48,
                             "title": "test",
                             "description": "devops_scm",
                             "labels": [
@@ -74,7 +75,7 @@ module.exports.issueList= {
                             ],
                             "assignee_name": "孙磊",
                             "assignee_id": 9,
-                            "author_name": "孙磊",
+                            "author_name": "张亚军",
                             "author_id": 9,
                             "state": "reopened",
                             "updated_at": 1477015513000,
