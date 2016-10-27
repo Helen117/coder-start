@@ -14,12 +14,12 @@ const confirm = Modal.confirm;
 class virtualGroupMilestonesCreate extends React.Component {
     constructor(props) {
         super(props);
-        this.projectId = this.props.selectedVirtualGroup.id;
+        this.groupId = this.props.selectedVirtualGroup.selectedItemId;
     }
 
     componentDidMount() {
         if (this.props.selectedVirtualGroup) {
-            this.props.getVirtualGroupMilestones(this.projectId, 1, []);
+            this.props.getVirtualGroupMilestones(this.groupId, 1, []);
         } else {
             const {router} = this.context;
             router.goBack();
@@ -43,7 +43,7 @@ class virtualGroupMilestonesCreate extends React.Component {
             description: '创建成功',
             duration: 2
         });
-        this.props.getMilestones(this.projectId, 1, []);
+        this.props.getMilestones(this.groupId, 1, []);
         this.context.router.goBack();
     }
 
@@ -71,13 +71,9 @@ class virtualGroupMilestonesCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                const projectId = this.props.selectedVirtualGroup.id;
-                var gitlabMilestone = formData;
-                gitlabMilestone.project_id= projectId;
-                var userId = logInfo.userId;
-                var owner = logInfo.username;
-                var milestoneData = {owner,userId,gitlabMilestone};
-                this.props.createMilestone(milestoneData);
+                formData.set_id= this.groupId;
+                formData.author_id = logInfo.userId;
+                this.props.createMilestone(formData);
             }
         })
     }

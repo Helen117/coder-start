@@ -5,26 +5,21 @@
  * Created by zhaojp on 2016/10/24.
  */
 import React, {PropTypes} from 'react';
-import { Transfer, Button } from 'antd';
+import { Transfer, Button,Spin } from 'antd';
 
 export default class TransferFilter extends React.Component {
     constructor(props) {
         super(props);
-
+        this.mockData = [];
         this.state ={
-            mockData: [],
             targetKeys: []
         }
     }
 
-    componentDidMount() {
-        this.getMock();
-    }
-
     getMock() {
-        const targetKeys = [];
         const mockData = [];
         const dataSource = this.props.dataSource;
+       /* console.log('dataSource',dataSource);*/
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
                 const data = {
@@ -34,9 +29,7 @@ export default class TransferFilter extends React.Component {
                 mockData.push(data);
             }
         }
-
-        this.setState({ mockData, targetKeys });
-
+        this.mockData = mockData
     }
 
     handleChange(targetKeys) {
@@ -46,19 +39,23 @@ export default class TransferFilter extends React.Component {
     }
 
     render(){
+        this.getMock();
         return (
-            <Transfer
-                dataSource={this.state.mockData}
-                showSearch
-                listStyle={{
-                    width: 250,
-                    height: 300,
-                }}
-                operations={['添加', '删除']}
-                targetKeys={this.state.targetKeys}
-                onChange={this.handleChange.bind(this)}
-                render={item => `${item.projectName}`}
-            />
+            <Spin spinning={this.props.loadingProMsg}>
+                <Transfer
+                    dataSource={this.mockData}
+                    showSearch
+                    listStyle={{
+                        width: 250,
+                        height: 300,
+                    }}
+                    operations={['添加', '删除']}
+                    targetKeys={this.state.targetKeys}
+                    onChange={this.handleChange.bind(this)}
+                    notFoundContent={this.props.fetchProMsgErr?<div>数据加载失败</div>:<div>没有数据</div>}
+                    render={item => `${item.projectName}`}
+                />
+            </Spin>
         );
     }
 }
