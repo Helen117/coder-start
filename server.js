@@ -13,6 +13,8 @@ const isDeveloping = !isProduction;
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 
+const fileTree = require('./mockdata/fileTree');
+
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
@@ -129,6 +131,10 @@ app.get('/gitlab/user/1', function (req, res) {
 
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
+});
+
+app.post('/gitlab/fileTree', function (req, res) {
+    res.json(fileTree);
 });
 
 

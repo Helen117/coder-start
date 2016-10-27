@@ -5,56 +5,59 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Row, input} from 'antd';
-//import SyntaxHighlighter from './syntaxhighlighter';
+import SyntaxHighlighter from './syntaxhighlighter';
+import styles from "./index.css";
+
+const availableStyles = [
+    'docco',
+    'foundation',
+    'github',
+    'monokai',
+    'github-gist'
+];
 
 class CodeView extends React.Component {
     constructor(){
         super();
-        /*const initialCodeString = `const woah = fun => fun + 1;
-const dude = woah(2) + 3;
-function thisIsAFunction() {
-  return [1,2,3].map(n => n + 1).filter(n !== 3);
-}
-console.log('making up fake code is really hard');
+        const initialCodeString = `
+        const woah = fun => fun + 1;
+    const dude = woah(2) + 3;
+    function thisIsAFunction() {
+     return [1,2,3].map(n => n + 1).filter(n !== 3);
+    }
+    console.log('making up fake code is really hard');
 
-function itIs() {
-  return 'no seriously really it is';
-}
+    function itIs() {
+     return 'no seriously really it is';
+    }
   `;
         this.state = {
-            selected: 'docco',
-            style: require('./styles/docco').default,
+            style: require('./styles/atelier-dune-light').default,
             code: initialCodeString
-        }*/
+        }
     }
 
     render(){
 
         return (
-            <div>
-                <Row>
-                    <span>merge</span>
-                    <span>毕佩珊 authored 12 days ago</span>
+            <div className={styles.code_view}>
+                <Row className={styles.blob_commit_info}>
+                    <div className={styles.commit_info}>
+                        <p>merge</p>
+                        <p>毕佩珊 authored 12 days ago</p>
+                    </div>
+                </Row>
+                <Row className={styles.blob_commit_info}>
+                    <p className={styles.commit_info}>index.js 1.84kb</p>
                 </Row>
                 <Row>
-                    <span>index.js 1.84kb</span>
-                </Row>
-                {/*<Row>
-                 <div >
-                 <input
-                 type="textarea"
-                 rows={40}
-                 cols={100}
-                 value={this.state.code}
-                 onChange={(e) => this.setState({code: e.target.value})}
-                 />
-                 <div >
-                 <SyntaxHighlighter language='javascript' style={this.state.style}>
+                 <div className={styles.blob_commit_info}>
+                 <SyntaxHighlighter language='javascript' style={this.state.style}
+                                    showLineNumbers>
                  {this.state.code}
                  </SyntaxHighlighter>
                  </div>
-                 </div>
-                </Row>*/}
+                </Row>
             </div>
         )
     }

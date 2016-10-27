@@ -5,10 +5,34 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
+import 'pubsub-js';
 
 class FileTree extends React.Component {
     constructor(){
         super();
+        this.state = {
+            dataSource:[],
+            pathInfo:[]
+        }
+    }
+
+    componentDidMount(){
+        this.state.pathInfo.push("devops-web");
+    }
+
+    componentWillReceiveProps(nextProps){
+        const { codeFile, fetchCodeStatus} = nextProps;
+        if(codeFile != this.props.codeFile){
+            if(fetchCodeStatus == true){
+                for(var i=0; i<codeFile.filetree.result.length; i++){
+                    this.state.dataSource.push(codeFile.filetree.result[i]);
+                }
+            }
+        }
+    }
+
+    findLastPathInfo(pathName,children){
+
     }
 
     clickFileTree(record){
@@ -16,6 +40,18 @@ class FileTree extends React.Component {
         //每次点击table，push一次
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
         //如果不是，更新dataSource为下一级数据，重新渲染
+        this.state.pathInfo.push(record.name);
+        PubSub.publish("evtRefreshFileTree",{path:record.name});
+        let newData;
+        for(let i=0; i<this.state.dataSource.length; i++){
+            if(this.state.dataSource[i].name == record.name){
+                newData = this.state.dataSource[i].children;
+            }
+        }
+        this.state.dataSource.splice(0,this.state.dataSource.length);
+        this.setState({
+            dataSource:newData
+        })
     }
 
     clickTreePath(pathName){
@@ -24,23 +60,28 @@ class FileTree extends React.Component {
     }
 
     render(){
-        const column = [
-            {title:"名称", dataIndex:"name", key:"name"},
-            {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
-            {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
-        ];
-        const dataSource = [
-            {key:1,name:"aa",lastUpdate:"0",lastCommit:"0"},
-            {key:2,name:"bb",lastUpdate:"1",lastCommit:"1"},
-            {key:3,name:"cc",lastUpdate:"2",lastCommit:"2"},
-            {key:4,name:"dd",lastUpdate:"3",lastCommit:"3"}
-        ];
+        const { fetchCodeStatus} = this.props;
+        if(fetchCodeStatus || false){
+            const column = [
+                {title:"名称", dataIndex:"name", key:"name"},
+                {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
+                {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
+            ];
+            const dataSource = [];
+            for(var i=0; i<this.state.dataSource.length; i++){
+                dataSource.push({
+                    key:i+1,
+                    name:this.state.dataSource[i].name
+                })
+            }
 
-        return (
-            <div>
-                <TableView columns={column} dataSource={dataSource}></TableView>
-            </div>
-        )
+            return (
+                <div style={{"paddingLeft":"20px"}}>
+                    <TableView columns={column} dataSource={dataSource}
+                               onRowClick={this.clickFileTree.bind(this)}></TableView>
+                </div>
+            )
+        }else{return null;}
     }
 }
 
@@ -52,7 +93,8 @@ FileTree.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        //codeFiles:state.getCodeFile.codeFile
+        codeFile:state.getCodeFile.codeFile,
+        fetchCodeStatus:state.getCodeFile.fetchCodeStatus
     }
 }
 

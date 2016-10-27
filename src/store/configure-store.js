@@ -28,6 +28,7 @@ import fetchBranches from '../containers/branches/reducers/fetch-branches-reduce
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
+import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 
 const reducer = combineReducers({
     login,
@@ -56,7 +57,8 @@ const reducer = combineReducers({
     fetchBranches,
     createBranch,
     getMenuBarInfo,
-    getProjectMembers
+    getProjectMembers,
+    getCodeFile,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

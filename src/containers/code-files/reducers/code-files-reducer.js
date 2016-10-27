@@ -14,13 +14,14 @@ const initialState = {
 export default function getCodeFile(state = initialState, action = {}) {
     switch (action.type) {
         case GET_CODE_FILES_PENDING:
-            return Object.assign({}, initialState, );
+            return Object.assign({}, initialState, {fetchCodeStatus:false});
         case GET_CODE_FILES_SUCCESS:
-            return Object.assign({}, initialState, {codeFile: action.payload});
+            return Object.assign({}, initialState, { fetchCodeStatus:true,codeFile: action.payload});
         case GET_CODE_FILES_ERROR:
             return {
                 ...state,
-                errors: action.payload.message
+                errors: action.payload.message,
+                fetchCodeStatus:false
             };
         default:
             return state;
