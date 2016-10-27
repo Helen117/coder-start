@@ -90,13 +90,13 @@ export default class TreeFilter extends React.Component {
             if (item.children && item.children.length>0) {
                 return (
                     //<TreeNode key={item.id} title={item.name}>
-                    <TreeNode key={item.id} title={<span><Icon type="appstore" /><span>{item.name}</span></span>}>
+                    <TreeNode key={item.id} title={<span><Icon type={item.icon} /><span>{item.name}</span></span>}>
                         {this.getTreeNodes(item.children, filterValue)}
                     </TreeNode>
                 );
             }
             //return <TreeNode key={item.id} title={item.name} />;
-            return <TreeNode key={item.id} title={<span><Icon type="file-ppt" /><span>{item.name}</span></span>} />;
+            return <TreeNode key={item.id} title={<span><Icon type={item.icon} /><span>{item.name}</span></span>} />;
         });
     }
 
@@ -156,7 +156,7 @@ export default class TreeFilter extends React.Component {
             selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
             defaultSelectedKeys: this.props.defaultSelectedKeys,
             onSelect: this.onSelectNode.bind(this),
-            defaultExpandAll: true,
+            defaultExpandAll: false,
             filterTreeNode: this.highlightTreeNode.bind(this),
         };
         trProps.autoExpandParent = true;
