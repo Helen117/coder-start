@@ -50,6 +50,10 @@ const star_list =require('./mockdata/start_list.json');
 
 const userInfo =require('./mockdata/userInfo.json');
 
+const projectInfo = require('./mockdata/projectInfo.json');
+
+const projectMembers = require('./mockdata/projectMembers.json');
+
 const app = express();
 
 // Webpack developer
@@ -145,6 +149,14 @@ app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
 });
 
+app.post('/gitlab/project/info', function (req, res) {
+    res.json(projectInfo);
+});
+
+app.post('/gitlab/project/members', function (req, res) {
+    res.json(projectMembers);
+});
+
 
 app.get('/api/milestones', function (req, res) {
     res.json(milestones);
@@ -158,7 +170,7 @@ app.post('/api/project-mgr/groupTree', function (req, res) {
     res.json(groupTree);
 });
 
-app.post('/gitlab/project/forks', function (req, res) {
+app.post('/gitlab/project/fork-list', function (req, res) {
     res.json(forks);
 });
 

@@ -1,9 +1,6 @@
 /**
  * Created by helen on 2016/10/18.
  */
-/**
- * Created by helen on 15016/9/19.
- */
 import React, {PropTypes,Component} from 'react';
 import { Table ,Button,Input,notification } from 'antd';
 import './index.less';
@@ -59,7 +56,7 @@ export default class IssueList extends Component {
 
     //获取表格的数据源
     getDataSource(issueList){
-        //console.log('issueList:',issueList);
+        // console.log('issueList:',issueList);
         const data = [];
         if(issueList){
             for (let i = 0; i < issueList.length; i++) {
@@ -302,9 +299,11 @@ IssueList.prototype.issueListColumns = (self)=>[
     width: '13%',
     render: (text, record, index)=> {
         let style={'display':''};
+
         if(record.author_username!= record.login_username){
             style={'display':'none'}
         }
+
         return <div>
             <a style ={style} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
             <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>

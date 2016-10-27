@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "errorCode": null,
+  "errorMsg": null,
+  "result": {
+    "id": 17,
+    "name": "devops-gitlab",
+    "description": "封装gitlab API",
+    "forksCount": 3,
+    "forksFrom": null,
+    "sshUrl": "ssh://git@10.10.152.146:10022/digimonster/devops-gitlab.git"
+  }
+}
