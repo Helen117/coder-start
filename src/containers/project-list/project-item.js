@@ -145,7 +145,7 @@ class ProjectItem extends Component {
         const projectId = getProjectInfo.id;
 
         this.context.router.push({
-            pathname: '/forks',
+            pathname: '/forkList',
             state: {projectId}
         });
     }

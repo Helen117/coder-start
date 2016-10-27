@@ -30,10 +30,10 @@ class branchesList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.getProjectInfo.id;
-        const nextProId = nextProps.getProjectInfo.id;
+        const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
+        const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId){
+        if(thisProId != nextProId && nextProId!=''){
             this.props.fetchBranchesData(nextProId);
         }
         //数据加载错误提示

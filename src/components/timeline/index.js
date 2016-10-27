@@ -31,8 +31,9 @@ export default class TimelineMilestone extends React.Component {
 
     milestonesDetail(milestonesId){
         const projectId = this.props.projectId;
+        const milestonesDetailPath = this.props.milestonesDetailPath;
         this.context.router.push({
-            pathname: '/milestonesDetail',
+            pathname: milestonesDetailPath,
             state: {milestonesId,projectId}
         });
     }
@@ -41,24 +42,19 @@ export default class TimelineMilestone extends React.Component {
         let timeLine = [];
         if (timeLineData && timeLineData.length>0){
             timeLine = timeLineData.map((item) => {
-            const timelineColor = this.setMilestoneColor(item.gitlabMilestone.state,item.gitlabMilestone.due_date);
+            const timelineColor = this.setMilestoneColor(item.state,item.due_date);
                 let i = 0;
                 return (
 
-                        <Timeline.Item color={timelineColor}  key={'milestones' + item.gitlabMilestone.id} >
-                            <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.gitlabMilestone.title}</h4>
-                            <p>{item.gitlabMilestone.description}</p>
+                        <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
+                            <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
+                            <p>{item.description}</p>
                             <div >
-                                <p >计划发布时间：{this.getTime(item.gitlabMilestone.due_date)}</p>
+                                <p >计划发布时间：{this.getTime(item.due_date)}</p>
                                 <p>创建人：{item.owner}</p>
-                                <p>当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项</p>
-                                <span>问题：</span>
-                                {item.issues.length>0?item.issues.map((node) => {
-                                    i++;
-                                    return (<p style={{marginLeft:12}} key={i} >{i}.{node}</p>)}):<span>无</span>
-                                }
+                                <p>当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项</p>
                                 <Progress percent={item.rate} />
-                                <a onClick={this.milestonesDetail.bind(this, item.gitlabMilestone.id)}>查看更多</a>
+                                <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
                             </div>
                         </Timeline.Item>)
             })
