@@ -17,16 +17,13 @@ class virtualGroupMilestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        /*const id = this.props.selectedVirtualGroup.selectedItemId;
-        console.log('id');*/
     }
 
     componentDidMount() {
         if (this.props.selectedVirtualGroup ) {
-            const selectedItemId = this.props.selectedVirtualGroup.selectedItemId;
+            const selectedItemId = this.props.selectedVirtualGroup.id;
             if(!this.props.timeLineData || this.props.milestoneProId!=selectedItemId && this.props.timeLineData){
                 this.distributeActions(selectedItemId, this.page, this.timeLineData);
-                //this.props.getProjectMilestones(id, this.page, this.timeLineData);
                 this.props.putProIdToState(selectedItemId);
             }
         } else {
@@ -39,8 +36,8 @@ class virtualGroupMilestones extends React.Component {
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.selectedVirtualGroup.selectedItemId;
-        const nextProId = nextProps.selectedVirtualGroup.selectedItemId;
+        const thisProId = this.props.selectedVirtualGroup.id;
+        const nextProId = nextProps.selectedVirtualGroup.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.page =1;
@@ -62,7 +59,7 @@ class virtualGroupMilestones extends React.Component {
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目',
+            description:'请先在左侧项目树中选择一个项目或虚拟组',
             duration: 2
         });
     }
@@ -84,11 +81,12 @@ class virtualGroupMilestones extends React.Component {
     }
 
     distributeActions(id,page,timeLineData){
+        const selectedItemId = id.substring(0,id.length-2);
         if(id.indexOf("_g") > 0 ){
-            const id = id.substring(0,id.length-2);
-            this.props.getVirtualGroupMilestones(id,page,timeLineData);
+
+            this.props.getVirtualGroupMilestones(selectedItemId,page,timeLineData);
         }else{
-            this.props.getProjectMilestones(id,page,timeLineData);
+            this.props.getProjectMilestones(selectedItemId,page,timeLineData);
         }
 
     }
