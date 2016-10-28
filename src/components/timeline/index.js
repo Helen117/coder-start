@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/19.
  */
 import React,{PropTypes} from 'react';
-import { Timeline,Progress,BackTop  } from 'antd';
+import { Timeline,Progress,BackTop , Tooltip } from 'antd';
 
 
 export default class TimelineMilestone extends React.Component {
@@ -37,6 +37,9 @@ export default class TimelineMilestone extends React.Component {
             state: {milestonesId,projectId}
         });
     }
+    editMilestone(id){
+        console.log("修改里程碑",id)
+    }
 
     timelineItemConst(timeLineData){
         let timeLine = [];
@@ -47,7 +50,11 @@ export default class TimelineMilestone extends React.Component {
                 return (
 
                         <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
-                            <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
+                            <Tooltip placement="rightBottom" title="点击可修改">
+                                <a onClick = {this.editMilestone.bind(this,item.id)}>
+                                    <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
+                                </a>
+                            </Tooltip>
                             <p>{item.description}</p>
                             <div >
                                 <p >计划发布时间：{this.getTime(item.due_date)}</p>

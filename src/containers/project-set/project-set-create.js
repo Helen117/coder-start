@@ -6,15 +6,15 @@ import { Transfer, Button, Form ,Modal, Input,Spin, notification} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
 import fetchProjectMsg from './actions/fetch-project-msg-action';
-import fetchVirtualGroupTree from  './actions/fetch-virtual_group_tree_action';
-import createVirtualGroup from './actions/virtual-group-create-action'
+import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
+import createProjectSet from './actions/project-set-create-action'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
-class virtualGroupCreate extends React.Component {
+class projectSetCreate extends React.Component {
     constructor(props) {
         super(props);
         this.targetKeys=[];
@@ -41,7 +41,7 @@ class virtualGroupCreate extends React.Component {
             description: '创建成功',
             duration: 2
         });
-        this.props.fetchVirtualGroupTree(this.props.logInfo.userId);
+        this.props.fetchProjectSetTree(this.props.logInfo.userId);
         this.context.router.goBack();
     }
 
@@ -83,20 +83,20 @@ class virtualGroupCreate extends React.Component {
                 const formData = form.getFieldsValue();
                 formData.project_set = this.targetKeys;
                 formData.owner_id = logInfo.userId;
-                this.props.createVirtualGroup(formData);
+                this.props.createProjectSet(formData);
             }
         })
     }
 
     checkGroupNameExit(rule, value, callback){
-        const virtualGroupTree = this.props.virtualGroupTree;
+        const projectSetTree = this.props.projectSetTree;
         if (!value) {
             callback();
         } else {
             let isExit  = false;
             setTimeout(() => {
-                for( let i=0; i<virtualGroupTree.length; i++){
-                    if (value === virtualGroupTree[i].name) {
+                for( let i=0; i<projectSetTree.length; i++){
+                    if (value === projectSetTree[i].name) {
                         isExit = true;
                         break;
                     }
@@ -157,7 +157,7 @@ class virtualGroupCreate extends React.Component {
     }
 }
 
-virtualGroupCreate.contextTypes = {
+projectSetCreate.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -169,19 +169,19 @@ function mapStateToProps(state) {
         projectInfo: state.fetchProMsg.items,
         loadingProMsg: state.fetchProMsg.loading,
         fetchProMsgErr: state.fetchProMsg.errMessage,
-        inserted: state.createVirtualGroup.items,
-        errMessage: state.createVirtualGroup.errors,
-        loading: state.createVirtualGroup.loading,
-        virtualGroupTree: state.fetchVirtualGroupTree.virtualGroupTree,
+        inserted: state.createProjectSet.items,
+        errMessage: state.createProjectSet.errors,
+        loading: state.createProjectSet.loading,
+        projectSetTree: state.fetchProjectSetTree.projectSetTree,
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        fetchVirtualGroupTree: bindActionCreators(fetchVirtualGroupTree, dispatch),
+        fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         fetchProjectMsg: bindActionCreators(fetchProjectMsg, dispatch),
-        createVirtualGroup: bindActionCreators(createVirtualGroup, dispatch),
+        createProjectSet: bindActionCreators(createProjectSet, dispatch),
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(createForm()(virtualGroupCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(projectSetCreate));

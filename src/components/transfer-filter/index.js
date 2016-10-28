@@ -38,11 +38,15 @@ export default class TransferFilter extends React.Component {
         onChange(targetKeys);
     }
 
+    abc(){
+        console.log("onMouseLeave");
+    }
     render(){
         this.getMock();
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer
+                    onMouseEnter={this.abc.bind(this)}
                     dataSource={this.mockData}
                     showSearch
                     listStyle={{

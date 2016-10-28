@@ -10,7 +10,7 @@ import {getMilestonesIssues} from './actions/milestones-action';
 
 import './index.less';
 
-class virtualGroupMilestonesDetail extends React.Component {
+class projectSetMilestonesDetail extends React.Component {
 
     constructor(props) {
         super(props);
@@ -38,7 +38,7 @@ class virtualGroupMilestonesDetail extends React.Component {
 }
 
 
-virtualGroupMilestonesDetail.contextTypes = {
+projectSetMilestonesDetail.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -58,4 +58,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(virtualGroupMilestonesDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(projectSetMilestonesDetail);

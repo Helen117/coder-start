@@ -3,15 +3,15 @@
  */
 
 
-import {FETCH_VIRTUAL_GROUP_TREE} from '../constants/virtual-group-action-types';
+import {FETCH_PROJECT_SET_TREE} from '../constants/project-set-action-types';
 import api from '../../../api';
 
-export default function fetchVirtualGroupTree(userId) {
+export default function fetchProjectSetTree(userId) {
 
     var path ='/project/sets';
-    //path = '/virtualGroupTree'
+    //path = '/projectSetTree'
     return {
-        type: FETCH_VIRTUAL_GROUP_TREE,
+        type: FETCH_PROJECT_SET_TREE,
         payload: {
             promise: api.post(path, {
                 params: {
