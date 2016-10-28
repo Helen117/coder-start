@@ -292,18 +292,15 @@ IssueList.prototype.issueListColumns = (self)=>[
         value: 'reopened',
     }],
     onFilter: (value, record) => record.state.indexOf(value) === 0,
-    sorter: (a, b) => a.state - b.state
 },{
     title: '操作',
     dataIndex: 'key',
     width: '13%',
     render: (text, record, index)=> {
         let style={'display':''};
-
-        if(record.author_username!= record.login_username){
-            style={'display':'none'}
+        if(record.author_username!= record.login_username) {
+            style = {'display': 'none'};
         }
-
         return <div>
             <a style ={style} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
             <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>

@@ -62,7 +62,7 @@ class AddIssue extends Component{
         }
         if (!error && result) {
             message.success('新增成功');
-            this.context.router.replace('/project-mgr/issue');
+            this.context.router.goBack();
         }
 
         if(nextProps.issue.updateIssueError && nextProps.issue.updateIssueError!= this.props.issue.updateIssueError){
@@ -70,7 +70,7 @@ class AddIssue extends Component{
         }
         if (!nextProps.issue.updateIssueError && nextProps.issue.updateIssue) {
             message.success('修改成功');
-            this.context.router.replace('/project-mgr/issue');
+            this.context.router.goBack();
         }
 
     }
@@ -141,7 +141,7 @@ class AddIssue extends Component{
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.replace('/project-mgr/issue');
+                router.goBack();
                 form.resetFields();
             },
             onCancel() {

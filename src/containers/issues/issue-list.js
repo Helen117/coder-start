@@ -20,7 +20,7 @@ class ProjectIssueList extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={formSearch:{'display':''}};
+        this.state ={};
     }
 
     componentWillMount() {
@@ -98,7 +98,7 @@ class ProjectIssueList extends Component {
             <div>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header="查询条件" key="1">
-                        <Form horizontal style={this.state.formSearch} className={styles.ant_search_form} >
+                        <Form horizontal className={styles.ant_search_form} >
                             <Row gutter={16}>
                                 <Col sm={8}>
                                     <FormItem label="里程碑" {...formItemLayout} >
