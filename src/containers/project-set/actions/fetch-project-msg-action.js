@@ -1,7 +1,7 @@
 /**
  * Created by zhaojp on 2016/10/24.
  */
-import {FETCH_PROJECT_MSG} from '../constants/virtual-group-action-types';
+import {FETCH_PROJECT_MSG} from '../constants/project-set-action-types';
 import api from '../../../api';
 
 export default function fetchProjectMsg(userId) {

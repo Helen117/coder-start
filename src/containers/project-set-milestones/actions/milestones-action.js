@@ -6,7 +6,7 @@ import {ACQUIRE_MILESTONES,
     PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getVirtualGroupMilestones(projectId, page, timeLineData) {
+export function getProjectSetMilestones(projectId, page, timeLineData) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
