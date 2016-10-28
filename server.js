@@ -34,8 +34,8 @@ const groupTree = projectMgr.groupTree;
 const milestones_ = require('./mockdata/milestones');
 var milestones = milestones_.milestones;
 
-const milestones_detail_ = require('./mockdata/milestonesDetail');
-var milestoneDetail = milestones_detail_.milestoneDetail;
+const milestones_issues_ = require('./mockdata/milestonesIssues');
+var milestoneIssues = milestones_issues_.milestoneIssues;
 
 const group_ = require('./mockdata/issueDataSource');
 var dataSource = group_.assign;
@@ -158,12 +158,12 @@ app.post('/gitlab/project/members', function (req, res) {
 });
 
 
-app.get('/api/milestones', function (req, res) {
+app.post('/gitlab/milestone/project', function (req, res) {
     res.json(milestones);
 });
 
-app.get('/api/milestoneDetail', function (req, res) {
-    res.json(milestoneDetail);
+app.post('/gitlab/milestone/issues', function (req, res) {
+    res.json(milestoneIssues);
 });
 
 app.post('/api/project-mgr/groupTree', function (req, res) {

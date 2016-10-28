@@ -69,12 +69,12 @@ class MyIssueList extends Component {
             <div>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header="查询条件" key="1">
-                        <Form horizontal style={this.state.formSearch} className={styles.ant_search_form} >
+                        <Form horizontal className={styles.ant_search_form} >
                             <Row gutter={16}>
                                 <Col sm={12}>
 
                                     <FormItem label="状态" {...formItemLayout}>
-                                        <Select {...getFieldProps('state',{initialValue:'opened'})}>
+                                        <Select {...getFieldProps('state')}>
                                             <Option value="opened">打开</Option>
                                             <Option value="closed">关闭</Option>
                                             <Option value="reopened" >重开</Option>
