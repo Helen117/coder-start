@@ -81,7 +81,7 @@ class virtualGroupTree extends React.Component{
                 <Col span={6}>
                     <TreeFilter
                         loading={loading}
-                        notFoundMsg='找不到项目'
+                        notFoundMsg={errMessage}
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={virtualGroupTree}
@@ -93,7 +93,7 @@ class virtualGroupTree extends React.Component{
                             <div style={{margin:15}}>
                                     <Button className="pull-right"
                                             type="primary"
-                                            disabled = {loading && !errMessage}
+                                            disabled = {loading || errMessage}
                                             onClick={this.createVirtualGroup.bind(this,'add',null)}>创建虚拟组</Button>
                             </div>
                         </Row>
