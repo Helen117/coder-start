@@ -22,8 +22,24 @@ class virtualGroupTree extends React.Component{
     componentDidMount() {
         const {loginInfo,virtualGroupTree} =this.props;
         if(!virtualGroupTree) {
-            this.props.fetchVirtualGroupTree(loginInfo.username);
+            this.props.fetchVirtualGroupTree(loginInfo.userId);
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {  errMessage } = nextProps;
+        if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback(errMessage);
+        }
+
+    }
+
+    errCallback(errMessage){
+        notification.error({
+            message: '虚拟组加载失败',
+            description: errMessage,
+            duration: 2
+        });
     }
 
     createVirtualGroup(){
@@ -43,6 +59,7 @@ class virtualGroupTree extends React.Component{
     onSelectNode(node){
 
         const {currentOneInfo, currentTwoInfo} = this.props;
+        node.selectedItemId=node.id.substring(0,node.id.length-2);
         this.props.putVirtualGroupToState(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
@@ -58,7 +75,7 @@ class virtualGroupTree extends React.Component{
     }
 
     render(){
-        const {virtualGroupTree, loading, currentTwoInfo} = this.props;
+        const {virtualGroupTree, loading, currentTwoInfo,errMessage} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -74,7 +91,10 @@ class virtualGroupTree extends React.Component{
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/virtual-group-tree')?(
                         <Row>
                             <div style={{margin:15}}>
-                                    <Button className="pull-right" type="primary"  onClick={this.createVirtualGroup.bind(this,'add',null)}>创建虚拟组</Button>
+                                    <Button className="pull-right"
+                                            type="primary"
+                                            disabled = {loading && !errMessage}
+                                            onClick={this.createVirtualGroup.bind(this,'add',null)}>创建虚拟组</Button>
                             </div>
                         </Row>
                     ):(<div></div>)}
@@ -100,6 +120,8 @@ function mapStateToProps(state) {
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
         virtualGroupTree: state.fetchVirtualGroupTree.virtualGroupTree,
+        errMessage: state.fetchVirtualGroupTree.errMessage,
+        loading: state.fetchVirtualGroupTree.loading
     }
 }
 

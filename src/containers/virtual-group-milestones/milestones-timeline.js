@@ -17,17 +17,17 @@ class virtualGroupMilestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        /*const projectId = this.props.selectedVirtualGroup.id;
-        console.log('projectId');*/
+        /*const id = this.props.selectedVirtualGroup.selectedItemId;
+        console.log('id');*/
     }
 
     componentDidMount() {
         if (this.props.selectedVirtualGroup ) {
-            const projectId = this.props.selectedVirtualGroup.id;
-            if(!this.props.timeLineData || this.props.milestoneProId!=projectId && this.props.timeLineData){
-                this.distributeActions(projectId, this.page, this.timeLineData);
-                //this.props.getProjectMilestones(projectId, this.page, this.timeLineData);
-                this.props.putProIdToState(projectId);
+            const selectedItemId = this.props.selectedVirtualGroup.selectedItemId;
+            if(!this.props.timeLineData || this.props.milestoneProId!=selectedItemId && this.props.timeLineData){
+                this.distributeActions(selectedItemId, this.page, this.timeLineData);
+                //this.props.getProjectMilestones(id, this.page, this.timeLineData);
+                this.props.putProIdToState(selectedItemId);
             }
         } else {
             const {router} = this.context;
@@ -39,8 +39,8 @@ class virtualGroupMilestones extends React.Component {
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.selectedVirtualGroup.id;
-        const nextProId = nextProps.selectedVirtualGroup.id;
+        const thisProId = this.props.selectedVirtualGroup.selectedItemId;
+        const nextProId = nextProps.selectedVirtualGroup.selectedItemId;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.page =1;
@@ -83,20 +83,21 @@ class virtualGroupMilestones extends React.Component {
         });
     }
 
-    distributeActions(projectId,page,timeLineData){
-        if(projectId.indexOf("_g") > 0 ){
-            this.props.getVirtualGroupMilestones(projectId,page,timeLineData);
+    distributeActions(id,page,timeLineData){
+        if(id.indexOf("_g") > 0 ){
+            const id = id.substring(0,id.length-2);
+            this.props.getVirtualGroupMilestones(id,page,timeLineData);
         }else{
-            this.props.getProjectMilestones(projectId,page,timeLineData);
+            this.props.getProjectMilestones(id,page,timeLineData);
         }
 
     }
 
     moreMilestones(){
-        const projectId = this.props.selectedVirtualGroup.id;
+        const id = this.props.selectedVirtualGroup.id;
         this.page ++;
-        this.distributeActions(projectId,this.page,this.props.timeLineData);
-        //this.props.getProjectMilestones(projectId,this.page,this.props.timeLineData);
+        this.distributeActions(id,this.page,this.props.timeLineData);
+        //this.props.getProjectMilestones(id,this.page,this.props.timeLineData);
     }
 
     createMilestones(){
@@ -106,21 +107,21 @@ class virtualGroupMilestones extends React.Component {
     }
 
     render(){
-        const {loading,notFoundMsg,timeLineData} = this.props;
-        const projectId=this.props.selectedVirtualGroup?this.props.selectedVirtualGroup.id:'';
+        const {loading,notFoundMsg,timeLineData,selectedVirtualGroup} = this.props;
+        const id = selectedVirtualGroup?selectedVirtualGroup.id:'';
+        const selectedItemId = selectedVirtualGroup?selectedVirtualGroup.selectedItemId:'';
         return (
             <div style={{margin:15}}>
-                {projectId.indexOf("_g") > 0?
+                {id.indexOf("_g") > 0?
                 <div >
                     <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add',null)}>创建里程碑</Button>
                 </div>:<div></div>}
                 <TimelineMilestone timeLineData={timeLineData}
-                               loading = {loading}
-                               notFoundMsg = {notFoundMsg}
-                               pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
-                               projectId = {projectId}
-                               milestonesDetailPath="/virtualGroupMilestonesDetail"
-                ></TimelineMilestone>
+                                   loading = {loading}
+                                   notFoundMsg = {notFoundMsg}
+                                   pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
+                                   projectId = {selectedItemId}
+                                   milestonesDetailPath="/virtualGroupMilestonesDetail"/>
             </div>
         )
     }
