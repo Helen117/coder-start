@@ -6,8 +6,23 @@ import {ACQUIRE_MILESTONES,
     PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getMilestones(projectId, page, timeLineData) {
-    //var path='/milestones';
+export function getVirtualGroupMilestones(projectId, page, timeLineData) {
+    var path ='/milestone/project';
+    return {
+        type: ACQUIRE_MILESTONES,
+        meta:{timeLineData,projectId},
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    projectId:projectId,
+                    page:page
+                }
+            })
+        }
+    }
+}
+
+export function getProjectMilestones(projectId,page,timeLineData) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,

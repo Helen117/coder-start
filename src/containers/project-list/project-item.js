@@ -13,6 +13,7 @@ import TableView from '../../components/table';
 import * as starActions from './actions/consern-project-actions';
 import {getProjectStar} from '../project-mgr/actions/project-star-action';
 import * as fork from '../project-list/actions/fork-project-action';
+import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import styles from './index.css';
 
 const Option = Select.Option;
@@ -104,9 +105,13 @@ class ProjectItem extends Component {
         const {loginInfo,} = this.props;
         const { consernedInfo, unconsernedInfo } = nextProps;
         if (this.props.consernedInfo != consernedInfo && consernedInfo){
-            this.props.getProjectStar(loginInfo.username);
+            console.log("3")
+            this.props.getGroupTree(loginInfo.userId)
+            //this.props.getProjectStar(loginInfo.username);
         }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
-            this.props.getProjectStar(loginInfo.username);
+            console.log("4")
+            this.props.getGroupTree(loginInfo.userId)
+            //this.props.getProjectStar(loginInfo.username);
         }
 
         const {forkResult,getProjectInfo} = nextProps;
@@ -168,8 +173,16 @@ class ProjectItem extends Component {
     concernedChange(consernedProject,groupInfo,is_conserned){
         const {loginInfo,starActions,} = this.props;
         var projectId = '';
+        console.log("consernedProject:",consernedProject)
+        console.log("groupInfo:",groupInfo)
+        let p_index = consernedProject.project_name.indexOf("/");
+        let project_name = consernedProject.project_name;
+        if(p_index >= 0){
+            project_name = project_name.substr(p_index+1,project_name.length);
+        }
+        console.log("project_name:",project_name)
         for(var i=0;i<groupInfo.children.length;i++){
-            if(consernedProject.project_name == groupInfo.children[i].name){
+            if(project_name == groupInfo.children[i].name){
                 projectId= groupInfo.children[i].id;
             }
         }
@@ -179,9 +192,13 @@ class ProjectItem extends Component {
         };
         starInfo.username = loginInfo.username;
         starInfo.projectId = projectId.substr(0,projectId.length-2);
+        console.log("is_conserned:",is_conserned)
+        console.log("starInfo:",starInfo)
         if(is_conserned == '关注'){
+            console.log("1");
             starActions.consernProject(starInfo);
         }else{
+            console.log("2");
             starActions.unconsernProject(starInfo);
         }
     }
@@ -193,12 +210,23 @@ class ProjectItem extends Component {
         });
     }
 
+    findMyConsernProject(list){
+        let starList;
+        for(let i=0; i<list[0].children.length; i++){
+            if(list[0].children[i].name == "我关注的"){
+                starList = list[0].children[i].children;
+                return starList;
+            }
+        }
+    }
+
     render() {
         if(this.state.itemType == true){//展示项目信息
-            const {list,loginInfo,fetchProjectStar,starList,projectMembers,fetchProjectStatus} = this.props;
-            if((fetchProjectStar || false) && (projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false)){
+            const {list,loginInfo,projectMembers,fetchProjectStatus} = this.props;
+            if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false)){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
+                let starList = this.findMyConsernProject(list);
                 const columns = (self)=>[
                     {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
@@ -217,7 +245,7 @@ class ProjectItem extends Component {
                                 }
                             }
                             for(var j=0;j<starList.length;j++){
-                                if(recordPrijectId.substr(0,recordPrijectId.length-2) == starList[j].id){
+                                if(recordPrijectId.substr(0,recordPrijectId.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
                                     count++;
                                 }
                             }
@@ -244,7 +272,7 @@ class ProjectItem extends Component {
                 }
                 for(var j=0;j<starList.length;j++){
                     var project_id = projectInfo.id;
-                    if(project_id.substr(0,project_id.length-2) == starList[j].id){
+                    if(project_id.substr(0,project_id.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
                         count++;
                     }
                 }
@@ -297,8 +325,6 @@ ProjectItem.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        fetchProjectStar:state.getProjectStar.fetchStatus,
-        starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
         forkResult:state.forkProject,
@@ -313,7 +339,7 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(fork,dispatch),
         starActions: bindActionCreators(starActions, dispatch),
-        getProjectStar:bindActionCreators(getProjectStar, dispatch),
+        getGroupTree: bindActionCreators(getGroupTree, dispatch),
     }
 }
 

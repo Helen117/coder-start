@@ -18,13 +18,21 @@ class CodeFiles extends React.Component {
         super();
         this.state = {
             pathData:[],
-            activeKey:null
+            activeKey:0
         }
     }
 
     componentWillMount(){
-        console.log("componentWillMount")
-        const pathData = [{path:"devops-web",pathKey:1 }];
+        //实际操作！！！！！！！
+        const {projectInfo} = this.props;
+        /*if(projectInfo){
+            const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
+            this.setState({
+                pathData:pathData,
+                activeKey:pathData[0].pathKey
+            })
+        }*/
+        const pathData = [{path:"devops-web",pathKey:1,pathType:"tree" }];
         this.setState({
             pathData:pathData,
             activeKey:pathData[0].pathKey
@@ -35,8 +43,9 @@ class CodeFiles extends React.Component {
         //初始化文件树第一级面包屑为项目名称
         //定义一个path数组？初始化为项目名称
         //默认跳转fileTree路由，以项目名称为参数调后台接口，dataSource初始化为返回的第一级数据.
+        PubSub.subscribe("evtRefreshFileTree",this.refreshTreePath.bind(this));
         const {projectInfo} = this.props;
-        /*if(!this.isEmptyObject(projectInfo)){
+        /*if(projectInfo){
             this.props.getCodeFile(projectInfo.substr(0,projectInfo.length-2));
         }*/
         this.props.getCodeFile(projectInfo);
@@ -45,20 +54,18 @@ class CodeFiles extends React.Component {
             //pathname: '/project-mgr/code-file/code-view',
         });
     }
-
-    componentWillReceiveProps(nextProps){
-        PubSub.subscribe("evtRefreshFileTree",this.refreshTreePath.bind(this));
+    componentWillUnmount(){
+        //在此处注销对其他控件发送消息的响应
+        PubSub.unsubscribe("evtRefreshFileTree");
     }
 
     refreshTreePath(msg,data){
-        console.log("data:",data)
-        console.log("this.state.pathData--re:",this.state.pathData)
         let path_temp = this.state.pathData;
         path_temp.push({
             path:data.path,
-            pathKey:this.state.activeKey + 1
+            pathKey:this.state.activeKey + 1,
+            pathType:data.type
         });
-        console.log("path_temp:",path_temp)
         this.setState({
             pathData:path_temp,
             activeKey:this.state.activeKey + 1
@@ -73,11 +80,59 @@ class CodeFiles extends React.Component {
         return true;
     }
 
+    clickTreePath(pathName){
+        //当点击面包屑时，遍历path，找到点击的name，将此name后的元素都删掉。更新面包屑
+        //以pathName传参，跳转到相应页面
+        let path_temp = this.state.pathData,type;
+        let clickPathIndex;
+        for(let i=0; i<path_temp.length; i++){
+            if(pathName == path_temp[i].path){
+                clickPathIndex = i;
+                type = path_temp[i].pathType;
+            }
+        }
+        path_temp.splice(clickPathIndex+1,path_temp.length);
+        this.setState({
+            pathData:path_temp,
+            activeKey:path_temp.length
+        })
+        this.props.getCodeFile(pathName);
+        if(type == "tree"){
+            this.context.router.push({
+                pathname: '/project-mgr/code-file/file-tree',
+                state:path_temp
+            });
+        }else {
+            this.context.router.push({
+                pathname: '/project-mgr/code-file/code-view',
+                state:pathName
+            });
+        }
+
+        //实际操作！！！！
+        /*let type;
+        for(let i=0; i<codeFile.filetree.result.length; i++){
+            if(record.name == codeFile.filetree.result[i].name){
+                type = codeFile.filetree.result[i].type;
+            }
+        }
+        this.props.getCodeFile(pathName,type);
+         if(type == "tree"){
+         this.context.router.push({
+         pathname: '/project-mgr/code-file/file-tree',
+         });
+         }else {
+         this.context.router.push({
+         pathname: '/project-mgr/code-file/code-view',
+         });
+         }
+        */
+    }
+
     render(){
-        console.log("this.state.pathData:",this.state.pathData)
         const bread = this.state.pathData.map((item)=> {
             return (
-                <Breadcrumb.Item key={'bc-' + item.pathKey}>{item.path}</Breadcrumb.Item>
+                <Breadcrumb.Item key={'bc-' + item.pathKey}><a onClick={this.clickTreePath.bind(this,item.path)}>{item.path}</a></Breadcrumb.Item>
             )
         });
 
@@ -91,7 +146,7 @@ class CodeFiles extends React.Component {
                             <Option value="release" >release</Option>
                         </Select>
                     </Col>
-                    <Col span={6} className={styles.v_middle}>
+                    <Col span={21} className={styles.v_middle}>
                         <Breadcrumb >
                             {bread}
                         </Breadcrumb>
@@ -113,7 +168,7 @@ CodeFiles.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        projectInfo:state.getProjectInfo.projectInfo
+        projectInfo:state.getProjectInfo.projectInfo,
     }
 }
 

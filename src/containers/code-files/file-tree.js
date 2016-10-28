@@ -6,24 +6,21 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import 'pubsub-js';
+import {getCodeFile} from './actions/code-files-actions';
 
 class FileTree extends React.Component {
     constructor(){
         super();
         this.state = {
             dataSource:[],
-            pathInfo:[]
         }
-    }
-
-    componentDidMount(){
-        this.state.pathInfo.push("devops-web");
     }
 
     componentWillReceiveProps(nextProps){
         const { codeFile, fetchCodeStatus} = nextProps;
         if(codeFile != this.props.codeFile){
             if(fetchCodeStatus == true){
+                this.state.dataSource.splice(0,this.state.dataSource.length);
                 for(var i=0; i<codeFile.filetree.result.length; i++){
                     this.state.dataSource.push(codeFile.filetree.result[i]);
                 }
@@ -31,36 +28,41 @@ class FileTree extends React.Component {
         }
     }
 
-    findLastPathInfo(pathName,children){
-
-    }
-
     clickFileTree(record){
+        //const { codeFile} = this.props;
         //更新文件树的面包屑
         //每次点击table，push一次
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
-        //如果不是，更新dataSource为下一级数据，重新渲染
-        this.state.pathInfo.push(record.name);
-        PubSub.publish("evtRefreshFileTree",{path:record.name});
-        let newData;
+        //如果不是，调接口，取下一级数据，重新渲染
+        let type;
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name == record.name){
-                newData = this.state.dataSource[i].children;
+                type = this.state.dataSource[i].type;
             }
         }
-        this.state.dataSource.splice(0,this.state.dataSource.length);
-        this.setState({
-            dataSource:newData
-        })
-    }
+        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type});
+        this.props.getCodeFile(record.name);
+        if(type == "bold"){
+            this.context.router.push({
+                pathname: '/project-mgr/code-file/code-view',
+                //state:record.name
+            });
+        }
 
-    clickTreePath(pathName){
-        //当点击面包屑时，遍历path，找到点击的name，将此name后的元素都删掉。更新面包屑
-        //以pathName传参，调接口，跳转到相应页面
+        //实际操作！！！！！调接口拿新数据
+        /*
+        let type;
+        for(let i=0; i<codeFile.filetree.result.length; i++){
+            if(record.name == codeFile.filetree.result[i].name){
+                type = codeFile.filetree.result[i].type;
+            }
+        }
+        this.props.getCodeFile(record.name,type);
+        */
     }
 
     render(){
-        const { fetchCodeStatus} = this.props;
+        const { fetchCodeStatus, codeFile} = this.props;
         if(fetchCodeStatus || false){
             const column = [
                 {title:"名称", dataIndex:"name", key:"name"},
@@ -100,7 +102,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-
+        getCodeFile: bindActionCreators(getCodeFile, dispatch),
     }
 }
 

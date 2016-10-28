@@ -93,7 +93,8 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        const {loginInfo, starList, list, currentOneInfo, currentTwoInfo} = this.props;
+        console.log("node:",node)
+        const {loginInfo, list, currentOneInfo, currentTwoInfo} = this.props;
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             if(node.id.indexOf("_g") < 0){
                 this.props.getGroupMembers(node.id);
@@ -106,9 +107,6 @@ class ProjectMgr extends React.Component{
             this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2));
             this.props.getGroupInfo(groupInfo, node.id);
             this.props.getProjectMembers(node_temp.substr(0,node_temp.length-2));
-        }
-        if(!starList){
-            this.props.getProjectStar(loginInfo.username);
         }
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
@@ -187,7 +185,6 @@ function mapStateToProps(state) {
         loading : state.getGroupTree.loading,
         treeData: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
-        starList:state.getProjectStar.starList,
         list: state.getGroupTree.treeData,
         selectNodeKey: state.getGroupInfo.selectedNode,
         currentOneInfo:state.getMenuBarInfo.currentOne,
@@ -200,7 +197,6 @@ function mapDispatchToProps(dispatch) {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
         //setSelectNode: bindActionCreators(setSelectNode, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
-        getProjectStar:bindActionCreators(getProjectStar, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         getProjectMembers:bindActionCreators(getProjectMembers, dispatch),

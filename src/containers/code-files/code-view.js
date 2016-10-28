@@ -37,6 +37,22 @@ class CodeView extends React.Component {
         }
     }
 
+    componentWillMount(){
+
+    }
+
+    componentWillReceiveProps(nextProps){
+        /*const { codeFile, fetchCodeStatus} = nextProps;
+        if(codeFile != this.props.codeFile){
+            if(fetchCodeStatus == true){
+                this.state.code.splice(0,this.state.code.length);
+                for(var i=0; i<codeFile.filetree.result.length; i++){
+                    this.state.code.push(codeFile.filetree.result[i]);
+                }
+            }
+        }*/
+    }
+
     render(){
 
         return (
@@ -71,7 +87,8 @@ CodeView.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-
+        codeFile:state.getCodeFile.codeFile,
+        fetchCodeStatus:state.getCodeFile.fetchCodeStatus
     }
 }
 

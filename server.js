@@ -23,6 +23,12 @@ const mygroup = require('./mockdata/mygroup.json');
 //const projectList = require('./mockdata/project');
 const group = require('./mockdata/group.json');
 
+const project_ = require('./mockdata/project');
+const project = project_.projectList.result;
+
+const virtual_project_ = require('./mockdata/virtual_group_tree');
+const virtual_project = virtual_project_.virtualGroupTree.result;
+
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
@@ -127,6 +133,14 @@ app.post('/gitlab/mygroup', function (req, res) {
 app.get('/gitlab/user/1', function (req, res) {
 
     res.json(user);
+});
+
+app.post('/gitlab/project', function (req, res) {
+    res.json(project);
+});
+
+app.post('/gitlab/virtualGroupTree', function (req, res) {
+    res.json(virtual_project);
 });
 
 app.post('/gitlab/menu', function (req, res) {

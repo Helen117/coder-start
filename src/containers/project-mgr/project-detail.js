@@ -154,7 +154,7 @@ class ProjectDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
-                    //{validator:this.projectNameExists.bind(this)},
+                    {validator:this.projectNameExists.bind(this)},
                 ]
                 });
             const descriptionProps = getFieldProps('description',);
