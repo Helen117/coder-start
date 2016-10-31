@@ -5,7 +5,7 @@ import api from '../../../api';
 import {CREATE_MILESTONES} from '../constants/create-milestones-action-types';
 
 export function createMilestone(milestoneData) {
-    var path = '/milestone/create';
+    var path = '/project/create-milestone';
     //console.log('milestoneData',milestoneData);
     return {
         type: CREATE_MILESTONES,

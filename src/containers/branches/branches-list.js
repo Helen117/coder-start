@@ -58,11 +58,16 @@ class branchesList extends React.Component {
         });
     }
 
-    createBranches(type){
+    editBranches(type){
         this.context.router.push({
-            pathname: '/createBranches',
+            pathname: '/editBranches',
             state: {editType: type}
         });
+    }
+
+
+    deleteBranch(record){
+        console.log('delete');
     }
 
     onChange(pagination, filters, sorter) {
@@ -89,12 +94,12 @@ class branchesList extends React.Component {
 
             <div style={{margin:15}}>
                 <Row>
-                    <Button className="pull-right" type="primary"  onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
+                    <Button className="pull-right" type="primary"  onClick={this.editBranches.bind(this,'add')}>创建分支</Button>
                 </Row>
                 <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
-                           columns={columns}
+                           columns={columns(this)}
                            dataSource={data}
                             />
                 </div>
@@ -103,11 +108,21 @@ class branchesList extends React.Component {
     }
 }
 
-const columns = [{
+const columns = (self)=>[{
     title: '分支',
     dataIndex: 'branch',
     key: 'branch',
     //sorter: (a, b) => a.branch - b.branch
+},{
+    title: '操作',
+    dataIndex: 'key',
+    width: '15%',
+    render: (text, record) => (
+        <span>
+          <a style={{marginRight :10}} onClick={self.editBranches.bind(self,"update",record)}>修改</a>
+          <span className="ant-divider" />
+          <a style={{marginLeft:10}} href="#">删除</a>
+        </span>)
 }]
 
 branchesList.contextTypes = {

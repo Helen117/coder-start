@@ -4,4 +4,4 @@
 
 export projectSetMilestones from './milestones-timeline';
 export projectSetMilestonesDetail from './milestones-table';
-export projectSetMilestonesCreate from './milestones-create';
+export projectSetMilestonesEdit from './milestones-edit';
