@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Col} from 'antd';
+import {Switch,Icon, Row, Col, Button} from 'antd';
 import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -80,6 +80,17 @@ class ProjectList extends Component {
         }
     }
 
+    editProject(type, selectedRow){
+        this.context.router.push({
+            pathname: '/project-mgr/project-detail',
+            state: {editType: type, selectedRow}
+        });
+    }
+
+    deleteProject(type, selectedRow){
+
+    }
+
     render() {
         if(this.state.listType == true){//展示项目组信息
             const {list,loginInfo,groupMembers,fetchGroupMembers,starList} = this.props;
@@ -111,6 +122,16 @@ class ProjectList extends Component {
                 {title: "项目名称", dataIndex: "projectName", key: "projectName"},
                 {title: "当前项目经理", dataIndex: "manager", key: "manager"},
                 {title: "owner", dataIndex: "owner", key: "owner"},
+                {title:"操作",dataIndex:"operate",key:"operate",
+                    render(text,record){
+                        return (
+                            <div>
+                                <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
+                                <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
+                            </div>
+                        )
+                    }
+                }
             ];
             return (
                 <div>

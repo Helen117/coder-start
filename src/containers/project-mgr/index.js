@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -18,6 +18,7 @@ import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 import {getProjectMembers} from './actions/project-members-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
+import styles from './index.css';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -27,7 +28,8 @@ class ProjectMgr extends React.Component{
         super(props);
         this.state = {
             selectGroupName:null,
-            selectGroupId:null
+            selectGroupId:null,
+            showSettingDiv:false
         };
     }
 
@@ -138,6 +140,19 @@ class ProjectMgr extends React.Component{
 
     }
 
+/*<Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
+新建项目组
+</Button>
+<Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
+新建项目
+</Button>*/
+
+    clickSettingImg(){
+        this.setState({
+            showSettingDiv:!this.state.showSettingDiv
+        })
+    }
+
     render(){
         const {treeData, loading, currentTwoInfo, selectNodeKey} = this.props;
         return (
@@ -155,12 +170,26 @@ class ProjectMgr extends React.Component{
                 <Col span={18}>
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr')?(
                         <Row>
-                            <Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
-                                新建项目组
-                            </Button>
-                            <Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
-                                新建项目
-                            </Button>
+                            <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
+                                <Icon type="setting" className={styles.setting_img} />
+                                <Icon type="down" className={styles.down_img}/>
+                            </div>
+                            {this.state.showSettingDiv?(
+                                <ul className={styles.setting_operate}>
+                                    <li className={styles.setting_operate_li}>
+                                        <a onClick={}>删除项目组</a>
+                                    </li>
+                                    <li className={styles.setting_operate_li}>
+                                        <a onClick={}>修改项目组</a>
+                                    </li>
+                                    <li className={styles.setting_operate_li}>
+                                        <a onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
+                                    </li>
+                                    <li className={styles.setting_operate_li}>
+                                        <a onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
+                                    </li>
+                                </ul>
+                            ):(<div></div>)}
                         </Row>
                     ):(<div></div>)}
                     <Row>

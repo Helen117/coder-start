@@ -9,7 +9,7 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification,Menu, Icon, Radio} from 'antd';
+import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from 'antd';
 import Box from '../../components/box';
 import {createProject} from './actions/create-project-action';
 import 'pubsub-js';
@@ -17,6 +17,7 @@ import 'pubsub-js';
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 class ProjectDetail extends React.Component {
     constructor(props) {
@@ -29,12 +30,12 @@ class ProjectDetail extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { actions, form, loginInfo } = this.props;
+        const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                console.log("formData:",formData)
                 var data={
                     username:'',
                     name:'',
@@ -46,7 +47,11 @@ class ProjectDetail extends React.Component {
                 data.description = formData.description;
                 data.groupId = this.state.selectGroupId;
                 data.visibility_level = formData.visibility_level;
-                actions.createProject(data);
+                if(editType == 'add'){
+                    actions.createProject(data);
+                }else{
+                    //调修改项目的接口
+                }
             }
         })
     }
@@ -79,9 +84,8 @@ class ProjectDetail extends React.Component {
     errCallback(errMessage){
         notification.error({
             message: '创建失败',
-            //description: '项目名称已被占用!',
             description:errMessage,
-            duration: 1
+            duration: 4
         });
     }
 
@@ -109,7 +113,16 @@ class ProjectDetail extends React.Component {
         const {setFieldsValue} = this.props.form;
         const {getGroupInfo} = this.props;
         if (selectedRow){
-            setFieldsValue(selectedRow);
+            for(let i=0; i<getGroupInfo.children.length; i++){
+                if(selectedRow.projectName == getGroupInfo.children[i].name){
+                    setFieldsValue({
+                        name:getGroupInfo.children[i].name,
+                        description:getGroupInfo.children[i].description,
+                        groupid:getGroupInfo.id,
+                        //visibility_level:getGroupInfo.children[i].visibility_level
+                    });
+                }
+            }
         }
         if(!this.isEmptyObject(getGroupInfo)){
             setFieldsValue({groupid:getGroupInfo.name});
@@ -152,6 +165,10 @@ class ProjectDetail extends React.Component {
         };
         const {list} = this.props;
         if(list){
+            const options = list[list.length-1].children.map( (item)=>{
+                return <Option value={item.id}>{item.name}</Option>
+            } )
+
             const nameProps = getFieldProps('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
@@ -172,7 +189,16 @@ class ProjectDetail extends React.Component {
                             <Input type="textarea" {...descriptionProps} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
-                            <Input {...groupProps} disabled placeholder="请点击项目树选择项目组"/>
+                            <Select
+                                showSearch
+                                disabled={editType=='add' ? true : false}
+                                style={{ width: 200 }}
+                                optionFilterProp="children"
+                                notFoundContent=""
+                                {...groupProps}
+                            >
+                                {options}
+                            </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label="可见级别">
                             <RadioGroup {...visibilityProps}>
