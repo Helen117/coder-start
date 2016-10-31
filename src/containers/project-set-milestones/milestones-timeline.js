@@ -17,8 +17,6 @@ class projectSetMilestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        /*const id = this.props.selectedProjectSet.selectedItemId;
-        console.log('id');*/
     }
 
     componentDidMount() {
@@ -101,9 +99,10 @@ class projectSetMilestones extends React.Component {
         //this.props.getProjectMilestones(id,this.page,this.props.timeLineData);
     }
 
-    createMilestones(){
+    createMilestones(type){
         this.context.router.push({
-            pathname: '/projectSetMilestonesCreate',
+            pathname: '/projectSetMilestonesEdit',
+            state: {editType: type}
         });
     }
 
@@ -115,13 +114,14 @@ class projectSetMilestones extends React.Component {
             <div style={{margin:15}}>
                 {id.indexOf("_g") > 0?
                 <div >
-                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add',null)}>创建里程碑</Button>
+                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                 </div>:<div></div>}
                 <TimelineMilestone timeLineData={timeLineData}
                                    loading = {loading}
                                    notFoundMsg = {notFoundMsg}
                                    pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
                                    projectId = {selectedItemId}
+                                   id = {id}
                                    milestonesDetailPath="/projectSetMilestonesDetail"/>
             </div>
         )

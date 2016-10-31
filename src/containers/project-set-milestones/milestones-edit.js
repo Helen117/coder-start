@@ -1,7 +1,7 @@
 import React,{ PropTypes } from 'react';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
-import {createMilestone} from './actions/create-milestones-actions';
+import {createMilestone} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -11,19 +11,26 @@ const createForm = Form.create;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 
-class projectSetMilestonesCreate extends React.Component {
+class projectSetMilestonesEdit extends React.Component {
     constructor(props) {
         super(props);
         this.groupId = this.props.selectedProjectSet.selectedItemId;
     }
 
     componentDidMount() {
-        if (this.props.selectedProjectSet) {
-            this.props.getProjectSetMilestones(this.groupId, 1, []);
-        } else {
-            const {router} = this.context;
-            router.goBack();
-            this.errChoosePro();
+        const {item} = this.props.location.state;
+        const form = this.props;
+        if (item){
+            item.description = item.description? item.description:"";
+            this.props.form.setFieldsValue({'title':item.title,'due_date':new Date(item.due_date),'description':item.description});
+        }else{
+            if (this.props.selectedProjectSet) {
+                this.props.getProjectSetMilestones(this.groupId, 1, []);
+            } else {
+                const {router} = this.context;
+                router.goBack();
+                this.errChoosePro();
+            }
         }
     }
 
@@ -43,7 +50,7 @@ class projectSetMilestonesCreate extends React.Component {
             description: '创建成功',
             duration: 2
         });
-        this.props.getMilestones(this.groupId, 1, []);
+        this.props.getProjectSetMilestones(this.groupId, 1, []);
         this.context.router.goBack();
     }
 
@@ -63,9 +70,18 @@ class projectSetMilestonesCreate extends React.Component {
         });
     }
 
+    nothingUpdate(){
+        notification.error({
+            message: '未作任何信息改动',
+            description:'未作任何信息改动,无需提交表单！',
+            duration: 2
+        });
+    }
+
     handleSubmit(e) {
         e.preventDefault();
         const {form,logInfo } = this.props;
+        const {editType,item} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -73,7 +89,17 @@ class projectSetMilestonesCreate extends React.Component {
                 const formData = form.getFieldsValue();
                 formData.set_id= this.groupId;
                 formData.author_id = logInfo.userId;
-                this.props.createMilestone(formData);
+                if(editType == 'add'){
+                    this.props.createMilestone(formData);
+                }else{
+                    console.log(formData.due_date);
+                    if(item.title==formData.title && item.description==formData.description &&
+                        new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
+                        this.nothingUpdate()
+                    }else{
+                        console.log('保存修改');
+                    }
+                }
             }
         })
     }
@@ -96,8 +122,10 @@ class projectSetMilestonesCreate extends React.Component {
 
     checkDuedate(rule, value, callback){
         const {milestones} = this.props;
+        const {editType,item} = this.props.location.state;
         let lastMilestoneDuedate = null;
-        if(milestones){
+        console.log('editType',editType);
+        if(milestones && editType=='add'){
             if(milestones.length>0){
                 let lastMilestoneDuedate = milestones[0].due_date;
                 lastMilestoneDuedate = lastMilestoneDuedate+(1 * 24 * 60 * 60 * 1000);
@@ -122,6 +150,7 @@ class projectSetMilestonesCreate extends React.Component {
     }
 
     render(){
+        const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const titleProps = getFieldProps('title', {
             rules: [
@@ -145,7 +174,7 @@ class projectSetMilestonesCreate extends React.Component {
 
 
         return(
-            <Box title="创建里程碑">
+            <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                     <FormItem   {...formItemLayout} label="名称">
                         <Input {...titleProps} placeholder="请输入里程碑名称" />
@@ -167,7 +196,7 @@ class projectSetMilestonesCreate extends React.Component {
     }
 }
 
-projectSetMilestonesCreate.contextTypes = {
+projectSetMilestonesEdit.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -196,4 +225,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(createForm()(projectSetMilestonesCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(projectSetMilestonesEdit));

@@ -19,7 +19,6 @@ export function milestones(state = initialState, action = {}) {
         switch (action.type) {
 
         case ACQUIRE_MILESTONES_PENDING:
-
             return Object.assign({}, initialState, {loading: true, items:[], acquireData:false, errMessage:null});
 
         case ACQUIRE_MILESTONES_SUCCESS:
