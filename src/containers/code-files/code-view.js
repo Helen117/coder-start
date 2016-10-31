@@ -19,25 +19,9 @@ const availableStyles = [
 class CodeView extends React.Component {
     constructor(){
         super();
-        const initialCodeString = `
-        basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
-
-case "uname" in
-    *CYGWIN*) basedir="cygpath -w "$basedir"";;
-esac
-
-if [ -x "$basedir/node" ]; then
-  "$basedir/node"  "$basedir/node_modules/gulp/bin/gulp.js" "$@"
-  ret=$?
-else 
-  node  "$basedir/node_modules/gulp/bin/gulp.js" "$@"
-  ret=$?
-fi
-exit $ret
-  `;
         this.state = {
             style: require('./styles/atelier-dune-light').default,
-            code: initialCodeString,
+            code: '',
             language:""
         }
     }
@@ -47,28 +31,34 @@ exit $ret
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.location.state){
-            let file_name = nextProps.location.state;
+        if(nextProps.location.state.pathName){
+            let file_name = nextProps.location.state.pathName;
             let catIndex = file_name.lastIndexOf(".");
             let categary;
             if(catIndex < 0){
                 categary = "";
             }else{
                 categary = file_name.substr(catIndex+1,file_name.length);
+                if( (categary.toLowerCase()=="js".toLowerCase()) || (categary.toLowerCase()=="java".toLowerCase())
+                    || (categary.toLowerCase()=="json".toLowerCase()) || (categary.toLowerCase()=="html".toLowerCase()) ||
+                    (categary.toLowerCase()=="md".toLowerCase()) || (categary.toLowerCase()=="xml".toLowerCase())){
+                    categary = categary;
+                }else{
+                    categary = "";
+                }
             }
             this.setState({
                 language:categary
             })
         }
-        /*const { codeFile, fetchCodeStatus} = nextProps;
-        if(codeFile != this.props.codeFile){
-            if(fetchCodeStatus == true){
-                this.state.code.splice(0,this.state.code.length);
-                for(var i=0; i<codeFile.filetree.result.length; i++){
-                    this.state.code.push(codeFile.filetree.result[i]);
-                }
+        const { codeView, fetchContentStatus} = nextProps;
+        if(codeView != this.props.codeView){
+            if(fetchContentStatus == true){
+                this.setState({
+                    code:codeView.content
+                })
             }
-        }*/
+        }
     }
 
     render(){
@@ -82,7 +72,7 @@ exit $ret
                     </div>
                 </Row>
                 <Row className={styles.blob_commit_info}>
-                    <p className={styles.commit_info}>index.js 1.84kb</p>
+                    <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
                 </Row>
                 <Row>
                  <div className={styles.blob_commit_info}>
@@ -105,8 +95,8 @@ CodeView.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        codeFile:state.getCodeFile.codeFile,
-        fetchCodeStatus:state.getCodeFile.fetchCodeStatus
+        codeView:state.getCodeFile.codeView,
+        fetchContentStatus:state.getCodeFile.fetchContentStatus
     }
 }
 

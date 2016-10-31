@@ -6,13 +6,37 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import 'pubsub-js';
-import {getCodeFile} from './actions/code-files-actions';
+import {getCodeFile, getCodeContent} from './actions/code-files-actions';
 
 class FileTree extends React.Component {
     constructor(){
         super();
         this.state = {
             dataSource:[],
+            filePath:""
+        }
+    }
+
+    componentWillMount(){
+        PubSub.subscribe("evtClickTreePath",this.refreshFilePath.bind(this));
+        PubSub.subscribe("evtClickBrand",this.refreshFilePath.bind(this));
+    }
+
+    componentWillUnmount(){
+        //在此处注销对其他控件发送消息的响应
+        PubSub.unsubscribe("evtClickTreePath");
+        PubSub.unsubscribe("evtClickBrand");
+    }
+
+    refreshFilePath(msg,data){
+        if(msg == "evtClickTreePath"){
+            this.setState({
+                filePath:data
+            })
+        }else if(msg == "evtClickBrand"){
+            this.setState({
+                filePath:data.filePath
+            })
         }
     }
 
@@ -21,48 +45,46 @@ class FileTree extends React.Component {
         if(codeFile != this.props.codeFile){
             if(fetchCodeStatus == true){
                 this.state.dataSource.splice(0,this.state.dataSource.length);
-                for(var i=0; i<codeFile.filetree.result.length; i++){
-                    this.state.dataSource.push(codeFile.filetree.result[i]);
+                for(var i=0; i<codeFile.length; i++){
+                    this.state.dataSource.push(codeFile[i]);
                 }
             }
         }
     }
 
     clickFileTree(record){
-        //const { codeFile} = this.props;
         //更新文件树的面包屑
         //每次点击table，push一次
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
         //如果不是，调接口，取下一级数据，重新渲染
-        let type;
+        const {projectInfo} = this.props;
+        let type,filePath = this.state.filePath;
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name == record.name){
                 type = this.state.dataSource[i].type;
+                if(filePath.length == 0){
+                    filePath  = record.name;
+                }else{
+                    filePath  += "/"+record.name;
+                }
             }
         }
+        this.setState({
+            filePath:filePath
+        })
         PubSub.publish("evtRefreshFileTree",{path:record.name,type:type});
-        this.props.getCodeFile(record.name);
-        if(type == "bold"){
+        this.props.getCodeFile(projectInfo.id,filePath,this.props.location.state.brand);
+        if(type == "blob"){
+            this.props.getCodeContent(projectInfo.id,filePath,this.props.location.state.brand);
             this.context.router.push({
                 pathname: '/project-mgr/code-file/code-view',
-                state:record.name
+                state:{pathName:record.name,brand:this.props.location.state.brand,filePath:filePath}
             });
         }
-
-        //实际操作！！！！！调接口拿新数据
-        /*
-        let type;
-        for(let i=0; i<codeFile.filetree.result.length; i++){
-            if(record.name == codeFile.filetree.result[i].name){
-                type = codeFile.filetree.result[i].type;
-            }
-        }
-        this.props.getCodeFile(record.name,type);
-        */
     }
 
     render(){
-        const { fetchCodeStatus, codeFile} = this.props;
+        const { fetchCodeStatus } = this.props;
         if(fetchCodeStatus || false){
             const column = [
                 {title:"名称", dataIndex:"name", key:"name"},
@@ -96,13 +118,15 @@ FileTree.contextTypes = {
 function mapStateToProps(state) {
     return {
         codeFile:state.getCodeFile.codeFile,
-        fetchCodeStatus:state.getCodeFile.fetchCodeStatus
+        fetchCodeStatus:state.getCodeFile.fetchCodeStatus,
+        projectInfo:state.getProjectInfo.projectInfo,
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         getCodeFile: bindActionCreators(getCodeFile, dispatch),
+        getCodeContent: bindActionCreators(getCodeContent, dispatch),
     }
 }
 

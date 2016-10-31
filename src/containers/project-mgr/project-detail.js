@@ -34,6 +34,7 @@ class ProjectDetail extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                console.log("formData:",formData)
                 var data={
                     username:'',
                     name:'',
@@ -171,7 +172,7 @@ class ProjectDetail extends React.Component {
                             <Input type="textarea" {...descriptionProps} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
-                            <Input {...groupProps} placeholder="请点击项目树选择项目组"/>
+                            <Input {...groupProps} disabled placeholder="请点击项目树选择项目组"/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="可见级别">
                             <RadioGroup {...visibilityProps}>
