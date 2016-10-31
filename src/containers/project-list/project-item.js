@@ -62,13 +62,21 @@ class ProjectItem extends Component {
         }
     }
 
-    searchGroupByGroupName(groupName,list){
-        var groupInfo;
+    searchGroupByProjectId(projectId,list){
+        let groupInfo;
         for(var i=0;i<list.length;i++){
             for(var j=0;j<list[i].children.length;j++){
-                if(groupName == list[i].children[j].name){
-                    groupInfo = list[i].children[j];
-                    return groupInfo;
+                var project_cat = list[i].children[j];
+                for(var k=0; k<project_cat.children.length; k++){
+                    let groupId = project_cat.children[k].id;
+                    if(projectId == groupId.substr(0,groupId.length-2)){
+                        if((project_cat.id>0)||(project_cat.id.indexOf("_g")>0)){
+                            groupInfo = project_cat;
+                            return groupInfo;
+                        }else{
+                            continue;
+                        }
+                    }
                 }
             }
         }
@@ -84,13 +92,11 @@ class ProjectItem extends Component {
                         projectInfo = project_cat.children[k];
                         if((project_cat.id>0)||(project_cat.id.indexOf("_g")>0)){
                             groupInfo = project_cat;
+                            return {projectInfo,groupInfo}
                         }else{
-                            var group_index = projectInfo.name.indexOf("/");
-                            var group_name = projectInfo.name;
-                            group_name = group_name.substr(0,group_index);
-                            groupInfo = this.searchGroupByGroupName(group_name,list);
+                            groupInfo = this.searchGroupByProjectId(projectId.substr(0,projectId.length-2),list);
+                            return {projectInfo,groupInfo}
                         }
-                        return {projectInfo,groupInfo}
                     }
                 }
             }
@@ -105,11 +111,9 @@ class ProjectItem extends Component {
         const {loginInfo,} = this.props;
         const { consernedInfo, unconsernedInfo } = nextProps;
         if (this.props.consernedInfo != consernedInfo && consernedInfo){
-            console.log("3")
             this.props.getGroupTree(loginInfo.userId)
             //this.props.getProjectStar(loginInfo.username);
         }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
-            console.log("4")
             this.props.getGroupTree(loginInfo.userId)
             //this.props.getProjectStar(loginInfo.username);
         }
@@ -150,7 +154,7 @@ class ProjectItem extends Component {
         const projectId = getProjectInfo.id;
 
         this.context.router.push({
-            pathname: '/forks',
+            pathname: '/forkList',
             state: {projectId}
         });
     }
@@ -173,14 +177,11 @@ class ProjectItem extends Component {
     concernedChange(consernedProject,groupInfo,is_conserned){
         const {loginInfo,starActions,} = this.props;
         var projectId = '';
-        console.log("consernedProject:",consernedProject)
-        console.log("groupInfo:",groupInfo)
         let p_index = consernedProject.project_name.indexOf("/");
         let project_name = consernedProject.project_name;
         if(p_index >= 0){
             project_name = project_name.substr(p_index+1,project_name.length);
         }
-        console.log("project_name:",project_name)
         for(var i=0;i<groupInfo.children.length;i++){
             if(project_name == groupInfo.children[i].name){
                 projectId= groupInfo.children[i].id;
@@ -192,13 +193,9 @@ class ProjectItem extends Component {
         };
         starInfo.username = loginInfo.username;
         starInfo.projectId = projectId.substr(0,projectId.length-2);
-        console.log("is_conserned:",is_conserned)
-        console.log("starInfo:",starInfo)
         if(is_conserned == '关注'){
-            console.log("1");
             starActions.consernProject(starInfo);
         }else{
-            console.log("2");
             starActions.unconsernProject(starInfo);
         }
     }
@@ -223,13 +220,14 @@ class ProjectItem extends Component {
     render() {
         if(this.state.itemType == true){//展示项目信息
             const {list,loginInfo,projectMembers,fetchProjectStatus} = this.props;
-            if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false)){
+            if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false) && list.length!=0){
                 var projectId = this.state.itemNode;
                 var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
                 let starList = this.findMyConsernProject(list);
                 const columns = (self)=>[
                     {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "项目描述", dataIndex: "description", key: "description"},
                     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
                         render(text,record){
                             return <a onClick={self.memberCountClick.bind(self,record,groupInfo)}>{text}</a>
@@ -286,6 +284,7 @@ class ProjectItem extends Component {
                 const dataSource = [{
                     group_name:groupInfo.name,
                     project_name:projectInfo.name,
+                    description:projectInfo.description,
                     memberNum:"共"+projectMembers.projectMembers.length+"人",
                     //next_milestom:
                     consern:consern_desc,
@@ -293,6 +292,8 @@ class ProjectItem extends Component {
                     //tech_debt:
                     //test_cover:
                 }];
+
+                const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
 
                 return (
                     <div className={styles.project_list_div}>
@@ -303,6 +304,7 @@ class ProjectItem extends Component {
                             <Option value="ssh">SSH</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
+                        {forkFrom}
                         <TableView columns={columns(this)}
                                    dataSource={dataSource}
                         ></TableView>

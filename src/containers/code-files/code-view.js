@@ -20,20 +20,25 @@ class CodeView extends React.Component {
     constructor(){
         super();
         const initialCodeString = `
-        const woah = fun => fun + 1;
-    const dude = woah(2) + 3;
-    function thisIsAFunction() {
-     return [1,2,3].map(n => n + 1).filter(n !== 3);
-    }
-    console.log('making up fake code is really hard');
+        basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
 
-    function itIs() {
-     return 'no seriously really it is';
-    }
+case "uname" in
+    *CYGWIN*) basedir="cygpath -w "$basedir"";;
+esac
+
+if [ -x "$basedir/node" ]; then
+  "$basedir/node"  "$basedir/node_modules/gulp/bin/gulp.js" "$@"
+  ret=$?
+else 
+  node  "$basedir/node_modules/gulp/bin/gulp.js" "$@"
+  ret=$?
+fi
+exit $ret
   `;
         this.state = {
             style: require('./styles/atelier-dune-light').default,
-            code: initialCodeString
+            code: initialCodeString,
+            language:""
         }
     }
 
@@ -42,6 +47,19 @@ class CodeView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
+        if(nextProps.location.state){
+            let file_name = nextProps.location.state;
+            let catIndex = file_name.lastIndexOf(".");
+            let categary;
+            if(catIndex < 0){
+                categary = "";
+            }else{
+                categary = file_name.substr(catIndex+1,file_name.length);
+            }
+            this.setState({
+                language:categary
+            })
+        }
         /*const { codeFile, fetchCodeStatus} = nextProps;
         if(codeFile != this.props.codeFile){
             if(fetchCodeStatus == true){
@@ -68,7 +86,7 @@ class CodeView extends React.Component {
                 </Row>
                 <Row>
                  <div className={styles.blob_commit_info}>
-                 <SyntaxHighlighter language='javascript' style={this.state.style}
+                 <SyntaxHighlighter language={this.state.language} style={this.state.style}
                                     showLineNumbers>
                  {this.state.code}
                  </SyntaxHighlighter>

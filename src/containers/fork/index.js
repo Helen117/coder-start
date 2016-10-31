@@ -8,7 +8,7 @@ import * as fork from '../project-list/actions/fork-project-action';
 import Box from '../../components/box';
 import styles from './index.css';
 
-class Forks extends Component {
+class ForkList extends Component {
     constructor(props) {
         super(props);
     }
@@ -16,13 +16,14 @@ class Forks extends Component {
     componentWillMount() {
         const projectId = this.props.location.state.projectId;
         const {actions} = this.props;
-        actions.getForks(projectId);
+        actions.getForkList(projectId);
     }
 
     render() {
-        const { forks } = this.props;
+        const { forkList } = this.props;
+        //console.log('fork-list:',forkList);
 
-        const list =forks?forks.map(data => <li key={data.id}>
+        const list =forkList?forkList.map(data => <li key={data.id}>
             <div className={styles.forks_list} >
                 <span>{data.author_name}/{data.project_name}</span>
                 <p>
@@ -45,7 +46,7 @@ class Forks extends Component {
 
 function mapStateToProps(state) {
     return {
-        forks:state.forkProject.forksInfo
+        forkList:state.forkProject.forksInfo
     };
 }
 
@@ -55,4 +56,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Forks);
+export default connect(mapStateToProps,mapDispatchToProps)(ForkList);

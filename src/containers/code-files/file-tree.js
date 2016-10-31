@@ -45,7 +45,7 @@ class FileTree extends React.Component {
         if(type == "bold"){
             this.context.router.push({
                 pathname: '/project-mgr/code-file/code-view',
-                //state:record.name
+                state:record.name
             });
         }
 
