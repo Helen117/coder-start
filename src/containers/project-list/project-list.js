@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Col, Button} from 'antd';
+import {Switch,Icon, Row, Col, Button, Modal} from 'antd';
 import 'pubsub-js';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -16,6 +16,8 @@ import * as starActions from './actions/consern-project-actions';
 import {getProjectStar} from '../project-mgr/actions/project-star-action';
 import TableView from '../../components/table';
 import styles from './index.css';
+
+const confirm = Modal.confirm;
 
 class ProjectList extends Component {
     constructor(props) {
@@ -88,7 +90,15 @@ class ProjectList extends Component {
     }
 
     deleteProject(type, selectedRow){
-
+        confirm({
+            title: '您是否确定要删除此项目？',
+            content:selectedRow.projectName,
+            onOk() {
+                //调删除项目的接口
+            },
+            onCancel() {
+            }
+        })
     }
 
     render() {

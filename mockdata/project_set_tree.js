@@ -1,7 +1,7 @@
 /**
  * Created by zhaojp on 2016/10/25.
  */
-module.exports.virtualGroupTree = {
+module.exports.projectSetTree = {
     "success": true,
     "errorCode": null,
     "errorMsg": null,

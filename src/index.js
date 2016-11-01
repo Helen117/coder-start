@@ -20,15 +20,15 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {Milestones,MilestoneDetail} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
-import {branchesList,createBranches} from './containers/branches';
+import {branchesList,editBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
 import NotFound from './components/page/not-found';
 
 import ForkList from './containers/fork';
-import {virtualGroupCreate,virtualGroupTree} from './containers/virtual-group';
-import {virtualGroupMilestones,virtualGroupMilestonesCreate,virtualGroupMilestonesDetail} from './containers/virtual-group-milestones'
+import {projectSetCreate,projectSetTree} from './containers/project-set';
+import {projectSetMilestones,projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
 import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
 
@@ -97,17 +97,17 @@ ReactDOM.render(
                             </Route>
                         </Route>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
-                        <Route name="virtualGroupTree" breadcrumbName="虚拟组管理" path="virtual-group-tree" component={virtualGroupTree}>
-                            <Route name="virtualGroupMilestones" breadcrumbName="虚拟组里程碑" path="virtualGroupMilestones" component={virtualGroupMilestones}/>
+                        <Route name="projectSetTree" breadcrumbName="虚拟组管理" path="projectSetTree" component={projectSetTree}>
+                            <Route name="projectSetMilestones" breadcrumbName="虚拟组里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>
-                        <Route name="virtualGroupCreate" breadcrumbName="创建虚拟组" path="createVirtualGroup" component={virtualGroupCreate}/>
+                        <Route name="projectSetCreate" breadcrumbName="创建虚拟组" path="createProjectSet" component={projectSetCreate}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
-                        <Route name="virtualGroupMilestonesCreate" breadcrumbName="创建里程碑" path="virtualGroupMilestonesCreate" component={virtualGroupMilestonesCreate}/>
-                        <Route name="virtualGroupMilestonesDetail" breadcrumbName="虚拟组里程碑详细内容" path="virtualGroupMilestonesDetail" component={virtualGroupMilestonesDetail}/>
+                        <Route name="projectSetMilestonesEdit" breadcrumbName="创建里程碑" path="projectSetMilestonesEdit" component={projectSetMilestonesEdit}/>
+                        <Route name="projectSetMilestonesDetail" breadcrumbName="虚拟组里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
-                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
+                        <Route name="editBranches" breadcrumbName="编辑分支" path="editBranches" component={editBranches}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon, Modal, message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -22,6 +22,8 @@ import styles from './index.css';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
+
+const confirm = Modal.confirm;
 
 class ProjectMgr extends React.Component{
     constructor(props){
@@ -43,10 +45,14 @@ class ProjectMgr extends React.Component{
     }
 
     editGroup(type, selectedRow) {
-        this.context.router.push({
-            pathname: '/project-mgr/group-detail',
-            state: {editType: type, selectedRow}
-        });
+        if(!type && !selectedRow){
+            message.error('请选择要修改的项目组!',3);
+        }else{
+            this.context.router.push({
+                pathname: '/project-mgr/group-detail',
+                state: {editType: type, selectedRow}
+            });
+        }
     }
     editProject(type, selectedRow) {
         this.context.router.push({
@@ -153,8 +159,24 @@ class ProjectMgr extends React.Component{
         })
     }
 
+    deleteGroup(groupInfo){
+        if(groupInfo){
+            confirm({
+                title: '您是否确定要删除此项目组？',
+                content:groupInfo.name,
+                onOk() {
+                    //调删除项目组的接口
+                },
+                onCancel() {
+                }
+            })
+        }else{
+            message.error('请选择需要删除的项目组！',3);
+        }
+    }
+
     render(){
-        const {treeData, loading, currentTwoInfo, selectNodeKey} = this.props;
+        const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -177,10 +199,10 @@ class ProjectMgr extends React.Component{
                             {this.state.showSettingDiv?(
                                 <ul className={styles.setting_operate}>
                                     <li className={styles.setting_operate_li}>
-                                        <a onClick={}>删除项目组</a>
+                                        <a onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
                                     </li>
                                     <li className={styles.setting_operate_li}>
-                                        <a onClick={}>修改项目组</a>
+                                        <a onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
                                     </li>
                                     <li className={styles.setting_operate_li}>
                                         <a onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
@@ -217,6 +239,7 @@ function mapStateToProps(state) {
         selectNodeKey: state.getGroupInfo.selectedNode,
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
+        groupInfo:state.getGroupInfo.groupInfo,
     }
 }
 

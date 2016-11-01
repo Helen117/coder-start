@@ -6,7 +6,7 @@ import {
     FETCH_PROJECT_MSG_SUCCESS,
     FETCH_PROJECT_MSG_PENDING,
     FETCH_PROJECT_MSG_ERROR,
-} from '../constants/virtual-group-action-types';
+} from '../constants/project-set-action-types';
 
 const initialState = {
 };

@@ -2,15 +2,15 @@
  * Created by zhaojp on 2016/10/24.
  */
 import api from '../../../api';
-import {CREATE_VIRTUAL_GROUP} from '../constants/virtual-group-action-types';
+import {CREATE_PROJECT_SET} from '../constants/project-set-action-types';
 
-export default function createVirtualGroup(virtualGroupData) {
+export default function createProjectSet(projectSetData) {
     var path = '/project/create-set';
     return {
-        type: CREATE_VIRTUAL_GROUP,
+        type: CREATE_PROJECT_SET,
         payload: {
             promise: api.post(path, {
-                data: virtualGroupData
+                data: projectSetData
             })
         }
     }
