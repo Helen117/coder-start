@@ -103,14 +103,14 @@ class ProjectList extends Component {
 
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,loginInfo,groupMembers,fetchGroupMembers,starList} = this.props;
-            var groupId = this.state.listNode;
-            var groupInfo = this.searchGroupByGroupName(groupId,list);
+            const {list,loginInfo,groupMembers,fetchGroupMembers} = this.props;
+            if(fetchGroupMembers || false){
+                var groupId = this.state.listNode;
+                var groupInfo = this.searchGroupByGroupName(groupId,list);
 
-            const dataSource = [];
-            for(var i=0;i<groupInfo.children.length;i++){
-                var manager = '';
-                if(fetchGroupMembers || false){
+                const dataSource = [];
+                for(var i=0;i<groupInfo.children.length;i++){
+                    var manager = "";
                     if(groupInfo.id.indexOf("_g")<0){
                         for(var j=0;j<groupMembers.length;j++){
                             if(groupInfo.children[i].creatorId == groupMembers[j].id){
@@ -120,43 +120,43 @@ class ProjectList extends Component {
                     }else{
                         manager = loginInfo.name;
                     }
+                    dataSource.push({
+                        key:i+1,
+                        projectName:groupInfo.children[i].name,
+                        manager:manager,
+                        owner:groupInfo.children[i].owner,
+                    });
                 }
-                dataSource.push({
-                    key:i+1,
-                    projectName:groupInfo.children[i].name,
-                    manager:manager,
-                    owner:groupInfo.children[i].owner,
-                });
-            }
-            const groupColumns = (self)=>[
-                {title: "项目名称", dataIndex: "projectName", key: "projectName"},
-                {title: "当前项目经理", dataIndex: "manager", key: "manager"},
-                {title: "owner", dataIndex: "owner", key: "owner"},
-                {title:"操作",dataIndex:"operate",key:"operate",
-                    render(text,record){
-                        return (
-                            <div>
-                                <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
-                                <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
-                            </div>
-                        )
+                const groupColumns = (self)=>[
+                    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
+                    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
+                    {title: "owner", dataIndex: "owner", key: "owner"},
+                    {title:"操作",dataIndex:"operate",key:"operate",
+                        render(text,record){
+                            return (
+                                <div>
+                                    <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
+                                    <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
+                                </div>
+                            )
+                        }
                     }
-                }
-            ];
-            return (
-                <div>
-                    <Row>
-                        <div className ={styles.project_list_div}>
-                            <div>
-                                <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                ];
+                return (
+                    <div>
+                        <Row>
+                            <div className ={styles.project_list_div}>
+                                <div>
+                                    <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                                </div>
+                                <TableView columns={groupColumns(this)}
+                                           dataSource={dataSource}
+                                ></TableView>
                             </div>
-                            <TableView columns={groupColumns(this)}
-                                       dataSource={dataSource}
-                            ></TableView>
-                        </div>
-                    </Row>
-                </div>
-            )
+                        </Row>
+                    </div>
+                )
+            }else{return null}
         } else if(this.state.nullType == true){
             return(
                 <div className={styles.null_type_div}>
@@ -180,19 +180,13 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
-        /*fetchProjectStar:state.getProjectStar.fetchStatus,
-        starList:state.getProjectStar.starList,*/
         list: state.getGroupTree.treeData,
-        /*consernedInfo:state.consernProject.consernedInfo,
-        unconsernedInfo:state.unconsernProject.unconsernedInfo,*/
         getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        /*starActions: bindActionCreators(starActions, dispatch),
-        getProjectStar:bindActionCreators(getProjectStar, dispatch),*/
     }
 }
 

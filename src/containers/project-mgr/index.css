@@ -28,3 +28,12 @@
     float: right;
     padding-left: 10px;
 }
+
+.setting_operate_content{
+    padding-left: 10px;
+}
+
+.setting_operate_area{
+    z-index: 0;
+}
+

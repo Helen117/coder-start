@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -175,8 +175,35 @@ class ProjectMgr extends React.Component{
         }
     }
 
+/*<ul className={styles.setting_operate}>
+<li className={styles.setting_operate_li}>
+<a onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
+</li>
+<li className={styles.setting_operate_li}>
+<a onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
+</li>
+<li className={styles.setting_operate_li}>
+<a onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
+</li>
+<li className={styles.setting_operate_li}>
+<a onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
+</li>
+</ul>*/
+
     render(){
         const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
+        const content = (
+            <div>
+                <a className={styles.setting_operate_content}
+                   onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
+                <a className={styles.setting_operate_content}
+                   onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
+                <a className={styles.setting_operate_content}
+                   onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
+                <a className={styles.setting_operate_content}
+                   onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
+            </div>
+        );
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -192,26 +219,18 @@ class ProjectMgr extends React.Component{
                 <Col span={18}>
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr')?(
                         <Row>
-                            <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
-                                <Icon type="setting" className={styles.setting_img} />
-                                <Icon type="down" className={styles.down_img}/>
-                            </div>
-                            {this.state.showSettingDiv?(
-                                <ul className={styles.setting_operate}>
-                                    <li className={styles.setting_operate_li}>
-                                        <a onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
-                                    </li>
-                                    <li className={styles.setting_operate_li}>
-                                        <a onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
-                                    </li>
-                                    <li className={styles.setting_operate_li}>
-                                        <a onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
-                                    </li>
-                                    <li className={styles.setting_operate_li}>
-                                        <a onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
-                                    </li>
-                                </ul>
-                            ):(<div></div>)}
+                            <Popover
+                                content={content}
+                                trigger="click"
+                                placement="left"
+                                visible={this.state.showSettingDiv}
+                                overlayStyle={this.state.showSettingDiv?{"zIndex":0}:{}}
+                            >
+                                <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
+                                    <Icon type="setting" className={styles.setting_img} />
+                                    <Icon type="down" className={styles.down_img}/>
+                                </div>
+                            </Popover>
                         </Row>
                     ):(<div></div>)}
                     <Row>
