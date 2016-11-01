@@ -8,6 +8,7 @@ import {
 } from '../constants/group_members_types';
 
 const initialState = {
+    fetchStatus:false
 };
 
 export default function getGroupMembers(state = initialState, action = {}) {

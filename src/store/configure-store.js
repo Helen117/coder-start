@@ -31,6 +31,7 @@ import createProjectSet from '../containers/project-set/reducers/project-set-cre
 import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
+import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import createMilestones from '../containers/project-set-milestones/reducers/create-milestones-reducer'
 
 const reducer = combineReducers({
@@ -60,12 +61,13 @@ const reducer = combineReducers({
     fetchBranches,
     createBranch,
     getMenuBarInfo,
+    getCodeFile,
     fetchProMsg,
     createProjectSet,
     projectSetToState,
     fetchProjectSetTree,
     getProjectMembers,
-    createMilestones
+    createMilestones,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
