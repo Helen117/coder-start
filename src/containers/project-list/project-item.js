@@ -296,18 +296,25 @@ class ProjectItem extends Component {
                 const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
 
                 return (
-                    <div className={styles.project_list_div}>
-                        <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-                        <span className={styles.arrow}></span>
-                        <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
-                        <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
-                            <Option value="ssh">SSH</Option>
-                        </Select>
-                        <Input style={{ width: 300 }}  value={this.state.url}/>
-                        {forkFrom}
-                        <TableView columns={columns(this)}
-                                   dataSource={dataSource}
-                        ></TableView>
+                    <div>
+                        <Row>
+                            <div className={styles.project_list_div}>
+                                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                                <span className={styles.arrow}></span>
+                                <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
+                                <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
+                                    <Option value="ssh">SSH</Option>
+                                </Select>
+                                <Input style={{ width: 300 }}  value={this.state.url}/>
+                                {forkFrom}
+                                <TableView columns={columns(this)}
+                                           dataSource={dataSource}
+                                ></TableView>
+                            </div>
+                        </Row>
+                        <Row>
+                            {this.props.children}
+                        </Row>
                     </div>
                 )
             }

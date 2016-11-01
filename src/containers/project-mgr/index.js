@@ -146,13 +146,6 @@ class ProjectMgr extends React.Component{
 
     }
 
-/*<Button className="pull-right" type="primary" onClick={this.editGroup.bind(this, 'add', null)}>
-新建项目组
-</Button>
-<Button className="pull-right" type="primary" onClick={this.editProject.bind(this, 'add', null)}>
-新建项目
-</Button>*/
-
     clickSettingImg(){
         this.setState({
             showSettingDiv:!this.state.showSettingDiv
@@ -174,21 +167,6 @@ class ProjectMgr extends React.Component{
             message.error('请选择需要删除的项目组！',3);
         }
     }
-
-/*<ul className={styles.setting_operate}>
-<li className={styles.setting_operate_li}>
-<a onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
-</li>
-<li className={styles.setting_operate_li}>
-<a onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
-</li>
-<li className={styles.setting_operate_li}>
-<a onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
-</li>
-<li className={styles.setting_operate_li}>
-<a onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
-</li>
-</ul>*/
 
     render(){
         const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
