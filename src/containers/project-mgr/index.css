@@ -18,17 +18,6 @@
     font-size: 5px;
 }
 
-.setting_operate{
-    height: 25px;
-    padding-top: 5px;
-}
-
-.setting_operate_li{
-    position: relative;
-    float: right;
-    padding-left: 10px;
-}
-
 .setting_operate_content{
     padding-left: 10px;
 }
