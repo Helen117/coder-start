@@ -166,7 +166,7 @@ class ProjectDetail extends React.Component {
         const {list} = this.props;
         if(list){
             const options = list[list.length-1].children.map( (item)=>{
-                return <Option value={item.id}>{item.name}</Option>
+                return <Option value={item.id} key={item.id}>{item.name}</Option>
             } )
 
             const nameProps = getFieldProps('name',
