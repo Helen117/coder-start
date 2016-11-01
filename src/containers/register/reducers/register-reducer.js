@@ -18,6 +18,10 @@ export default function register(state = initialState, action = {}) {
 
         case 'GET_ALL_USER_SUCCESS':
             return Object.assign({}, initialState, {users: action.payload});
+
+        case 'GET_LEADER_SUCCESS':
+            return Object.assign({}, initialState, {leader: action.payload});
+
         default:
             return state;
     }

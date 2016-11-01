@@ -6,7 +6,7 @@
 /**
  * Created by william.xu on 2016/9/4
  */
-import React from 'react';
+import React,{ PropTypes, Component } from 'react';
 import {Row, Col, Icon, Menu, Dropdown, Button} from 'antd';
 import './index.less';
 
@@ -27,6 +27,9 @@ export default class Header extends React.Component {
     showSideBar(){
         this.props.showSideBar();
     }
+    approveList(){
+        this.context.router.replace('/approveRegister');
+    }
 
     render() {
         const {profile} = this.props;
@@ -42,7 +45,7 @@ export default class Header extends React.Component {
                         当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项
                     </p>
                     <p>
-                        当前您有 <span>{6}</span> 项待审批事项
+                        当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{6}</a></span> 项待审批事项
                     </p>
                 </Col>
                 <Col span={2}>
@@ -70,3 +73,7 @@ export default class Header extends React.Component {
     }
 
 }
+
+Header.contextTypes = {
+    router: PropTypes.object.isRequired
+};

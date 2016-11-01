@@ -25,10 +25,11 @@ class Register extends Component{
 
     }
 
-    // componentWillMount(){
-    //     const { actions } = this.props;
-    //     actions.getAllUser();
-    // }
+    componentWillMount(){
+        const { actions } = this.props;
+        actions.getLeader();
+        // actions.getAllUser();
+    }
 
     componentWillReceiveProps(nextProps) {
         const result = nextProps.registerState.registerResult;
@@ -146,6 +147,8 @@ class Register extends Component{
             </Select>
         );
 
+        const leader = this.props.leaderInfo?this.props.leaderInfo.map(data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
+
         return (
             <Box title='新用户注册'>
                 <Form horizontal onSubmit={this.handleSubmit}>
@@ -173,11 +176,22 @@ class Register extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="申请角色" >
-                        <Select id="role"  {...getFieldProps('role',{initialValue:'developer',rules:[{required:true,message:'请选择申请的角色'}]})} >
-                            <Option value="tester">测试人员</Option>
-                            <Option value="developer">开发人员</Option>
-                            <Option value="compiler" >BM</Option>
-                            <Option value="projectManager">项目经理</Option>
+                        <Select id="role_id"  {...getFieldProps('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})} >
+                            <Option value="4">测试人员</Option>
+                            <Option value="3">开发人员</Option>
+                            <Option value="2" >BM</Option>
+                            <Option value="1">项目经理</Option>
+                        </Select>
+                    </FormItem>
+
+                    <FormItem {...formItemLayout}  label="上级领导" >
+                        <Select showSearch
+                                showArrow={false}
+                                placeholder="leader"
+                                optionFilterProp="children"
+                                notFoundContent="无法找到"
+                                {...getFieldProps('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})}>
+                            {leader}
                         </Select>
                     </FormItem>
 
@@ -202,7 +216,8 @@ Register = Form.create()(Register);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        registerState:state.register
+        registerState:state.register,
+        leaderInfo:state.register.leader,
     };
 }
 

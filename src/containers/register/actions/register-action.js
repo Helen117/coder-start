@@ -22,3 +22,13 @@ export function getAllUser() {
         }
     }
 }
+
+
+export function getLeader() {
+    return {
+        type: 'GET_LEADER',
+        payload: {
+            promise: api.post('/user/leader-list')
+        }
+    }
+}

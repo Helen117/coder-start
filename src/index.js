@@ -30,8 +30,8 @@ import ForkList from './containers/fork';
 import {virtualGroupCreate,virtualGroupTree} from './containers/virtual-group';
 import {virtualGroupMilestones,virtualGroupMilestonesCreate,virtualGroupMilestonesDetail} from './containers/virtual-group-milestones'
 
-import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
-
+import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues';
+import ApproveList from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
 
@@ -108,6 +108,7 @@ ReactDOM.render(
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
+                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

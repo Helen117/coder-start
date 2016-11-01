@@ -10,9 +10,9 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
 import register from '../containers/register/reducers/register-reducer';
-import {issue,GetIssueDependent} from '../containers/issues/reducers/issue-reducer';
+import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
-
+import approve from '../containers/approve/reducers/approve-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -45,6 +45,7 @@ const reducer = combineReducers({
     register,
     issue,
     GetIssueDependent,
+    GetIssueDemand,
     forkProject,
     consernProject,
     unconsernProject,
@@ -65,7 +66,8 @@ const reducer = combineReducers({
     virtualGroupToState,
     fetchVirtualGroupTree,
     getProjectMembers,
-    createMilestones
+    createMilestones,
+    approve
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

@@ -15,7 +15,7 @@ const confirm = Modal.confirm;
 class AddIssue extends Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {able:true,};
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
@@ -23,6 +23,7 @@ class AddIssue extends Component{
         const {actions,projectInfo} = this.props;
         if(projectInfo){
             actions.fetchDataSource(projectInfo.id);
+            actions.getIssueDemand(projectInfo.id,0);
         }
 
     }
@@ -149,13 +150,30 @@ class AddIssue extends Component{
         })
     }
 
+    handleChange(value){
+        if(value && value!='demand'){
+            this.setState({able:false});
+        }else{
+            this.setState({able:true});
+        }
+    }
+
+    loadIssues(value){
+
+        const projectId = this.props.projectInfo.id;
+
+        if (value && projectId){
+            this.props.fetchMessage.fetchIssuesData(value,projectId);
+        }
+    }
+
     render() {
 
         const {editType} = this.props.location.state;
         const { getFieldProps } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 6 },
-            wrapperCol: { span: 14 },
+            wrapperCol: { span: 12 },
         };
 
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
@@ -163,6 +181,10 @@ class AddIssue extends Component{
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
+
+        //console.log(this.props.demandList);
+
+        const demands =this.props.demandList?this.props.demandList.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         return (
             <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
@@ -174,8 +196,53 @@ class AddIssue extends Component{
                         <Input type="textarea" placeholder="description" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'不能为空'}]})} />
                     </FormItem>
 
+                    <FormItem {...formItemLayout} label="问题类型" >
+                        <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)} {...getFieldProps('type',{initialValue:'demand',rules:[{required:true,message:'请选择问题类型'}]})} >
+                            <Option value="demand">需求</Option>
+                            <Option value="defect">缺陷</Option>
+                            <Option value="bug" >Bug</Option>
+                        </Select>
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="里程碑" >
+                        <Select  showSearch
+                                 showArrow={false}
+                                 placeholder="请选择里程碑"
+                                 optionFilterProp="children"
+                                 notFoundContent="无法找到"
+                                 onSelect={this.loadIssues.bind(this)}
+                                 style={{ width: 300 }}
+                                 {...getFieldProps('milestone.id')} >
+                            {mileStoneOptions}
+                        </Select>
+                        <br/>
+                        <a href="/project-mgr/createMilestones">Create new mileStone</a>
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="需求" >
+                        <Select  showSearch
+                                 showArrow={false}
+                                 placeholder="请选择对应的需求"
+                                 optionFilterProp="children"
+                                 notFoundContent="无法找到"
+                                 disabled={this.state.able}
+                                 style={{ width: 300 }}
+                                 {...getFieldProps('parent_id')} >
+                            {demands}
+                        </Select>
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="问题标签" >
+                        <Select multiple
+                                style={{ width: 300 }} {...getFieldProps('labels')} >
+                            {label}
+                        </Select>
+                        <br/>
+                        <a href="label">Create new label</a>
+                    </FormItem>
+
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        <DatePicker style={{ width: 200 }} {...getFieldProps('due_date',{rules:[{ required:true,type: 'date',message:'不能为空'},{validator:this.checkDueDay}]})} />
+                        <DatePicker style={{ width: 300 }} {...getFieldProps('due_date',{rules:[{validator:this.checkDueDay}]})} />
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
@@ -184,32 +251,10 @@ class AddIssue extends Component{
                                 placeholder="请选择人员"
                                 optionFilterProp="children"
                                 notFoundContent="无法找到"
-                                style={{ width: 200 }}
-                                {...getFieldProps('assignee.id',{rules:[{required:true,message:'请选择指派的人'}]})} >
+                                style={{ width: 300 }}
+                                {...getFieldProps('assignee.id')} >
                             {assignee}
                         </Select>
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="里程碑" >
-                        <Select  showSearch
-                                 showArrow={false}
-                                 placeholder="请选择里程碑"
-                                 optionFilterProp="children"
-                                 notFoundContent="无法找到"
-                                 style={{ width: 200 }}
-                                 {...getFieldProps('milestone.id')} >
-                            {mileStoneOptions}
-                        </Select>
-                        <br/>
-                        <a href="/project-mgr/createMilestones">Create new mileStone</a>
-                    </FormItem>
-
-                    <FormItem {...formItemLayout} label="问题标签" >
-                        <Select multiple
-                                style={{ width: 200 }} {...getFieldProps('labels')} >
-                            {label}
-                        </Select>
-                        <br/>
-                        <a href="label">Create new label</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="上传" >
@@ -257,6 +302,7 @@ function mapStateToProps(state) {
         issue:state.issue,
         loginInfo:state.login.profile,
         projectInfo:state.getProjectInfo.projectInfo,
+        demandList:state.GetIssueDemand.demands,
     };
 }
 

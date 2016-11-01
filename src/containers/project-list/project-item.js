@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Row} from 'antd';
+import { Select,Input, Button, message, Tooltip} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -268,18 +268,19 @@ class ProjectItem extends Component {
                     //test_cover:
                 }];
 
-                const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
+                const forkFrom =this.props.getProjectInfo.forksFrom?<span>Forked from {this.props.getProjectInfo.forksFrom}</span>:null;
 
                 return (
                     <div className={styles.project_list_div}>
+                        <Tooltip placement="top" title={forkFrom}>
                         <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                        </Tooltip>
                         <span className={styles.arrow}></span>
                         <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
                         <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                             <Option value="ssh">SSH</Option>
                         </Select>
                         <Input style={{ width: 300 }}  value={this.state.url}/>
-                        {forkFrom}
                         <TableView columns={columns(this)}
                                    dataSource={dataSource}
                         ></TableView>

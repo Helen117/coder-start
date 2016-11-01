@@ -92,3 +92,17 @@ export function closeIssue(issueId) {
         }
     }
 }
+
+export function getIssueDemand(projectId,milestoneId) {
+    return {
+        type: 'GET_DEMAND',
+        payload: {
+            promise: api.post('/project/demand-issues',{
+                params: {
+                    project_id: projectId,
+                    milestone_id:milestoneId
+                }
+            })
+        }
+    }
+}
