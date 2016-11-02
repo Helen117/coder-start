@@ -109,9 +109,12 @@ class MenuBar extends React.Component {
                     let truePath = window.location.pathname;
                     while(!oneKey_return && !twoKey_return && menuOneKey.length == 0){//如果没有找到key,去掉最后一个“/”，继续找
                         let trueIndex = truePath.lastIndexOf("/");
-                        if(trueIndex == 0){
+                        if(trueIndex == 0 && currentTwo.length>0){
                             oneKey_return = currentOne[0];
                             twoKey_return = currentTwo[0];
+                        }else if(trueIndex == 0 && currentTwo.length==0){
+                            oneKey_return = "";
+                            twoKey_return = "";
                         }else{
                             truePath = truePath.substr(0,trueIndex);
                             let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,truePath);

@@ -23,19 +23,12 @@ class ProjectItem extends Component {
         super(props);
         this.showProjectItem = this.showProjectItem.bind(this);
         this.state = {
-            itemType:false,
+            //itemType:false,
             itemNode:null,
         };
     }
 
     componentDidMount() {
-        //在此处注册对其他控件发送的消息的响应
-        //PubSub.subscribe("evtTreeClick",this.showProjectItem.bind(this) );
-        const {node} = this.props.location.state;
-        if(node){
-            this.showProjectItem(node);
-        }
-
         if(this.props.getProjectInfo){
             this.setState({
                 url: this.props.getProjectInfo.sshUrl,
@@ -44,19 +37,21 @@ class ProjectItem extends Component {
     }
 
     componentWillMount(){
-        //在此处注销对其他控件发送消息的响应
-        //PubSub.unsubscribe("evtTreeClick");
+        const {node} = this.props.location.state;
+        if(node){
+            this.showProjectItem(node);
+        }
     }
 
     showProjectItem(data){
         if(data.isLeaf == true && (data.id.indexOf("_") >= 0 && data.id.indexOf("_g") < 0)){
             this.setState({
-                itemType:true,
+                //itemType:true,
                 itemNode:data.id,
             });
         }else{
             this.setState({
-                itemType:false,
+                //itemType:false,
                 itemNode:null,
             });
         }
@@ -112,10 +107,8 @@ class ProjectItem extends Component {
         const { consernedInfo, unconsernedInfo } = nextProps;
         if (this.props.consernedInfo != consernedInfo && consernedInfo){
             this.props.getGroupTree(loginInfo.userId)
-            //this.props.getProjectStar(loginInfo.username);
         }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
             this.props.getGroupTree(loginInfo.userId)
-            //this.props.getProjectStar(loginInfo.username);
         }
 
         const {forkResult,getProjectInfo} = nextProps;
@@ -123,7 +116,7 @@ class ProjectItem extends Component {
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
             this.setState({
-                itemType:false,
+                //itemType:false,
                 itemNode:null,
             });
             message.success('Fork成功!',3);
@@ -203,7 +196,7 @@ class ProjectItem extends Component {
     memberCountClick(record,groupInfo,projectInfo){
         this.context.router.push({
             pathname: '/project-mgr/project-item/project-member',
-            state: {groupInfo:groupInfo, projectInfo:projectInfo}
+            state: {groupInfo:groupInfo, projectInfo:projectInfo,node:{id:projectInfo.id,isLeaf:true}}
         });
     }
 
@@ -218,110 +211,106 @@ class ProjectItem extends Component {
     }
 
     render() {
-        if(this.state.itemType == true){//展示项目信息
-            const {list,loginInfo,projectMembers,fetchProjectStatus} = this.props;
-            if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false) && list.length!=0){
-                var projectId = this.state.itemNode;
-                var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
-                let starList = this.findMyConsernProject(list);
-                const columns = (self)=>[
-                    {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
-                    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
-                    {title: "项目描述", dataIndex: "description", key: "description"},
-                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
-                        render(text,record){
-                            return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
+        const {list,loginInfo,projectMembers,fetchProjectStatus} = this.props;
+        if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false) && list.length!=0){
+            var projectId = this.state.itemNode;
+            var {projectInfo,groupInfo} = this.searchGroupByProjectName(projectId,list);
+            let starList = this.findMyConsernProject(list);
+            const columns = (self)=>[
+                {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+                {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                {title: "项目描述", dataIndex: "description", key: "description"},
+                {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
+                    render(text,record){
+                        return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
+                    }
+                },
+                {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+                {title: "是否关注", dataIndex: "consern", key: "consern",
+                    render(text,record){
+                        var count = 0, count2 = 0,recordPrijectId=projectId;
+                        for(var i=0; i<projectMembers.projectMembers.length; i++){
+                            if(loginInfo.username == projectMembers.projectMembers[i].username){
+                                count2++;//当前用户是此项目下成员
+                            }
                         }
-                    },
-                    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
-                    {title: "是否关注", dataIndex: "consern", key: "consern",
-                        render(text,record){
-                            var count = 0, count2 = 0,recordPrijectId=projectId;
-                            for(var i=0; i<projectMembers.projectMembers.length; i++){
-                                if(loginInfo.username == projectMembers.projectMembers[i].username){
-                                    count2++;//当前用户是此项目下成员
-                                }
+                        for(var j=0;j<starList.length;j++){
+                            if(recordPrijectId.substr(0,recordPrijectId.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
+                                count++;
                             }
-                            for(var j=0;j<starList.length;j++){
-                                if(recordPrijectId.substr(0,recordPrijectId.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
-                                    count++;
-                                }
-                            }
-                            if(count == 0 && count2 == 0){//未关注
-                                var is_conserned = '关注';
-                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
-                            }else if(count != 0 && count2 == 0){//已关注
-                                var is_conserned = '取消关注';
-                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
-                            }else{//项目成员
-                                var is_conserned = '项目成员禁止取关';
-                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)} disabled>{text}</a>
-                            }
-                        }},
-                    {title: "项目状态", dataIndex: "state", key: "state"},
-                    {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
-                    {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
-                ];
-                var count=0, count2=0;
-                for(var i=0; i<projectMembers.projectMembers.length; i++){
-                    if(loginInfo.username == projectMembers.projectMembers[i].username){
-                        count2++;//当前用户是此项目下成员
-                    }
+                        }
+                        if(count == 0 && count2 == 0){//未关注
+                            var is_conserned = '关注';
+                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                        }else if(count != 0 && count2 == 0){//已关注
+                            var is_conserned = '取消关注';
+                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)}>{text}</a>
+                        }else{//项目成员
+                            var is_conserned = '项目成员禁止取关';
+                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,is_conserned)} disabled>{text}</a>
+                        }
+                    }},
+                {title: "项目状态", dataIndex: "state", key: "state"},
+                {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+                {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+            ];
+            var count=0, count2=0;
+            for(var i=0; i<projectMembers.projectMembers.length; i++){
+                if(loginInfo.username == projectMembers.projectMembers[i].username){
+                    count2++;//当前用户是此项目下成员
                 }
-                for(var j=0;j<starList.length;j++){
-                    var project_id = projectInfo.id;
-                    if(project_id.substr(0,project_id.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
-                        count++;
-                    }
-                }
-                if(count == 0 && count2 == 0){//未关注
-                    var consern_desc = "关注";
-                }else if(count != 0 && count2 == 0){//已关注
-                    var consern_desc = "取消关注";
-                }else{//项目成员
-                    var consern_desc = "项目成员禁止取关";
-                }
-                const dataSource = [{
-                    group_name:groupInfo.name,
-                    project_name:projectInfo.name,
-                    description:projectInfo.description,
-                    memberNum:"共"+projectMembers.projectMembers.length+"人",
-                    //next_milestom:
-                    consern:consern_desc,
-                    //state:
-                    //tech_debt:
-                    //test_cover:
-                }];
-
-                const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
-
-                return (
-                    <div>
-                        <Row>
-                            <div className={styles.project_list_div}>
-                                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-                                <span className={styles.arrow}></span>
-                                <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
-                                <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
-                                    <Option value="ssh">SSH</Option>
-                                </Select>
-                                <Input style={{ width: 300 }}  value={this.state.url}/>
-                                {forkFrom}
-                                <TableView columns={columns(this)}
-                                           dataSource={dataSource}
-                                ></TableView>
-                            </div>
-                        </Row>
-                        <Row>
-                            {this.props.children}
-                        </Row>
-                    </div>
-                )
             }
-            return null;
-        }else{
-            return null;
+            for(var j=0;j<starList.length;j++){
+                var project_id = projectInfo.id;
+                if(project_id.substr(0,project_id.length-2) == starList[j].id.substr(0,starList[j].id.length-2)){
+                    count++;
+                }
+            }
+            if(count == 0 && count2 == 0){//未关注
+                var consern_desc = "关注";
+            }else if(count != 0 && count2 == 0){//已关注
+                var consern_desc = "取消关注";
+            }else{//项目成员
+                var consern_desc = "项目成员禁止取关";
+            }
+            const dataSource = [{
+                group_name:groupInfo.name,
+                project_name:projectInfo.name,
+                description:projectInfo.description,
+                memberNum:"共"+projectMembers.projectMembers.length+"人",
+                //next_milestom:
+                consern:consern_desc,
+                //state:
+                //tech_debt:
+                //test_cover:
+            }];
+
+            const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
+
+            return (
+                <div>
+                    <Row>
+                        <div className={styles.project_list_div}>
+                            <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                            <span className={styles.arrow}></span>
+                            <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
+                            <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
+                                <Option value="ssh">SSH</Option>
+                            </Select>
+                            <Input style={{ width: 300 }}  value={this.state.url}/>
+                            {forkFrom}
+                            <TableView columns={columns(this)}
+                                       dataSource={dataSource}
+                            ></TableView>
+                        </div>
+                    </Row>
+                    <Row>
+                        {this.props.children}
+                    </Row>
+                </div>
+            )
         }
+        return null;
     }
 }
 

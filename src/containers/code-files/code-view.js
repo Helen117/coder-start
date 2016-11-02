@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Row, input} from 'antd';
-import SyntaxHighlighter from './syntaxhighlighter';
+//import SyntaxHighlighter from './syntaxhighlighter';
 import styles from "./index.css";
 
 const availableStyles = [
@@ -20,21 +20,19 @@ class CodeView extends React.Component {
     constructor(){
         super();
         this.state = {
-            style: require('./styles/atelier-dune-light').default,
+            //style: require('./styles/atelier-dune-light').default,
             code: '',
         }
     }
 
     componentWillMount(){
-        console.log("componentWillMount")
+        //console.log("componentWillMount")
     }
 
     componentWillReceiveProps(nextProps){
-        console.log("componentWillReceiveProps")
         const { codeView, fetchContentStatus} = nextProps;
         if(codeView != this.props.codeView){
             if(fetchContentStatus == true){
-                console.log("set  code")
                 this.setState({
                     code:codeView.content
                 })
@@ -43,7 +41,6 @@ class CodeView extends React.Component {
     }
 
     render(){
-        console.log("render")
         const {fetchContentStatus} = this.props;
         if(fetchContentStatus || false){
             return (
@@ -53,10 +50,10 @@ class CodeView extends React.Component {
                     </Row>
                     <Row>
                         <div className={styles.blob_commit_info}>
-                            <SyntaxHighlighter style={this.state.style}
+                            {/*<SyntaxHighlighter style={this.state.style}
                                                showLineNumbers>
                                 {this.state.code}
-                            </SyntaxHighlighter>
+                            </SyntaxHighlighter>*/}
                         </div>
                     </Row>
                 </div>

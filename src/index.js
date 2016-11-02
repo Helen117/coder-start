@@ -84,8 +84,6 @@ ReactDOM.render(
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
-                            <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
-                            <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
@@ -96,6 +94,8 @@ ReactDOM.render(
                                 <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
                             </Route>
                         </Route>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
+                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="虚拟组管理" path="projectSetTree" component={projectSetTree}>
                             <Route name="projectSetMilestones" breadcrumbName="虚拟组里程碑" path="projectSetMilestones" component={projectSetMilestones}/>

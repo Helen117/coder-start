@@ -84,10 +84,21 @@ class App extends React.Component {
         let truePath = window.location.pathname;
         while(!key_return && menuData.length>0){//如果没有找到key,去掉最后一个“/”，继续找
             let trueIndex = truePath.lastIndexOf("/");
-            truePath = truePath.substr(0,trueIndex);
-            let {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData,truePath);
-            path_return = navi_keypath_return;
-            key_return = navi_key_return;
+            if(trueIndex == 0 && navpath.length==0){
+                path_return[0] = "menu1";
+                key_return = "menu1";
+                this.context.router.push({
+                    pathname: '/home',
+                });
+            }else if(trueIndex == 0 && navpath.length>0){
+                key_return = "menu"+navpath[0].key;
+                path_return[0] = key_return;
+            }else{
+                truePath = truePath.substr(0,trueIndex);
+                let {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData,truePath);
+                path_return = navi_keypath_return;
+                key_return = navi_key_return;
+            }
         }
 
         if(nextProps.navpath.length == 0 && key_return){//登录，刷新时更新面包屑
