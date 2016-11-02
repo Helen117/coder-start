@@ -59,7 +59,7 @@ export function getIssueList(projectId) {
     return {
         type: 'GET_ISSUE_LIST',
         payload: {
-            promise: api.post('/project/issues',{
+            promise: api.post('/project/project-issues',{
                 params: {
                     projectId: projectId
                 }

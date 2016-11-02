@@ -47,7 +47,7 @@ class Register extends Component{
             message.error('注册失败！'+error);
         }
         if (!registering && !error && result && result!=this.props.registerState.registerResult) {
-            message.success('注册成功！');
+            message.success('提交成功，等待审批！');
             this.context.router.replace('/login');
         }
     }

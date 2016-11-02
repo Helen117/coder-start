@@ -30,7 +30,7 @@ class AddIssue extends Component{
     componentDidMount() {
 
         const {selectedRow} = this.props.location.state;
-        //console.log('selectedRow:',selectedRow);
+        // console.log('selectedRow:',selectedRow);
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             //时间类型转换
@@ -42,8 +42,8 @@ class AddIssue extends Component{
 
             setFieldsValue(selectedRow);
             //this.setState({assign:selectedRow.assignee_name,milestone:selectedRow.milestone_id});
-            if(selectedRow.assign_id){
-                setFieldsValue({'assignee.id':selectedRow.assign_id.toString()});
+            if(selectedRow.assignee_id){
+                setFieldsValue({'assignee.id':selectedRow.assignee_id.toString()});
             }
             if(selectedRow.milestone_id){
                 setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
@@ -163,7 +163,7 @@ class AddIssue extends Component{
         const projectId = this.props.projectInfo.id;
 
         if (value && projectId){
-            this.props.fetchMessage.fetchIssuesData(value,projectId);
+            this.props.actions.getIssueDemand(projectId,value);
         }
     }
 
@@ -197,7 +197,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题类型" >
-                        <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)} {...getFieldProps('type',{initialValue:'demand',rules:[{required:true,message:'请选择问题类型'}]})} >
+                        <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)} {...getFieldProps('type',{rules:[{required:true,message:'请选择问题类型'}]})} >
                             <Option value="demand">需求</Option>
                             <Option value="defect">缺陷</Option>
                             <Option value="bug" >Bug</Option>

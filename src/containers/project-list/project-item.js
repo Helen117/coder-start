@@ -268,7 +268,7 @@ class ProjectItem extends Component {
                     //test_cover:
                 }];
 
-                const forkFrom =this.props.getProjectInfo.forksFrom?<span>Forked from {this.props.getProjectInfo.forksFrom}</span>:null;
+                const forkFrom =this.props.getProjectInfo.forksFrom?<span>Forked from {this.props.getProjectInfo.forksFrom}</span>:<span>新建项目</span>;
 
                 return (
                     <div className={styles.project_list_div}>
