@@ -103,22 +103,24 @@ class ProjectList extends Component {
 
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,loginInfo,groupMembers,fetchGroupMembers} = this.props;
-            if(fetchGroupMembers || false){
+            const {list,getGroupInfo,groupMembers,fetchGroupMembers} = this.props;
+            if(getGroupInfo){
                 var groupId = this.state.listNode;
                 var groupInfo = this.searchGroupByGroupName(groupId,list);
 
                 const dataSource = [];
                 for(var i=0;i<groupInfo.children.length;i++){
                     var manager = "";
-                    if(groupInfo.id.indexOf("_g")<0){
-                        for(var j=0;j<groupMembers.length;j++){
-                            if(groupInfo.children[i].creatorId == groupMembers[j].id){
-                                manager = groupMembers[j].name;
+                    if(fetchGroupMembers || false){
+                        if(groupInfo.id.indexOf("_g")<0){
+                            for(var j=0;j<groupMembers.length;j++){
+                                if(groupInfo.children[i].creatorId == groupMembers[j].id){
+                                    manager = groupMembers[j].name;
+                                }
                             }
+                        }else{
+                            manager = "";
                         }
-                    }else{
-                        manager = loginInfo.name;
                     }
                     dataSource.push({
                         key:i+1,
