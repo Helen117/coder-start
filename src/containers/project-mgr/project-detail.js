@@ -119,7 +119,7 @@ class ProjectDetail extends React.Component {
                         name:getGroupInfo.children[i].name,
                         description:getGroupInfo.children[i].description,
                         groupid:getGroupInfo.id,
-                        //visibility_level:getGroupInfo.children[i].visibility_level
+                        visibility_level:getGroupInfo.children[i].visibility_level.toString()
                     });
                 }
             }
@@ -164,7 +164,7 @@ class ProjectDetail extends React.Component {
             wrapperCol: {span: 14},
         };
         const {list} = this.props;
-        if(list){
+        if(list.length > 0){
             const options = list[list.length-1].children.map( (item)=>{
                 return <Option value={item.id} key={item.id}>{item.name}</Option>
             } )
@@ -177,7 +177,10 @@ class ProjectDetail extends React.Component {
                 });
             const descriptionProps = getFieldProps('description',);
             const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
-            const visibilityProps = getFieldProps('visibility_level',);
+            const visibilityProps = getFieldProps('visibility_level',
+                {rules:[
+                    {required:true, message:'请选择可见级别！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>

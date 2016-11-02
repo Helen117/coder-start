@@ -18,6 +18,11 @@ class FileTree extends React.Component {
     }
 
     componentWillMount(){
+        if(this.props.location.state.filePath){
+            this.setState({
+                filePath:this.props.location.state.filePath
+            })
+        }
         PubSub.subscribe("evtClickTreePath",this.refreshFilePath.bind(this));
         PubSub.subscribe("evtClickBrand",this.refreshFilePath.bind(this));
     }

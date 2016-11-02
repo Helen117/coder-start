@@ -82,7 +82,7 @@ class App extends React.Component {
         //如果没有找到key,去掉最后一个“/”，继续找
         let path_return = navi_keypath_return,key_return = navi_key_return;
         let truePath = window.location.pathname;
-        if(!navi_key_return){//如果没有找到key,去掉最后一个“/”，继续找
+        while(!key_return && menuData.length>0){//如果没有找到key,去掉最后一个“/”，继续找
             let trueIndex = truePath.lastIndexOf("/");
             truePath = truePath.substr(0,trueIndex);
             let {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData,truePath);

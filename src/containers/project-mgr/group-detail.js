@@ -83,11 +83,13 @@ class GroupDetail extends React.Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const {selectedRow} = this.props.location.state;
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
-            setFieldsValue(selectedRow);
+            setFieldsValue({name:selectedRow.name});
+            setFieldsValue({description:selectedRow.description});
+            setFieldsValue({visibility_level:selectedRow.visibility_level.toString()});
         }
     }
 
@@ -128,7 +130,10 @@ class GroupDetail extends React.Component {
                     {validator:this.groupNameExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);
-            const visibilityProps = getFieldProps('visibility_level',);
+            const visibilityProps = getFieldProps('visibility_level',
+                {rules:[
+                    {required:true, message:'请选择可见级别！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>

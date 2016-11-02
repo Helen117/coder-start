@@ -200,10 +200,10 @@ class ProjectItem extends Component {
         }
     }
 
-    memberCountClick(record,groupInfo){
+    memberCountClick(record,groupInfo,projectInfo){
         this.context.router.push({
             pathname: '/project-mgr/project-item/project-member',
-            state: {record:record, groupInfo:groupInfo}
+            state: {groupInfo:groupInfo, projectInfo:projectInfo}
         });
     }
 
@@ -230,7 +230,7 @@ class ProjectItem extends Component {
                     {title: "项目描述", dataIndex: "description", key: "description"},
                     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
                         render(text,record){
-                            return <a onClick={self.memberCountClick.bind(self,record,groupInfo)}>{text}</a>
+                            return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
                         }
                     },
                     {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},

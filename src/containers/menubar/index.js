@@ -99,7 +99,7 @@ class MenuBar extends React.Component {
                         currentMenuOne:"menu"+defaultMenuOne_id,
                         currentMenuTwo:"menu"+defaultMenuTwo_id,
                     })
-                }else{//刷新、返回操作更新顶部导航
+                }else{//登录、刷新、返回操作更新顶部导航
                     //根据url找到当前页面顶部导航的selectKeys
                     let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,window.location.pathname);
                     let oneKey_return,twoKey_return;
@@ -107,7 +107,7 @@ class MenuBar extends React.Component {
                         oneKey_return = menuOneKey[0],twoKey_return = menuTwoKey[0];
                     }
                     let truePath = window.location.pathname;
-                    if(menuOneKey.length==0 && menuTwoKey.length==0){//如果没有找到key,去掉最后一个“/”，继续找
+                    while(!oneKey_return && !twoKey_return && menuOneKey.length == 0){//如果没有找到key,去掉最后一个“/”，继续找
                         let trueIndex = truePath.lastIndexOf("/");
                         if(trueIndex == 0){
                             oneKey_return = currentOne[0];
