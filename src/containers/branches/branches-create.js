@@ -16,7 +16,7 @@ const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const Option = Select.Option;
 
-class editBranches extends Component {
+class createBranches extends Component {
     constructor(props) {
         super(props);
     }
@@ -167,7 +167,7 @@ class editBranches extends Component {
     }
 }
 
-editBranches.contextTypes = {
+createBranches.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
@@ -190,4 +190,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(createForm()(editBranches));
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(createBranches));

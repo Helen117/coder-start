@@ -31,10 +31,11 @@ export default class TimelineMilestone extends React.Component {
 
     milestonesDetail(milestonesId){
         const projectId = this.props.projectId;
+        const id = this.props.id;
         const milestonesDetailPath = this.props.milestonesDetailPath;
         this.context.router.push({
             pathname: milestonesDetailPath,
-            state: {milestonesId,projectId}
+            state: {milestonesId,projectId,id}
         });
     }
     editMilestone(item){
@@ -55,31 +56,25 @@ export default class TimelineMilestone extends React.Component {
                 let i = 0;
                 return (
                     <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
+                        <Tooltip placement="rightBottom" title="点击可修改">
+                            <a onClick = {this.editMilestone.bind(this,item)}>
+                                <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
+                            </a>
+                        </Tooltip>
 
-
-                            <Tooltip placement="rightBottom" title="点击可修改">
-                                <a onClick = {this.editMilestone.bind(this,item)}>
-                                    <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
-                                </a>
-                            </Tooltip>
-
-                            {item.description}
-                            <div style={{marginLeft:12}}>
-                                <p>计划发布时间：{this.getTime(item.due_date)}</p>
-                                当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项
-                                <Progress percent={item.rate} />
-                                {groupId.indexOf("_g")>0?<div className="pull-right" >
-                                    <a style={{margin:5}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
-                                    <a style={{margin:5}} >关闭</a>
-                                    <a style={{margin:5}} >删除</a>
-                                </div>:<div></div>
-                                }
-                                <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
-
-                            </div>
-
-
-
+                        {item.description}
+                        <div style={{marginLeft:12}}>
+                            <p>计划发布时间：{this.getTime(item.due_date)}</p>
+                            当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项
+                            <Progress percent={item.rate} />
+                            {groupId?groupId.indexOf("_g")>0?<div className="pull-right" >
+                                <a style={{margin:5}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
+                                <a style={{margin:5}} >关闭</a>
+                                <a style={{margin:5}} >删除</a>
+                            </div>:<div></div>:<div></div>
+                            }
+                            <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
+                        </div>
                     </Timeline.Item>
                     )
             })
@@ -93,7 +88,7 @@ export default class TimelineMilestone extends React.Component {
         const loading = this.props.loading;
         const pending = this.props.pending;
         return(
-            <div style={{width:"60%"}}>
+            <div style={{width:"50%"}}>
             {loading?
                 (<span className="filter-not-found">
                         <i className="anticon anticon-loading">
@@ -101,7 +96,7 @@ export default class TimelineMilestone extends React.Component {
                         </i>
                     </span>
                 ):(timeLine.length==0?
-                    (<span className="filter-not-found">{notFoundMsg?notFoundMsg:'该项目下无里程碑数据'}</span>)
+                    (<span className="filter-not-found">{notFoundMsg?notFoundMsg:'无数据信息'}</span>)
                     :(<Timeline pending={pending}>
                         {timeLine}
                     </Timeline>)
@@ -117,3 +112,4 @@ TimelineMilestone.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
+

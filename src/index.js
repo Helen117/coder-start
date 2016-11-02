@@ -20,7 +20,7 @@ import Home from './containers/home';
 import Login from './containers/login';
 import {Milestones,MilestoneDetail} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
-import {branchesList,editBranches} from './containers/branches';
+import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
 
@@ -107,7 +107,7 @@ ReactDOM.render(
                         <Route name="projectSetMilestonesDetail" breadcrumbName="虚拟组里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
-                        <Route name="editBranches" breadcrumbName="编辑分支" path="editBranches" component={editBranches}/>
+                        <Route name="createBranches" breadcrumbName="编辑分支" path="createBranches" component={createBranches}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

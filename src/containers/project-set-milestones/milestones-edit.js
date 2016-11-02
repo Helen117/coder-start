@@ -1,7 +1,7 @@
 import React,{ PropTypes } from 'react';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
-import {createMilestone} from './actions/edit-milestones-actions';
+import {createMilestone,updateMilestone} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -35,11 +35,16 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage } = nextProps;
+        const { inserted, errMessage,updateErrorMsg ,updateMsg} = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage);
+        }
+        if(this.props.updateErrorMsg != updateErrorMsg && updateErrorMsg){
+            this.props.errUpdate(updateErrorMsg);
+        }else if(this.props.updateMsg !=updateMsg && updateMsg){
+            this.props.sucUpdate(updateErrorMsg);
         }
 
     }
@@ -57,6 +62,24 @@ class projectSetMilestonesEdit extends React.Component {
     errCallback(errMessage){
         notification.error({
             message: '创建失败',
+            description: errMessage,
+            duration: 2
+        });
+    }
+
+    sucUpdate(){
+        notification.success({
+            message: '修改成功',
+            description: '修改成功',
+            duration: 2
+        });
+        this.props.getProjectSetMilestones(this.groupId, 1, []);
+        this.context.router.goBack();
+    }
+
+    errUpdate(errMessage){
+        notification.error({
+            message: '更新失败',
             description: errMessage,
             duration: 2
         });
@@ -95,9 +118,10 @@ class projectSetMilestonesEdit extends React.Component {
                     console.log(formData.due_date);
                     if(item.title==formData.title && item.description==formData.description &&
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
-                        this.nothingUpdate()
+                        this.nothingUpdate();
                     }else{
                         console.log('保存修改');
+                        this.props.updateMilestoneAction(formData);
                     }
                 }
             }
@@ -214,6 +238,8 @@ function mapStateToProps(state) {
         errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
+        updateErrorMsg:state.createMilestones.errorMsg,
+        updateMsg: state.createMilestones.result,
 
     }
 }
@@ -221,6 +247,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
+        updateMilestoneAction: bindActionCreators(updateMilestone, dispatch),
         getProjectSetMilestones: bindActionCreators(getProjectSetMilestones, dispatch),
     }
 }

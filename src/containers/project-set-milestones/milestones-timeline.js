@@ -27,18 +27,18 @@ class projectSetMilestones extends React.Component {
                 //this.props.getProjectMilestones(id, this.page, this.timeLineData);
                 this.props.putProIdToState(selectedItemId);
             }
-        } else {
+        } /*else {
             const {router} = this.context;
-            router.goBack();
+            //router.goBack();
             this.errChoosePro();
-        }
+        }*/
     }
 
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.selectedProjectSet.id;
-        const nextProId = nextProps.selectedProjectSet.id;
+        const thisProId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
+        const nextProId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.page =1;
@@ -84,7 +84,6 @@ class projectSetMilestones extends React.Component {
     distributeActions(id,page,timeLineData){
         const selectedItemId = id.substring(0,id.length-2);
         if(id.indexOf("_g") > 0 ){
-
             this.props.getProjectSetMilestones(selectedItemId,page,timeLineData);
         }else{
             this.props.getProjectMilestones(selectedItemId,page,timeLineData);
