@@ -53,6 +53,10 @@ class ProjectMember extends Component {
 
     searchGroupByProjectName(projectName,groupInfo){
         var projectInfo;
+        if(projectName.indexOf("/") > 0){
+            let _index = projectName.indexOf("/");
+            projectName = projectName.substr(_index+1,projectName.length);
+        }
         for(var i=0;i<groupInfo.children.length;i++){
             if(projectName == groupInfo.children[i].name){
                 projectInfo = groupInfo.children[i];

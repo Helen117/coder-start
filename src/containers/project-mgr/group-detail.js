@@ -125,7 +125,7 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                    //{validator:this.groupNameExists.bind(this)},
+                    {validator:this.groupNameExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);
             const visibilityProps = getFieldProps('visibility_level',);

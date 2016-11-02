@@ -32,7 +32,11 @@ import createProjectSet from '../containers/project-set/reducers/project-set-cre
 import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
+
 import {createMilestones,updateMilestones} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
+
+import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
+
 
 const reducer = combineReducers({
     login,
@@ -62,6 +66,7 @@ const reducer = combineReducers({
     createBranch,
     deleteBranch,
     getMenuBarInfo,
+    getCodeFile,
     fetchProMsg,
     createProjectSet,
     projectSetToState,
