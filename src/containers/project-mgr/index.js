@@ -31,7 +31,7 @@ class ProjectMgr extends React.Component{
         this.state = {
             selectGroupName:null,
             selectGroupId:null,
-            showSettingDiv:false
+            showSettingDiv:true
         };
     }
 
@@ -49,14 +49,14 @@ class ProjectMgr extends React.Component{
             message.error('请选择要修改的项目组!',3);
         }else{
             this.context.router.push({
-                pathname: '/project-mgr/group-detail',
+                pathname: '/group-detail',
                 state: {editType: type, selectedRow}
             });
         }
     }
     editProject(type, selectedRow) {
         this.context.router.push({
-            pathname: '/project-mgr/project-detail',
+            pathname: '/project-detail',
             state: {editType: type, selectedRow,}
         });
     }
@@ -101,9 +101,6 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        this.setState({
-            showSettingDiv:false
-        })
         const {loginInfo, list, currentOneInfo, currentTwoInfo} = this.props;
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             if(node.id.indexOf("_g") < 0){

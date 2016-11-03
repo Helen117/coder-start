@@ -8,14 +8,12 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Col, Button, Modal} from 'antd';
+import {Switch,Icon, Row, Button, Modal} from 'antd';
 import 'pubsub-js';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as starActions from './actions/consern-project-actions';
-import {getProjectStar} from '../project-mgr/actions/project-star-action';
 import TableView from '../../components/table';
 import styles from './index.css';
+import { searchGroupByGroupId } from './util';
 
 const confirm = Modal.confirm;
 
@@ -31,47 +29,23 @@ class ProjectList extends Component {
     }
 
     componentDidMount() {
-        //在此处注册对其他控件发送的消息的响应
-        //PubSub.subscribe("evtTreeClick",this.showProjectList.bind(this) );
         const {node} = this.props.location.state;
         if(node){
             this.showProjectList(node);
         }
     }
 
-    componentWillMount(){
-        //在此处注销对其他控件发送消息的响应
-        //PubSub.unsubscribe("evtTreeClick");
-    }
-
     showProjectList(data){
         if(data.isLeaf==false && ((data.id.indexOf("_")<0 && data.id>0) || (data.id.indexOf("_g")>0))){
-            this.setState({
+            this.setState({//项目组节点下有项目
                 listType:true,
                 listNode:data.id,
             });
         }else if(data.isLeaf==true && ((data.id.indexOf("_")<0 && data.id>0) || (data.id.indexOf("_g")>0))){
-            this.setState({
+            this.setState({//项目组节点下没有项目
                 listType:false,
                 nullType:true,
             });
-        }else{
-            this.setState({
-                listType:false,
-                nullType:false,
-            });
-        }
-    }
-
-    searchGroupByGroupName(groupId,list){
-        var groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                if(groupId == list[i].children[j].id){
-                    groupInfo = list[i].children[j];
-                    return groupInfo;
-                }
-            }
         }
     }
 
@@ -101,49 +75,39 @@ class ProjectList extends Component {
         })
     }
 
+    getDataSource(groupInfo){
+        const {fetchGroupMembers, groupMembers} = this.props;
+        let dataSource = [];
+        for(var i=0;i<groupInfo.children.length;i++){
+            var manager = "";
+            if(fetchGroupMembers || false){
+                if(groupInfo.id.indexOf("_g")<0){
+                    for(var j=0;j<groupMembers.length;j++){
+                        if(groupInfo.children[i].creatorId == groupMembers[j].id){
+                            manager = groupMembers[j].name;
+                        }
+                    }
+                }else{
+                    manager = "";
+                }
+            }
+            dataSource.push({
+                key:i+1,
+                projectName:groupInfo.children[i].name,
+                manager:manager,
+                owner:groupInfo.children[i].owner,
+            });
+        }
+        return dataSource;
+    }
+
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {list,getGroupInfo,groupMembers,fetchGroupMembers} = this.props;
+            const {treeData,getGroupInfo} = this.props;
             if(getGroupInfo){
                 var groupId = this.state.listNode;
-                var groupInfo = this.searchGroupByGroupName(groupId,list);
-
-                const dataSource = [];
-                for(var i=0;i<groupInfo.children.length;i++){
-                    var manager = "";
-                    if(fetchGroupMembers || false){
-                        if(groupInfo.id.indexOf("_g")<0){
-                            for(var j=0;j<groupMembers.length;j++){
-                                if(groupInfo.children[i].creatorId == groupMembers[j].id){
-                                    manager = groupMembers[j].name;
-                                }
-                            }
-                        }else{
-                            manager = "";
-                        }
-                    }
-                    dataSource.push({
-                        key:i+1,
-                        projectName:groupInfo.children[i].name,
-                        manager:manager,
-                        owner:groupInfo.children[i].owner,
-                    });
-                }
-                const groupColumns = (self)=>[
-                    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
-                    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
-                    {title: "owner", dataIndex: "owner", key: "owner"},
-                    {title:"操作",dataIndex:"operate",key:"operate",
-                        render(text,record){
-                            return (
-                                <div>
-                                    <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
-                                    <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
-                                </div>
-                            )
-                        }
-                    }
-                ];
+                var groupInfo = searchGroupByGroupId(groupId,treeData);
+                const dataSource = this.getDataSource(groupInfo);
                 return (
                     <div>
                         <Row>
@@ -151,7 +115,7 @@ class ProjectList extends Component {
                                 <div>
                                     <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                                 </div>
-                                <TableView columns={groupColumns(this)}
+                                <TableView columns={this.groupColumns(this)}
                                            dataSource={dataSource}
                                 ></TableView>
                             </div>
@@ -182,7 +146,7 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         groupMembers:state.getGroupMembers.groupMembers,
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
-        list: state.getGroupTree.treeData,
+        treeData: state.getGroupTree.treeData,
         getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
@@ -193,4 +157,20 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);
+
+ProjectList.prototype.groupColumns = (self)=>[
+    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
+    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
+    {title: "owner", dataIndex: "owner", key: "owner"},
+    {title:"操作",dataIndex:"operate",key:"operate",
+        render(text,record){
+            return (
+                <div>
+                    <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
+                    <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
+                </div>
+            )
+        }
+    }
+];
 
