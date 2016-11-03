@@ -52,11 +52,12 @@ export default class IssueList extends Component {
         }
     }
 
-    editIssue(type, selectedRows){
-
-        let selectedRow = this.getListNode(selectedRows,this.props.dataSource);
-        selectedRow.title = selectedRow.issue_name;
-        // console.log('row:',selectedRow);
+    editIssue(type, selectedRow){
+        console.log('row:',selectedRow);
+        if(selectedRow){
+            selectedRow = this.getListNode(selectedRow,this.props.dataSource);
+            selectedRow.title = selectedRow.issue_name;
+        }
         //console.log('window.location:',window.location);
         //查看我的问题不选择项目时不能新增问题
         if(this.props.state=='myIssue' && type=='add'&& !this.props.projectInfo){
@@ -104,15 +105,28 @@ export default class IssueList extends Component {
                 for (var j = 0; j < list[i].children.length; j++) {//项目
                     for (var k = 0; k < list[i].children[j].children.length; k++) {//里程碑
                         for (var n = 0; n < list[i].children[j].children[k].children.length; n++) {//需求
+                            if(typeof(list[i].children[j].children[k].children[n].due_date)=="number") {
                                 list[i].children[j].children[k].children[n].due_date = this.getTime(list[i].children[j].children[k].children[n].due_date);
+                            }
+                            if(typeof(list[i].children[j].children[k].children[n].created_at)=="number")  {
                                 list[i].children[j].children[k].children[n].created_at = this.getTime(list[i].children[j].children[k].children[n].created_at);
-                                list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].labels && list[i].children[j].children[k].children[n].labels.length > 0 ? list[i].children[j].children[k].children[n].labels + '' : null;
-
-                                for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
+                            }
+                            list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].labels && list[i].children[j].children[k].children[n].labels.length > 0 ? list[i].children[j].children[k].children[n].labels + '' : null;
+                            list[i].children[j].children[k].children[n].issueType = "需求";
+                            for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
+                                if(typeof(list[i].children[j].children[k].children[n].children[m].due_date)=="number") {
                                     list[i].children[j].children[k].children[n].children[m].due_date = this.getTime(list[i].children[j].children[k].children[n].children[m].due_date);
-                                    list[i].children[j].children[k].children[n].children[m].created_at = this.getTime(list[i].children[j].children[k].children[n].children[m].created_at);
-                                    list[i].children[j].children[k].children[n].children[m].labels = list[i].children[j].children[k].children[n].children[m].labels && list[i].children[j].children[k].children[n].children[m].labels.length > 0 ? list[i].children[j].children[k].children[n].children[m].labels + '' : null;
                                 }
+                                if(typeof(list[i].children[j].children[k].children[n].children[m].created_at)=="number"){
+                                    list[i].children[j].children[k].children[n].children[m].created_at = this.getTime(list[i].children[j].children[k].children[n].children[m].created_at);
+                                }
+                                list[i].children[j].children[k].children[n].children[m].labels = list[i].children[j].children[k].children[n].children[m].labels && list[i].children[j].children[k].children[n].children[m].labels.length > 0 ? list[i].children[j].children[k].children[n].children[m].labels + '' : null;
+                                if(list[i].children[j].children[k].children[n].children[m].type=='defect'){
+                                    list[i].children[j].children[k].children[n].children[m].issueType = "缺陷";
+                                }else{
+                                    list[i].children[j].children[k].children[n].children[m].issueType = "Bug";
+                                }
+                            }
                         }
                     }
                 }
@@ -172,12 +186,12 @@ IssueList.prototype.issueListColumns = (self)=>[
     {
     title: '项目集',
     dataIndex: 'sets_name',
-    width: '8%',
+    width: '7%',
 },
     {
     title: '项目',
     dataIndex: 'project_name',
-    width: '8%',
+    width: '7%',
     // render(value, row, index) {
     //     const obj = {
     //         children: value,
@@ -195,23 +209,23 @@ IssueList.prototype.issueListColumns = (self)=>[
 },{
     title: '里程碑',
     dataIndex: 'milestone_name',
-    width: '8%',
+    width: '7%',
 },{
-        title: '问题类型',
-        dataIndex: 'type',
-        width: '8%',
+    title: '问题类型',
+    dataIndex: 'issueType',
+    width: '7%',
 },{
     title: '问题名称',
     dataIndex: 'issue_name',
-    width: '8%'
+    width: '7%'
 },{
     title: '问题描述',
     dataIndex: 'description',
-    width: '8%'
+    width: '7%'
 },{
-        title: '问题标签',
-        dataIndex: 'labels',
-        width: '8%',
+    title: '问题标签',
+    dataIndex: 'labels',
+    width: '7%',
 }, {
     title: '创建人',
     dataIndex: 'author_name',
@@ -231,7 +245,7 @@ IssueList.prototype.issueListColumns = (self)=>[
 },{
     title: '状态',
     dataIndex: 'state',
-    width: '8%',
+    width: '7%',
 },{
     title: '操作',
     dataIndex: 'key',

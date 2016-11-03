@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getMilestonesIssues} from './actions/milestones-action';
 import * as getAllUser from '../register/actions/register-action';
-import {fetchDataSource} from '../issues/actions/issue-action';
+import {fetchDataSource,getIssueList} from '../issues/actions/issue-action';
 import  './index.less';
 
 const FormItem = Form.Item;
@@ -31,7 +31,7 @@ class MilestoneDetail extends React.Component {
         const {milestonesId} = this.props.location.state;
         const {projectId} = this.props.location.state;
         if (milestonesId && projectId){
-            this.props.getMilestonesDetail(milestonesId,projectId);
+            this.props.getIssueList(projectId,milestonesId);
             this.props.fetchDataSource(projectId);
         }
     }
@@ -126,7 +126,7 @@ class MilestoneDetail extends React.Component {
                         </Form>
                     </Panel>
                 </Collapse>
-                <IssuesList loading = {isLoading} dataSource={milestoneDetail} loginInfo={this.props.loginInfo}>
+                <IssuesList loading = {this.props.loading} dataSource={this.props.issueList} loginInfo={this.props.loginInfo}>
                 </IssuesList>
             </div>
         )
@@ -145,11 +145,13 @@ MilestoneDetail = Form.create()(MilestoneDetail);
 function mapStateToProps(state) {
     return {
         milestoneDetail: state.getMilestonesIssues.milestoneIssues,
-        loading:state.getMilestonesIssues.loading,
+        // loading:state.getMilestonesIssues.loading,
         loginInfo:state.login.profile,
         user:state.register.users,
         labels:state.GetIssueDependent.labels,
         members : state.GetIssueDependent.members,
+        issueList: state.issue.issueList,
+        loading:state.issue.loading,
     };
 }
 
@@ -158,6 +160,7 @@ function mapDispatchToProps(dispatch) {
         getMilestonesDetail: bindActionCreators(getMilestonesIssues, dispatch),
         getUserAction : bindActionCreators(getAllUser, dispatch),
         fetchDataSource: bindActionCreators(fetchDataSource, dispatch),
+        getIssueList: bindActionCreators(getIssueList, dispatch),
     }
 }
 
