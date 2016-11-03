@@ -1,0 +1,40 @@
+.notes_list{
+    position: relative;
+    padding: 16px 10px 11px 25px;
+    border-bottom: 1px solid;
+    border-color: #ececec;
+    background-color: #fdfdfd;
+    font-size: 14px;
+}
+.notes_body{
+    font-size: 15px;
+    border-bottom: 1px solid;
+    padding: 16px 0;
+    border-color: #ececec;
+}
+
+.notes_header{
+    font-size: 16px;
+    color: #5c5d5e;
+    border-bottom: 1px solid;
+    padding: 10px 0;
+    border-color:#e5e5e5;
+}
+
+.close{
+      background-color: #e0f7d9;
+  }
+
+.open{
+      background-color: #f7d9d9;
+  }
+
+.reopen{
+      background-color: #f7f6d9;
+  }
+
+.ant_search_form {
+    padding: 16px 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+}

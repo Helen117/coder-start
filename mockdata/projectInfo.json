@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "errorCode": null,
+  "errorMsg": null,
+  "result": {
+    "id": 57,
+    "name": "devops-web",
+    "description": "devops 前端",
+    "forksCount": 3,
+    "forksFrom": "devops/devops_web",
+    "sshUrl": "ssh://git@10.10.152.146:10022/devops/devops-web.git"
+  }
+}
