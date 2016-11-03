@@ -95,7 +95,6 @@ class mergeRequestList extends React.Component {
     render(){
         const mrList = this.props.mrList;
         const data = this.mapMrList(mrList);
-        console.log('this.props.getProjectInfo',this.props.getProjectInfo);
         return(
             <div style={{marginTop:15,marginLeft:30}}>
                 <Row>

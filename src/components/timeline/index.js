@@ -2,9 +2,9 @@
  * Created by zhaojp on 2016/10/19.
  */
 import React,{PropTypes} from 'react';
-import { Timeline,Progress,BackTop , Tooltip ,Button} from 'antd';
+import { Timeline,Progress,BackTop , Tooltip ,Button, Modal, notification} from 'antd';
 
-
+const confirm = Modal.confirm;
 export default class TimelineMilestone extends React.Component {
     constructor(props){
         super(props);
@@ -38,12 +38,41 @@ export default class TimelineMilestone extends React.Component {
             state: {milestonesId,projectId,id}
         });
     }
+
     editMilestone(item){
+        const milestoneEditPath = this.props.milestoneEditPath;
         this.context.router.push({
-            pathname: '/projectSetMilestonesEdit',
+            pathname: milestoneEditPath,
             state: {editType: "update", item: item}
         });
 
+    }
+
+    closeMilestone(item){
+        const projectId = this.props.projectId;
+        const id = this.props.id;
+        const milestoneClose = this.props.milestoneClose;
+        if(item.rate == 100) {
+            confirm({
+                title: '您是否确定要关闭里程碑',
+                content: '您是否确定要关闭里程碑',
+                onOk() {
+                    milestoneClose(item.id,projectId,id);
+                },
+                onCancel() {
+                }
+            })
+        }else{
+            this.errClose();
+        }
+    }
+
+    errClose(){
+        notification.error({
+            message: '当前里程碑不能关闭',
+            description: "请在当前里程碑的事项全部完成之后再进行关闭操作",
+            duration: 2
+        });
     }
 
     timelineItemConst(timeLineData){
@@ -67,12 +96,14 @@ export default class TimelineMilestone extends React.Component {
                             <p>计划发布时间：{this.getTime(item.due_date)}</p>
                             当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项
                             <Progress percent={item.rate} />
-                            {groupId?groupId.indexOf("_g")>0?<div className="pull-right" >
-                                <a style={{margin:5}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
-                                <a style={{margin:5}} >关闭</a>
-                                <a style={{margin:5}} >删除</a>
-                            </div>:<div></div>:<div></div>
-                            }
+                            <div className="pull-right" >
+                                {groupId?groupId.indexOf("_g")>0?
+                                   <a style={{marginRight:15}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
+                                    :<div></div>:<div></div>}
+                                <a style={{marginRight:20}} onClick = {this.closeMilestone.bind(this,item)}>关闭</a>
+
+                            </div>
+
                             <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
                         </div>
                     </Timeline.Item>

@@ -36,15 +36,16 @@ class projectSetTree extends React.Component{
 
     errCallback(errMessage){
         notification.error({
-            message: '虚拟组加载失败',
+            message: '项目集加载失败',
             description: errMessage,
             duration: 2
         });
     }
 
-    createProjectSet(){
+    editProjectSet(type){
         this.context.router.push({
-            pathname: '/createProjectSet',
+            pathname: '/editProjectSet',
+            state:{editType: type}
         });
     }
 
@@ -63,9 +64,17 @@ class projectSetTree extends React.Component{
         this.props.putProjectSetToState(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
-                this.context.router.push({
-                    pathname: currentTwoInfo.link,
-                });
+                if(currentTwoInfo.link == '/projectSetTree'){
+                    if(node.id){
+                        this.context.router.push({
+                            pathname: '/projectSetTree/projectInfo',
+                        });
+                    }
+                }else{
+                    this.context.router.push({
+                        pathname: currentTwoInfo.link,
+                    });
+                }
             }
         }else{
                 this.context.router.push({
@@ -74,7 +83,11 @@ class projectSetTree extends React.Component{
         }
     }
 
+
+
+
     render(){
+        const selectedProjectSet = this.props.selectedProjectSet;
         const {projectSet, loading, currentTwoInfo,errMessage} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -91,10 +104,22 @@ class projectSetTree extends React.Component{
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
                         <Row>
                             <div style={{margin:15}}>
-                                    <Button className="pull-right"
-                                            type="primary"
-                                            disabled = {loading || errMessage}
-                                            onClick={this.createProjectSet.bind(this,'add',null)}>创建虚拟组</Button>
+                                <Button className="pull-right"
+                                        type="primary"
+                                        disabled = {loading || errMessage}
+                                        onClick={this.editProjectSet.bind(this,'add')}>创建虚拟组</Button>
+                            </div>
+                            <div style={{margin:15}}>
+                                <Button className="pull-right"
+                                        type="primary"
+                                        disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                        onClick={this.editProjectSet.bind(this,'update')}>修改虚拟组</Button>
+                            </div>
+                            <div style={{margin:15}}>
+                                <Button className="pull-right"
+                                        type="primary"
+                                        disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                        onClick={this.editProjectSet.bind(this,'update')}>删除虚拟组</Button>
                             </div>
                         </Row>
                     ):(<div></div>)}
@@ -121,7 +146,9 @@ function mapStateToProps(state) {
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
         projectSet: state.fetchProjectSetTree.projectSetTree,
         errMessage: state.fetchProjectSetTree.errMessage,
-        loading: state.fetchProjectSetTree.loading
+        loading: state.fetchProjectSetTree.loading,
+        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+
     }
 }
 

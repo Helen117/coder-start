@@ -13,14 +13,15 @@ const initialState = {
 export default function getProjectMembers(state = initialState, action = {}) {
     switch (action.type) {
         case GET_PROJECTMEMBERS_PENDING:
-            return Object.assign({}, initialState, {fetchPMStatus:false,} );
+            return Object.assign({}, initialState, {fetchPMStatus:false, loading:true} );
         case GET_PROJECTMEMBERS_SUCCESS:
-            return Object.assign({}, initialState, {fetchPMStatus:true, projectMembers: action.payload});
+            return Object.assign({}, initialState, {fetchPMStatus:true, projectMembers: action.payload,loading:false});
         case GET_PROJECTMEMBERS_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,
                 fetchPMStatus:false,
+                loading:false
             };
         default:
             return state;

@@ -9,10 +9,33 @@ import {
 } from '../constants/project-set-action-types';
 
 const initialState = {
-
+    loading:false
 };
 
-export default function createProjectSet(state = initialState, action = {}) {
+export function createProjectSet(state = initialState, action = {}) {
+
+    switch (action.type) {
+        case CREATE_PROJECT_SET_PENDING:
+            return Object.assign({}, initialState, {loading:true,disabled:true});
+
+        case CREATE_PROJECT_SET_SUCCESS:
+            return Object.assign({}, initialState, {items: action.payload,loading:false,disabled:false});
+
+        case CREATE_PROJECT_SET_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                loading:false,
+                disabled:false
+            };
+
+        default:
+            return state;
+    }
+}
+
+
+export function updateProjectSet(state = initialState, action = {}) {
 
     switch (action.type) {
         case CREATE_PROJECT_SET_PENDING:

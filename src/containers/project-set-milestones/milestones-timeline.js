@@ -8,6 +8,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getProjectMilestones,putProIdToState,getProjectSetMilestones} from './actions/milestones-action';
+import {closeMilestone,closeSetMilestone} from './actions/edit-milestones-actions'
 import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
@@ -24,8 +25,8 @@ class projectSetMilestones extends React.Component {
             const selectedItemId = this.props.selectedProjectSet.id;
             if(!this.props.timeLineData || this.props.milestoneProId!=selectedItemId && this.props.timeLineData){
                 this.distributeActions(selectedItemId, this.page, this.timeLineData);
-                //this.props.getProjectMilestones(id, this.page, this.timeLineData);
-                this.props.putProIdToState(selectedItemId);
+                //this.props.getProjectMilestonesAction(id, this.page, this.timeLineData);
+                this.props.putProIdToStateAction(selectedItemId);
             }
         } /*else {
             const {router} = this.context;
@@ -44,8 +45,8 @@ class projectSetMilestones extends React.Component {
             this.page =1;
             this.timeLineData = [];
             this.distributeActions(nextProId,this.page,this.timeLineData);
-            //this.props.getProjectMilestones(nextProId,this.page,this.timeLineData);
-            this.props.putProIdToState(nextProId);
+            //this.props.getProjectMilestonesAction(nextProId,this.page,this.timeLineData);
+            this.props.putProIdToStateAction(nextProId);
         }
         //点击查看更多无新数据时提醒
         if(this.props.milestoneData =='' && nextProps.milestoneData=='' && this.page > 1 && acquireData){
@@ -60,7 +61,7 @@ class projectSetMilestones extends React.Component {
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目或虚拟组',
+            description:'请先在左侧项目树中选择一个项目或项目集合',
             duration: 2
         });
     }
@@ -84,9 +85,9 @@ class projectSetMilestones extends React.Component {
     distributeActions(id,page,timeLineData){
         const selectedItemId = id.substring(0,id.length-2);
         if(id.indexOf("_g") > 0 ){
-            this.props.getProjectSetMilestones(selectedItemId,page,timeLineData);
+            this.props.getProjectSetMilestonesAction(selectedItemId,page,timeLineData);
         }else{
-            this.props.getProjectMilestones(selectedItemId,page,timeLineData);
+            this.props.getProjectMilestonesAction(selectedItemId,page,timeLineData);
         }
 
     }
@@ -95,7 +96,7 @@ class projectSetMilestones extends React.Component {
         const id = this.props.selectedProjectSet.id;
         this.page ++;
         this.distributeActions(id,this.page,this.props.timeLineData);
-        //this.props.getProjectMilestones(id,this.page,this.props.timeLineData);
+        //this.props.getProjectMilestonesAction(id,this.page,this.props.timeLineData);
     }
 
     createMilestones(type){
@@ -103,6 +104,17 @@ class projectSetMilestones extends React.Component {
             pathname: '/projectSetMilestonesEdit',
             state: {editType: type}
         });
+    }
+
+    closeMilestone(milestonesId,projectId,id){
+        console.log(milestonesId,"  ",projectId,"  ",id);
+        if(id.indexOf("_g") > 0 ){
+            this.props.closeSetMilestoneAction(milestonesId,projectId);
+        }else{
+            this.props.closeMilestoneAction(milestonesId,projectId);
+
+        }
+
     }
 
     render(){
@@ -121,7 +133,9 @@ class projectSetMilestones extends React.Component {
                                    pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
                                    projectId = {selectedItemId}
                                    id = {id}
-                                   milestonesDetailPath="/projectSetMilestonesDetail"/>
+                                   milestonesDetailPath="/projectSetMilestonesDetail"
+                                   milestoneEditPath="/projectSetMilestonesEdit"
+                                   milestoneClose = {this.closeMilestone.bind(this)}/>
             </div>
         )
     }
@@ -153,9 +167,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getProjectSetMilestones: bindActionCreators(getProjectSetMilestones, dispatch),
-        getProjectMilestones: bindActionCreators(getProjectMilestones, dispatch),
-        putProIdToState: bindActionCreators(putProIdToState, dispatch),
+        getProjectSetMilestonesAction: bindActionCreators(getProjectSetMilestones, dispatch),
+        getProjectMilestonesAction: bindActionCreators(getProjectMilestones, dispatch),
+        putProIdToStateAction: bindActionCreators(putProIdToState, dispatch),
+        closeMilestoneAction: bindActionCreators(closeMilestone, dispatch),
+        closeSetMilestoneAction:  bindActionCreators(closeSetMilestone, dispatch),
     }
 }
 
