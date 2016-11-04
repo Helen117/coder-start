@@ -4,12 +4,14 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer } from 'antd';
+import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
+import {deleteProjectSet} from './actions/project-set-create-action'
 import 'pubsub-js';
 
+const confirm = Modal.confirm;
 class projectSetTree extends React.Component{
     constructor(props){
         super(props);
@@ -27,16 +29,22 @@ class projectSetTree extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {  errMessage } = nextProps;
+        const {  errMessage ,delErrorMsg,delResult} = nextProps;
         if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback(errMessage,'项目集加载');
+        }
+        if(this.props.delErrorMsg != delErrorMsg && delErrorMsg){
+            this.errCallback(delErrorMsg,'删除项目集')
+        }else if(this.props.delResult != delResult && delResult){
+            this.successCallback('删除');
+
         }
 
     }
 
-    errCallback(errMessage){
+    errCallback(errMessage,type){
         notification.error({
-            message: '项目集加载失败',
+            message: type+'失败',
             description: errMessage,
             duration: 2
         });
@@ -49,6 +57,48 @@ class projectSetTree extends React.Component{
         });
     }
 
+    delProjectSet(type,selectedProjectSet){
+        const deleteProjectSetAction = this.props.deleteProjectSetAction;
+        console.log('deleteBranchAction',deleteProjectSetAction);
+        const userId = this.props.loginInfo.userId;
+        const projectSet = this.props.projectSet;
+        let i = 0;
+        for(i=0; i< projectSet.length; i++){
+            if(projectSet[i].id==selectedProjectSet.id && projectSet[i].children.length>0){
+                this.delForbidden();
+                break;
+            }
+        }
+        if(i >= projectSet.length) {
+            confirm({
+                title: '您是否确定要删除此分支',
+                content: '删除之后分支内容将会被丢弃',
+                onOk() {
+                    deleteProjectSetAction(selectedProjectSet.selectedItemId, userId);
+                },
+                onCancel() {
+                }
+            })
+        }
+    }
+
+    delForbidden(errMessage){
+        notification.error({
+            message: '项目集非空，不允许删除',
+            description: '请将项目集中的项目全部移除后，才能进行删除操作',
+            duration: 2
+        });
+    }
+
+    successCallback(type){
+        const project_id = this.props.getProjectInfo.id;
+        notification.success({
+            message: type+'成功',
+            description: '',
+            duration: 1
+        });
+        this.props.fetchBranchesData(project_id);
+    }
 
     isEmptyObject(obj){
         for(var key in obj){
@@ -107,19 +157,19 @@ class projectSetTree extends React.Component{
                                 <Button className="pull-right"
                                         type="primary"
                                         disabled = {loading || errMessage}
-                                        onClick={this.editProjectSet.bind(this,'add')}>创建虚拟组</Button>
+                                        onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
                             </div>
                             <div style={{margin:15}}>
                                 <Button className="pull-right"
                                         type="primary"
                                         disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                        onClick={this.editProjectSet.bind(this,'update')}>修改虚拟组</Button>
+                                        onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
                             </div>
                             <div style={{margin:15}}>
                                 <Button className="pull-right"
                                         type="primary"
                                         disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                        onClick={this.editProjectSet.bind(this,'update')}>删除虚拟组</Button>
+                                        onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
                             </div>
                         </Row>
                     ):(<div></div>)}
@@ -148,6 +198,8 @@ function mapStateToProps(state) {
         errMessage: state.fetchProjectSetTree.errMessage,
         loading: state.fetchProjectSetTree.loading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        delErrorMsg: state.deleteProjectSet.selectedProjectSet,
+        delResult: state.deleteProjectSet.selectedProjectSet,
 
     }
 }
@@ -156,6 +208,7 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         putProjectSetToState: bindActionCreators(putProjectSetToState, dispatch),
+        deleteProjectSetAction: bindActionCreators(deleteProjectSet, dispatch),
     }
 }
 

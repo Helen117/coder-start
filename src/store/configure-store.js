@@ -28,7 +28,7 @@ import createBranch from '../containers/branches/reducers/branches-create-reduce
 import deleteBranch from '../containers/branches/reducers/branches-delete-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 import fetchProMsg from '../containers/project-set/reducers/fetch-project-msg-reducer';
-import {createProjectSet,updateProjectSet} from '../containers/project-set/reducers/project-set-create-reducers'
+import {createProjectSet,updateProjectSet,deleteProjectSet} from '../containers/project-set/reducers/project-set-create-reducers'
 import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
@@ -70,6 +70,7 @@ const reducer = combineReducers({
     fetchProMsg,
     createProjectSet,
     updateProjectSet,
+    deleteProjectSet,
     projectSetToState,
     fetchProjectSetTree,
     getProjectMembers,
