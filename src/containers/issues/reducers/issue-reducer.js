@@ -49,6 +49,16 @@ export function issue(state = {}, action = {}) {
         case 'UPDATE_ISSUE_ERROR':
             return Object.assign({}, {updateIssueError: action.payload.errorMsg,updateIssue:action.payload});
 
+        case 'DELETE_ISSUE_PENDING':
+            return Object.assign({}, {delLoading: true});
+        case 'DELETE_ISSUE_SUCCESS':
+            return Object.assign({}, {delLoading: false, delIssue: action.payload});
+        case 'DELETE_ISSUE_ERROR':
+            return {
+                ...state,
+                delErrors: action.payload.errorMsg, delLoading: false
+            };
+
         default:
             return state;
     }

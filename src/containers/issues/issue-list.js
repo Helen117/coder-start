@@ -28,7 +28,7 @@ class ProjectIssueList extends Component {
         if(projectInfo) {
             actions.fetchDataSource(projectInfo.id);
             getUserAction.getAllUser();
-            actions.getIssueList(projectInfo.id);
+            actions.getIssueList(projectInfo.id,0);
         }else{
             const {router} = this.context;
             router.goBack();
@@ -55,7 +55,7 @@ class ProjectIssueList extends Component {
         const {actions,projectInfo} = this.props;
 
         if(projectInfo && nextProps.projectInfo && projectInfo.id != nextProps.projectInfo.id) {
-            actions.getIssueList(nextProps.projectInfo.id);
+            actions.getIssueList(nextProps.projectInfo.id,0);
             actions.fetchDataSource(nextProps.projectInfo.id);
         }
     }
