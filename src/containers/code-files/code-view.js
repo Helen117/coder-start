@@ -3,7 +3,6 @@
  */
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import {Row, input} from 'antd';
 //import SyntaxHighlighter from './syntaxhighlighter';
 import styles from "./index.css";
