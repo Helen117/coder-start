@@ -13,9 +13,10 @@ import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover } 
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
-import {getProjectStar} from './actions/project-star-action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 import {getProjectMembers} from './actions/project-members-action';
+import {setGroupDelete} from './actions/create-group-action';
+import {resetDeleteResult} from './actions/create-project-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 import styles from './index.css';
@@ -152,13 +153,33 @@ class ProjectMgr extends React.Component{
         })
     }
 
+    insertCallback(message){
+        const {loginInfo} = this.props;
+        notification.success({
+            message: message,
+            description: '',
+            duration: 2
+        });
+        this.props.getGroupTree(loginInfo.userId)
+    }
+
+    errCallback(message,errmessage){
+        notification.error({
+            message: message,
+            description:errmessage,
+            duration: 4
+        });
+    }
+
     deleteGroup(groupInfo){
+        const {setGroupDelete, loginInfo} = this.props;
         if(groupInfo){
             confirm({
                 title: '您是否确定要删除此项目组？',
                 content:groupInfo.name,
                 onOk() {
                     //调删除项目组的接口
+                    setGroupDelete(loginInfo.username, groupInfo.id)
                 },
                 onCancel() {
                 }
@@ -168,7 +189,22 @@ class ProjectMgr extends React.Component{
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {deleteResult, deleteErrors} = nextProps;
+        console.log("componentWillReceiveProps")
+        console.log("deleteResult:",deleteResult)
+        //删除返回信息
+        if (deleteResult == "success"){
+            this.context.router.replace('/project-mgr');
+            this.insertCallback("删除成功!");
+            this.props.resetDeleteResult("false");
+        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback("删除失败!",deleteErrors);
+        }
+    }
+
     render(){
+        console.log("render-mgr")
         const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
         const content = (
             <div>
@@ -210,7 +246,7 @@ class ProjectMgr extends React.Component{
                                 </div>
                             </Popover>
                         </Row>
-                    ):(<div></div>)}
+                    ):(<Row></Row>)}
                     <Row>
                         {this.props.children}
                     </Row>
@@ -237,6 +273,8 @@ function mapStateToProps(state) {
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
         groupInfo:state.getGroupInfo.groupInfo,
+        deleteResult: state.createGroup.deleteResult,
+        deleteErrors:state.createGroup.errors,
     }
 }
 
@@ -248,6 +286,8 @@ function mapDispatchToProps(dispatch) {
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         getProjectMembers:bindActionCreators(getProjectMembers, dispatch),
+        setGroupDelete:bindActionCreators(setGroupDelete, dispatch),
+        resetDeleteResult:bindActionCreators(resetDeleteResult, dispatch),
     }
 }
 

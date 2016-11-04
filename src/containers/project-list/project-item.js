@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Row} from 'antd';
+import { Select,Input, Button, message, Tooltip, Row} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -222,6 +222,8 @@ class ProjectItem extends Component {
                     </Row>
                 </div>
             )
+        }else{
+            return null;
         }
         return null;
     }

@@ -1,6 +1,8 @@
 /**
  * Created by Administrator on 2016-11-03.
  */
+import {notification} from 'antd';
+
 export function searchGroupByGroupId(groupId,treeData){
     var groupInfo;
     for(var i=0;i<treeData.length;i++){
@@ -54,7 +56,7 @@ export function searchNormalGroupByProjectId(projectId,treeData){
     }
 }
 
-export function findProjectIdByProjectName(projectName,treeData) {//projectName是“namepath/namepath”形式的
+export function findProjectIdByProjectName(projectName,treeData) {
     var projectId;
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){

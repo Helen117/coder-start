@@ -8,12 +8,15 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Button, Modal} from 'antd';
+import {Switch,Icon, Row, Button, Modal, notification} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import styles from './index.css';
-import { searchGroupByGroupId } from './util';
+import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
+import {setProjectDelete, resetDeleteResult} from '../project-mgr/actions/create-project-action';
+import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 
 const confirm = Modal.confirm;
 
@@ -49,7 +52,34 @@ class ProjectList extends Component {
         }
     }
 
+    insertCallback(message){
+        const {loginInfo} = this.props;
+        notification.success({
+            message: message,
+            description: '',
+            duration: 1
+        });
+        this.props.getGroupTree(loginInfo.userId);
+    }
+
+    errCallback(message,errMessage){
+        notification.error({
+            message: message,
+            description:errMessage,
+            duration: 4
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
+        const { deleteResult, deleteErrors } = nextProps;
+        //删除返回信息
+        if (deleteResult == "success"){
+            this.insertCallback("删除成功!");
+            this.props.resetDeleteResult("false");
+        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback("删除失败!",deleteErrors);
+        }
+
         const {node} = nextProps.location.state;
         if(node){
             this.showProjectList(node);
@@ -58,17 +88,22 @@ class ProjectList extends Component {
 
     editProject(type, selectedRow){
         this.context.router.push({
-            pathname: '/project-mgr/project-detail',
+            pathname: '/project-detail',
             state: {editType: type, selectedRow}
         });
     }
 
     deleteProject(type, selectedRow){
+        const {setProjectDelete, treeData} = this.props;
+        const {router} = this.context;
+        let projectId = findProjectIdByProjectName(selectedRow.projectName, treeData);
+        projectId = projectId.substr(0,projectId.length-2);
         confirm({
             title: '您是否确定要删除此项目？',
             content:selectedRow.projectName,
             onOk() {
                 //调删除项目的接口
+                setProjectDelete(projectId);
             },
             onCancel() {
             }
@@ -102,9 +137,12 @@ class ProjectList extends Component {
     }
 
     render() {
+        console.log("render--list")
+        const {deleteGroupResult} = this.props;
+        console.log("deleteGroupResult:",deleteGroupResult)
         if(this.state.listType == true){//展示项目组信息
             const {treeData,getGroupInfo} = this.props;
-            if(getGroupInfo){
+            if(getGroupInfo && treeData.length>0){
                 var groupId = this.state.listNode;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);
                 const dataSource = this.getDataSource(groupInfo);
@@ -148,11 +186,17 @@ function mapStateToProps(state) {
         fetchGroupMembers:state.getGroupMembers.fetchStatus,
         treeData: state.getGroupTree.treeData,
         getGroupInfo:state.getGroupInfo.groupInfo,
+        deleteResult:state.createProject.deleteResult,
+        deleteErrors:state.createProject.deleteErrors,
+        deleteGroupResult:state.createGroup.deleteResult,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
+        setProjectDelete:bindActionCreators(setProjectDelete, dispatch),
+        getGroupTree: bindActionCreators(getGroupTree, dispatch),
+        resetDeleteResult:bindActionCreators(resetDeleteResult, dispatch),
     }
 }
 

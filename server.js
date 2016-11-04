@@ -114,7 +114,7 @@ app.post('/gitlab/issue/notes', function (req, res) {
         res.json(issueNotes);
 });
 
-app.post('/gitlab/project/issues', function (req, res) {
+app.post('/gitlab/project/project-issues', function (req, res) {
     res.json(issueList);
 });
 
