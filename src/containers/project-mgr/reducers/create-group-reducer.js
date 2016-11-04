@@ -47,17 +47,14 @@ export default function createGroup(state = initialState, action = {}) {
                 updateDisabled:false,
             };
         case DELETE_GROUP_PENDING:
-            return Object.assign({}, initialState, {deleteResult: "false"});
+            return Object.assign({}, initialState, );
         case DELETE_GROUP_SUCCESS:
-            return Object.assign({}, initialState, {deleteResult: "success"});
+            return Object.assign({}, initialState, {deleteResult: action.payload});
         case DELETE_GROUP_ERROR:
             return {
                 ...state,
-                deleteResult: "false",
                 deleteErrors: action.payload.errorMsg,
             };
-        case RESET_DELETE_RESULT:
-            return Object.assign({}, initialState, {deleteResult: action.data});
         default:
             return state;
     }

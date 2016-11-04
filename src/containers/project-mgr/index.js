@@ -16,7 +16,6 @@ import {getGroupMembers} from './actions/group_members_action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
 import {getProjectMembers} from './actions/project-members-action';
 import {setGroupDelete} from './actions/create-group-action';
-import {resetDeleteResult} from './actions/create-project-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 import styles from './index.css';
@@ -153,19 +152,19 @@ class ProjectMgr extends React.Component{
         })
     }
 
-    insertCallback(message){
+    insertCallback(type){
         const {loginInfo} = this.props;
         notification.success({
-            message: message,
+            message: type,
             description: '',
             duration: 2
         });
         this.props.getGroupTree(loginInfo.userId)
     }
 
-    errCallback(message,errmessage){
+    errCallback(type,errmessage){
         notification.error({
-            message: message,
+            message: type,
             description:errmessage,
             duration: 4
         });
@@ -173,38 +172,37 @@ class ProjectMgr extends React.Component{
 
     deleteGroup(groupInfo){
         const {setGroupDelete, loginInfo} = this.props;
-        if(groupInfo){
-            confirm({
-                title: '您是否确定要删除此项目组？',
-                content:groupInfo.name,
-                onOk() {
-                    //调删除项目组的接口
-                    setGroupDelete(loginInfo.username, groupInfo.id)
-                },
-                onCancel() {
-                }
-            })
+        if(groupInfo.children.length == 0){//项目组为空
+            if(groupInfo){
+                confirm({
+                    title: '您是否确定要删除此项目组？',
+                    content:groupInfo.name,
+                    onOk() {
+                        //调删除项目组的接口
+                        setGroupDelete(loginInfo.username, groupInfo.id)
+                    },
+                    onCancel() {
+                    }
+                })
+            }else{
+                message.error('请选择需要删除的项目组！',3);
+            }
         }else{
-            message.error('请选择需要删除的项目组！',3);
+            message.error('项目组不为空，不能删除!',3);
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const {deleteResult, deleteErrors} = nextProps;
-        console.log("componentWillReceiveProps")
-        console.log("deleteResult:",deleteResult)
         //删除返回信息
-        if (deleteResult == "success"){
-            this.context.router.replace('/project-mgr');
-            this.insertCallback("删除成功!");
-            this.props.resetDeleteResult("false");
+        if (this.props.deleteResult != deleteResult && deleteResult){
+            this.insertCallback('删除成功!');
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback("删除失败!",deleteErrors);
+            this.errCallback('删除失败!',deleteErrors);
         }
     }
 
     render(){
-        console.log("render-mgr")
         const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
         const content = (
             <div>
@@ -287,7 +285,6 @@ function mapDispatchToProps(dispatch) {
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         getProjectMembers:bindActionCreators(getProjectMembers, dispatch),
         setGroupDelete:bindActionCreators(setGroupDelete, dispatch),
-        resetDeleteResult:bindActionCreators(resetDeleteResult, dispatch),
     }
 }
 
