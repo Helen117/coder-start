@@ -143,7 +143,7 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                    {validator:this.groupNameExists.bind(this)},
+                    //{validator:this.groupNameExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);
             const visibilityProps = getFieldProps('visibility_level',
@@ -167,7 +167,10 @@ class GroupDetail extends React.Component {
                             </RadioGroup>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit"
+                                    loading={editType == 'add'?this.props.loading:this.props.updateLoading}
+                                    disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
+                                确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -198,6 +201,8 @@ function mapStateToProps(state) {
         updateResult:state.createGroup.updateResult,
         updateErrors:state.createGroup.updateErrors,
         getGroupInfo:state.getGroupInfo.groupInfo,
+        updateLoading:state.createGroup.updateLoading,
+        updateDisabled:state.createGroup.updateDisabled,
     }
 }
 

@@ -13,6 +13,7 @@ import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from
 import Box from '../../components/box';
 import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
+import {findProjectIdByProjectName} from '../project-list/util';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -29,7 +30,8 @@ class ProjectDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo } = this.props;
+        const { actions, form, loginInfo, list } = this.props;
+        const {selectedRow } = this.props.location.state;
         const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -40,6 +42,7 @@ class ProjectDetail extends React.Component {
                     username:'',
                     name:'',
                     description:'',
+                    id:''
                 };
                 data.username=loginInfo.username;
                 data.userId = loginInfo.userId;
@@ -52,6 +55,9 @@ class ProjectDetail extends React.Component {
                     actions.createProject(data);
                 }else{
                     //调修改项目的接口
+                    let projectId = findProjectIdByProjectName(selectedRow.projectName,list);
+                    projectId = projectId.substr(0,projectId.length-2);
+                    data.id = projectId;
                     actions.UpdateProject(data);
                 }
             }
@@ -101,11 +107,11 @@ class ProjectDetail extends React.Component {
             this.errCallback("创建失败",errMessage);
         }
         //更新返回信息
-        /*if (this.props.updateResult != updateResult && updateResult){
-            this.insertCallback();
+        if (this.props.updateResult != updateResult && updateResult){
+            this.insertCallback("修改成功");
         }else if(this.props.updateErrors != updateErrors && updateErrors){
-            this.errCallback(updateErrors);
-        }*/
+            this.errCallback("修改失败",updateErrors);
+        }
     }
 
     isEmptyObject(obj){
@@ -119,10 +125,10 @@ class ProjectDetail extends React.Component {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
         const {getGroupInfo} = this.props;
-        console.log("selectedRow:",selectedRow)
-        console.log("getGroupInfo:",getGroupInfo)
         if (selectedRow){
+            console.log("selectedRow:",selectedRow)
             for(let i=0; i<getGroupInfo.children.length; i++){
+                console.log("getGroupInfo.children[i].name:",getGroupInfo.children[i].name)
                 if(selectedRow.projectName == getGroupInfo.children[i].name){
                     setFieldsValue({
                         name:getGroupInfo.children[i].name,
@@ -174,15 +180,18 @@ class ProjectDetail extends React.Component {
             wrapperCol: {span: 14},
         };
         const {list} = this.props;
-        if(list.length > 0){
-            const options = list[list.length-1].children.map( (item)=>{
-                return <Option value={item.id} key={item.id}>{item.name}</Option>
-            } )
+        if(list){
+            let options = (<Option value="1"></Option>);
+            if(list.length > 0){
+                options = list[list.length-1].children.map( (item)=>{
+                    return <Option value={item.id} key={item.id}>{item.name}</Option>
+                } )
+            }
 
             const nameProps = getFieldProps('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
-                    {validator:this.projectNameExists.bind(this)},
+                    //{validator:this.projectNameExists.bind(this)},
                 ]
                 });
             const descriptionProps = getFieldProps('description',);
@@ -220,7 +229,10 @@ class ProjectDetail extends React.Component {
                             </RadioGroup>
                         </FormItem>
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit"
+                                    loading={editType == 'add'?this.props.loading:this.props.updateLoading}
+                                    disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
+                                确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -251,6 +263,8 @@ function mapStateToProps(state) {
         getGroupInfo:state.getGroupInfo.groupInfo,
         updateResult:state.createProject.updateResult,
         updateErrors:state.createProject.updateErrors,
+        updateLoading:state.createProject.updateLoading,
+        updateDisabled:state.createProject.updateDisabled,
     }
 }
 

@@ -37,6 +37,7 @@ class ProjectMgr extends React.Component{
     }
 
     componentDidMount() {
+        console.log("componentDidMount")
         const {loginInfo} =this.props;
         PubSub.subscribe("evtRefreshGroupTree",()=>this.props.getGroupTree(loginInfo.userId));
         const {treeData} = this.props;
@@ -195,7 +196,7 @@ class ProjectMgr extends React.Component{
         console.log("deleteResult:",deleteResult)
         //删除返回信息
         if (deleteResult == "success"){
-            this.context.router.replace('/project-mgr');
+//            this.context.router.replace('/project-mgr');
             this.insertCallback("删除成功!");
             this.props.resetDeleteResult("false");
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
