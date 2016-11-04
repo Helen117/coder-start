@@ -6,11 +6,13 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification,Row} from 'antd';
+import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchBranchesData from './actions/fetch-branches-action';
+import deleteBranch from './actions/branches-delete-action'
 
+const confirm = Modal.confirm;
 class branchesList extends React.Component {
     constructor(props) {
         super(props);
@@ -21,15 +23,17 @@ class branchesList extends React.Component {
             if(!this.props.branchesData) {
                 this.props.fetchBranchesData(this.props.getProjectInfo.id);
             }
-        }else{
+        }/*else{
             const {router} = this.context;
             router.goBack();
             this.errChosePro();
-        }
+        }*/
     }
 
     componentWillReceiveProps(nextProps) {
-        const errMessage = nextProps.errMessage;
+        const fetchErrors = nextProps.fetchErrors;
+        const delErrMessage = nextProps.delErrMessage;
+        const delResult = nextProps.delResult;
         const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
@@ -37,15 +41,31 @@ class branchesList extends React.Component {
             this.props.fetchBranchesData(nextProId);
         }
         //数据加载错误提示
-        if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+        if(this.props.fetchErrors != fetchErrors && fetchErrors){
+            this.errCallback(fetchErrors);
+        }
+        if(this.props.delErrMessage != delErrMessage && delErrMessage){
+            this.errCallback(delErrMessage);
+        }else if(this.props.delResult != delResult && delResult){
+            this.delSuccess();
+            this.props.fetchBranchesData(thisProId);
         }
     }
 
-    errCallback(errMessage){
+    delSuccess(){
+        const project_id = this.props.getProjectInfo.id;
+        notification.success({
+            message: '删除成功',
+            description: '',
+            duration: 1
+        });
+        this.props.fetchBranchesData(project_id);
+    }
+
+    errCallback(fetchErrors){
         notification.error({
             message: '数据加载失败',
-            description: errMessage,
+            description: fetchErrors,
             duration: 2
         });
     }
@@ -63,6 +83,21 @@ class branchesList extends React.Component {
             pathname: '/createBranches',
             state: {editType: type}
         });
+    }
+
+    deleteBranch(record){
+        const branch = record.branch;
+        const project_id = this.props.getProjectInfo.id;
+        const deleteBranchAction = this.props.deleteBranchAction;
+        confirm({
+            title: '您是否确定要删除此分支',
+            content: '删除之后分支内容将会被丢弃',
+            onOk() {
+                deleteBranchAction(branch,project_id);
+            },
+            onCancel() {
+            }
+        })
     }
 
     onChange(pagination, filters, sorter) {
@@ -88,27 +123,44 @@ class branchesList extends React.Component {
         return(
 
             <div style={{margin:15}}>
-                <Row>
-                    <Button className="pull-right" type="primary"  onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
-                </Row>
-                <div style={{marginTop:5}}>
-                    <Table loading = {this.props.loading}
-                           onChange={this.onChange.bind(this)}
-                           columns={columns}
-                           dataSource={data}
-                            />
-                </div>
+                <Spin spinning={this.props.delLoading} tip="正在删除数据">
+                    <Row>
+                        <Button className="pull-right" type="primary"
+                                disabled={this.props.getProjectInfo?false:true}
+                                onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
+                    </Row>
+                    <div style={{marginTop:5}}>
+                        <Table loading = {this.props.loading}
+                               onChange={this.onChange.bind(this)}
+                               columns={columns(this)}
+                               dataSource={data}
+                                />
+                    </div>
+                </Spin>
             </div>
             )
     }
 }
 
-const columns = [{
+const columns = (self)=>[{
     title: '分支',
     dataIndex: 'branch',
     key: 'branch',
     //sorter: (a, b) => a.branch - b.branch
+},{
+    title: '操作',
+    dataIndex: 'key',
+    width: '10%',
+    render: (text, record) => (
+        record.branch=="master"|| record.branch=="release" || record.branch=="dev"?
+            <dev></dev>:
+            <Tooltip placement="top" title="点击删除">
+                <Icon type="delete" onClick={self.deleteBranch.bind(self,record)}/>
+            </Tooltip>
+
+    )
 }]
+
 
 branchesList.contextTypes = {
     history: PropTypes.object.isRequired,
@@ -120,13 +172,18 @@ function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
         branchesData: state.fetchBranches.branchesData,
-        loading: state.fetchBranches.loading
+        loading: state.fetchBranches.loading,
+        fetchErrors: state.fetchBranches.fetchErrors,
+        delLoading: state.deleteBranch.loading,
+        delErrMessage: state.deleteBranch.errorMsg,
+        delResult: state.deleteBranch.result
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        fetchBranchesData : bindActionCreators(fetchBranchesData,dispatch)
+        fetchBranchesData : bindActionCreators(fetchBranchesData,dispatch),
+        deleteBranchAction: bindActionCreators(deleteBranch,dispatch),
     }
 }
 

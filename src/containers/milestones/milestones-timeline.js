@@ -86,7 +86,6 @@ class Milestones extends React.Component {
         let obj =  document.getElementById("里程碑");
         let x= obj.offsetLeft;
         let y= obj.offsetHeight;
-        console.log(x,y);
         window.scrollTo(x ,y);
     }
 

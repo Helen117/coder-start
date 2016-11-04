@@ -47,12 +47,12 @@ class MenuBar extends React.Component {
     }
 
     findMenuBarInfoByLocation(menuData,pathName){//根据url找到二级菜单和三级菜单的选中项
-        let find_path = 0, menuOneKey, menuTwoKey;
+        let find_path = 0, menuOneKey = [], menuTwoKey = [];
         for(let i=0; i<menuData.length;i++){
             if(find_path == 0){
                 if(pathName == menuData[i].link){//url是一级菜单，选中项都是空
-                    menuOneKey = "";
-                    menuTwoKey = "";
+                    menuOneKey[0] = "";
+                    menuTwoKey[0] = "";
                     find_path++;
                     break;
                 }else if(pathName != menuData[i].link && menuData[i].subMenu.length > 0){
@@ -63,8 +63,8 @@ class MenuBar extends React.Component {
                                 let menuTree = menuTwo[j].subMenu;
                                 for(let k=0; k< menuTree.length; k++){
                                     if(pathName == menuTree[k].link){//找到对应的选中项
-                                        menuOneKey = "menu"+menuTwo[j].id;
-                                        menuTwoKey = "menu"+menuTree[k].id;
+                                        menuOneKey[0] = "menu"+menuTwo[j].id;
+                                        menuTwoKey[0] = "menu"+menuTree[k].id;
                                         find_path++;
                                         break;
                                     }
@@ -74,8 +74,8 @@ class MenuBar extends React.Component {
                             let menuTree = menuTwo[j].subMenu;
                             for(let k=0; k< menuTree.length; k++){
                                 if(pathName == menuTree[k].link){//url是三级菜单
-                                    menuOneKey = "menu"+menuTwo[j].id;
-                                    menuTwoKey = "menu"+menuTree[k].id;
+                                    menuOneKey[0] = "menu"+menuTwo[j].id;
+                                    menuTwoKey[0] = "menu"+menuTree[k].id;
                                     find_path++;
                                     break;
                                 }
@@ -99,17 +99,28 @@ class MenuBar extends React.Component {
                         currentMenuOne:"menu"+defaultMenuOne_id,
                         currentMenuTwo:"menu"+defaultMenuTwo_id,
                     })
-                }else{//刷新、返回操作更新顶部导航
+                }else{//登录、刷新、返回操作更新顶部导航
                     //根据url找到当前页面顶部导航的selectKeys
                     let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,window.location.pathname);
-                    let oneKey_return = menuOneKey,twoKey_return = menuTwoKey;
+                    let oneKey_return,twoKey_return;
+                    if(menuOneKey.length>0 && menuTwoKey.length>0){
+                        oneKey_return = menuOneKey[0],twoKey_return = menuTwoKey[0];
+                    }
                     let truePath = window.location.pathname;
-                    if(!menuOneKey && !menuTwoKey){//如果没有找到key,去掉最后一个“/”，继续找
+                    while(!oneKey_return && !twoKey_return && menuOneKey.length == 0){//如果没有找到key,去掉最后一个“/”，继续找
                         let trueIndex = truePath.lastIndexOf("/");
-                        truePath = truePath.substr(0,trueIndex);
-                        let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,truePath);
-                        oneKey_return = menuOneKey;
-                        twoKey_return = menuTwoKey;
+                        if(trueIndex == 0 && currentTwo.length>0){
+                            oneKey_return = currentOne[0];
+                            twoKey_return = currentTwo[0];
+                        }else if(trueIndex == 0 && currentTwo.length==0){
+                            oneKey_return = "";
+                            twoKey_return = "";
+                        }else{
+                            truePath = truePath.substr(0,trueIndex);
+                            let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,truePath);
+                            oneKey_return = menuOneKey[0];
+                            twoKey_return = menuTwoKey[0];
+                        }
                     }
                     this.setState({
                         refreshMenuOne:true,

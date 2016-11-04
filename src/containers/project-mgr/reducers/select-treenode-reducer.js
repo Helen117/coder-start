@@ -29,13 +29,14 @@ export function getGroupInfo(state = initialState, action = {}) {
 export function getProjectInfo(state = initialState, action = {}) {
     switch (action.type) {
         case GET_PROJECT_INFO_PENDING:
-            return Object.assign({}, initialState, {fetchProjectStatus: false});
+            return Object.assign({}, initialState, {fetchProjectStatus: false,loading:true});
         case GET_PROJECT_INFO_SUCCESS:
-            return Object.assign({}, initialState, {fetchProjectStatus: true,projectInfo: action.payload});
+            return Object.assign({}, initialState, {fetchProjectStatus: true,projectInfo: action.payload, loading:false});
         case GET_PROJECT_INFO_ERROR:
             return {
                 ...state,
-                errors: action.errMessage
+                errors: action.errMessage,
+                loading:false
             };
         default:
             return state;

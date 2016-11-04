@@ -14,9 +14,9 @@ export default class TableView extends Component{
     }
 
     selectRow(record, index){
-        const {onSelectRow} = this.props;
-        if (onSelectRow){
-            onSelectRow(record);
+        const {onRowClick} = this.props;
+        if (onRowClick){
+            onRowClick(record);
         }
     }
 
@@ -36,10 +36,11 @@ export default class TableView extends Component{
             <div className={styles.table_view_div}>
                 <Table columns={this.props.columns}
                        dataSource={this.props.dataSource}
-                       bordered
+                       bordered={this.props.bordered ? true:false}
                        size="middle"
                        pagination={pagination}
-                       onRowClick={this.selectRow.bind(this)}/>
+                       onRowClick={this.selectRow.bind(this)}
+                       loading={this.props.loading}/>
             </div>
         )
     }

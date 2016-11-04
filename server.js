@@ -13,6 +13,8 @@ const isDeveloping = !isProduction;
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 
+const fileTree = require('./mockdata/fileTree');
+
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
@@ -24,8 +26,8 @@ const group = require('./mockdata/group.json');
 const project_ = require('./mockdata/project');
 const project = project_.projectList.result;
 
-const virtual_project_ = require('./mockdata/virtual_group_tree');
-const virtual_project = virtual_project_.virtualGroupTree.result;
+const virtual_project_ = require('./mockdata/project_set_tree');
+const virtual_project = virtual_project_.projectSetTree.result;
 
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
@@ -141,12 +143,17 @@ app.post('/gitlab/project', function (req, res) {
     res.json(project);
 });
 
-app.post('/gitlab/virtualGroupTree', function (req, res) {
+app.post('/gitlab/projectSetTree', function (req, res) {
     res.json(virtual_project);
 });
 
 app.post('/gitlab/menu', function (req, res) {
     res.json(menu);
+});
+
+
+app.post('/gitlab/fileTree', function (req, res) {
+    res.json(fileTree);
 });
 
 app.post('/gitlab/project/info', function (req, res) {
@@ -155,6 +162,7 @@ app.post('/gitlab/project/info', function (req, res) {
 
 app.post('/gitlab/project/members', function (req, res) {
     res.json(projectMembers);
+
 });
 
 

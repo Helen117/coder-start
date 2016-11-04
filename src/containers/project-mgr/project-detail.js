@@ -9,14 +9,15 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification,Menu, Icon, Radio} from 'antd';
+import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from 'antd';
 import Box from '../../components/box';
-import {createProject} from './actions/create-project-action';
+import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 class ProjectDetail extends React.Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class ProjectDetail extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { actions, form, loginInfo } = this.props;
+        const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -45,7 +47,13 @@ class ProjectDetail extends React.Component {
                 data.description = formData.description;
                 data.groupId = this.state.selectGroupId;
                 data.visibility_level = formData.visibility_level;
-                actions.createProject(data);
+                if(editType == 'add'){
+                    //调创建项目的接口
+                    actions.createProject(data);
+                }else{
+                    //调修改项目的接口
+                    actions.UpdateProject(data);
+                }
             }
         })
     }
@@ -65,35 +73,39 @@ class ProjectDetail extends React.Component {
         })
     }
 
-    insertCallback(){
+    insertCallback(message){
         notification.success({
-            message: '创建成功',
+            message: message,
             description: '',
-            duration: 1
+            duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
-    errCallback(errMessage){
+    errCallback(message,errmessage){
         notification.error({
-            message: '创建失败',
-            //description: '项目名称已被占用!',
-            description:errMessage,
-            duration: 1
+            message: message,
+            description:errmessage,
+            duration: 4
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result, errMessage } = nextProps;
+        console.log("componentWillReceiveProps")
+        const { result, errMessage, updateResult, updateErrors } = nextProps;
+        //创建返回信息
         if (this.props.result != result && result){
-            this.insertCallback();
+            this.insertCallback("创建成功");
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback("创建失败",errMessage);
         }
-    }
-
-    componentWillMount() {
+        //更新返回信息
+        /*if (this.props.updateResult != updateResult && updateResult){
+            this.insertCallback();
+        }else if(this.props.updateErrors != updateErrors && updateErrors){
+            this.errCallback(updateErrors);
+        }*/
     }
 
     isEmptyObject(obj){
@@ -107,8 +119,19 @@ class ProjectDetail extends React.Component {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
         const {getGroupInfo} = this.props;
+        console.log("selectedRow:",selectedRow)
+        console.log("getGroupInfo:",getGroupInfo)
         if (selectedRow){
-            setFieldsValue(selectedRow);
+            for(let i=0; i<getGroupInfo.children.length; i++){
+                if(selectedRow.projectName == getGroupInfo.children[i].name){
+                    setFieldsValue({
+                        name:getGroupInfo.children[i].name,
+                        description:getGroupInfo.children[i].description,
+                        groupid:getGroupInfo.id,
+                        visibility_level:getGroupInfo.children[i].visibility_level.toString()
+                    });
+                }
+            }
         }
         if(!this.isEmptyObject(getGroupInfo)){
             setFieldsValue({groupid:getGroupInfo.name});
@@ -143,6 +166,7 @@ class ProjectDetail extends React.Component {
     }
 
     render() {
+        console.log("render")
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
@@ -150,16 +174,23 @@ class ProjectDetail extends React.Component {
             wrapperCol: {span: 14},
         };
         const {list} = this.props;
-        if(list){
+        if(list.length > 0){
+            const options = list[list.length-1].children.map( (item)=>{
+                return <Option value={item.id} key={item.id}>{item.name}</Option>
+            } )
+
             const nameProps = getFieldProps('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
-                    //{validator:this.projectNameExists.bind(this)},
+                    {validator:this.projectNameExists.bind(this)},
                 ]
                 });
             const descriptionProps = getFieldProps('description',);
             const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
-            const visibilityProps = getFieldProps('visibility_level',);
+            const visibilityProps = getFieldProps('visibility_level',
+                {rules:[
+                    {required:true, message:'请选择可见级别！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
@@ -171,7 +202,16 @@ class ProjectDetail extends React.Component {
                             <Input type="textarea" {...descriptionProps} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="项目所在组">
-                            <Input {...groupProps} placeholder="请点击项目树选择项目组"/>
+                            <Select
+                                showSearch
+                                disabled={editType=='add' ? true : false}
+                                style={{ width: 200 }}
+                                optionFilterProp="children"
+                                notFoundContent=""
+                                {...groupProps}
+                            >
+                                {options}
+                            </Select>
                         </FormItem>
                         <FormItem {...formItemLayout} label="可见级别">
                             <RadioGroup {...visibilityProps}>
@@ -209,12 +249,14 @@ function mapStateToProps(state) {
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
         getGroupInfo:state.getGroupInfo.groupInfo,
+        updateResult:state.createProject.updateResult,
+        updateErrors:state.createProject.updateErrors,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createProject}, dispatch),
+        actions: bindActionCreators({createProject, UpdateProject, DeleteProject}, dispatch),
     }
 }
 

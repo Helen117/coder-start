@@ -68,7 +68,6 @@ class createMergeRequest extends Component {
             description: '',
             duration: 1
         });
-        console.log('fetchMergeBranchData',this.props.mergeBranch)
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
