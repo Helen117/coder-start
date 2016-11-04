@@ -33,7 +33,7 @@ import projectSetToState from '../containers/project-set/reducers/put-project-se
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
 
-import {createMilestones,updateMilestones,checkDueDate,closeProMilestone,closeSetMilestone} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
+import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
 
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 
@@ -80,7 +80,6 @@ const reducer = combineReducers({
     updateMilestones,
     checkDueDate,
     approve,
-    closeProMilestone,
     closeSetMilestone,
 });
 

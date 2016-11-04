@@ -160,14 +160,11 @@ const columns = [{
                 {/*<Tooltip placement="top" title="编辑">
                     <Icon type="edit" />
                 </Tooltip>*/}
-                <a>编辑</a>
+                <a onClick = {self.updateMr.bind(self,record)}>编辑</a>
                 <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
-                <a>关闭</a>
+                <a onClick = {self.closeMr.bind(self,record)}>关闭</a>
                 <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
-                <a>合并</a>
-                {/*<Tooltip placement="top" title="合并">
-                    <Icon type="check-circle" />
-                </Tooltip>*/}
+                <a onClick = {self.mergeMr.bind(self,record)}>合并</a>
             </span>:
                 <a>回退</a>
                 /*<Tooltip placement="top" title="回退">

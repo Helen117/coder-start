@@ -118,26 +118,3 @@ export function closeSetMilestone(state = initialState, action = {}) {
     }
 }
 
-
-
-export function closeProMilestone(state = initialState, action = {}) {
-
-    switch (action.type) {
-        case CLOSE_MILESTONES_PENDING:
-            return Object.assign({}, initialState, {loading:true,disabled:true});
-
-        case CLOSE_MILESTONES_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload, loading:false,disabled:false});
-
-        case CLOSE_MILESTONES_ERROR:
-            return {
-                ...state,
-                errorMsg: action.payload.errorMsg,
-                loading:false,
-                disabled:false
-            };
-
-        default:
-            return state;
-    }
-}

@@ -122,14 +122,7 @@ class projectSetMilestones extends React.Component {
     }
 
     closeMilestone(milestonesId,projectId,id){
-        console.log(milestonesId,"  ",projectId,"  ",id);
-        if(id.indexOf("_g") > 0 ){
-            this.props.closeSetMilestoneAction(milestonesId,projectId);
-        }else{
-            this.props.closeMilestoneAction(milestonesId,projectId);
-
-        }
-
+        this.props.closeSetMilestoneAction(milestonesId,projectId);
     }
 
     render(){
