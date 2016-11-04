@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal } from 'antd';
+import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
@@ -70,8 +70,8 @@ class projectSetTree extends React.Component{
         }
         if(i >= projectSet.length) {
             confirm({
-                title: '您是否确定要删除此分支',
-                content: '删除之后分支内容将会被丢弃',
+                title: '您是否确定要删除此项目集合',
+                content: '删除之后项目集合内容将会被丢弃',
                 onOk() {
                     deleteProjectSetAction(selectedProjectSet.selectedItemId, userId);
                 },
@@ -90,13 +90,13 @@ class projectSetTree extends React.Component{
     }
 
     successCallback(type){
-        const project_id = this.props.getProjectInfo.id;
+        const userId = this.props.loginInfo.userId;
         notification.success({
             message: type+'成功',
             description: '',
             duration: 1
         });
-        this.props.fetchBranchesData(project_id);
+        this.props.fetchProjectSetTree(userId);
     }
 
     isEmptyObject(obj){
@@ -138,45 +138,48 @@ class projectSetTree extends React.Component{
     render(){
         const selectedProjectSet = this.props.selectedProjectSet;
         const {projectSet, loading, currentTwoInfo,errMessage} = this.props;
+        const spinning = this.props.delLoading?true:false;
         return (
-            <Row className="ant-layout-content" style={{minHeight:300}}>
-                <Col span={6}>
-                    <TreeFilter
-                        loading={loading}
-                        notFoundMsg={errMessage}
-                        inputPlaceholder="快速查询项目"
-                        loadingMsg="正在加载项目信息..."
-                        nodesData={projectSet}
-                        onSelect={this.onSelectNode.bind(this)}/>
-                </Col>
-                <Col span={18}>
-                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
+            <Spin spinning={spinning} tip="正在删除数据">
+                <Row className="ant-layout-content" style={{minHeight:300}}>
+                    <Col span={6}>
+                        <TreeFilter
+                            loading={loading}
+                            notFoundMsg={errMessage}
+                            inputPlaceholder="快速查询项目"
+                            loadingMsg="正在加载项目信息..."
+                            nodesData={projectSet}
+                            onSelect={this.onSelectNode.bind(this)}/>
+                    </Col>
+                    <Col span={18}>
+                        {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
+                            <Row>
+                                <div style={{margin:15}}>
+                                    <Button className="pull-right"
+                                            type="primary"
+                                            disabled = {loading || errMessage}
+                                            onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
+                                </div>
+                                <div style={{margin:15}}>
+                                    <Button className="pull-right"
+                                            type="primary"
+                                            disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                            onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
+                                </div>
+                                <div style={{margin:15}}>
+                                    <Button className="pull-right"
+                                            type="primary"
+                                            disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                            onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
+                                </div>
+                            </Row>
+                        ):(<div></div>)}
                         <Row>
-                            <div style={{margin:15}}>
-                                <Button className="pull-right"
-                                        type="primary"
-                                        disabled = {loading || errMessage}
-                                        onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
-                            </div>
-                            <div style={{margin:15}}>
-                                <Button className="pull-right"
-                                        type="primary"
-                                        disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                        onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
-                            </div>
-                            <div style={{margin:15}}>
-                                <Button className="pull-right"
-                                        type="primary"
-                                        disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                        onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
-                            </div>
+                            {this.props.children}
                         </Row>
-                    ):(<div></div>)}
-                    <Row>
-                        {this.props.children}
-                    </Row>
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
+            </Spin>
         );
     }
 
@@ -197,9 +200,9 @@ function mapStateToProps(state) {
         errMessage: state.fetchProjectSetTree.errMessage,
         loading: state.fetchProjectSetTree.loading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
-        delErrorMsg: state.deleteProjectSet.selectedProjectSet,
-        delResult: state.deleteProjectSet.selectedProjectSet,
-
+        delErrorMsg: state.deleteProjectSet.errorMsg,
+        delResult: state.deleteProjectSet.result,
+        delLoading: state.deleteProjectSet.loading,
     }
 }
 

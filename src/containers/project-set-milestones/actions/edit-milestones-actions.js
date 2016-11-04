@@ -27,9 +27,7 @@ export function updateMilestone(milestoneData) {
         type: UPDATE_MILESTONES,
         payload: {
             promise: api.post(path, {
-                params: {
-                    milestone: milestoneData,
-                }
+                    data: milestoneData,
 
             })
         }
@@ -54,31 +52,32 @@ export function checkDueDate(milestoneId,set_id,due_date) {
     }
 }
 
-export function closeMilestone(milestonesId,projectId) {
+/*export function closeMilestone(milestonesId,projectSetId) {
     var path = '/project/close-set-milestone';
-    return {
-        type: CLOSE_SET_MILESTONES,
-        payload: {
-            promise: api.post(path, {
-                params: {
-                    milestonesId: milestonesId,
-                    projectId: projectId
-                }
-            })
-        }
-    }
-}
-
-
-export function closeSetMilestone(milestonesId,projectId) {
-    var path = '/project/close-milestone';
     return {
         type: CLOSE_MILESTONES,
         payload: {
             promise: api.post(path, {
                 params: {
                     milestonesId: milestonesId,
-                    projectId: projectId
+                    projectId: projectSetId
+                }
+            })
+        }
+    }
+}*/
+
+
+export function closeSetMilestone(milestone_id,sets_id) {
+    console.log('ddddddddd',milestone_id,sets_id);
+    var path = '/project/close-milestone';
+    return {
+        type: CLOSE_SET_MILESTONES,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    milestone_id: milestone_id,
+                    sets_id: sets_id
                 }
             })
         }
