@@ -137,8 +137,6 @@ class ProjectList extends Component {
     }
 
     render() {
-        console.log("render--list")
-        const {deleteGroupResult} = this.props;
         if(this.state.listType == true){//展示项目组信息
             const {treeData,getGroupInfo} = this.props;
             if(getGroupInfo && treeData.length>0){

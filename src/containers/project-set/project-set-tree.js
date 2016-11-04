@@ -59,7 +59,6 @@ class projectSetTree extends React.Component{
 
     delProjectSet(type,selectedProjectSet){
         const deleteProjectSetAction = this.props.deleteProjectSetAction;
-        console.log('deleteBranchAction',deleteProjectSetAction);
         const userId = this.props.loginInfo.userId;
         const projectSet = this.props.projectSet;
         let i = 0;

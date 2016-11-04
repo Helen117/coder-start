@@ -98,7 +98,6 @@ class ProjectDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("componentWillReceiveProps")
         const { result, errMessage, updateResult, updateErrors } = nextProps;
         //创建返回信息
         if (this.props.result != result && result){
@@ -126,9 +125,7 @@ class ProjectDetail extends React.Component {
         const {setFieldsValue} = this.props.form;
         const {getGroupInfo} = this.props;
         if (selectedRow){
-            console.log("selectedRow:",selectedRow)
             for(let i=0; i<getGroupInfo.children.length; i++){
-                console.log("getGroupInfo.children[i].name:",getGroupInfo.children[i].name)
                 if(selectedRow.projectName == getGroupInfo.children[i].name){
                     setFieldsValue({
                         name:getGroupInfo.children[i].name,
@@ -172,7 +169,6 @@ class ProjectDetail extends React.Component {
     }
 
     render() {
-        console.log("render")
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {

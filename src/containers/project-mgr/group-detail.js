@@ -43,7 +43,6 @@ class GroupDetail extends React.Component {
                 }else{
                     //调修改组的接口
                     formData.id = getGroupInfo.id;
-                    //console.log("formdata:",formData)
                     actions.UpdateGroup(formData);
                 }
             }
