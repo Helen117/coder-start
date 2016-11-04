@@ -11,7 +11,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from 'antd';
 import Box from '../../components/box';
-import {createProject} from './actions/create-project-action';
+import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
 
 const confirm = Modal.confirm;
@@ -48,9 +48,11 @@ class ProjectDetail extends React.Component {
                 data.groupId = this.state.selectGroupId;
                 data.visibility_level = formData.visibility_level;
                 if(editType == 'add'){
+                    //调创建项目的接口
                     actions.createProject(data);
                 }else{
                     //调修改项目的接口
+                    actions.UpdateProject(data);
                 }
             }
         })
@@ -71,34 +73,39 @@ class ProjectDetail extends React.Component {
         })
     }
 
-    insertCallback(){
+    insertCallback(message){
         notification.success({
-            message: '创建成功',
+            message: message,
             description: '',
-            duration: 1
+            duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
         this.context.router.goBack();
     }
 
-    errCallback(errMessage){
+    errCallback(message,errmessage){
         notification.error({
-            message: '创建失败',
-            description:errMessage,
+            message: message,
+            description:errmessage,
             duration: 4
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result, errMessage } = nextProps;
+        console.log("componentWillReceiveProps")
+        const { result, errMessage, updateResult, updateErrors } = nextProps;
+        //创建返回信息
         if (this.props.result != result && result){
-            this.insertCallback();
+            this.insertCallback("创建成功");
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback("创建失败",errMessage);
         }
-    }
-
-    componentWillMount() {
+        //更新返回信息
+        /*if (this.props.updateResult != updateResult && updateResult){
+            this.insertCallback();
+        }else if(this.props.updateErrors != updateErrors && updateErrors){
+            this.errCallback(updateErrors);
+        }*/
     }
 
     isEmptyObject(obj){
@@ -112,6 +119,8 @@ class ProjectDetail extends React.Component {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
         const {getGroupInfo} = this.props;
+        console.log("selectedRow:",selectedRow)
+        console.log("getGroupInfo:",getGroupInfo)
         if (selectedRow){
             for(let i=0; i<getGroupInfo.children.length; i++){
                 if(selectedRow.projectName == getGroupInfo.children[i].name){
@@ -119,7 +128,7 @@ class ProjectDetail extends React.Component {
                         name:getGroupInfo.children[i].name,
                         description:getGroupInfo.children[i].description,
                         groupid:getGroupInfo.id,
-                        //visibility_level:getGroupInfo.children[i].visibility_level
+                        visibility_level:getGroupInfo.children[i].visibility_level.toString()
                     });
                 }
             }
@@ -157,6 +166,7 @@ class ProjectDetail extends React.Component {
     }
 
     render() {
+        console.log("render")
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
@@ -164,7 +174,7 @@ class ProjectDetail extends React.Component {
             wrapperCol: {span: 14},
         };
         const {list} = this.props;
-        if(list){
+        if(list.length > 0){
             const options = list[list.length-1].children.map( (item)=>{
                 return <Option value={item.id} key={item.id}>{item.name}</Option>
             } )
@@ -177,7 +187,10 @@ class ProjectDetail extends React.Component {
                 });
             const descriptionProps = getFieldProps('description',);
             const groupProps = getFieldProps('groupid',{rules:[{ required:true}]});
-            const visibilityProps = getFieldProps('visibility_level',);
+            const visibilityProps = getFieldProps('visibility_level',
+                {rules:[
+                    {required:true, message:'请选择可见级别！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
@@ -236,12 +249,14 @@ function mapStateToProps(state) {
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
         getGroupInfo:state.getGroupInfo.groupInfo,
+        updateResult:state.createProject.updateResult,
+        updateErrors:state.createProject.updateErrors,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createProject}, dispatch),
+        actions: bindActionCreators({createProject, UpdateProject, DeleteProject}, dispatch),
     }
 }
 

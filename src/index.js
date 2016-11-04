@@ -30,8 +30,8 @@ import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/project-set';
 import {projectSetMilestones,projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
-import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues'
-
+import  {AddIssue,IssueNotes,IssueList,MyIssueList} from './containers/issues';
+import ApproveList from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
 
@@ -84,8 +84,6 @@ ReactDOM.render(
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
-                            <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
-                            <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
                             <Route name="issueList" breadcrumbName="问题管理" path="issue" component={IssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
@@ -96,6 +94,8 @@ ReactDOM.render(
                                 <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
                             </Route>
                         </Route>
+                        <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
+                        <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
                             <Route name="projectSetProjectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
@@ -108,7 +108,8 @@ ReactDOM.render(
                         <Route name="projectSetMilestonesDetail" breadcrumbName="项目集合里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
-                        <Route name="createBranches" breadcrumbName="编辑分支" path="createBranches" component={createBranches}/>
+                        <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
+                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

@@ -22,35 +22,14 @@ class CodeView extends React.Component {
         this.state = {
             //style: require('./styles/atelier-dune-light').default,
             code: '',
-            language:""
         }
     }
 
     componentWillMount(){
-
+        //console.log("componentWillMount")
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.location.state.pathName){
-            let file_name = nextProps.location.state.pathName;
-            let catIndex = file_name.lastIndexOf(".");
-            let categary;
-            if(catIndex < 0){
-                categary = "";
-            }else{
-                categary = file_name.substr(catIndex+1,file_name.length);
-                if( (categary.toLowerCase()=="js".toLowerCase()) || (categary.toLowerCase()=="java".toLowerCase())
-                    || (categary.toLowerCase()=="json".toLowerCase()) || (categary.toLowerCase()=="html".toLowerCase()) ||
-                    (categary.toLowerCase()=="md".toLowerCase()) || (categary.toLowerCase()=="xml".toLowerCase())){
-                    categary = categary;
-                }else{
-                    categary = "";
-                }
-            }
-            this.setState({
-                language:categary
-            })
-        }
         const { codeView, fetchContentStatus} = nextProps;
         if(codeView != this.props.codeView){
             if(fetchContentStatus == true){
@@ -62,22 +41,37 @@ class CodeView extends React.Component {
     }
 
     render(){
+        const {fetchContentStatus} = this.props;
+        if(fetchContentStatus || false){
+            return (
+                <div className={styles.code_view}>
+                    <Row className={styles.blob_commit_info}>
+                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                    </Row>
+                    <Row>
+                        <div className={styles.blob_commit_info}>
+                            {/*<SyntaxHighlighter style={this.state.style}
+                                               showLineNumbers>
+                                {this.state.code}
+                            </SyntaxHighlighter>*/}
+                        </div>
+                    </Row>
+                </div>
+            )
+        }else{
+            return (
+                <div className={styles.code_view}>
+                    <Row className={styles.blob_commit_info}>
+                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                    </Row>
+                    <Row>
+                        <div className={styles.blob_commit_info}>
 
-        return (
-            <div className={styles.code_view}>
-                <Row className={styles.blob_commit_info}>
-                    <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
-                </Row>
-                <Row>
-                 <div className={styles.blob_commit_info}>
-                 {/*<SyntaxHighlighter language={this.state.language} style={this.state.style}
-                                    showLineNumbers>
-                 {this.state.code}
-                 </SyntaxHighlighter>*/}
-                 </div>
-                </Row>
-            </div>
-        )
+                        </div>
+                    </Row>
+                </div>
+            )
+        }
     }
 }
 

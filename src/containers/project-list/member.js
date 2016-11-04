@@ -13,56 +13,6 @@ import styles from './index.css';
 class ProjectMember extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            memberType:false,
-            selectRow:null,
-            selectGroup:null,
-        };
-        this.showProjectMember = this.showProjectMember.bind(this);
-        this.notShowMember = this.notShowMember.bind(this);
-    }
-
-    componentDidMount() {
-        //在此处注册对其他控件发送的消息的响应
-        //PubSub.subscribe("evtMemberCountClick",this.showProjectMember.bind(this) );
-        //PubSub.subscribe("evtTreeClick",this.notShowMember.bind(this) );
-        if(this.props.location.state){
-            this.showProjectMember(this.props.location.state);
-        }
-    }
-
-    componentWillMount(){
-        //在此处注销对其他控件发送消息的响应
-        //PubSub.unsubscribe("evtMemberCountClick");
-        //PubSub.unsubscribe("evtTreeClick");
-    }
-
-    showProjectMember(data){
-        this.setState({
-            memberType:true,
-            selectRow:data.record.project_name,
-            selectGroup:data.groupInfo,
-        })
-    }
-
-    notShowMember(msg,data){
-        this.setState({
-            memberType:false,
-        })
-    }
-
-    searchGroupByProjectName(projectName,groupInfo){
-        var projectInfo;
-        if(projectName.indexOf("/") > 0){
-            let _index = projectName.indexOf("/");
-            projectName = projectName.substr(_index+1,projectName.length);
-        }
-        for(var i=0;i<groupInfo.children.length;i++){
-            if(projectName == groupInfo.children[i].name){
-                projectInfo = groupInfo.children[i];
-                return {projectInfo}
-            }
-        }
     }
 
     transformDate(timestamp){
@@ -71,23 +21,10 @@ class ProjectMember extends Component {
         return newDate.toLocaleString();
     }
 
-    componentWillReceiveProps(nextProps){
-        //const {node} = nextProps.location.state;
-        if(nextProps.location.state){
-            this.showProjectMember(nextProps.location.state);
-        }
-        const { getGroupInfo } = nextProps;
-        if(this.props.getGroupInfo != getGroupInfo && getGroupInfo){
-            this.notShowMember();
-        }
-    }
-
     render(){
-        if(this.state.memberType == true){
-            const {list, projectMembers} = this.props;
-            var projectName = this.state.selectRow;
-            var groupInfo = this.state.selectGroup;
-            var {projectInfo} = this.searchGroupByProjectName(projectName,groupInfo);
+            const {projectMembers} = this.props;
+            var groupInfo = this.props.location.state.groupInfo;
+            var projectInfo = this.props.location.state.projectInfo;
 
             const columns = [
                 {title: "项目人员", dataIndex: "name", key: "name"},
@@ -109,7 +46,7 @@ class ProjectMember extends Component {
             return (
                 <div className={styles.project_list_div}>
                     <div>
-                        <p>项目名称:{projectName}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
+                        <p>项目名称:{projectInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
                     </div>
                     <TableView columns={columns}
                                dataSource={dataSource}
@@ -117,9 +54,6 @@ class ProjectMember extends Component {
 
                 </div>
             )
-        }else{
-            return null;
-        }
     }
 }
 ProjectMember.contextTypes = {
@@ -130,9 +64,6 @@ ProjectMember.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        list: state.getGroupTree.treeData,
-        loginInfo:state.login.profile,
-        getGroupInfo:state.getGroupInfo.groupInfo,
         projectMembers:state.getProjectMembers,
     }
 }

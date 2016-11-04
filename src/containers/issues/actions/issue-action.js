@@ -59,7 +59,7 @@ export function getIssueList(projectId) {
     return {
         type: 'GET_ISSUE_LIST',
         payload: {
-            promise: api.post('/project/issues',{
+            promise: api.post('/project/project-issues',{
                 params: {
                     projectId: projectId
                 }
@@ -87,6 +87,20 @@ export function closeIssue(issueId) {
             promise: api.post('/issue/close',{
                 params: {
                     issueId: issueId
+                }
+            })
+        }
+    }
+}
+
+export function getIssueDemand(projectId,milestoneId) {
+    return {
+        type: 'GET_DEMAND',
+        payload: {
+            promise: api.post('/project/demand-issues',{
+                params: {
+                    project_id: projectId,
+                    milestone_id:milestoneId
                 }
             })
         }
