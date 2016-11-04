@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/19.
  */
 import React,{PropTypes} from 'react';
-import { Timeline,Progress,BackTop  } from 'antd';
+import { Timeline,Progress,BackTop , Tooltip ,Button} from 'antd';
 
 
 export default class TimelineMilestone extends React.Component {
@@ -37,26 +37,51 @@ export default class TimelineMilestone extends React.Component {
             state: {milestonesId,projectId}
         });
     }
+    editMilestone(item){
+        this.context.router.push({
+            pathname: '/projectSetMilestonesEdit',
+            state: {editType: "update", item: item}
+        });
+
+    }
 
     timelineItemConst(timeLineData){
         let timeLine = [];
         if (timeLineData && timeLineData.length>0){
             timeLine = timeLineData.map((item) => {
-            const timelineColor = this.setMilestoneColor(item.state,item.due_date);
+                const timelineColor = this.setMilestoneColor(item.state,item.due_date);
+                const groupId = this.props.id;
+                //item.due_date = this.getTime(item.due_date);
                 let i = 0;
                 return (
+                    <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
 
-                        <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
-                            <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
-                            <p>{item.description}</p>
-                            <div >
-                                <p >计划发布时间：{this.getTime(item.due_date)}</p>
-                                {/*<p>创建人：{item.owner}</p>*/}
-                                <p>当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项</p>
+
+                            <Tooltip placement="rightBottom" title="点击可修改">
+                                <a onClick = {this.editMilestone.bind(this,item)}>
+                                    <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
+                                </a>
+                            </Tooltip>
+
+                            {item.description}
+                            <div style={{marginLeft:12}}>
+                                <p>计划发布时间：{this.getTime(item.due_date)}</p>
+                                当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项
                                 <Progress percent={item.rate} />
+                                {groupId.indexOf("_g")>0?<div className="pull-right" >
+                                    <a style={{margin:5}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
+                                    <a style={{margin:5}} >关闭</a>
+                                    <a style={{margin:5}} >删除</a>
+                                </div>:<div></div>
+                                }
                                 <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
+
                             </div>
-                        </Timeline.Item>)
+
+
+
+                    </Timeline.Item>
+                    )
             })
         };
         return timeLine;
@@ -68,7 +93,7 @@ export default class TimelineMilestone extends React.Component {
         const loading = this.props.loading;
         const pending = this.props.pending;
         return(
-        <div style={{width:"50%"}}>
+            <div style={{width:"60%"}}>
             {loading?
                 (<span className="filter-not-found">
                         <i className="anticon anticon-loading">

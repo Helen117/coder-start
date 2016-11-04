@@ -6,11 +6,11 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import putVirtualGroupToState from './actions/put-virtual-group-into-state-action';
-import fetchVirtualGroupTree from  './actions/fetch-virtual_group_tree_action';
+import putProjectSetToState from './actions/put-project-set-into-state-action';
+import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
 import 'pubsub-js';
 
-class virtualGroupTree extends React.Component{
+class projectSetTree extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -20,9 +20,9 @@ class virtualGroupTree extends React.Component{
     }
 
     componentDidMount() {
-        const {loginInfo,virtualGroupTree} =this.props;
-        if(!virtualGroupTree) {
-            this.props.fetchVirtualGroupTree(loginInfo.userId);
+        const {loginInfo,projectSet} =this.props;
+        if(!projectSet) {
+            this.props.fetchProjectSetTree(loginInfo.userId);
         }
     }
 
@@ -42,9 +42,9 @@ class virtualGroupTree extends React.Component{
         });
     }
 
-    createVirtualGroup(){
+    createProjectSet(){
         this.context.router.push({
-            pathname: '/createVirtualGroup',
+            pathname: '/createProjectSet',
         });
     }
 
@@ -60,7 +60,7 @@ class virtualGroupTree extends React.Component{
 
         const {currentOneInfo, currentTwoInfo} = this.props;
         node.selectedItemId=node.id.substring(0,node.id.length-2);
-        this.props.putVirtualGroupToState(node);
+        this.props.putProjectSetToState(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 this.context.router.push({
@@ -75,26 +75,26 @@ class virtualGroupTree extends React.Component{
     }
 
     render(){
-        const {virtualGroupTree, loading, currentTwoInfo,errMessage} = this.props;
+        const {projectSet, loading, currentTwoInfo,errMessage} = this.props;
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
                     <TreeFilter
                         loading={loading}
-                        notFoundMsg='找不到项目'
+                        notFoundMsg={errMessage}
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
-                        nodesData={virtualGroupTree}
+                        nodesData={projectSet}
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
-                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/virtual-group-tree')?(
+                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
                         <Row>
                             <div style={{margin:15}}>
                                     <Button className="pull-right"
                                             type="primary"
-                                            disabled = {loading && !errMessage}
-                                            onClick={this.createVirtualGroup.bind(this,'add',null)}>创建虚拟组</Button>
+                                            disabled = {loading || errMessage}
+                                            onClick={this.createProjectSet.bind(this,'add',null)}>创建虚拟组</Button>
                             </div>
                         </Row>
                     ):(<div></div>)}
@@ -108,7 +108,7 @@ class virtualGroupTree extends React.Component{
 
 }
 
-virtualGroupTree.contextTypes = {
+projectSetTree.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -119,17 +119,17 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
-        virtualGroupTree: state.fetchVirtualGroupTree.virtualGroupTree,
-        errMessage: state.fetchVirtualGroupTree.errMessage,
-        loading: state.fetchVirtualGroupTree.loading
+        projectSet: state.fetchProjectSetTree.projectSetTree,
+        errMessage: state.fetchProjectSetTree.errMessage,
+        loading: state.fetchProjectSetTree.loading
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        fetchVirtualGroupTree: bindActionCreators(fetchVirtualGroupTree, dispatch),
-        putVirtualGroupToState: bindActionCreators(putVirtualGroupToState, dispatch),
+        fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
+        putProjectSetToState: bindActionCreators(putProjectSetToState, dispatch),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(virtualGroupTree);
+export default connect(mapStateToProps, mapDispatchToProps)(projectSetTree);

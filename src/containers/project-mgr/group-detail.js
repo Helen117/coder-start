@@ -11,7 +11,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, Modal, notification,Radio} from 'antd';
 import Box from '../../components/box';
-import {createGroup} from './actions/create-group-action';
+import {createGroup, UpdateGroup} from './actions/create-group-action';
 import 'pubsub-js';
 
 const confirm = Modal.confirm;
@@ -28,7 +28,8 @@ class GroupDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo } = this.props;
+        const { actions, form, loginInfo, getGroupInfo } = this.props;
+        const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -36,7 +37,15 @@ class GroupDetail extends React.Component {
                 const formData = form.getFieldsValue();
                 formData.owner=loginInfo.username;
                 formData.userId = loginInfo.userId;
-                actions.createGroup(formData);
+                if(editType == 'add'){
+                    //调创建组的接口
+                    actions.createGroup(formData);
+                }else{
+                    //调修改组的接口
+                    formData.id = getGroupInfo.id;
+                    //console.log("formdata:",formData)
+                    actions.UpdateGroup(formData);
+                }
             }
         })
     }
@@ -56,9 +65,9 @@ class GroupDetail extends React.Component {
         })
     }
 
-    insertCallback(){
+    insertCallback(message){
         notification.success({
-            message: '创建成功',
+            message: message,
             description: '',
             duration: 2
         });
@@ -66,28 +75,37 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    errCallback(message){
+    errCallback(message,errmessage){
         notification.error({
-            message: '创建失败',
-            description:message,
+            message: message,
+            description:errmessage,
             duration: 4
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        const {result, errMessage} = nextProps;
+        const {result, errMessage, updateResult, updateErrors} = nextProps;
+        //创建返回信息
         if (this.props.result != result && result) {
-            this.insertCallback();
+            this.insertCallback("创建成功");
         } else if (this.props.errMessage != errMessage && errMessage) {
-            this.errCallback(errMessage);
+            this.errCallback("创建失败",errMessage);
+        }
+        //修改返回信息
+        if (this.props.updateResult != updateResult && updateResult) {
+            this.insertCallback("修改成功");
+        } else if (this.props.updateErrors != updateErrors && updateErrors) {
+            this.errCallback("修改失败",updateErrors);
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const {selectedRow} = this.props.location.state;
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
-            setFieldsValue(selectedRow);
+            setFieldsValue({name:selectedRow.name});
+            setFieldsValue({description:selectedRow.description});
+            setFieldsValue({visibility_level:selectedRow.visibility_level.toString()});
         }
     }
 
@@ -125,10 +143,13 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldProps('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                    //{validator:this.groupNameExists.bind(this)},
+                    {validator:this.groupNameExists.bind(this)},
                 ]});
             const descriptionProps = getFieldProps('description',);
-            const visibilityProps = getFieldProps('visibility_level',);
+            const visibilityProps = getFieldProps('visibility_level',
+                {rules:[
+                    {required:true, message:'请选择可见级别！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
@@ -174,12 +195,15 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         loading:state.createGroup.loading,
         disabled:state.createGroup.disabled,
+        updateResult:state.createGroup.updateResult,
+        updateErrors:state.createGroup.updateErrors,
+        getGroupInfo:state.getGroupInfo.groupInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createGroup}, dispatch)
+        actions: bindActionCreators({createGroup, UpdateGroup}, dispatch)
     }
 }
 

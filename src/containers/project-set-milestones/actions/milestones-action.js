@@ -3,18 +3,19 @@
  */
 import {ACQUIRE_MILESTONES,
     ACQUIRE_MILESTONES_DETAIL,
-    PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
+    PUT_MILESTONES_PROID,
+    ACQUIRE_PROJECT_SET_MILESTONES} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getVirtualGroupMilestones(projectId, page, timeLineData) {
-    var path ='/milestone/project';
+export function getProjectSetMilestones(set_id, page, timeLineData) {
+    var path ='/project/milestones';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:{timeLineData,projectId},
+        meta:{timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
-                    projectId:projectId,
+                    set_id:set_id,
                     page:page
                 }
             })
@@ -26,7 +27,7 @@ export function getProjectMilestones(projectId,page,timeLineData) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:{timeLineData,projectId},
+        meta:{timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {

@@ -26,12 +26,13 @@ import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-re
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
-import fetchProMsg from '../containers/virtual-group/reducers/fetch-project-msg-reducer';
-import createVirtualGroup from '../containers/virtual-group/reducers/virtual-group-create-reducers'
-import virtualGroupToState from '../containers/virtual-group/reducers/put_virtual_group_to_state_reducer';
-import fetchVirtualGroupTree from '../containers/virtual-group/reducers/fetch_virtual_group_tree_reducer';
+import fetchProMsg from '../containers/project-set/reducers/fetch-project-msg-reducer';
+import createProjectSet from '../containers/project-set/reducers/project-set-create-reducers'
+import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
+import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
-import createMilestones from '../containers/virtual-group-milestones/reducers/create-milestones-reducer'
+import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
+import createMilestones from '../containers/project-set-milestones/reducers/create-milestones-reducer'
 
 const reducer = combineReducers({
     login,
@@ -61,10 +62,11 @@ const reducer = combineReducers({
     fetchBranches,
     createBranch,
     getMenuBarInfo,
+    getCodeFile,
     fetchProMsg,
-    createVirtualGroup,
-    virtualGroupToState,
-    fetchVirtualGroupTree,
+    createProjectSet,
+    projectSetToState,
+    fetchProjectSetTree,
     getProjectMembers,
     createMilestones,
     approve

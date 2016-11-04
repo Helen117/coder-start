@@ -7,23 +7,21 @@ import {Timeline,Button,Row,Col,Progress,notification,BackTop} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getProjectMilestones,putProIdToState,getVirtualGroupMilestones} from './actions/milestones-action';
+import {getProjectMilestones,putProIdToState,getProjectSetMilestones} from './actions/milestones-action';
 import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
 
-class virtualGroupMilestones extends React.Component {
+class projectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
         this.page =1;
         this.timeLineData = [];
-        /*const id = this.props.selectedVirtualGroup.selectedItemId;
-        console.log('id');*/
     }
 
     componentDidMount() {
-        if (this.props.selectedVirtualGroup ) {
-            const selectedItemId = this.props.selectedVirtualGroup.selectedItemId;
+        if (this.props.selectedProjectSet ) {
+            const selectedItemId = this.props.selectedProjectSet.id;
             if(!this.props.timeLineData || this.props.milestoneProId!=selectedItemId && this.props.timeLineData){
                 this.distributeActions(selectedItemId, this.page, this.timeLineData);
                 //this.props.getProjectMilestones(id, this.page, this.timeLineData);
@@ -39,8 +37,8 @@ class virtualGroupMilestones extends React.Component {
     componentWillReceiveProps(nextProps) {
         const acquireData = nextProps.acquireData;
         const errMessage = nextProps.errMessage;
-        const thisProId = this.props.selectedVirtualGroup.selectedItemId;
-        const nextProId = nextProps.selectedVirtualGroup.selectedItemId;
+        const thisProId = this.props.selectedProjectSet.id;
+        const nextProId = nextProps.selectedProjectSet.id;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.page =1;
@@ -62,7 +60,7 @@ class virtualGroupMilestones extends React.Component {
     errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目',
+            description:'请先在左侧项目树中选择一个项目或虚拟组',
             duration: 2
         });
     }
@@ -84,56 +82,59 @@ class virtualGroupMilestones extends React.Component {
     }
 
     distributeActions(id,page,timeLineData){
+        const selectedItemId = id.substring(0,id.length-2);
         if(id.indexOf("_g") > 0 ){
-            const id = id.substring(0,id.length-2);
-            this.props.getVirtualGroupMilestones(id,page,timeLineData);
+
+            this.props.getProjectSetMilestones(selectedItemId,page,timeLineData);
         }else{
-            this.props.getProjectMilestones(id,page,timeLineData);
+            this.props.getProjectMilestones(selectedItemId,page,timeLineData);
         }
 
     }
 
     moreMilestones(){
-        const id = this.props.selectedVirtualGroup.id;
+        const id = this.props.selectedProjectSet.id;
         this.page ++;
         this.distributeActions(id,this.page,this.props.timeLineData);
         //this.props.getProjectMilestones(id,this.page,this.props.timeLineData);
     }
 
-    createMilestones(){
+    createMilestones(type){
         this.context.router.push({
-            pathname: '/virtualGroupMilestonesCreate',
+            pathname: '/projectSetMilestonesEdit',
+            state: {editType: type}
         });
     }
 
     render(){
-        const {loading,notFoundMsg,timeLineData,selectedVirtualGroup} = this.props;
-        const id = selectedVirtualGroup?selectedVirtualGroup.id:'';
-        const selectedItemId = selectedVirtualGroup?selectedVirtualGroup.selectedItemId:'';
+        const {loading,notFoundMsg,timeLineData,selectedProjectSet} = this.props;
+        const id = selectedProjectSet?selectedProjectSet.id:'';
+        const selectedItemId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         return (
             <div style={{margin:15}}>
                 {id.indexOf("_g") > 0?
                 <div >
-                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add',null)}>创建里程碑</Button>
+                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                 </div>:<div></div>}
                 <TimelineMilestone timeLineData={timeLineData}
                                    loading = {loading}
                                    notFoundMsg = {notFoundMsg}
                                    pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
                                    projectId = {selectedItemId}
-                                   milestonesDetailPath="/virtualGroupMilestonesDetail"/>
+                                   id = {id}
+                                   milestonesDetailPath="/projectSetMilestonesDetail"/>
             </div>
         )
     }
 }
 
-virtualGroupMilestones.contextTypes = {
+projectSetMilestones.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
-virtualGroupMilestones.propTypes = {
+projectSetMilestones.propTypes = {
     loadingMsg: PropTypes.string,
     notFoundMsg: PropTypes.string,
     loading: PropTypes.bool,
@@ -146,17 +147,17 @@ function mapStateToProps(state) {
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
         errMessage: state.milestones.errMessage,
-        selectedVirtualGroup: state.virtualGroupToState.selectedVirtualGroup,
+        selectedProjectSet: state.projectSetToState.selectedProjectSet,
         milestoneProId: state.putMilestonesProId.milestoneProId,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getVirtualGroupMilestones: bindActionCreators(getVirtualGroupMilestones, dispatch),
+        getProjectSetMilestones: bindActionCreators(getProjectSetMilestones, dispatch),
         getProjectMilestones: bindActionCreators(getProjectMilestones, dispatch),
         putProIdToState: bindActionCreators(putProIdToState, dispatch),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(virtualGroupMilestones);
+export default connect(mapStateToProps, mapDispatchToProps)(projectSetMilestones);

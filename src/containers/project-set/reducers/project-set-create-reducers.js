@@ -3,25 +3,25 @@
  */
 import _ from 'lodash';
 import {
-    CREATE_VIRTUAL_GROUP_PENDING,
-    CREATE_VIRTUAL_GROUP_SUCCESS,
-    CREATE_VIRTUAL_GROUP_ERROR,
-} from '../constants/virtual-group-action-types';
+    CREATE_PROJECT_SET_PENDING,
+    CREATE_PROJECT_SET_SUCCESS,
+    CREATE_PROJECT_SET_ERROR,
+} from '../constants/project-set-action-types';
 
 const initialState = {
 
 };
 
-export default function createVirtualGroup(state = initialState, action = {}) {
+export default function createProjectSet(state = initialState, action = {}) {
 
     switch (action.type) {
-        case CREATE_VIRTUAL_GROUP_PENDING:
+        case CREATE_PROJECT_SET_PENDING:
             return Object.assign({}, initialState, {loading:true,disabled:true});
 
-        case CREATE_VIRTUAL_GROUP_SUCCESS:
+        case CREATE_PROJECT_SET_SUCCESS:
             return Object.assign({}, initialState, {items: action.payload,loading:false,disabled:false});
 
-        case CREATE_VIRTUAL_GROUP_ERROR:
+        case CREATE_PROJECT_SET_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,

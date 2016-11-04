@@ -9,8 +9,15 @@
 import {
     CREATE_GROUP_PENDING,
     CREATE_GROUP_SUCCESS,
-    CREATE_GROUP_ERROR
+    CREATE_GROUP_ERROR,
+    UPDATE_GROUP_PENDING,
+    UPDATE_GROUP_SUCCESS,
+    UPDATE_GROUP_ERROR,
+    DELETE_GROUP_PENDING,
+    DELETE_GROUP_SUCCESS,
+    DELETE_GROUP_ERROR
 } from '../constants/create-group-types';
+import {RESET_DELETE_RESULT} from '../constants/create-project-types';
 
 const initialState = {
 };
@@ -28,6 +35,29 @@ export default function createGroup(state = initialState, action = {}) {
                 loading:false,
                 disabled:false,
             };
+        case UPDATE_GROUP_PENDING:
+            return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
+        case UPDATE_GROUP_SUCCESS:
+            return Object.assign({}, initialState, {updateResult: action.payload,updateLoading:false,updateDisabled:false});
+        case UPDATE_GROUP_ERROR:
+            return {
+                ...state,
+                updateErrors: action.payload.errorMsg,
+                updateLoading:false,
+                updateDisabled:false,
+            };
+        case DELETE_GROUP_PENDING:
+            return Object.assign({}, initialState, {deleteResult: "false"});
+        case DELETE_GROUP_SUCCESS:
+            return Object.assign({}, initialState, {deleteResult: "success"});
+        case DELETE_GROUP_ERROR:
+            return {
+                ...state,
+                deleteResult: "false",
+                deleteErrors: action.payload.errorMsg,
+            };
+        case RESET_DELETE_RESULT:
+            return Object.assign({}, initialState, {deleteResult: action.data});
         default:
             return state;
     }

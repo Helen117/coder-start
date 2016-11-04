@@ -34,6 +34,7 @@ class AddIssue extends Component{
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             //时间类型转换
+            console.log('selectedRow.due_date',selectedRow.due_date);
             if(selectedRow.due_date){
                 selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
             }
@@ -87,7 +88,7 @@ class AddIssue extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const { actions,form ,loginInfo,projectInfo} = this.props;
-        const {editType,selectedRow} = this.props.location.state;
+        const {edType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 //message.error(errors,2);
