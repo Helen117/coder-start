@@ -3,12 +3,12 @@
  */
 
 import React, {PropTypes} from 'react';
-import {Timeline,Button,Row,Col,Progress,notification,BackTop} from 'antd';
+import {Timeline,Button,Row,Col,Progress,notification,BackTop,Spin} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getProjectMilestones,putProIdToState,getProjectSetMilestones} from './actions/milestones-action';
-import {closeMilestone,closeSetMilestone} from './actions/edit-milestones-actions'
+import {closeSetMilestone} from './actions/edit-milestones-actions'
 import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
@@ -36,8 +36,7 @@ class projectSetMilestones extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const acquireData = nextProps.acquireData;
-        const errMessage = nextProps.errMessage;
+        const {acquireData,errMessage,closeSetMsResult,closeSetMsErr} = nextProps;
         const thisProId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
         const nextProId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
         //点击不同项目，重新加载数据
@@ -54,7 +53,12 @@ class projectSetMilestones extends React.Component {
         }
         //数据加载错误提示
         if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback(errMessage,'数据加载');
+        }
+        if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
+            this.sucCallback('里程碑关闭');
+        }else if(this.props.closeSetMsErr != closeSetMsErr && closeSetMsErr){
+            this.errCallback(closeSetMsErr,'里程碑关闭');
         }
     }
 
@@ -66,9 +70,20 @@ class projectSetMilestones extends React.Component {
         });
     }
 
-    errCallback(errMessage){
+    sucCallback(type){
+        notification.success({
+            message: type+'成功',
+            description: type+'成功',
+            duration: 2
+        });
+        this.page =1;
+        this.timeLineData = [];
+        this.distributeActions(this.props.selectedProjectSet.id,this.page,this.timeLineData);
+    }
+
+    errCallback(errMessage,type){
         notification.error({
-            message: '数据加载失败',
+            message: type+'失败',
             description: errMessage,
             duration: 2
         });
@@ -121,22 +136,26 @@ class projectSetMilestones extends React.Component {
         const {loading,notFoundMsg,timeLineData,selectedProjectSet} = this.props;
         const id = selectedProjectSet?selectedProjectSet.id:'';
         const selectedItemId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
+        const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
         return (
-            <div style={{margin:15}}>
-                {id.indexOf("_g") > 0?
-                <div >
-                    <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
-                </div>:<div></div>}
-                <TimelineMilestone timeLineData={timeLineData}
-                                   loading = {loading}
-                                   notFoundMsg = {notFoundMsg}
-                                   pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
-                                   projectId = {selectedItemId}
-                                   id = {id}
-                                   milestonesDetailPath="/projectSetMilestonesDetail"
-                                   milestoneEditPath="/projectSetMilestonesEdit"
-                                   milestoneClose = {this.closeMilestone.bind(this)}/>
-            </div>
+            <Spin spinning={closeSetMsLoading} tip="正在关闭里程碑，请稍候..." >
+                <div style={{margin:15}}>
+                    {id.indexOf("_g") > 0?
+                    <div >
+                        <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
+                    </div>:<div></div>}
+
+                    <TimelineMilestone timeLineData={timeLineData}
+                                       loading = {loading}
+                                       notFoundMsg = {notFoundMsg}
+                                       pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
+                                       projectId = {selectedItemId}
+                                       id = {id}
+                                       milestonesDetailPath="/projectSetMilestonesDetail"
+                                       milestoneEditPath="/projectSetMilestonesEdit"
+                                       milestoneClose = {this.closeMilestone.bind(this)}/>
+                </div>
+            </Spin>
         )
     }
 }
@@ -162,6 +181,9 @@ function mapStateToProps(state) {
         errMessage: state.milestones.errMessage,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         milestoneProId: state.putMilestonesProId.milestoneProId,
+        closeSetMsLoading: state.closeSetMilestone.loading,
+        closeSetMsResult: state.closeSetMilestone.result,
+        closeSetMsErr: state.closeSetMilestone.errorMsg
     };
 }
 
@@ -170,7 +192,7 @@ function mapDispatchToProps(dispatch) {
         getProjectSetMilestonesAction: bindActionCreators(getProjectSetMilestones, dispatch),
         getProjectMilestonesAction: bindActionCreators(getProjectMilestones, dispatch),
         putProIdToStateAction: bindActionCreators(putProIdToState, dispatch),
-        closeMilestoneAction: bindActionCreators(closeMilestone, dispatch),
+        //closeMilestoneAction: bindActionCreators(closeMilestone, dispatch),
         closeSetMilestoneAction:  bindActionCreators(closeSetMilestone, dispatch),
     }
 }
