@@ -1,7 +1,7 @@
 import React,{ PropTypes } from 'react';
 import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
 import Box from '../../components/box';
-import {createMilestone} from './actions/edit-milestones-actions';
+import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -26,50 +26,56 @@ class projectSetMilestonesEdit extends React.Component {
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
-            } else {
+            } /*else {
                 const {router} = this.context;
                 router.goBack();
                 this.errChoosePro();
-            }
+            }*/
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage } = nextProps;
+        const { inserted, errMessage,updateErrorMsg ,updateMsg} = nextProps;
         if (this.props.inserted != inserted && inserted){
-            this.insertCallback();
+            this.insertCallback('创建');
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback(errMessage,'创建');
+        }
+        if(this.props.updateErrorMsg != updateErrorMsg && updateErrorMsg){
+            this.props.errCallback(updateErrorMsg,'修改');
+        }else if(this.props.updateMsg !=updateMsg && updateMsg){
+            this.props.insertCallback('修改');
         }
 
     }
 
-    insertCallback(){
+    insertCallback(type){
         notification.success({
-            message: '创建成功',
-            description: '创建成功',
+            message: type+'成功',
+            description: type+'成功',
             duration: 2
         });
         this.props.getProjectSetMilestones(this.groupId, 1, []);
         this.context.router.goBack();
     }
 
-    errCallback(errMessage){
+    errCallback(errMessage,type){
         notification.error({
-            message: '创建失败',
+            message: type+'失败',
             description: errMessage,
             duration: 2
         });
     }
 
-    errChoosePro(){
+
+    /*errChoosePro(){
         notification.error({
             message: '未选择项目',
-            description:'请先在左侧项目树中选择一个虚拟组！',
+            description:'请先在左侧项目树中选择一个项目集合！',
             duration: 2
         });
     }
-
+*/
     nothingUpdate(){
         notification.error({
             message: '未作任何信息改动',
@@ -92,12 +98,11 @@ class projectSetMilestonesEdit extends React.Component {
                 if(editType == 'add'){
                     this.props.createMilestone(formData);
                 }else{
-                    console.log(formData.due_date);
                     if(item.title==formData.title && item.description==formData.description &&
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
-                        this.nothingUpdate()
+                        this.nothingUpdate();
                     }else{
-                        console.log('保存修改');
+                        this.props.updateMilestoneAction(formData);
                     }
                 }
             }
@@ -121,32 +126,53 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     checkDuedate(rule, value, callback){
-        const {milestones} = this.props;
-        const {editType,item} = this.props.location.state;
-        let lastMilestoneDuedate = null;
-        console.log('editType',editType);
-        if(milestones && editType=='add'){
-            if(milestones.length>0){
-                let lastMilestoneDuedate = milestones[0].due_date;
-                lastMilestoneDuedate = lastMilestoneDuedate+(1 * 24 * 60 * 60 * 1000);
-                value = Date.parse(value);
-                if (!value ) {
-                    callback();
-                } else if(value) {
-                    setTimeout(() => {
-                        if (value < lastMilestoneDuedate) {
-                            callback([new Error('时间需迟于上一里程碑的计划完成时间:'+new Date(milestones[0].due_date).toLocaleDateString())]);
-                        }else {
-                            callback();
-                        }
-                    }, 500);
-                }
-            }else{
-                callback();}
-        }else{
-            callback();
-        }
+        const item = this.props.location.state.item;
+        console.log('this.props.selectedProjectSet',this.props.selectedProjectSet);
+        const milestoneId = item? item.id: '';
+        const set_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
+        const due_date = new Date(value).toLocaleDateString();
 
+
+        const opts = {
+            method: 'post',
+            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
+            body : 'milestone_id=12&sets_id=12&due_date='+due_date,
+            mode: 'cors', // same-origin|no-cors（默认）|cors(允许不同域的请求，但要求有正确的CORs应答头信息，比如Access-Control-Allow-Origin)
+            credentials: 'omit'//omit（默认，不带cookie）|same-origin(同源带cookie)|include(总是带cookie)
+        };
+
+
+        fetch('http://10.10.156.148:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
+            console.log('res',res);
+            if(res.result){
+                callback();
+            }else{
+                callback([new Error('日期超出允许修改范围')]);
+            }
+        }).catch(function (error) {
+
+        });
+
+
+    /*    this.props.checkDueDateAction(milestoneId,set_id,due_date);
+        if (!value) {
+            callback();
+        } else {
+            setTimeout(() => {
+                console.log('this.props.checkDateResult,',this.props.checkDateResult)
+                if(this.props.checkDateResult=='true'){
+                    callback();
+                }else{
+                    callback([new Error('日期超出允许修改范围')]);
+                }
+            },100)
+        }*/
+
+    }
+    test(date){
+        console.log('测试函数');
+        const value = date;
+        return value;
     }
 
     render(){
@@ -159,7 +185,6 @@ class projectSetMilestonesEdit extends React.Component {
             ],
         });
 
-
         const dueDateProps = getFieldProps('due_date', {
             rules: [
                 { required: true, type: 'date', message: '请选择结束日期' },
@@ -171,7 +196,7 @@ class projectSetMilestonesEdit extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
+        console.log('checkDateResult',this.props.checkDateResult);
 
         return(
             <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
@@ -182,8 +207,8 @@ class projectSetMilestonesEdit extends React.Component {
                     <FormItem {...formItemLayout} label="描述" >
                         <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                     </FormItem>
-                    <FormItem {...formItemLayout} label="计划完成时间">
-                            <DatePicker size="large" placeholder="计划完成时间" {...dueDateProps}/>
+                    <FormItem  {...formItemLayout} label="计划完成时间">
+                        <DatePicker size="large"  placeholder="计划完成时间"  onChange={this.test.bind(this) } {...dueDateProps}/>
                     </FormItem>
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
@@ -214,14 +239,20 @@ function mapStateToProps(state) {
         errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
-
+        updateErrorMsg:state.createMilestones.errorMsg,
+        updateMsg: state.createMilestones.result,
+        checkDateResult: state.checkDueDate.result,
+        checkDateloading: state.checkDueDate.loading,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
+        checkDueDateAction: bindActionCreators(checkDueDate, dispatch),
+        updateMilestoneAction: bindActionCreators(updateMilestone, dispatch),
         getProjectSetMilestones: bindActionCreators(getProjectSetMilestones, dispatch),
+
     }
 }
 
