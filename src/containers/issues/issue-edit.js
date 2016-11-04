@@ -38,10 +38,6 @@ class AddIssue extends Component{
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             //时间类型转换
-            console.log('selectedRow.due_date',selectedRow.due_date);
-            if(selectedRow.due_date){
-                selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
-            }
             //labels substr(0,selectedRow.labels.length-1)
             selectedRow.labels = selectedRow.labels?selectedRow.labels.split(','):[];
 
@@ -53,6 +49,9 @@ class AddIssue extends Component{
             if(selectedRow.milestone_id){
                 setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
             }
+            if(selectedRow.due_date){
+                setFieldsValue({'due_date': new Date(selectedRow.due_date)});
+                }
 
             if(selectedRow.author_id==this.props.loginInfo.userId){
                 this.setState({delable:true});
@@ -104,7 +103,7 @@ class AddIssue extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const { actions,form ,loginInfo,projectInfo} = this.props;
-        const {edType,selectedRow} = this.props.location.state;
+        const {editType,selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 //message.error(errors,2);
