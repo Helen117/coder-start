@@ -15,15 +15,19 @@ const confirm = Modal.confirm;
 class AddIssue extends Component{
     constructor(props){
         super(props);
-        this.state = {able:true,};
+        this.state = {able:true,delable:false};
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
     componentWillMount(){
         const {actions,projectInfo} = this.props;
+        const {selectedRow} = this.props.location.state;
         if(projectInfo){
             actions.fetchDataSource(projectInfo.id);
             actions.getIssueDemand(projectInfo.id,0);
+        }else if(selectedRow){
+            actions.fetchDataSource(selectedRow.projecct_id);
+            actions.getIssueDemand(selectedRow.project_id,0);
         }
 
     }
@@ -49,6 +53,10 @@ class AddIssue extends Component{
                 setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
             }
 
+            if(selectedRow.author_id==this.props.loginInfo.userId){
+                this.setState({delable:true});
+            }
+
         }
 
     }
@@ -71,6 +79,14 @@ class AddIssue extends Component{
         }
         if (!nextProps.issue.updateIssueError && nextProps.issue.updateIssue) {
             message.success('修改成功');
+            this.context.router.goBack();
+        }
+
+        if(nextProps.issue.delErrors && nextProps.issue.delErrors!= this.props.issue.delErrors){
+            message.error('删除失败!'+nextProps.issue.delErrors);
+        }
+        if (!nextProps.issue.delErrors && nextProps.issue.delIssue) {
+            message.success('删除成功');
             this.context.router.goBack();
         }
 
@@ -159,12 +175,27 @@ class AddIssue extends Component{
     }
 
     loadIssues(value){
-
+        const {selectedRow} = this.props.location.state;
         const projectId = this.props.projectInfo.id;
 
         if (value && projectId){
             this.props.actions.getIssueDemand(projectId,value);
+        }else if(value && selectedRow){
+            this.props.actions.getIssueDemand(selectedRow.project_id,value);
         }
+    }
+
+    deleteIssue(){
+        confirm({
+            title: '您是否确定要删除此问题',
+            onOk() {
+                const {selectedRow} = this.props.location.state;
+                this.props.actions.getIssueDemand(selectedRow.project_id,selectedRow.id);
+            },
+            onCancel() {
+            }
+        })
+
     }
 
     render() {
@@ -186,6 +217,7 @@ class AddIssue extends Component{
 
         const demands =this.props.demandList?this.props.demandList.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
+        const delButton = this.state.delable?<Button type="primary" onClick={this.deleteIssue.bind(this)} loading={this.props.issue.delLoading}>删除</Button>:'';
         return (
             <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
                 <Form horizontal onSubmit={this.handleSubmit}>
@@ -267,6 +299,7 @@ class AddIssue extends Component{
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">提交</Button>
+                        {delButton}
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>

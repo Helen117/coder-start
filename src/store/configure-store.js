@@ -9,7 +9,7 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
-import register from '../containers/register/reducers/register-reducer';
+import {register,getLeaderInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import approve from '../containers/approve/reducers/approve-reducer';
@@ -67,7 +67,8 @@ const reducer = combineReducers({
     fetchVirtualGroupTree,
     getProjectMembers,
     createMilestones,
-    approve
+    approve,
+    getLeaderInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

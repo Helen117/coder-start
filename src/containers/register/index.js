@@ -168,9 +168,9 @@ class Register extends Component{
 
                     <FormItem {...formItemLayout} label="ssh key" >
                         <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
-                        <Tooltip placement="right" title="1、下载Git-Bash;
+                        <Tooltip placement="right" title="1、下载Git-Bash,运行git-bash.exe;
                         2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
-                        3、打开文件~/.ssh/id_rsa.pub，然后将公钥复制过来.">
+                        3、打开文件:cat ~/.ssh/id_rsa.pub">
                             <a href="/assets/tool/Git-Bash.exe" >Git-Bash 下载</a>
                         </Tooltip>
                     </FormItem>
@@ -217,7 +217,7 @@ Register = Form.create()(Register);
 function mapStateToProps(state) {
     return {
         registerState:state.register,
-        leaderInfo:state.register.leader,
+        leaderInfo:state.getLeaderInfo.leader,
     };
 }
 
