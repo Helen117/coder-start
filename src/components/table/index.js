@@ -39,7 +39,8 @@ export default class TableView extends Component{
                        bordered={this.props.bordered ? true:false}
                        size="middle"
                        pagination={pagination}
-                       onRowClick={this.selectRow.bind(this)}/>
+                       onRowClick={this.selectRow.bind(this)}
+                       loading={this.props.loading}/>
             </div>
         )
     }

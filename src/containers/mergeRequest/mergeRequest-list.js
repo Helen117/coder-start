@@ -3,7 +3,7 @@
  */
 
 import React,{ PropTypes } from 'react';
-import { Button,Row, Modal, Table,notification} from 'antd';
+import { Button,Row, Modal, Table,notification,Icon, Tooltip} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -19,11 +19,11 @@ class mergeRequestList extends React.Component {
             if(!this.props.mrList) {
                 this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
-        }else{
+        }/*else{
             const {router} = this.context;
             router.goBack();
             this.errChosePro();
-        }
+        }*/
     }
 
     componentWillReceiveProps(nextProps) {
@@ -98,7 +98,9 @@ class mergeRequestList extends React.Component {
         return(
             <div style={{marginTop:15,marginLeft:30}}>
                 <Row>
-                <Button className="pull-right" type="primary"  onClick={this.createMergeRequest.bind(this,'add')}>创建合并请求</Button>
+                <Button className="pull-right" type="primary"
+                        disabled={this.props.getProjectInfo?false:true}
+                        onClick={this.createMergeRequest.bind(this,'add')}>创建合并请求</Button>
                 </Row>
                     <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
@@ -116,32 +118,27 @@ const columns = [{
     title: 'MR名称',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
-    width:'25%'
+    width:'20%'
 },{
     title: '申请人',
     dataIndex: 'author',
     key: 'author',
-    width:'10%'
+    width:'7%'
 },{
     title: '处理人',
     dataIndex: 'assignee',
     key: 'assignee',
-    width:'10%'
+    width:'7%'
 },{
     title: 'MR路径',
     dataIndex: 'mrPath',
     key: 'mrPath',
-    width:'15%'
+    width:'10%'
 },{
     title: '创建时间',
     dataIndex: 'created_at',
     key: 'created_at',
-    width:'10%',
-},{
-    title: '里程碑',
-    dataIndex: 'milestone',
-    key: 'milestone',
-    width:'10%',
+    width:'7%',
 },{
     title: '状态',
     dataIndex: 'state',
@@ -151,16 +148,34 @@ const columns = [{
         { text: 'closed', value: 'closed' },
     ],
     onFilter: (value, record) => record.name.indexOf(value) === 0,*/
-    width:'10%',
+    width:'5%',
 },{
     title: '操作',
     dataIndex: 'opreation',
     width: '10%',
     render: (text, record, index)=> {
-        return <div>
-            <a >关闭</a><br/>
-            <a >修改</a>
-        </div>;
+        return (
+        record.state == "opened"?
+            <span>
+                {/*<Tooltip placement="top" title="编辑">
+                    <Icon type="edit" />
+                </Tooltip>*/}
+                <a>编辑</a>
+                <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
+                <a>关闭</a>
+                <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
+                <a>合并</a>
+                {/*<Tooltip placement="top" title="合并">
+                    <Icon type="check-circle" />
+                </Tooltip>*/}
+            </span>:
+                <a>回退</a>
+                /*<Tooltip placement="top" title="回退">
+                    <Icon type="rollback" />
+                </Tooltip>*/
+
+        )
+        ;
     }
 }]
 

@@ -40,7 +40,22 @@ export function getProjectMilestones(projectId,page,timeLineData) {
 }
 
 export function getMilestonesIssues(milestonesId,projectId) {
-    var path ='/milestone/issues'
+    var path ='/project/project-issues'
+    return {
+        type: ACQUIRE_MILESTONES_DETAIL,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    milestoneId:milestonesId,
+                    projectId:projectId
+                }
+            })
+        }
+    }
+}
+
+export function getSetMilestonesIssues(milestonesId,projectId) {
+    var path ='/project/sets-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {
