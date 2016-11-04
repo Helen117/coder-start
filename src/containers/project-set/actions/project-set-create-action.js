@@ -23,6 +23,7 @@ export function updateProjectSet(projectSetData) {
         payload: {
             promise: api.post(path, {
                 data: projectSetData
+
             })
         }
     }
@@ -34,8 +35,10 @@ export function deleteProjectSet(projectId,userId) {
         type: DELETE_PROJECT_SET,
         payload: {
             promise: api.post(path, {
-                setsId: projectId,
-                userId: userId
+                params: {
+                    setsId: projectId,
+                    userId: userId
+                }
             })
         }
     }
