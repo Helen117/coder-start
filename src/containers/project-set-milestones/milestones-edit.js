@@ -1,5 +1,5 @@
 import React,{ PropTypes } from 'react';
-import { DatePicker, Button, Modal, Form, Input, Col,notification} from 'antd';
+import { DatePicker, Button, Modal, Form, Input, Col,notification, Spin} from 'antd';
 import Box from '../../components/box';
 import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
@@ -42,9 +42,9 @@ class projectSetMilestonesEdit extends React.Component {
             this.errCallback(errMessage,'创建');
         }
         if(this.props.updateErrorMsg != updateErrorMsg && updateErrorMsg){
-            this.props.errCallback(updateErrorMsg,'修改');
+            this.errCallback(updateErrorMsg,'修改');
         }else if(this.props.updateMsg !=updateMsg && updateMsg){
-            this.props.insertCallback('修改');
+            this.insertCallback('修改');
         }
 
     }
@@ -102,6 +102,8 @@ class projectSetMilestonesEdit extends React.Component {
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
                         this.nothingUpdate();
                     }else{
+                        formData.id = this.props.location.state.item.id;
+                        console.log('保存成功！',formData);
                         this.props.updateMilestoneAction(formData);
                     }
                 }
@@ -131,8 +133,7 @@ class projectSetMilestonesEdit extends React.Component {
         const set_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
         const due_date = new Date(value).toLocaleDateString();
 
-
-        const opts = {
+       /* const opts = {
             method: 'post',
             headers:{'Content-Type': 'application/x-www-form-urlencoded'},
             body : 'milestone_id=12&sets_id=12&due_date='+due_date,
@@ -140,32 +141,22 @@ class projectSetMilestonesEdit extends React.Component {
             credentials: 'omit'//omit（默认，不带cookie）|same-origin(同源带cookie)|include(总是带cookie)
         };
 
+<<<<<<< HEAD
 
         fetch('http://10.10.156.148:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
+=======
+        fetch('http://10.10.156.64:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
+            console.log('res',res.json());
+            if(res.json() == 'success'){
+                console.log('111')
+            }
+>>>>>>> devops-dev/master
             if(res.result){
                 callback();
             }else{
                 callback([new Error('日期超出允许修改范围')]);
             }
-        }).catch(function (error) {
-
-        });
-
-
-    /*    this.props.checkDueDateAction(milestoneId,set_id,due_date);
-        if (!value) {
-            callback();
-        } else {
-            setTimeout(() => {
-                console.log('this.props.checkDateResult,',this.props.checkDateResult)
-                if(this.props.checkDateResult=='true'){
-                    callback();
-                }else{
-                    callback([new Error('日期超出允许修改范围')]);
-                }
-            },100)
-        }*/
-
+        }).catch(function (error) {});*/
     }
     test(date){
         const value = date;
@@ -185,7 +176,7 @@ class projectSetMilestonesEdit extends React.Component {
         const dueDateProps = getFieldProps('due_date', {
             rules: [
                 { required: true, type: 'date', message: '请选择结束日期' },
-                { validator: this.checkDuedate.bind(this) }
+               /* { validator: this.checkDuedate.bind(this) }*/
             ],
         });
 
@@ -194,23 +185,32 @@ class projectSetMilestonesEdit extends React.Component {
             wrapperCol: {span: 14},
         };
 
+        const updateLoading = this.props.updateLoading?true:false;
         return(
             <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                    <FormItem   {...formItemLayout} label="名称">
-                        <Input {...titleProps} placeholder="请输入里程碑名称" />
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="描述" >
-                        <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
-                    </FormItem>
-                    <FormItem  {...formItemLayout} label="计划完成时间">
-                        <DatePicker size="large"  placeholder="计划完成时间"  onChange={this.test.bind(this) } {...dueDateProps}/>
-                    </FormItem>
-                    <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
+                <Spin spinning={updateLoading} tip="正在保存数据,请稍候..." >
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
+                        <FormItem   {...formItemLayout} label="名称">
+                            <Input {...titleProps} placeholder="请输入里程碑名称" />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="描述" >
+                            <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
+                        </FormItem>
+                        <FormItem  {...formItemLayout} label="计划完成时间">
+                            <DatePicker size="large"  placeholder="计划完成时间"  onChange={this.test.bind(this) } {...dueDateProps}/>
+                        </FormItem>
+                        {editType == 'update' ?
+                            <FormItem  {...formItemLayout} label="修改原因">
+                                <Input  type="textarea" rows="5"
+                                        {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
+                                        placeholder="请输入里程碑的修改原因 " />
+                            </FormItem>:<div></div>}
+                        <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Spin>
             </Box>
 
         );
@@ -235,8 +235,9 @@ function mapStateToProps(state) {
         errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
-        updateErrorMsg:state.createMilestones.errorMsg,
-        updateMsg: state.createMilestones.result,
+        updateErrorMsg:state.updateMilestones.errorMsg,
+        updateLoading: state.updateMilestones.loading,
+        updateMsg: state.updateMilestones.result,
         checkDateResult: state.checkDueDate.result,
         checkDateloading: state.checkDueDate.loading,
     }

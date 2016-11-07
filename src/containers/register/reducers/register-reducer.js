@@ -2,12 +2,9 @@
  * Created by helen on 2016/9/18.
  */
 const initialState = {
-    registering: false,
-    registerResult: null,
-    errors: null
 };
 
-export default function register(state = initialState, action = {}) {
+export  function register(state = initialState, action = {}) {
     switch (action.type) {
         case 'REGISTER_PENDING':
             return Object.assign({}, initialState, {registering: true});
@@ -18,6 +15,14 @@ export default function register(state = initialState, action = {}) {
 
         case 'GET_ALL_USER_SUCCESS':
             return Object.assign({}, initialState, {users: action.payload});
+        default:
+            return state;
+    }
+}
+
+export  function getLeaderInfo(state = initialState, action = {}) {
+
+    switch (action.type) {
 
         case 'GET_LEADER_SUCCESS':
             return Object.assign({}, initialState, {leader: action.payload});

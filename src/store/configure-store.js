@@ -9,7 +9,7 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
-import register from '../containers/register/reducers/register-reducer';
+import {register,getLeaderInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import approve from '../containers/approve/reducers/approve-reducer';
@@ -33,7 +33,7 @@ import projectSetToState from '../containers/project-set/reducers/put-project-se
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
 
-import {createMilestones,updateMilestones,checkDueDate} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
+import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
 
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 
@@ -76,9 +76,11 @@ const reducer = combineReducers({
     fetchProjectSetTree,
     getProjectMembers,
     createMilestones,
+    getLeaderInfo,
     updateMilestones,
     checkDueDate,
-    approve
+    approve,
+    closeSetMilestone,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

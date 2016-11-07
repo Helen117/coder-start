@@ -27,17 +27,19 @@ class projectSetCreate extends React.Component {
     }
     componentDidMount() {
         if(this.props.location.state.editType != 'add'){
-            this.projectSetInfo.project_set = [];
-            if(this.props.projectSetTree){
-                for(let i=0; i<this.props.projectSetTree.length; i++){
-                    if(this.props.selectedProjectSet.id == this.props.projectSetTree[i].id){
-                        this.projectSetInfo.description = this.props.projectSetTree[i].description;
-                        for(let j=0;j<this.props.projectSetTree[i].children.length;j++){
-                            this.projectSetInfo.project_set.push({id:this.props.projectSetTree[i].children[j].id,
-                                name:this.props.projectSetTree[i].children[j].name})
+            if(this.projectSetInfo){
+                this.projectSetInfo.project_set = [];
+                if(this.props.projectSetTree){
+                    for(let i=0; i<this.props.projectSetTree.length; i++){
+                        if(this.props.selectedProjectSet.id == this.props.projectSetTree[i].id){
+                            this.projectSetInfo.description = this.props.projectSetTree[i].description;
+                            for(let j=0;j<this.props.projectSetTree[i].children.length;j++){
+                                this.projectSetInfo.project_set.push({id:this.props.projectSetTree[i].children[j].id,
+                                    name:this.props.projectSetTree[i].children[j].name})
+                            }
                         }
-                    }
 
+                    }
                 }
             }
             this.props.form.setFieldsValue(this.projectSetInfo);
@@ -54,7 +56,7 @@ class projectSetCreate extends React.Component {
         if(this.props.updateResult != updateResult && updateResult){
             this.insertCallback('修改');
         }else if(this.props.updateErr != updateErr && updateErr){
-            this.errCallback(errMessage,'修改');
+            this.errCallback(updateErr,'修改');
         }
 
     }
@@ -111,6 +113,7 @@ class projectSetCreate extends React.Component {
                 if(editType == 'add'){
                     this.props.createProjectSet(formData);
                 }else{
+                    formData.id = this.props.selectedProjectSet.selectedItemId;
                     this.props.updateProjectSetAction(formData)
                 }
             }
@@ -157,33 +160,41 @@ class projectSetCreate extends React.Component {
         const targetKeys = (editType=='update')?this.projectSetInfo?this.projectSetInfo.project_set:[]:[];
         return (
             <Box title={editType == 'add' ? '创建项目集合' : '修改项目集合'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                    <FormItem   {...formItemLayout} label="名称">
-                        <Input {...titleProps} placeholder="请输入项目集合名称" />
-                    </FormItem>
+                <Spin spinning={this.props.updateLoading} tip="正在保存数据" >
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
+                        <FormItem   {...formItemLayout} label="名称">
+                            <Input {...titleProps} placeholder="请输入项目集合名称" />
+                        </FormItem>
 
-                    <FormItem  {...formItemLayout} label="描述">
-                        <Input  type="textarea" rows="5"
-                                {...getFieldProps('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )}
-                                placeholder="请输入项目集合描述 " />
-                    </FormItem>
+                        <FormItem  {...formItemLayout} label="描述">
+                            <Input  type="textarea" rows="5"
+                                    {...getFieldProps('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )}
+                                    placeholder="请输入项目集合描述 " />
+                        </FormItem>
 
-                    <FormItem   {...formItemLayout} label="项目">
-                            <Spin spinning={spinning}>
-                                <TransferFilter dataSource = {this.props.projectInfo}
-                                                {...getFieldProps('project_set')}
-                                                onChange={this.handleChange.bind(this)}
-                                                loadingProMsg={this.props.loadingProMsg }
-                                                fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                targetKeys = {targetKeys}/>
-                            </Spin>
-                    </FormItem>
+                        <FormItem   {...formItemLayout} label="项目">
+                                <Spin spinning={spinning}>
+                                    <TransferFilter dataSource = {this.props.projectInfo}
+                                                    {...getFieldProps('project_set')}
+                                                    onChange={this.handleChange.bind(this)}
+                                                    loadingProMsg={this.props.loadingProMsg }
+                                                    fetchProMsgErr ={this.props.fetchProMsgErr}
+                                                    targetKeys = {targetKeys}/>
+                                </Spin>
+                        </FormItem>
+                        {editType == 'update' ?
+                        <FormItem  {...formItemLayout} label="修改原因">
+                            <Input  type="textarea" rows="5"
+                                    {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
+                                    placeholder="请输入项目集合的修改原因 " />
+                        </FormItem>:<div></div>}
 
-                    <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
+                        <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Spin>
             </Box>
         );
     }

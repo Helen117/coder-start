@@ -78,37 +78,50 @@ export default class TimelineMilestone extends React.Component {
     timelineItemConst(timeLineData){
         let timeLine = [];
         if (timeLineData && timeLineData.length>0){
-            timeLine = timeLineData.map((item) => {
-                const timelineColor = this.setMilestoneColor(item.state,item.due_date);
+            for(let i=0; i<timeLineData.length; i++){
+                //里程碑只能按顺序关闭，若里程碑已关闭，不显示关修改、关闭按钮，
+                let revocable = false;
+                let closable = false;
+                if(timeLineData[i+1] && timeLineData[i-1]){
+                    if(timeLineData[i].state!='closed' && timeLineData[i+1].state=='closed' && timeLineData[i-1].state!='closed'){
+                        closable = true;
+                    }
+                }else if(!timeLineData[i+1] && timeLineData[i].state != 'closed' ){
+                    closable = true;
+                }else if(!timeLineData[i-1] && timeLineData[i].state != 'closed' && timeLineData[i+1].state=='closed'){
+                    closable = true;
+                }
+
+                if(timeLineData[i].state != 'closed'){
+                    revocable = true;
+                }
+                const timelineColor = this.setMilestoneColor(timeLineData[i].state,timeLineData[i].due_date);
                 const groupId = this.props.id;
-                //item.due_date = this.getTime(item.due_date);
-                let i = 0;
-                return (
-                    <Timeline.Item color={timelineColor}  key={'milestones' + item.id} >
-                        <Tooltip placement="rightBottom" title="点击可修改">
-                            <a onClick = {this.editMilestone.bind(this,item)}>
-                                <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {item.title}</h4>
-                            </a>
-                        </Tooltip>
-
-                        {item.description}
-                        <div style={{marginLeft:12}}>
-                            <p>计划发布时间：{this.getTime(item.due_date)}</p>
-                            当前里程碑共有事宜 <span>{item.total}</span> 项,还有待办事宜 <span>{item.unfinished}</span> 项，超时未完成事宜 <span>{item.expired}</span> 项
-                            <Progress percent={item.rate} />
-                            <div className="pull-right" >
-                                {groupId?groupId.indexOf("_g")>0?
-                                   <a style={{marginRight:15}} onClick = {this.editMilestone.bind(this,item)}>修改</a>
-                                    :<div></div>:<div></div>}
-                                <a style={{marginRight:20}} onClick = {this.closeMilestone.bind(this,item)}>关闭</a>
-
+                timeLine.push (
+                        <Timeline.Item color={timelineColor}  key={'milestones' + timeLineData[i].id} >
+                            <Tooltip placement="rightBottom" title="点击可修改">
+                                <a onClick = {this.editMilestone.bind(this,timeLineData[i])}>
+                                    <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {timeLineData[i].title}</h4>
+                                </a>
+                            </Tooltip>
+    
+                            {timeLineData[i].description}
+                            <div style={{marginLeft:12}}>
+                                <p>计划发布时间：{this.getTime(timeLineData[i].due_date)}</p>
+                                当前里程碑共有事宜 <span>{timeLineData[i].total}</span> 项,还有待办事宜 <span>{timeLineData[i].unfinished}</span> 项，超时未完成事宜 <span>{timeLineData[i].expired}</span> 项
+                                <Progress percent={timeLineData[i].rate} />
+                                <div className="pull-right" >
+                                    {groupId?groupId.indexOf("_g")>0?
+                                        <div>
+                                            {revocable?<a style={{marginRight:15}} onClick = {this.editMilestone.bind(this,timeLineData[i])}>修改</a>:<div/>}
+                                            {closable?<a style={{marginRight:20}} onClick = {this.closeMilestone.bind(this,timeLineData[i])}>关闭</a>:<div/>}
+                                        </div>:<div></div>:<div></div>}
+                                </div>
+                                <a onClick={this.milestonesDetail.bind(this, timeLineData[i].id)}>查看问题</a>
                             </div>
-
-                            <a onClick={this.milestonesDetail.bind(this, item.id)}>查看问题</a>
-                        </div>
-                    </Timeline.Item>
-                    )
-            })
+                        </Timeline.Item>
+                )
+            }
         };
         return timeLine;
     }

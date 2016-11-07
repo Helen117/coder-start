@@ -53,13 +53,14 @@ export function issueNotes(projectId,issueId) {
     }
 }
 
-export function getIssueList(projectId) {
+export function getIssueList(projectId,milestoneId) {
     return {
         type: 'GET_ISSUE_LIST',
         payload: {
             promise: api.post('/project/project-issues',{
                 params: {
-                    projectId: projectId
+                    projectId: projectId,
+                    milestoneId: milestoneId
                 }
             })
         }
@@ -83,6 +84,20 @@ export function closeIssue(issueId) {
         payload: {
             promise: api.post('/issue/close',{
                 params: {
+                    issueId: issueId
+                }
+            })
+        }
+    }
+}
+
+export function delIssue(projectId,issueId) {
+    return {
+        type: 'DELETE_ISSUE',
+        payload: {
+            promise: api.post('/issue/delete',{
+                params: {
+                    projectId: projectId,
                     issueId: issueId
                 }
             })
