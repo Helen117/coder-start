@@ -8,6 +8,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchMrListData from './actions/mergeRequest-list-action'
+import {mergeMr,closeMr} from './actions/mergeRequest-edit-action';
 
 class mergeRequestList extends React.Component {
     constructor(props) {
@@ -19,11 +20,7 @@ class mergeRequestList extends React.Component {
             if(!this.props.mrList) {
                 this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
-        }/*else{
-            const {router} = this.context;
-            router.goBack();
-            this.errChosePro();
-        }*/
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -71,6 +68,20 @@ class mergeRequestList extends React.Component {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
+    closeMr(record){
+        console.log('close',record);
+        const project_id = this.props.getProjectInfo.id;
+        const id = record.key;
+        this.props.closeMrAction(project_id,id);
+    }
+
+    mergeMr(record){
+        console.log('merge',record);
+        const project_id = this.props.getProjectInfo.id;
+        const id = record.key;
+        this.props.mergeMrAction(project_id,id);
+    }
+
     mapMrList(mrList){
         const data = [];
         if(mrList != [] && mrList){
@@ -81,8 +92,6 @@ class mergeRequestList extends React.Component {
                     author: mrList[i].author.name,
                     assignee:mrList[i].assignee,
                     mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
-
-                    //mrPath:mrList[i].source_project_id+'/'+mrList[i].source_branch+' to '+ mrList[i].project_id+'/'+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
                     state:mrList[i].state
@@ -105,7 +114,7 @@ class mergeRequestList extends React.Component {
                     <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
-                           columns={columns}
+                           columns={this.columns(this)}
                            dataSource={data}
                     />
                 </div>
@@ -114,7 +123,7 @@ class mergeRequestList extends React.Component {
     }
 }
 
-const columns = [{
+mergeRequestList.prototype.columns = (self)=> [{
     title: 'MR名称',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
@@ -143,11 +152,6 @@ const columns = [{
     title: '状态',
     dataIndex: 'state',
     key: 'state',
-    /*filters: [
-        { text: 'opened', value: 'opened' },
-        { text: 'closed', value: 'closed' },
-    ],
-    onFilter: (value, record) => record.name.indexOf(value) === 0,*/
     width:'5%',
 },{
     title: '操作',
@@ -157,19 +161,12 @@ const columns = [{
         return (
         record.state == "opened"?
             <span>
-                {/*<Tooltip placement="top" title="编辑">
-                    <Icon type="edit" />
-                </Tooltip>*/}
-                <a onClick = {self.updateMr.bind(self,record)}>编辑</a>
-                <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
                 <a onClick = {self.closeMr.bind(self,record)}>关闭</a>
                 <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
                 <a onClick = {self.mergeMr.bind(self,record)}>合并</a>
             </span>:
-                <a>回退</a>
-                /*<Tooltip placement="top" title="回退">
-                    <Icon type="rollback" />
-                </Tooltip>*/
+                <span></span>
+
 
         )
         ;
@@ -192,7 +189,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        fetchMrListData : bindActionCreators(fetchMrListData,dispatch)
+        fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
+        mergeMrAction: bindActionCreators(mergeMr,dispatch),
+        closeMrAction: bindActionCreators(closeMr,dispatch),
     }
 }
 
