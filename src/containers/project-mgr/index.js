@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -31,7 +31,8 @@ class ProjectMgr extends React.Component{
         this.state = {
             selectGroupName:null,
             selectGroupId:null,
-            showSettingDiv:true
+            showSettingDiv:true,
+            modalVisible:false
         };
     }
 
@@ -170,10 +171,32 @@ class ProjectMgr extends React.Component{
         });
     }
 
+    /*handleOk() {
+        this.setState({
+            ModalText: 'The modal dialog will be closed after two seconds',
+            confirmLoading: true,
+        });
+        setTimeout(() => {
+            this.setState({
+                modalVisible: false,
+                confirmLoading: false,
+            });
+        }, 2000);
+    }
+
+    handleCancel() {
+        this.setState({
+            modalVisible: false,
+        });
+    }*/
+
     deleteGroup(groupInfo){
         const {setGroupDelete, loginInfo} = this.props;
         if(groupInfo.children.length == 0){//项目组为空
             if(groupInfo){
+                /*this.setState({
+                    modalVisible: true,
+                });*/
                 confirm({
                     title: '您是否确定要删除此项目组？',
                     content:groupInfo.name,
@@ -243,6 +266,15 @@ class ProjectMgr extends React.Component{
                                     <Icon type="down" className={styles.down_img}/>
                                 </div>
                             </Popover>
+                            {/*<Modal title="确认删除此项目组吗?"
+                                   visible={this.state.modalVisible}
+                                   onOk={this.handleOk.bind(this)}
+                                   confirmLoading={this.state.confirmLoading}
+                                   onCancel={this.handleCancel.bind(this)}
+                            >
+                                <p>如果确认要删除，请输入要删除的原因：</p>
+                                <Input type="textarea" rows={4} />
+                            </Modal>*/}
                         </Row>
                     ):(<Row></Row>)}
                     <Row>
