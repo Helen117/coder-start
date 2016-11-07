@@ -111,7 +111,6 @@ class projectSetCreate extends React.Component {
                 if(editType == 'add'){
                     this.props.createProjectSet(formData);
                 }else{
-                    console.log("保存修改")
                     this.props.updateProjectSetAction(formData)
                 }
             }

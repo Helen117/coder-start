@@ -25,10 +25,8 @@ export default class TableView extends Component{
             total: this.props.dataSource.length,
             showSizeChanger: true,
             onShowSizeChange(current, pageSize) {
-                console.log('Current: ', current, '; PageSize: ', pageSize);
             },
             onChange(current) {
-                console.log('Current: ', current);
             },
         };
 

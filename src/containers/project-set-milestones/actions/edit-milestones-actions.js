@@ -21,7 +21,6 @@ export function createMilestone(milestoneData) {
 }
 
 export function updateMilestone(milestoneData) {
-    console.log('milestoneData',milestoneData)
     var path = '/project/update-milestone';
     return {
         type: UPDATE_MILESTONES,

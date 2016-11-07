@@ -34,7 +34,6 @@ class AddIssue extends Component{
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             //时间类型转换
-            console.log('selectedRow.due_date',selectedRow.due_date);
             if(selectedRow.due_date){
                 selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
             }

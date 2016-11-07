@@ -18,7 +18,6 @@ export function fetchDataSource(projectId) {
 
 
 export function addIssues(issues) {
-    console.log('commit issue:',issues);
     return {
         type: 'ADD_ISSUE',
         payload: {
@@ -30,7 +29,6 @@ export function addIssues(issues) {
 }
 
 export function updateIssue(issue) {
-    console.log('update issue:',issue);
     return {
         type: 'UPDATE_ISSUE',
         payload: {
@@ -69,7 +67,6 @@ export function getIssueList(projectId) {
 }
 
 export function comment(notes) {
-    console.log('notes:',notes);
     return {
         type: 'COMMENT',
         payload: {

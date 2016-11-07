@@ -127,7 +127,6 @@ class projectSetMilestonesEdit extends React.Component {
 
     checkDuedate(rule, value, callback){
         const item = this.props.location.state.item;
-        console.log('this.props.selectedProjectSet',this.props.selectedProjectSet);
         const milestoneId = item? item.id: '';
         const set_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
         const due_date = new Date(value).toLocaleDateString();
@@ -143,7 +142,6 @@ class projectSetMilestonesEdit extends React.Component {
 
 
         fetch('http://10.10.156.148:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
-            console.log('res',res);
             if(res.result){
                 callback();
             }else{
@@ -170,7 +168,6 @@ class projectSetMilestonesEdit extends React.Component {
 
     }
     test(date){
-        console.log('测试函数');
         const value = date;
         return value;
     }
@@ -196,7 +193,6 @@ class projectSetMilestonesEdit extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        console.log('checkDateResult',this.props.checkDateResult);
 
         return(
             <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
