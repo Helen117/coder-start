@@ -196,6 +196,12 @@ class projectSetMilestonesEdit extends React.Component {
                         <FormItem  {...formItemLayout} label="计划完成时间">
                             <DatePicker size="large"  placeholder="计划完成时间"  onChange={this.test.bind(this) } {...dueDateProps}/>
                         </FormItem>
+                        {editType == 'update' ?
+                            <FormItem  {...formItemLayout} label="修改原因">
+                                <Input  type="textarea" rows="5"
+                                        {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
+                                        placeholder="请输入里程碑的修改原因 " />
+                            </FormItem>:<div></div>}
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
