@@ -6,16 +6,22 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin, message} from 'antd';
+import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin, message,Form,Input} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchBranchesData from './actions/fetch-branches-action';
 import deleteBranch from './actions/branches-delete-action'
 
+const createForm = Form.create;
 const confirm = Modal.confirm;
+const FormItem = Form.Item;
 class branchesList extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            modalVisible: false,
+            delRecord: {}
+        }
     }
 
     componentWillMount() {
@@ -47,6 +53,9 @@ class branchesList extends React.Component {
         if(this.props.delErrMessage != delErrMessage && delErrMessage){
             this.errCallback('删除数据失败',delErrMessage);
         }else if(this.props.delResult != delResult && delResult){
+            this.setState({
+                modalVisible: false,
+            });
             this.sucCallback('删除成功');
             this.props.fetchBranchesData(thisProId);
         }
@@ -74,18 +83,24 @@ class branchesList extends React.Component {
     }
 
     deleteBranch(record){
-        const branch = record.branch;
+        this.setState({
+         modalVisible: true,
+         delRecord: record
+         });
+    }
+
+    handleOk(groupInfo) {
+        const branch = this.state.delRecord.branch;
         const project_id = this.props.getProjectInfo.id;
+        const result = this.props.form.getFieldsValue().result;
         const deleteBranchAction = this.props.deleteBranchAction;
-        confirm({
-            title: '您是否确定要删除此分支',
-            content: '删除之后分支内容将会被丢弃',
-            onOk() {
-                deleteBranchAction(branch,project_id);
-            },
-            onCancel() {
-            }
-        })
+        deleteBranchAction(branch,project_id,result);
+    }
+
+    handleCancel() {
+        this.setState({
+            modalVisible: false,
+        });
     }
 
     onChange(pagination, filters, sorter) {
@@ -108,6 +123,9 @@ class branchesList extends React.Component {
     render(){
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
+        const {getFieldProps} = this.props.form;
+/*        const deleteResultProps = getFieldProps('result',
+            {rules:[ {required:true, message:'请输入删除原因！'}]});*/
         return(
 
             <div style={{margin:15}}>
@@ -124,12 +142,27 @@ class branchesList extends React.Component {
                                dataSource={data}
                                 />
                     </div>
+                    <div>
+                        <Modal title="确认删除此项目组吗?"
+                               visible={this.state.modalVisible}
+                               onOk={this.handleOk.bind(this)}
+                               confirmLoading={this.props.delLoading}
+                               onCancel={this.handleCancel.bind(this)}
+                        >
+                            <p>如果确认此操作，请在下框输入原因：</p>
+                            <Form>
+                                <FormItem>
+                                    <Input type="textarea" {...getFieldProps('result')} rows={4} />
+                                </FormItem>
+                            </Form>
+                        </Modal>
+                    </div>
                 </Spin>
             </div>
             )
     }
 }
-
+//
 const columns = (self)=>[{
     title: '分支',
     dataIndex: 'branch',
@@ -176,4 +209,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(branchesList);
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(branchesList))

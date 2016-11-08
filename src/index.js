@@ -18,7 +18,6 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
-import {Milestones,MilestoneDetail} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
 import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
@@ -106,8 +105,7 @@ ReactDOM.render(
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="projectSetMilestonesEdit" breadcrumbName="创建里程碑" path="projectSetMilestonesEdit" component={projectSetMilestonesEdit}/>
-                        <Route name="projectSetMilestonesDetail" breadcrumbName="项目集合里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
-                        <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
+                        <Route name="projectMilestonesDetail" breadcrumbName="里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
                         <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>

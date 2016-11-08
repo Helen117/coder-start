@@ -102,7 +102,6 @@ class projectSetMilestonesEdit extends React.Component {
         })
     }
 
-
     checkDuedate(rule, value, callback){
         const item = this.props.location.state.item;
         const milestone_id = item? item.id: '';
@@ -114,6 +113,15 @@ class projectSetMilestonesEdit extends React.Component {
         fetchData(path,params,callback,errStr);
     }
 
+    checkTitle(rule, value, callback){
+        const item = this.props.location.state.item;
+        const milestone_id = item? item.id: '';
+        const path = '/project/milestone-title-ocp';
+        const params = {title:value,milestone_id:milestone_id};
+        const errStr = '名称已被占用';
+        fetchData(path,params,callback,errStr);
+    }
+
 
     render(){
         const {editType} = this.props.location.state;
@@ -122,6 +130,7 @@ class projectSetMilestonesEdit extends React.Component {
             rules: [
                 { required: true, message:'请输入里程碑名称' },
                 { max: 30, message: '名称长度为 1~30 个字符' },
+                { validator: this.checkTitle.bind(this) }
             ],
         });
 
