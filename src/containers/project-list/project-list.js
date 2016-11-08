@@ -102,7 +102,6 @@ class ProjectList extends Component {
         const {setProjectDelete, treeData} = this.props;
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        console.log("formData:",formData)
         let projectId = findProjectIdByProjectName(this.state.selectProjectName, treeData);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口

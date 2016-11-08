@@ -21,7 +21,6 @@ class UserRelation extends React.Component{
     }
 
     onSelectNode(node){
-        console.log("node:",node)
         this.context.router.push({
             pathname: '/userRelation/userInfo',
         });

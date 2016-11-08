@@ -53,7 +53,6 @@ export default class IssueList extends Component {
     }
 
     editIssue(type, selectedRow){
-        console.log('row:',selectedRow);
         if(selectedRow){
             selectedRow = this.getListNode(selectedRow,this.props.dataSource);
             selectedRow.title = selectedRow.issue_name;

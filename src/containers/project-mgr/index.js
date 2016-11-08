@@ -175,7 +175,6 @@ class ProjectMgr extends React.Component{
     handleOk(groupInfo) {
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        console.log("formData:",formData)
         const {setGroupDelete, loginInfo} = this.props;
         //调删除项目组的接口
         setGroupDelete(loginInfo.username, groupInfo.id)

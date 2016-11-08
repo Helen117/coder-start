@@ -103,7 +103,6 @@ class projectSetMilestonesEdit extends React.Component {
                         this.nothingUpdate();
                     }else{
                         formData.id = this.props.location.state.item.id;
-                        console.log('保存成功！',formData);
                         this.props.updateMilestoneAction(formData);
                     }
                 }
