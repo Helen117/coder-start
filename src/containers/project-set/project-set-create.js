@@ -183,6 +183,12 @@ class projectSetCreate extends React.Component {
                                                     targetKeys = {targetKeys}/>
                                 </Spin>
                         </FormItem>
+                        {editType == 'update' ?
+                        <FormItem  {...formItemLayout} label="修改原因">
+                            <Input  type="textarea" rows="5"
+                                    {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
+                                    placeholder="请输入项目集合的修改原因 " />
+                        </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>

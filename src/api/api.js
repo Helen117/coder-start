@@ -49,28 +49,22 @@ class _Api {
                 }
                 fetch(url, opts).then(function (res) {
                     if(res.ok){
-                        if (callback) {
-                            callback();
-                        }
                         return res.json().then(function(json) {
-                            if (json.success == undefined){
-                                return resolve(json);
+                            if (json.success) {
+                                return resolve(json.result);
                             }else{
-                                if (json.success){
-                                    return resolve(json.result);
-                                }else{
-                                    return reject({
-                                        errorCode: json.errorCode,
-                                        errorMsg: json.errorMsg
-                                    });
-                                }
+                                return reject({
+                                    errorCode: json.errorCode,
+                                    errorMsg: json.errorMsg
+                                });
                             }
-                        });
-                    } else {
-                        return reject({
+                        })
+
+                    }else {
+                        return {
                             errorCode: res.status,
                             errorMsg: res.status + " - " + res.statusText + ", url=" + res.url
-                        });
+                        };
                     }
                 }).catch(function (error) {
                     console.log(error);
