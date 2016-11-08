@@ -22,7 +22,7 @@ import getProjectStar from '../containers/project-mgr/reducers/project-star-redu
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
 import {fetchMergeData,fetchMergeBranchData,fetchIssuesData} from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
 import fetchMrList from  '../containers/mergeRequest/reducers/mergeRequest-list-reducer'
-import createMr from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
+import {createMr,mergeMr,closeMr} from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import deleteBranch from '../containers/branches/reducers/branches-delete-reducer';
@@ -65,6 +65,8 @@ const reducer = combineReducers({
     fetchIssuesData,
     fetchMrList,
     createMr,
+    mergeMr,
+    closeMr,
     fetchBranches,
     createBranch,
     deleteBranch,

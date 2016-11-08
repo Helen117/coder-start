@@ -5,7 +5,7 @@ import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-miles
 import {getProjectSetMilestones} from './actions/milestones-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
+import fetchData from '../../utils/fetch'
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -27,10 +27,10 @@ class projectSetMilestonesEdit extends React.Component {
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
             } /*else {
-                const {router} = this.context;
-                router.goBack();
-                this.errChoosePro();
-            }*/
+             const {router} = this.context;
+             router.goBack();
+             this.errChoosePro();
+             }*/
         }
     }
 
@@ -69,13 +69,13 @@ class projectSetMilestonesEdit extends React.Component {
 
 
     /*errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目集合！',
-            duration: 2
-        });
-    }
-*/
+     notification.error({
+     message: '未选择项目',
+     description:'请先在左侧项目树中选择一个项目集合！',
+     duration: 2
+     });
+     }
+     */
     nothingUpdate(){
         notification.error({
             message: '未作任何信息改动',
@@ -103,6 +103,7 @@ class projectSetMilestonesEdit extends React.Component {
                         this.nothingUpdate();
                     }else{
                         formData.id = this.props.location.state.item.id;
+                        console.log('保存成功！',formData);
                         this.props.updateMilestoneAction(formData);
                     }
                 }
@@ -126,41 +127,18 @@ class projectSetMilestonesEdit extends React.Component {
         })
     }
 
+
     checkDuedate(rule, value, callback){
         const item = this.props.location.state.item;
-        const milestoneId = item? item.id: '';
-        const set_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
+        const milestone_id = item? item.id: '';
+        const sets_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
         const due_date = new Date(value).toLocaleDateString();
-
-       /* const opts = {
-            method: 'post',
-            headers:{'Content-Type': 'application/x-www-form-urlencoded'},
-            body : 'milestone_id=12&sets_id=12&due_date='+due_date,
-            mode: 'cors', // same-origin|no-cors（默认）|cors(允许不同域的请求，但要求有正确的CORs应答头信息，比如Access-Control-Allow-Origin)
-            credentials: 'omit'//omit（默认，不带cookie）|same-origin(同源带cookie)|include(总是带cookie)
-        };
-
-<<<<<<< HEAD
-
-        fetch('http://10.10.156.148:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
-=======
-        fetch('http://10.10.156.64:11000/gitlab/project/milestone-time-check', opts).then(function (res) {
-            console.log('res',res.json());
-            if(res.json() == 'success'){
-                console.log('111')
-            }
->>>>>>> devops-dev/master
-            if(res.result){
-                callback();
-            }else{
-                callback([new Error('日期超出允许修改范围')]);
-            }
-        }).catch(function (error) {});*/
+        const path = '/project/milestone-time-check'
+        const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
+        const errStr = '日期超出允许修改范围'
+        fetchData(path,params,callback,errStr);
     }
-    test(date){
-        const value = date;
-        return value;
-    }
+
 
     render(){
         const {editType} = this.props.location.state;
@@ -175,7 +153,7 @@ class projectSetMilestonesEdit extends React.Component {
         const dueDateProps = getFieldProps('due_date', {
             rules: [
                 { required: true, type: 'date', message: '请选择结束日期' },
-               /* { validator: this.checkDuedate.bind(this) }*/
+                { validator: this.checkDuedate.bind(this) }
             ],
         });
 
@@ -183,7 +161,6 @@ class projectSetMilestonesEdit extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-
         const updateLoading = this.props.updateLoading?true:false;
         return(
             <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
@@ -196,7 +173,7 @@ class projectSetMilestonesEdit extends React.Component {
                             <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                         </FormItem>
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            <DatePicker size="large"  placeholder="计划完成时间"  onChange={this.test.bind(this) } {...dueDateProps}/>
+                            <DatePicker size="large"  placeholder="计划完成时间"  {...dueDateProps}/>
                         </FormItem>
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">

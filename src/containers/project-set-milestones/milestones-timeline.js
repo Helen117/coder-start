@@ -13,6 +13,7 @@ import TimelineMilestone from '../../components/timeline';
 import 'pubsub-js';
 import './index.less';
 
+let hisPage = 1;
 class projectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
@@ -42,6 +43,7 @@ class projectSetMilestones extends React.Component {
         //点击不同项目，重新加载数据
         if(thisProId != nextProId){
             this.page =1;
+            hisPage = 1;
             this.timeLineData = [];
             this.distributeActions(nextProId,this.page,this.timeLineData);
             //this.props.getProjectMilestonesAction(nextProId,this.page,this.timeLineData);
@@ -114,6 +116,14 @@ class projectSetMilestones extends React.Component {
         //this.props.getProjectMilestonesAction(id,this.page,this.props.timeLineData);
     }
 
+    viewHis(){
+        const id = this.props.selectedProjectSet.id;
+        console.log(hisPage);
+        hisPage --;
+        console.log("查看历史第",hisPage,"页")
+        //this.distributeActions(id,this.hisPage,this.props.timeLineData);
+    }
+
     createMilestones(type){
         this.context.router.push({
             pathname: '/projectSetMilestonesEdit',
@@ -152,7 +162,8 @@ class projectSetMilestones extends React.Component {
                                        id = {id}
                                        milestonesDetailPath="/projectSetMilestonesDetail"
                                        milestoneEditPath="/projectSetMilestonesEdit"
-                                       milestoneClose = {this.closeMilestone.bind(this)}/>
+                                       milestoneClose = {this.closeMilestone.bind(this)}
+                                       viewHis= {this.viewHis.bind(this)}/>
                 </div>
             </Spin>
         )
