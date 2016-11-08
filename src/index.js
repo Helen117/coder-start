@@ -39,6 +39,8 @@ import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
 import FileTree from './containers/code-files/file-tree';
 import CodeView from './containers/code-files/code-view';
+import UserRelation from './containers/user-relation';
+import userInfo from './containers/user-relation/user-info';
 
 
 //import authUtils from './utils/auth';
@@ -109,6 +111,9 @@ ReactDOM.render(
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
                         <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
+                        <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
+                            <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
+                        </Route>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

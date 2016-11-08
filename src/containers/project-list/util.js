@@ -36,7 +36,7 @@ export function searchUserGroupByProjectId(projectId,treeData) {
 }
 
 export function searchNormalGroupByProjectId(projectId,treeData){
-    var projectInfo=[],groupInfo=[];
+    var projectInfo,groupInfo;
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){
             var project_cat = treeData[i].children[j];
@@ -50,8 +50,6 @@ export function searchNormalGroupByProjectId(projectId,treeData){
                         groupInfo = searchUserGroupByProjectId(projectId.substr(0,projectId.length-2),treeData);
                         return {projectInfo,groupInfo}
                     }
-                }else{
-                    return {projectInfo,groupInfo}
                 }
             }
         }
@@ -104,4 +102,15 @@ export function isConserned(loginInfo,projectMembers,starList,projectInfo) {
         var consern_desc = "项目成员禁止取关";
     }
     return consern_desc;
+}
+
+export function resetGroupInfoState(groupInfo,resetData) {//修改项目后，更新项目组state
+    for(let i=0; i<groupInfo.children.length; i++){
+        if(resetData.id == groupInfo.children[i].id.substr(0,groupInfo.children[i].id.length-2)){
+            groupInfo.children[i].name = resetData.name;
+            groupInfo.children[i].description = resetData.description;
+            groupInfo.children[i].visibility_level = resetData.visibility_level;
+            return groupInfo;
+        }
+    }
 }
