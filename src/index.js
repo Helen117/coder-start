@@ -31,7 +31,7 @@ import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/proj
 import {projectSetMilestones,projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
-import ApproveList from './containers/approve';
+import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
 
@@ -108,7 +108,8 @@ ReactDOM.render(
                         <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
-                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
+                        <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
+                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

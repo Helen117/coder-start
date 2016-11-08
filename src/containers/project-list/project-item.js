@@ -198,20 +198,21 @@ class ProjectItem extends Component {
                 {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
             ];
             const dataSource = this.getDataSource(starList,groupInfo,projectInfo);
-            const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:null;
+            const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:'';
 
             return (
                 <div>
                     <Row>
                         <div className={styles.project_list_div}>
-                            <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                            <Tooltip placement="top" title={forkFrom}>
+                                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                            </Tooltip>
                             <span className={styles.arrow}></span>
                             <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
                             <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
                                 <Option value="ssh">SSH</Option>
                             </Select>
                             <Input style={{ width: 300 }}  value={this.state.url}/>
-                            {forkFrom}
                             <TableView columns={columns(this)}
                                        dataSource={dataSource}
                             ></TableView>

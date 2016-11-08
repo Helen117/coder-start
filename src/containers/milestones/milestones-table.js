@@ -10,6 +10,7 @@ import {getMilestonesIssues} from './actions/milestones-action';
 import * as getAllUser from '../register/actions/register-action';
 import {fetchDataSource,getIssueList} from '../issues/actions/issue-action';
 import  './index.less';
+import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -44,6 +45,13 @@ class MilestoneDetail extends React.Component {
         e.preventDefault();
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
+    }
+
+    editIssue(type, selectedRow) {
+        this.context.router.push({
+            pathname: '/issueEdit',
+            state: {editType: type, selectedRow}
+        });
     }
 
     render(){
@@ -125,8 +133,11 @@ class MilestoneDetail extends React.Component {
                         </Form>
                     </Panel>
                 </Collapse>
-                <IssuesList loading = {this.props.loading} dataSource={this.props.issueList} loginInfo={this.props.loginInfo}>
-                </IssuesList>
+                <Box title="里程碑问题列表信息" >
+                    <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
+                    <IssuesList loading = {this.props.loading} dataSource={this.props.issueList} loginInfo={this.props.loginInfo}>
+                    </IssuesList>
+                </Box>
             </div>
         )
     }
