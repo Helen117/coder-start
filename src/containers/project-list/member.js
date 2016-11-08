@@ -7,6 +7,7 @@ import React,{
 } from 'react';
 import 'pubsub-js';
 import {connect} from 'react-redux';
+import {Button} from 'antd';
 import TableView from '../../components/table';
 import styles from './index.css';
 
@@ -19,6 +20,14 @@ class ProjectMember extends Component {
         var newDate = new Date();
         newDate.setTime(timestamp);
         return newDate.toLocaleString();
+    }
+
+    addMember(){
+
+    }
+
+    deleteMember(){
+
     }
 
     render(){
@@ -51,6 +60,10 @@ class ProjectMember extends Component {
                     <TableView columns={columns}
                                dataSource={dataSource}
                     ></TableView>
+                    <div>
+                        <Button type="Primary" onClick={this.addMember.bind(this)}/>
+                        <Button type="Primary" onClick={this.deleteMember.bind(this)}/>
+                    </div>
 
                 </div>
             )

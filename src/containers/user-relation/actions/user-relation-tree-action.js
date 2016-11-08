@@ -4,7 +4,7 @@
 import api from '../../../api';
 import {GET_USER_RELATION_TREE,} from '../constants/user-relation-tree-types';
 
-export function getUserInfo(userId) {
+export function getUserRelationTree(userId) {
     var path = '/userRelation';
     return {
         type: GET_USER_RELATION_TREE,

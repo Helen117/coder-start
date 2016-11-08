@@ -203,6 +203,22 @@ ProjectList.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+ProjectList.prototype.groupColumns = (self)=>[
+    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
+    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
+    {title: "owner", dataIndex: "owner", key: "owner"},
+    {title:"操作",dataIndex:"operate",key:"operate",
+        render(text,record){
+            return (
+                <div>
+                    <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
+                    <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
+                </div>
+            )
+        }
+    }
+];
+
 ProjectList = Form.create()(ProjectList);
 
 function mapStateToProps(state) {
@@ -228,19 +244,5 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);
 
-ProjectList.prototype.groupColumns = (self)=>[
-    {title: "项目名称", dataIndex: "projectName", key: "projectName"},
-    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
-    {title: "owner", dataIndex: "owner", key: "owner"},
-    {title:"操作",dataIndex:"operate",key:"operate",
-        render(text,record){
-            return (
-                <div>
-                    <Button type="ghost" onClick={self.editProject.bind(self, 'modify', record)}>修改</Button>
-                    <Button type="ghost" onClick={self.deleteProject.bind(self, 'delete', record)}>删除</Button>
-                </div>
-            )
-        }
-    }
-];
+
 

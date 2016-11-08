@@ -36,7 +36,7 @@ export function searchUserGroupByProjectId(projectId,treeData) {
 }
 
 export function searchNormalGroupByProjectId(projectId,treeData){
-    var projectInfo=[],groupInfo=[];
+    var projectInfo,groupInfo;
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){
             var project_cat = treeData[i].children[j];
@@ -50,8 +50,6 @@ export function searchNormalGroupByProjectId(projectId,treeData){
                         groupInfo = searchUserGroupByProjectId(projectId.substr(0,projectId.length-2),treeData);
                         return {projectInfo,groupInfo}
                     }
-                }else{
-                    return {projectInfo,groupInfo}
                 }
             }
         }

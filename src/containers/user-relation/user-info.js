@@ -18,7 +18,7 @@ class UserInfo extends React.Component {
 
     render(){
         return(
-            <div>
+            <div style={{"paddingLeft":10}}>
                 <Table columns={this.groupColumns(this)}></Table>
             </div>
         )

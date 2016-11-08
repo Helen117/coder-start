@@ -170,7 +170,9 @@ class ProjectItem extends Component {
         const {treeData,loginInfo,projectMembers,fetchProjectStatus} = this.props;
         if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false) && treeData.length!=0){
             var projectId = this.state.itemNode;
+            console.log("projectId:",projectId)
             var {projectInfo,groupInfo} = searchNormalGroupByProjectId(projectId,treeData);
+            console.log("groupInfo:",groupInfo)
             let starList = findMyConsernProject(treeData);
             const columns = (self)=>[
                 {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
