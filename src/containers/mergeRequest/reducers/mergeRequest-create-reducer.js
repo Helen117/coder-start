@@ -24,7 +24,53 @@ const initialState = {
     errors:null
 };
 
-export default function createMr(state = initialState, action = {}) {
+export  function createMr(state = initialState, action = {}) {
+
+    switch (action.type) {
+
+        case CREATE_MR_PENDING:
+            return Object.assign({}, initialState, {loading:true,disabled:true});
+
+        case CREATE_MR_SUCCESS:
+            return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
+
+        case CREATE_MR_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                loading:false,
+                disabled:false
+            };
+
+        default:
+            return state;
+    }
+}
+
+export  function mergeMr(state = initialState, action = {}) {
+
+    switch (action.type) {
+
+        case CREATE_MR_PENDING:
+            return Object.assign({}, initialState, {loading:true,disabled:true});
+
+        case CREATE_MR_SUCCESS:
+            return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
+
+        case CREATE_MR_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                loading:false,
+                disabled:false
+            };
+
+        default:
+            return state;
+    }
+}
+
+export  function closeMr(state = initialState, action = {}) {
 
     switch (action.type) {
 
