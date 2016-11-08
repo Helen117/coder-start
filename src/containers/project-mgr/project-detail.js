@@ -204,6 +204,10 @@ class ProjectDetail extends React.Component {
                 {rules:[
                     {required:true, message:'请选择可见级别！'}
                 ]});
+            const modifyResultProps = getFieldProps('modify_result',
+                {rules:[
+                    {required:editType == 'add'?false:true, message:'请输入修改原因！'}
+                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
@@ -232,6 +236,11 @@ class ProjectDetail extends React.Component {
                                 <Radio value="20">所有人可见</Radio>
                             </RadioGroup>
                         </FormItem>
+                        {editType == 'add' ? (<div></div>) : (
+                            <FormItem {...formItemLayout} label="修改原因">
+                                <Input type="textarea" {...modifyResultProps} rows={4} />
+                            </FormItem>
+                        )}
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
                                     loading={editType == 'add'?this.props.loading:this.props.updateLoading}

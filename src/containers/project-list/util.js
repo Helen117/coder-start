@@ -36,6 +36,7 @@ export function searchUserGroupByProjectId(projectId,treeData) {
 }
 
 export function searchNormalGroupByProjectId(projectId,treeData){
+    console.log("searchNormalGroupByProjectId")
     var projectInfo,groupInfo;
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){

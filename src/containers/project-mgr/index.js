@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -24,6 +24,7 @@ export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
 
 const confirm = Modal.confirm;
+const FormItem = Form.Item;
 
 class ProjectMgr extends React.Component{
     constructor(props){
@@ -171,47 +172,32 @@ class ProjectMgr extends React.Component{
         });
     }
 
-    /*handleOk() {
-        this.setState({
-            ModalText: 'The modal dialog will be closed after two seconds',
-            confirmLoading: true,
-        });
-        setTimeout(() => {
-            this.setState({
-                modalVisible: false,
-                confirmLoading: false,
-            });
-        }, 2000);
+    handleOk(groupInfo) {
+        const { form } = this.props;
+        const formData = form.getFieldsValue();
+        console.log("formData:",formData)
+        const {setGroupDelete, loginInfo} = this.props;
+        //调删除项目组的接口
+        setGroupDelete(loginInfo.username, groupInfo.id)
     }
 
     handleCancel() {
         this.setState({
             modalVisible: false,
         });
-    }*/
+    }
 
     deleteGroup(groupInfo){
-        const {setGroupDelete, loginInfo} = this.props;
-        if(groupInfo.children.length == 0){//项目组为空
-            if(groupInfo){
-                /*this.setState({
+        if(groupInfo){
+            if(groupInfo.children.length == 0){
+                this.setState({
                     modalVisible: true,
-                });*/
-                confirm({
-                    title: '您是否确定要删除此项目组？',
-                    content:groupInfo.name,
-                    onOk() {
-                        //调删除项目组的接口
-                        setGroupDelete(loginInfo.username, groupInfo.id)
-                    },
-                    onCancel() {
-                    }
-                })
+                });
             }else{
-                message.error('请选择需要删除的项目组！',3);
+                message.error('项目组不为空，不能删除!',3);
             }
         }else{
-            message.error('项目组不为空，不能删除!',3);
+            message.error('请选择需要删除的项目组！',3);
         }
     }
 
@@ -219,6 +205,9 @@ class ProjectMgr extends React.Component{
         const {deleteResult, deleteErrors} = nextProps;
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
+            this.setState({
+                modalVisible: false,
+            });
             this.insertCallback('删除成功!');
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
             this.errCallback('删除失败!',deleteErrors);
@@ -226,7 +215,8 @@ class ProjectMgr extends React.Component{
     }
 
     render(){
-        const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo} = this.props;
+        const {treeData, loading, currentTwoInfo, selectNodeKey, groupInfo,deleteLoading} = this.props;
+        const {getFieldProps} = this.props.form;
         const content = (
             <div>
                 <a className={styles.setting_operate_content}
@@ -239,6 +229,10 @@ class ProjectMgr extends React.Component{
                    onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
             </div>
         );
+        const deleteResultProps = getFieldProps('delete_result',
+            {rules:[
+                {required:true, message:'请输入删除原因！'}
+            ]});
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -266,15 +260,17 @@ class ProjectMgr extends React.Component{
                                     <Icon type="down" className={styles.down_img}/>
                                 </div>
                             </Popover>
-                            {/*<Modal title="确认删除此项目组吗?"
+                            <Modal title="确认删除此项目组吗?"
                                    visible={this.state.modalVisible}
-                                   onOk={this.handleOk.bind(this)}
-                                   confirmLoading={this.state.confirmLoading}
+                                   onOk={this.handleOk.bind(this,groupInfo)}
+                                   confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
                             >
-                                <p>如果确认要删除，请输入要删除的原因：</p>
-                                <Input type="textarea" rows={4} />
-                            </Modal>*/}
+                                <p>如果确认此操作，请在下框输入原因：</p>
+                                <FormItem>
+                                    <Input type="textarea" {...deleteResultProps} rows={4} />
+                                </FormItem>
+                            </Modal>
                         </Row>
                     ):(<Row></Row>)}
                     <Row>
@@ -293,6 +289,8 @@ ProjectMgr.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+ProjectMgr = Form.create()(ProjectMgr);
+
 function mapStateToProps(state) {
     return {
         loading : state.getGroupTree.loading,
@@ -305,6 +303,7 @@ function mapStateToProps(state) {
         groupInfo:state.getGroupInfo.groupInfo,
         deleteResult: state.createGroup.deleteResult,
         deleteErrors:state.createGroup.errors,
+        deleteLoading:state.createGroup.deleteLoading,
     }
 }
 
