@@ -36,8 +36,6 @@ import getProjectMembers from '../containers/project-mgr/reducers/project-member
 import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
 
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
-import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
-import getUserInfo from '../containers/user-relation/reducers/user-info-reducer';
 
 
 const reducer = combineReducers({
@@ -85,8 +83,6 @@ const reducer = combineReducers({
     checkDueDate,
     approve,
     closeSetMilestone,
-    getUserRelationTree,
-    getUserInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

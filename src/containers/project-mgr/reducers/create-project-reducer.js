@@ -47,15 +47,14 @@ export default function createProject(state = initialState, action = {}) {
                 updateDisabled:false,
             };
         case DELETE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {deleteLoading:true,deleteDisabled:true,deleteResult: "false"});
+            return Object.assign({}, initialState, {deleteResult: "false"});
         case DELETE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {deleteLoading:false,deleteDisabled:false,deleteResult: "success"});
+            return Object.assign({}, initialState, {deleteResult: "success"});
         case DELETE_PROJECT_ERROR:
             return {
                 ...state,
                 deleteResult: "false",
                 deleteErrors: action.payload.errorMsg,
-                deleteLoading:false,deleteDisabled:false
             };
         case RESET_DELETE_RESULT:
             return Object.assign({}, initialState, {deleteResult: action.data});

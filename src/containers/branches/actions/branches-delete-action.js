@@ -5,6 +5,7 @@ import api from '../../../api';
 import {DELETE_BRANCHES} from '../constants/action-types';
 
 export default function deleteBranch(branch,project_id) {
+    console.log('111112',branch,project_id);
     return {
         type: 'DELETE_BRANCHES',
         payload: {

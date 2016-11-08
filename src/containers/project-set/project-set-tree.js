@@ -107,6 +107,7 @@ class projectSetTree extends React.Component{
     }
 
     onSelectNode(node){
+
         const {currentOneInfo, currentTwoInfo} = this.props;
         node.selectedItemId=node.id.substring(0,node.id.length-2);
         this.props.putProjectSetToState(node);

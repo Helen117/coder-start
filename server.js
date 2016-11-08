@@ -56,9 +56,6 @@ const projectInfo = require('./mockdata/projectInfo.json');
 
 const projectMembers = require('./mockdata/projectMembers.json');
 
-const userRelation_ = require('./mockdata/userRelation');
-var userRelation = userRelation_.userRelation;
-
 const app = express();
 
 // Webpack developer
@@ -203,10 +200,6 @@ app.post('/gitlab/project-mgr/createProject', function (req, res) {
 
 app.post('/gitlab/project-mgr/createGroup', function (req, res) {
     res.json({success: true,errorCode: null,errorMsg: null,result:1});
-});
-
-app.post('/gitlab/userRelation', function (req, res) {
-    res.json(userRelation);
 });
 
 app.get('*', function (req, res) {

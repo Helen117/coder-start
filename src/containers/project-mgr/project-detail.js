@@ -13,8 +13,7 @@ import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from
 import Box from '../../components/box';
 import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
-import {findProjectIdByProjectName, resetGroupInfoState} from '../project-list/util';
-import {getGroupInfo} from '../project-mgr/actions/select-treenode-action';
+import {findProjectIdByProjectName} from '../project-list/util';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -26,7 +25,6 @@ class ProjectDetail extends React.Component {
         super(props);
         this.state={
             selectGroupId:null,
-            resetGroupInfo:null,
         };
     }
 
@@ -61,7 +59,6 @@ class ProjectDetail extends React.Component {
                     projectId = projectId.substr(0,projectId.length-2);
                     data.id = projectId;
                     actions.UpdateProject(data);
-                    this.state.resetGroupInfo = data;
                 }
             }
         })
@@ -83,16 +80,12 @@ class ProjectDetail extends React.Component {
     }
 
     insertCallback(message){
-        const {groupInfo} = this.props;
         notification.success({
             message: message,
             description: '',
             duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
-        let groupId = groupInfo.id;
-        let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
-        this.props.getGroupInfo(resetGroupInfo, groupId);
         this.context.router.goBack();
     }
 
@@ -118,7 +111,6 @@ class ProjectDetail extends React.Component {
         }else if(this.props.updateErrors != updateErrors && updateErrors){
             this.errCallback("修改失败",updateErrors);
         }
-        //修改项目后，更新选中组的信息
     }
 
     isEmptyObject(obj){
@@ -131,23 +123,23 @@ class ProjectDetail extends React.Component {
     componentDidMount() {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
-        const {groupInfo} = this.props;
+        const {getGroupInfo} = this.props;
         if (selectedRow){
-            for(let i=0; i<groupInfo.children.length; i++){
-                if(selectedRow.projectName == groupInfo.children[i].name){
+            for(let i=0; i<getGroupInfo.children.length; i++){
+                if(selectedRow.projectName == getGroupInfo.children[i].name){
                     setFieldsValue({
-                        name:groupInfo.children[i].name,
-                        description:groupInfo.children[i].description,
-                        groupid:groupInfo.id,
-                        visibility_level:groupInfo.children[i].visibility_level.toString()
+                        name:getGroupInfo.children[i].name,
+                        description:getGroupInfo.children[i].description,
+                        groupid:getGroupInfo.id,
+                        visibility_level:getGroupInfo.children[i].visibility_level.toString()
                     });
                 }
             }
         }
-        if(!this.isEmptyObject(groupInfo)){
-            setFieldsValue({groupid:groupInfo.name});
+        if(!this.isEmptyObject(getGroupInfo)){
+            setFieldsValue({groupid:getGroupInfo.name});
             this.setState({
-                selectGroupId:groupInfo.id
+                selectGroupId:getGroupInfo.id
             });
         }
     }
@@ -204,10 +196,6 @@ class ProjectDetail extends React.Component {
                 {rules:[
                     {required:true, message:'请选择可见级别！'}
                 ]});
-            const modifyResultProps = getFieldProps('modify_result',
-                {rules:[
-                    {required:editType == 'add'?false:true, message:'请输入修改原因！'}
-                ]});
 
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
@@ -236,11 +224,6 @@ class ProjectDetail extends React.Component {
                                 <Radio value="20">所有人可见</Radio>
                             </RadioGroup>
                         </FormItem>
-                        {editType == 'add' ? (<div></div>) : (
-                            <FormItem {...formItemLayout} label="修改原因">
-                                <Input type="textarea" {...modifyResultProps} rows={4} />
-                            </FormItem>
-                        )}
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
                                     loading={editType == 'add'?this.props.loading:this.props.updateLoading}
@@ -273,7 +256,7 @@ function mapStateToProps(state) {
         list: state.getGroupTree.treeData,
         loading:state.createProject.loading,
         disabled:state.createProject.disabled,
-        groupInfo:state.getGroupInfo.groupInfo,
+        getGroupInfo:state.getGroupInfo.groupInfo,
         updateResult:state.createProject.updateResult,
         updateErrors:state.createProject.updateErrors,
         updateLoading:state.createProject.updateLoading,
@@ -284,7 +267,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({createProject, UpdateProject, DeleteProject}, dispatch),
-        getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
     }
 }
 

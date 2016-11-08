@@ -29,6 +29,7 @@ class UserDetail extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                console.log('收到表单值：', formData);
                 //actions.insert(grid.url, formData)
             }
         })

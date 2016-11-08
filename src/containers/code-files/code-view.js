@@ -41,32 +41,36 @@ class CodeView extends React.Component {
 
     render(){
         const {fetchContentStatus} = this.props;
-        let fileName = this.props.location.state.pathName;
-        let filePath = this.props.location.state.filePath;
-        filePath = "/"+filePath;
-        let cateIndex = fileName.lastIndexOf(".");
-        let categary = fileName.substr(cateIndex+1,fileName.length);
-        return (
-            <div className={styles.code_view}>
-                <Row className={styles.blob_commit_info}>
-                    <p className={styles.commit_info}>{fileName}</p>
-                </Row>
-                <Row>
-                    {/*<div className={styles.blob_commit_info}>
-                        {
-                            (categary == "jpg" || categary == "png")?(
-                                <img src={filePath} />
-                            ):(
-                                <SyntaxHighlighter style={this.state.style}
-                                                   showLineNumbers>
-                                    {this.state.code}
-                                </SyntaxHighlighter>
-                            )
-                        }
-                    </div>*/}
-                </Row>
-            </div>
-        )
+        if(fetchContentStatus || false){
+            return (
+                <div className={styles.code_view}>
+                    <Row className={styles.blob_commit_info}>
+                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                    </Row>
+                    <Row>
+                        <div className={styles.blob_commit_info}>
+                            {/*<SyntaxHighlighter style={this.state.style}
+                                               showLineNumbers>
+                                {this.state.code}
+                            </SyntaxHighlighter>*/}
+                        </div>
+                    </Row>
+                </div>
+            )
+        }else{
+            return (
+                <div className={styles.code_view}>
+                    <Row className={styles.blob_commit_info}>
+                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                    </Row>
+                    <Row>
+                        <div className={styles.blob_commit_info}>
+
+                        </div>
+                    </Row>
+                </div>
+            )
+        }
     }
 }
 

@@ -105,14 +105,3 @@ export function isConserned(loginInfo,projectMembers,starList,projectInfo) {
     }
     return consern_desc;
 }
-
-export function resetGroupInfoState(groupInfo,resetData) {//修改项目后，更新项目组state
-    for(let i=0; i<groupInfo.children.length; i++){
-        if(resetData.id == groupInfo.children[i].id.substr(0,groupInfo.children[i].id.length-2)){
-            groupInfo.children[i].name = resetData.name;
-            groupInfo.children[i].description = resetData.description;
-            groupInfo.children[i].visibility_level = resetData.visibility_level;
-            return groupInfo;
-        }
-    }
-}
