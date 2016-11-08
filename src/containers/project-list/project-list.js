@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Button, Modal, notification} from 'antd';
+import {Switch,Icon, Row, Button, Modal, notification, Input, Form} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -19,6 +19,7 @@ import {setProjectDelete, resetDeleteResult} from '../project-mgr/actions/create
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 
 const confirm = Modal.confirm;
+const FormItem = Form.Item;
 
 class ProjectList extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class ProjectList extends Component {
             listType:false,
             nullType:false,
             listNode:null,
+            modalVisible:false
         };
     }
 
@@ -74,6 +76,9 @@ class ProjectList extends Component {
         const { deleteResult, deleteErrors } = nextProps;
         //删除返回信息
         if (deleteResult == "success"){
+            this.setState({
+                modalVisible: false,
+            });
             this.insertCallback("删除成功!");
             this.props.resetDeleteResult("false");
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
@@ -93,21 +98,27 @@ class ProjectList extends Component {
         });
     }
 
-    deleteProject(type, selectedRow){
+    handleOk() {
         const {setProjectDelete, treeData} = this.props;
-        const {router} = this.context;
-        let projectId = findProjectIdByProjectName(selectedRow.projectName, treeData);
+        const { form } = this.props;
+        const formData = form.getFieldsValue();
+        let projectId = findProjectIdByProjectName(this.state.selectProjectName, treeData);
         projectId = projectId.substr(0,projectId.length-2);
-        confirm({
-            title: '您是否确定要删除此项目？',
-            content:selectedRow.projectName,
-            onOk() {
-                //调删除项目的接口
-                setProjectDelete(projectId);
-            },
-            onCancel() {
-            }
-        })
+        //调删除项目的接口
+        setProjectDelete(projectId);
+    }
+
+    handleCancel() {
+        this.setState({
+            modalVisible: false,
+        });
+    }
+
+    deleteProject(type, selectedRow){
+        this.setState({
+            modalVisible: true,
+            selectProjectName:selectedRow.projectName
+        });
     }
 
     getDataSource(groupInfo){
@@ -138,7 +149,12 @@ class ProjectList extends Component {
 
     render() {
         if(this.state.listType == true){//展示项目组信息
-            const {treeData,getGroupInfo} = this.props;
+            const {treeData,getGroupInfo, deleteLoading} = this.props;
+            const {getFieldProps} = this.props.form;
+            const deleteResultProps = getFieldProps('delete_result',
+                {rules:[
+                    {required:true, message:'请输入删除原因！'}
+                ]});
             if(getGroupInfo && treeData.length>0){
                 var groupId = this.state.listNode;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);
@@ -154,6 +170,17 @@ class ProjectList extends Component {
                                            dataSource={dataSource}
                                 ></TableView>
                             </div>
+                            <Modal title="确认删除此项目吗?"
+                                   visible={this.state.modalVisible}
+                                   onOk={this.handleOk.bind(this)}
+                                   confirmLoading={deleteLoading?true:false}
+                                   onCancel={this.handleCancel.bind(this)}
+                            >
+                                <p>如果确认此操作，请在下框输入原因：</p>
+                                <FormItem>
+                                    <Input type="textarea" {...deleteResultProps} rows={4} />
+                                </FormItem>
+                            </Modal>
                         </Row>
                     </div>
                 )
@@ -176,6 +203,8 @@ ProjectList.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+ProjectList = Form.create()(ProjectList);
+
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
@@ -185,7 +214,7 @@ function mapStateToProps(state) {
         getGroupInfo:state.getGroupInfo.groupInfo,
         deleteResult:state.createProject.deleteResult,
         deleteErrors:state.createProject.deleteErrors,
-        deleteGroupResult:state.createGroup.deleteResult,
+        deleteLoading:state.createProject.deleteLoading,
     }
 }
 

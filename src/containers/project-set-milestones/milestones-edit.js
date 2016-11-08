@@ -27,10 +27,10 @@ class projectSetMilestonesEdit extends React.Component {
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
             } /*else {
-                const {router} = this.context;
-                router.goBack();
-                this.errChoosePro();
-            }*/
+             const {router} = this.context;
+             router.goBack();
+             this.errChoosePro();
+             }*/
         }
     }
 
@@ -69,13 +69,13 @@ class projectSetMilestonesEdit extends React.Component {
 
 
     /*errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目集合！',
-            duration: 2
-        });
-    }
-*/
+     notification.error({
+     message: '未选择项目',
+     description:'请先在左侧项目树中选择一个项目集合！',
+     duration: 2
+     });
+     }
+     */
     nothingUpdate(){
         notification.error({
             message: '未作任何信息改动',

@@ -13,7 +13,7 @@ module.exports.menu ={
             "name": "首页",
             "link": "/home",
             "description": "",
-            "iconUrl": null,
+            "icon": null,
             "subMenu": []
         },
         {
@@ -23,7 +23,7 @@ module.exports.menu ={
             "name": "代码管理",
             "link": "",
             "description": "",
-            "iconUrl": null,
+            "icon": null,
             "subMenu": [
                 {
                     "id": 3,
@@ -32,7 +32,7 @@ module.exports.menu ={
                     "name": "代码管理",
                     "link": "/project-mgr",
                     "description": "",
-                    "iconUrl": null,
+                    "icon": null,
                     "subMenu": [
                         {
                             "id": 6,
@@ -41,7 +41,7 @@ module.exports.menu ={
                             "name": "项目",
                             "link": "/project-mgr",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
@@ -51,7 +51,7 @@ module.exports.menu ={
                             "name": "项目代码",
                             "link": "/project-mgr/code-file",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
@@ -61,7 +61,7 @@ module.exports.menu ={
                             "name": "里程碑管理",
                             "link": "/project-mgr/milestones",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
@@ -71,7 +71,7 @@ module.exports.menu ={
                             "name": "问题管理",
                             "link": "/project-mgr/issue",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
@@ -81,17 +81,17 @@ module.exports.menu ={
                             "name": "我的问题",
                             "link": "/project-mgr/myIssue",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
                             "id": 11,
                             "parentId": 3,
                             "cLevel": 3,
-                            "name": "MR管理",
+                            "name": "代码合并",
                             "link": "/project-mgr/mergeRequest",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         },
                         {
@@ -101,7 +101,7 @@ module.exports.menu ={
                             "name": "分支管理",
                             "link": "/project-mgr/branches",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
                         }
                     ]
@@ -113,7 +113,7 @@ module.exports.menu ={
                     "name": "代码质量管理",
                     "link": "",
                     "description": "",
-                    "iconUrl": null,
+                    "icon": null,
                     "subMenu": []
                 },
                 {
@@ -123,35 +123,57 @@ module.exports.menu ={
                     "name": "测试案例",
                     "link": "",
                     "description": "",
-                    "iconUrl": null,
+                    "icon": null,
                     "subMenu": []
                 },
                 {
                     "id": 13,
                     "parentId": 2,
                     "cLevel": 2,
-                    "name": "项目集合管理",
+                    "name": "项目集合",
                     "link": "/projectSetTree",
                     "description": "",
-                    "iconUrl": null,
+                    "icon": null,
                     "subMenu": [
                         {
                             "id": 14,
                             "parentId": 13,
                             "cLevel": 3,
-                            "name": "项目集合",
+                            "name": "项目集合信息",
                             "link": "/projectSetTree",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
                             "subMenu": []
-                        },{
+                        },
+                        {
                             "id": 15,
                             "parentId": 13,
                             "cLevel": 3,
-                            "name": "里程碑",
+                            "name": "项目集合里程碑",
                             "link": "/projectSetTree/projectSetMilestones",
                             "description": "",
-                            "iconUrl": null,
+                            "icon": null,
+                            "subMenu": []
+                        }
+                    ]
+                },
+                {
+                    "id": 16,
+                    "parentId": 2,
+                    "cLevel": 2,
+                    "name": "人员组织关系",
+                    "link": "",
+                    "description": "",
+                    "icon": null,
+                    "subMenu": [
+                        {
+                            "id": 17,
+                            "parentId": 16,
+                            "cLevel": 3,
+                            "name": "查看人员组织关系",
+                            "link": "/userRelation",
+                            "description": "",
+                            "icon": null,
                             "subMenu": []
                         }
                     ]

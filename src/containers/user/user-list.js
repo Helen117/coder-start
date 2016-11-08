@@ -90,10 +90,8 @@ export default class UserList extends React.Component {
             total: data.length,
             showSizeChanger: true,
             onShowSizeChange(current, pageSize) {
-                console.log('Current: ', current, '; PageSize: ', pageSize);
             },
             onChange(current) {
-                console.log('Current: ', current);
             },
         };
         const {loading, selectedRowKeys} = this.state;
