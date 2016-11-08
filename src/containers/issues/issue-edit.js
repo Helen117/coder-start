@@ -38,9 +38,6 @@ class AddIssue extends Component{
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
             //时间类型转换
-            if(selectedRow.due_date){
-                selectedRow.due_date = new Date(Date.parse(selectedRow.due_date));
-            }
             //labels substr(0,selectedRow.labels.length-1)
             selectedRow.labels = selectedRow.labels?selectedRow.labels.split(','):[];
 

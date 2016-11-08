@@ -53,6 +53,7 @@ class MyIssueList extends Component {
         e.preventDefault();
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
+        console.log('查询条件：',data);
     }
 
 

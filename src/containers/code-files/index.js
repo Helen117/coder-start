@@ -110,7 +110,7 @@ class CodeFiles extends React.Component {
             this.props.getCodeContent(projectInfo.id,filePath,this.state.brand);
             this.context.router.push({
                 pathname: '/project-mgr/code-file/code-view',
-                state:{pathName:pathName,brand:this.state.brand,filePath:filePath}
+                state:{pathName:path_temp,brand:this.state.brand,filePath:filePath}
             });
         }
     }
