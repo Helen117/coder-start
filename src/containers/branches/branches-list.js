@@ -6,16 +6,22 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin} from 'antd';
+import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin, message,Form,Input} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchBranchesData from './actions/fetch-branches-action';
 import deleteBranch from './actions/branches-delete-action'
 
+const createForm = Form.create;
 const confirm = Modal.confirm;
+const FormItem = Form.Item;
 class branchesList extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            modalVisible: false,
+            delRecord: {}
+        }
     }
 
     componentWillMount() {
@@ -42,38 +48,29 @@ class branchesList extends React.Component {
         }
         //数据加载错误提示
         if(this.props.fetchErrors != fetchErrors && fetchErrors){
-            this.errCallback(fetchErrors);
+            this.errCallback('获取数据失败',fetchErrors);
         }
         if(this.props.delErrMessage != delErrMessage && delErrMessage){
-            this.errCallback(delErrMessage);
+            this.errCallback('删除数据失败',delErrMessage);
         }else if(this.props.delResult != delResult && delResult){
-            this.delSuccess();
+            this.setState({
+                modalVisible: false,
+            });
+            this.sucCallback('删除成功');
             this.props.fetchBranchesData(thisProId);
         }
     }
 
-    delSuccess(){
+    sucCallback(type){
+        message.success(type);
         const project_id = this.props.getProjectInfo.id;
-        notification.success({
-            message: '删除成功',
-            description: '',
-            duration: 1
-        });
         this.props.fetchBranchesData(project_id);
     }
 
-    errCallback(fetchErrors){
+    errCallback(type,fetchErrors){
         notification.error({
-            message: '数据加载失败',
+            message: type,
             description: fetchErrors,
-            duration: 2
-        });
-    }
-
-    errChosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
             duration: 2
         });
     }
@@ -86,18 +83,24 @@ class branchesList extends React.Component {
     }
 
     deleteBranch(record){
-        const branch = record.branch;
+        this.setState({
+         modalVisible: true,
+         delRecord: record
+         });
+    }
+
+    handleOk(groupInfo) {
+        const branch = this.state.delRecord.branch;
         const project_id = this.props.getProjectInfo.id;
+        const result = this.props.form.getFieldsValue().result;
         const deleteBranchAction = this.props.deleteBranchAction;
-        confirm({
-            title: '您是否确定要删除此分支',
-            content: '删除之后分支内容将会被丢弃',
-            onOk() {
-                deleteBranchAction(branch,project_id);
-            },
-            onCancel() {
-            }
-        })
+        deleteBranchAction(branch,project_id,result);
+    }
+
+    handleCancel() {
+        this.setState({
+            modalVisible: false,
+        });
     }
 
     onChange(pagination, filters, sorter) {
@@ -120,6 +123,9 @@ class branchesList extends React.Component {
     render(){
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
+        const {getFieldProps} = this.props.form;
+/*        const deleteResultProps = getFieldProps('result',
+            {rules:[ {required:true, message:'请输入删除原因！'}]});*/
         return(
 
             <div style={{margin:15}}>
@@ -136,12 +142,27 @@ class branchesList extends React.Component {
                                dataSource={data}
                                 />
                     </div>
+                    <div>
+                        <Modal title="确认删除此项目组吗?"
+                               visible={this.state.modalVisible}
+                               onOk={this.handleOk.bind(this)}
+                               confirmLoading={this.props.delLoading}
+                               onCancel={this.handleCancel.bind(this)}
+                        >
+                            <p>如果确认此操作，请在下框输入原因：</p>
+                            <Form>
+                                <FormItem>
+                                    <Input type="textarea" {...getFieldProps('result')} rows={4} />
+                                </FormItem>
+                            </Form>
+                        </Modal>
+                    </div>
                 </Spin>
             </div>
             )
     }
 }
-
+//
 const columns = (self)=>[{
     title: '分支',
     dataIndex: 'branch',
@@ -176,7 +197,8 @@ function mapStateToProps(state) {
         fetchErrors: state.fetchBranches.fetchErrors,
         delLoading: state.deleteBranch.loading,
         delErrMessage: state.deleteBranch.errorMsg,
-        delResult: state.deleteBranch.result
+        delResult: state.deleteBranch.result,
+        currentTwoInfo:state.getMenuBarInfo.currentTwo,
     };
 }
 
@@ -187,4 +209,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(branchesList);
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(branchesList))

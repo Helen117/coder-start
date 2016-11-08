@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/8.
  */
 import React,{ PropTypes, Component } from 'react';
-import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader } from 'antd';
+import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,message } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -25,56 +25,30 @@ class createMergeRequest extends Component {
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
-        }else{
-            this.errChoosePro();
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
         if(this.props.isMR != isMR && isMR==false){
-            this.errRoot();
+            this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
         }
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback('创建失败',errMessage);
         }
     }
 
-
-
-    errRoot(){
-        notification.error({
-            message: '无需MR',
-            description:'该分支是根节点，无需向其他分支MR',
-            duration: 2
-        });
-        this.context.router.goBack();
-    }
-
-    errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目！',
-            duration: 2
-        });
-        this.context.router.goBack();
-    }
-
-    insertCallback(){
-        notification.success({
-            message: '创建成功',
-            description: '',
-            duration: 1
-        });
+    insertCallback(type){
+        message.success(type+'成功');
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
 
-    errCallback(errMessage){
+    errCallback(type,errMessage,){
         notification.error({
-            message: '创建失败',
+            message: type,
             description:errMessage,
             duration: 2
         });
