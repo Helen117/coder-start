@@ -83,7 +83,7 @@ ReactDOM.render(
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
-                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
+                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectSetMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>

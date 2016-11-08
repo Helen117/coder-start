@@ -3,7 +3,7 @@
  */
 
 import React, {PropTypes} from 'react';
-import {Timeline,Button,Row,Col,Progress,notification,BackTop,Spin} from 'antd';
+import {Timeline,Button,Row,Col,Progress,notification,BackTop,Spin,message} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -19,34 +19,48 @@ class projectSetMilestones extends React.Component {
         super(props);
         this.page =1;
         this.timeLineData = [];
+        this.state = {
+            id:''
+        }
     }
 
     componentDidMount() {
-        if (this.props.selectedProjectSet ) {
-            const selectedItemId = this.props.selectedProjectSet.id;
-            if(!this.props.timeLineData || this.props.milestoneProId!=selectedItemId && this.props.timeLineData){
-                this.distributeActions(selectedItemId, this.page, this.timeLineData);
-                //this.props.getProjectMilestonesAction(id, this.page, this.timeLineData);
-                this.props.putProIdToStateAction(selectedItemId);
+        const {getProjectInfo,selectedProjectSet} = this.props;
+        if(this.props.currentTwoInfo.link) {
+            if (this.props.currentTwoInfo.link.indexOf('projectSetTree') > 0 && selectedProjectSet) {
+                this.setState({id: selectedProjectSet.id})
+                if (!this.props.timeLineData || this.props.milestoneProId != selectedProjectSet.id && this.props.timeLineData) {
+                    this.distributeActions(selectedProjectSet.id, this.page, this.timeLineData);
+                    this.props.putProIdToStateAction(selectedProjectSet.id);
+                }
+            } else if (this.props.currentTwoInfo.link.indexOf('project-mgr') > 0 && getProjectInfo) {
+                this.setState({id: getProjectInfo.id})
+                if (!this.props.timeLineData || this.props.milestoneProId != getProjectInfo.id && this.props.timeLineData) {
+                    this.distributeActions(getProjectInfo.id, this.page, this.timeLineData);
+                    this.props.putProIdToStateAction(getProjectInfo.id);
+                }
             }
-        } /*else {
-            const {router} = this.context;
-            //router.goBack();
-            this.errChoosePro();
-        }*/
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         const {acquireData,errMessage,closeSetMsResult,closeSetMsErr} = nextProps;
-        const thisProId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
-        const nextProId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
+        let thisProId ,nextProId;
+        if(this.props.currentTwoInfo.link == '/projectSetTree/projectSetMilestones'){
+             thisProId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
+             nextProId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
+        }else if(this.props.currentTwoInfo.link == '/project-mgr/milestones'){
+            thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
+            nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
+        }
+
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId){
+        if(thisProId != nextProId && nextProId!=''){
+            this.setState({id: nextProId});
             this.page =1;
             hisPage = 1;
             this.timeLineData = [];
             this.distributeActions(nextProId,this.page,this.timeLineData);
-            //this.props.getProjectMilestonesAction(nextProId,this.page,this.timeLineData);
             this.props.putProIdToStateAction(nextProId);
         }
         //点击查看更多无新数据时提醒
@@ -55,37 +69,27 @@ class projectSetMilestones extends React.Component {
         }
         //数据加载错误提示
         if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'数据加载');
+            this.errCallback(errMessage,'数据加载失败');
         }
         if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
-            this.sucCallback('里程碑关闭');
+            this.sucCallback('里程碑关闭成功');
         }else if(this.props.closeSetMsErr != closeSetMsErr && closeSetMsErr){
-            this.errCallback(closeSetMsErr,'里程碑关闭');
+            this.errCallback(closeSetMsErr,'里程碑关闭失败');
         }
-    }
-
-    errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目或项目集合',
-            duration: 2
-        });
     }
 
     sucCallback(type){
-        notification.success({
-            message: type+'成功',
-            description: type+'成功',
-            duration: 2
-        });
+        message.success(type);
         this.page =1;
         this.timeLineData = [];
-        this.distributeActions(this.props.selectedProjectSet.id,this.page,this.timeLineData);
+        const {getProjectInfo,selectedProjectSet} = this.props;
+        //const id = selectedProjectSet?selectedProjectSet.id:getProjectInfo?getProjectInfo.id:'';
+        this.distributeActions(this.state.id,this.page,this.timeLineData);
     }
 
     errCallback(errMessage,type){
         notification.error({
-            message: type+'失败',
+            message: type,
             description: errMessage,
             duration: 2
         });
@@ -100,24 +104,26 @@ class projectSetMilestones extends React.Component {
     }
 
     distributeActions(id,page,timeLineData){
-        const selectedItemId = id.substring(0,id.length-2);
-        if(id.indexOf("_g") > 0 ){
-            this.props.getProjectSetMilestonesAction(selectedItemId,page,timeLineData);
+        const itemId = (id.toString().indexOf("_g") > 0 || id.toString().indexOf("_p") > 0)? id.substring(0,id.length-2):id;
+        if(id.toString().indexOf("_g") > 0 ){
+            this.props.getProjectSetMilestonesAction(itemId,page,timeLineData);
         }else{
-            this.props.getProjectMilestonesAction(selectedItemId,page,timeLineData);
+            this.props.getProjectMilestonesAction(itemId,page,timeLineData);
         }
 
     }
 
     moreMilestones(){
-        const id = this.props.selectedProjectSet.id;
+        const {getProjectInfo,selectedProjectSet} = this.props;
+        //const id = selectedProjectSet?selectedProjectSet.id:getProjectInfo?getProjectInfo.id:'';
         this.page ++;
-        this.distributeActions(id,this.page,this.props.timeLineData);
+        this.distributeActions(this.state.id,this.page,this.props.timeLineData);
         //this.props.getProjectMilestonesAction(id,this.page,this.props.timeLineData);
     }
 
     viewHis(){
-        const id = this.props.selectedProjectSet.id;
+        const {getProjectInfo,selectedProjectSet} = this.props;
+        //const id = selectedProjectSet?selectedProjectSet.id:getProjectInfo?getProjectInfo.id:'';
         console.log(hisPage);
         hisPage --;
         console.log("查看历史第",hisPage,"页")
@@ -136,23 +142,24 @@ class projectSetMilestones extends React.Component {
     }
 
     render(){
-        const {loading,notFoundMsg,timeLineData,selectedProjectSet} = this.props;
-        const id = selectedProjectSet?selectedProjectSet.id:'';
-        const selectedItemId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
+        const {loading,notFoundMsg,timeLineData,selectedProjectSet,getProjectInfo} = this.props;
+        //const id = selectedProjectSet?selectedProjectSet.id:getProjectInfo?getProjectInfo.id:'';
         const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
+        const id = this.state.id.toString();
+        const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,this.state.id.length-2):id;
         return (
             <Spin spinning={closeSetMsLoading} tip="正在关闭里程碑，请稍候..." >
                 <div style={{margin:15}}>
-                    {id.indexOf("_g") > 0?
+                    {this.state.id.toString().indexOf("_g") > 0?
                     <div >
                         <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                     </div>:<div></div>}
 
-                    <TimelineMilestone timeLineData={timeLineData}
+                    <TimelineMilestone timeLineData={projectId==''? [] :timeLineData}
                                        loading = {loading}
                                        notFoundMsg = {notFoundMsg}
                                        pending = {<a onClick={this.moreMilestones.bind(this)}>查看更多</a>}
-                                       projectId = {selectedItemId}
+                                       projectId = {projectId}
                                        id = {id}
                                        milestonesDetailPath="/projectSetMilestonesDetail"
                                        milestoneEditPath="/projectSetMilestonesEdit"
@@ -183,11 +190,13 @@ function mapStateToProps(state) {
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
         errMessage: state.milestones.errMessage,
+        getProjectInfo:state.getProjectInfo.projectInfo,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         milestoneProId: state.putMilestonesProId.milestoneProId,
         closeSetMsLoading: state.closeSetMilestone.loading,
         closeSetMsResult: state.closeSetMilestone.result,
-        closeSetMsErr: state.closeSetMilestone.errorMsg
+        closeSetMsErr: state.closeSetMilestone.errorMsg,
+        currentTwoInfo:state.getMenuBarInfo.currentTwo,
     };
 }
 

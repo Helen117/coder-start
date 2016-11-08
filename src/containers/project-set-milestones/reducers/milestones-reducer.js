@@ -26,6 +26,19 @@ export function milestones(state = initialState, action = {}) {
             for(let i=0; i<action.payload.length; i++) {
                 timeLineData.push(action.payload[i]);
             }
+
+            let temp = 0;
+            for (let i = timeLineData.length - 1; i > 0; --i) {
+                for (let j = 0; j < i; ++j)
+                {
+                    if (timeLineData[j + 1].due_date > timeLineData[j].due_date)
+                    {
+                        temp = timeLineData[j];
+                        timeLineData[j] = timeLineData[j + 1];
+                        timeLineData[j + 1] = temp;
+                    }
+                }
+            }
             return Object.assign({}, initialState, {items: action.payload, timeLineData:timeLineData, loading: false, acquireData:true, errMessage:null});
 
         case ACQUIRE_MILESTONES_ERROR:

@@ -1,5 +1,5 @@
 import React,{ PropTypes } from 'react';
-import { DatePicker, Button, Modal, Form, Input, Col,notification, Spin} from 'antd';
+import { DatePicker, Button, Modal, Form, Input, Col,notification, message,Spin} from 'antd';
 import Box from '../../components/box';
 import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
@@ -26,60 +26,36 @@ class projectSetMilestonesEdit extends React.Component {
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
-            } /*else {
-                const {router} = this.context;
-                router.goBack();
-                this.errChoosePro();
-            }*/
+            }
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage,updateErrorMsg ,updateMsg} = nextProps;
         if (this.props.inserted != inserted && inserted){
-            this.insertCallback('创建');
+            this.insertCallback('创建成功');
         }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'创建');
+            this.errCallback(errMessage,'创建失败');
         }
         if(this.props.updateErrorMsg != updateErrorMsg && updateErrorMsg){
-            this.errCallback(updateErrorMsg,'修改');
+            this.errCallback(updateErrorMsg,'修改失败');
         }else if(this.props.updateMsg !=updateMsg && updateMsg){
-            this.insertCallback('修改');
+            this.insertCallback('修改成功');
         }
 
     }
 
     insertCallback(type){
-        notification.success({
-            message: type+'成功',
-            description: type+'成功',
-            duration: 2
-        });
+        message.success(type)
         this.props.getProjectSetMilestones(this.groupId, 1, []);
         this.context.router.goBack();
     }
 
     errCallback(errMessage,type){
+        //message.error(type+'失败',errMessage);
         notification.error({
-            message: type+'失败',
+            message: type,
             description: errMessage,
-            duration: 2
-        });
-    }
-
-
-    /*errChoosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在左侧项目树中选择一个项目集合！',
-            duration: 2
-        });
-    }
-*/
-    nothingUpdate(){
-        notification.error({
-            message: '未作任何信息改动',
-            description:'未作任何信息改动,无需提交表单！',
             duration: 2
         });
     }
@@ -100,10 +76,9 @@ class projectSetMilestonesEdit extends React.Component {
                 }else{
                     if(item.title==formData.title && item.description==formData.description &&
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
-                        this.nothingUpdate();
+                        this.nothingUpdate('未作任何信息改动','未作任何信息改动,无需提交表单！');
                     }else{
                         formData.id = this.props.location.state.item.id;
-                        console.log('保存成功！',formData);
                         this.props.updateMilestoneAction(formData);
                     }
                 }
@@ -135,7 +110,7 @@ class projectSetMilestonesEdit extends React.Component {
         const due_date = new Date(value).toLocaleDateString();
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
-        const errStr = '日期超出允许修改范围'
+        const errStr = '计划完成时间超出允许设定范围'
         fetchData(path,params,callback,errStr);
     }
 

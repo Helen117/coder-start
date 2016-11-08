@@ -6,7 +6,7 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin} from 'antd';
+import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin, message} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchBranchesData from './actions/fetch-branches-action';
@@ -42,38 +42,26 @@ class branchesList extends React.Component {
         }
         //数据加载错误提示
         if(this.props.fetchErrors != fetchErrors && fetchErrors){
-            this.errCallback(fetchErrors);
+            this.errCallback('获取数据失败',fetchErrors);
         }
         if(this.props.delErrMessage != delErrMessage && delErrMessage){
-            this.errCallback(delErrMessage);
+            this.errCallback('删除数据失败',delErrMessage);
         }else if(this.props.delResult != delResult && delResult){
-            this.delSuccess();
+            this.sucCallback('删除成功');
             this.props.fetchBranchesData(thisProId);
         }
     }
 
-    delSuccess(){
+    sucCallback(type){
+        message.success(type);
         const project_id = this.props.getProjectInfo.id;
-        notification.success({
-            message: '删除成功',
-            description: '',
-            duration: 1
-        });
         this.props.fetchBranchesData(project_id);
     }
 
-    errCallback(fetchErrors){
+    errCallback(type,fetchErrors){
         notification.error({
-            message: '数据加载失败',
+            message: type,
             description: fetchErrors,
-            duration: 2
-        });
-    }
-
-    errChosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
             duration: 2
         });
     }
@@ -176,7 +164,8 @@ function mapStateToProps(state) {
         fetchErrors: state.fetchBranches.fetchErrors,
         delLoading: state.deleteBranch.loading,
         delErrMessage: state.deleteBranch.errorMsg,
-        delResult: state.deleteBranch.result
+        delResult: state.deleteBranch.result,
+        currentTwoInfo:state.getMenuBarInfo.currentTwo,
     };
 }
 

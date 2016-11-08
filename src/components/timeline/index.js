@@ -30,6 +30,7 @@ export default class TimelineMilestone extends React.Component {
     }
 
     milestonesDetail(milestonesId){
+        console.log('点击查看里程碑下问题')
         const projectId = this.props.projectId;
         const id = this.props.id;
         const milestonesDetailPath = this.props.milestonesDetailPath;
@@ -108,7 +109,7 @@ export default class TimelineMilestone extends React.Component {
                         revocable = true;
                     }
                     const timelineColor = this.setMilestoneColor(timeLineData[i].state,timeLineData[i].due_date);
-                    const groupId = this.props.id;
+                    const groupId = this.props.id.toString();
                     timeLine.push (
                             <Timeline.Item color={timelineColor}  key={'milestones' + timeLineData[i].id} >
                                 <Tooltip placement="rightBottom" title={revocable?"点击可修改":''}>

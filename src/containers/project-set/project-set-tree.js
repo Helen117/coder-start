@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin } from 'antd';
+import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
@@ -90,12 +90,8 @@ class projectSetTree extends React.Component{
     }
 
     successCallback(type){
+        message.success(type+'成功');
         const userId = this.props.loginInfo.userId;
-        notification.success({
-            message: type+'成功',
-            description: '',
-            duration: 1
-        });
         this.props.fetchProjectSetTree(userId);
     }
 

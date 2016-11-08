@@ -23,9 +23,23 @@ export function milestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true, items:[], acquireData:false, errMessage:null});
 
         case ACQUIRE_MILESTONES_SUCCESS:
+            //分页，将新获取到的数据push进timeLineData
             let timeLineData = action.meta.timeLineData;
             for(let i=0; i<action.payload.length; i++) {
                 timeLineData.push(action.payload[i]);
+            }
+            //对timeLineData排序
+            let temp = 0;
+            for (let i = timeLineData.length - 1; i > 0; --i) {
+                for (let j = 0; j < i; ++j)
+                {
+                    if (timeLineData[j + 1].due_date > timeLineData[j].due_date)
+                    {
+                        temp = timeLineData[j];
+                        timeLineData[j] = timeLineData[j + 1];
+                        timeLineData[j + 1] = temp;
+                    }
+                }
             }
             return Object.assign({}, initialState, {items: action.payload, timeLineData:timeLineData, loading: false, acquireData:true, errMessage:null});
 
