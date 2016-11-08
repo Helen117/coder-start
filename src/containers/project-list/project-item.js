@@ -70,9 +70,6 @@ class ProjectItem extends Component {
         const {forkResult,getProjectInfo} = nextProps;
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
-            this.setState({
-                itemNode:null,
-            });
             message.success('Fork成功!',3);
         }else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
             message.error('Fork失败!'+forkResult.errors,3);
