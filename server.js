@@ -32,6 +32,11 @@ const virtual_project = virtual_project_.projectSetTree.result;
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
 
+const userRelation_ = require('./mockdata/userRelation');
+const userRelation = userRelation_.userRelation;
+
+const userInfoData_ = require('./mockdata/userInfoData');
+const userInfoData = userInfoData_.userInfoData;
 
 const milestones_ = require('./mockdata/milestones');
 var milestones = milestones_.milestones;
@@ -127,6 +132,14 @@ app.post('/gitlab/issue/add-note', function (req, res) {
 // });
 app.post('/gitlab/group', function (req, res) {
     res.json(group);
+});
+
+app.post('/gitlab/userRelation', function (req, res) {
+    res.json(userRelation);
+});
+
+app.post('/gitlab/userInfoData', function (req, res) {
+    res.json(userInfoData);
 });
 
 app.post('/gitlab/mygroup', function (req, res) {

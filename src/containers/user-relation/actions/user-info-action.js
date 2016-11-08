@@ -4,8 +4,8 @@
 import api from '../../../api';
 import {GET_USER_INFO} from '../constants/user-info-types';
 
-export function getUserInfo(userId) {
-    var path = '/userRelation';
+export function getUserInfo(userId,) {
+    var path = '/userInfoData';
     return {
         type: GET_USER_INFO,
         payload: {
