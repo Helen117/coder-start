@@ -2,7 +2,7 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Input,Table,Collapse  } from 'antd';
+import { Button,Form,Input,Table,Collapse,message,Spin  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -17,19 +17,22 @@ class RegistrationApproval  extends Component {
     }
 
     componentWillMount() {
-        const {loginInfo,actions} = this.props;
+        const {actions} = this.props;
         const {record} = this.props.location.state;
-        actions.getApproveList(loginInfo.userId);
+        actions.approvalDetail(record.task_id);
     }
 
     componentWillReceiveProps(nextProps) {
-        const {loginInfo,actions} = this.props;
         const nextResult = nextProps.result;
         const nextError = nextProps.error;
         const commit = nextProps.commitLoading;
+        const getDetailError = nextProps.getDetailError;
 
+        if(getDetailError&& getDetailError != this.props.getDetailError){
+            message.error('获取待审批详情失败！'+getDetailError,3);
+        }
         if(nextError&& nextError != this.props.error){
-            message.error('审批失败！'+error,3);
+            message.error('审批失败！'+nextError,3);
         }
         if (!commit && !nextError && nextResult && nextResult!=this.props.result) {
             message.success('审批成功！');
@@ -39,17 +42,20 @@ class RegistrationApproval  extends Component {
 
 
     approve(type){
-        const {actions,form} = this.props;
+        const {actions,form,loginInfo} = this.props;
+        const {record} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
+                data.username = loginInfo.username;
+                data.task_id = record.task_id;
                 if (type == 'agree') {
-                    data.status = 1;
+                    data.result = true;
                     actions.approveResult(data);
                 } else {
-                    data.status = 2;
+                    data.reason = false;
                     actions.approveResult(data);
                 }
             }
@@ -66,30 +72,28 @@ class RegistrationApproval  extends Component {
             wrapperCol: { span: 12 },
         };
 
-        const pagination = {
-            pageSize:10,
-            // total: data.length,
-        };
+        const loading = this.props.commitLoading?true:false;
 
         return(
             <Box title="注册审批">
-                <Table columns={this.columns(this)} dataSource={this.props.approveList}
-                       bordered={false}
-                       size="middle"
-                       pagination={pagination}
-                       loading={this.props.loading}
-                />
-                <div style={{marginTop: 16}}>
-                    <Form horizontal>
-                        <FormItem {...formItemLayout} label="审批原因" >
-                            <Input type="textarea" placeholder="description" rows="5"  {...getFieldProps('description',{rules:[{required:true,message:'不能为空'}]})} />
-                        </FormItem>
-                        <FormItem wrapperCol={{ span: 16, offset: 6 }}>
-                            <Button type="primary" onClick={this.approve.bind(this, 'agree')}>同意</Button>
-                            <Button type="primary" onClick={this.approve.bind(this, 'disagree')}>不同意</Button>
-                        </FormItem>
-                    </Form>
-                </div>
+                <Spin spinning={loading} tip="正在提交，请稍候..." >
+                    <Table columns={this.columns(this)} dataSource={this.props.approvalDetail}
+                           bordered
+                           size="middle"
+                           loading={this.props.getDetailLoading}
+                    />
+                    <div style={{marginTop: 16}}>
+                        <Form horizontal>
+                            <FormItem {...formItemLayout} label="审批原因" >
+                                <Input type="textarea" placeholder="reason" rows="5"  {...getFieldProps('reason',{rules:[{required:true,message:'不能为空'}]})} />
+                            </FormItem>
+                            <FormItem wrapperCol={{ span: 16, offset: 6 }}>
+                                <Button type="primary" onClick={this.approve.bind(this, 'agree')}>同意</Button>
+                                <Button type="primary" onClick={this.approve.bind(this, 'disagree')}>不同意</Button>
+                            </FormItem>
+                        </Form>
+                    </div>
+                </Spin>
             </Box>
         );
     }
@@ -103,23 +107,19 @@ RegistrationApproval.contextTypes = {
 
 RegistrationApproval.prototype.columns = (self)=>[{
     title: '姓名',
-    dataIndex: 'name',
-    width: '20%'
+    dataIndex: 'fullname',
+    width: '20%',
 },{
     title: '登录名',
-    dataIndex: 'username',
+    dataIndex: 'initiator',
     width: '20%',
-}, {
-    title: '注册时间',
-    dataIndex: 'created_at',
-    width: '20%'
-}, {
-    title: '状态',
-    dataIndex: 'description',
+},{
+    title: '邮箱',
+    dataIndex: 'userEmail',
     width: '20%',
 }, {
     title: '申请角色',
-    dataIndex: 'role_name',
+    dataIndex: 'userRole',
     width: '20%',
 }];
 
@@ -131,8 +131,9 @@ RegistrationApproval = Form.create()(RegistrationApproval);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        approveList:state.approve.approveList,
-        loading:state.approve.loading,
+        getDetailLoading:state.approve.getDetailLoading,
+        approvalDetail:state.approve.approvalDetail,
+        getDetailError:state.approve.getDetailError,
         commitLoading:state.approve.commitLoading,
         result:state.approve.approveResult,
         error:state.approve.resultErrors,

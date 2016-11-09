@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/31.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Table,Collapse  } from 'antd';
+import { Table,message  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -17,11 +17,18 @@ class ApproveList extends Component {
 
     componentWillMount() {
         const {loginInfo,actions} = this.props;
-        actions.getApproveList(loginInfo.userId);
+        actions.getApproveList(loginInfo.username);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {errors} = nextProps;
+        if(errors&&errors!=this.props.errors){
+            message.error('获取待审批列表失败！'+errors,3);
+        }
     }
 
     approveDetail(record, index){
-        console.log(record);
+        // console.log(record);
         this.context.router.push({
             pathname: '/approveRegister',
             state: {record}
@@ -32,7 +39,7 @@ class ApproveList extends Component {
     render() {
 
         const pagination = {
-            pageSize:10,
+            pageSize:20,
            // total: data.length,
         };
 
@@ -59,10 +66,10 @@ ApproveList.contextTypes = {
 
 ApproveList.prototype.columns = (self)=>[{
     title: '申请人',
-    dataIndex: 'name',
+    dataIndex: 'initiator',
 },{
     title: '审批类型',
-    dataIndex: 'description',
+    dataIndex: 'type',
 }, {
     title: '申请时间',
     dataIndex: 'created_at',
@@ -75,6 +82,7 @@ function mapStateToProps(state) {
         approveList:state.approve.approveList,
         loading:state.approve.loading,
         loginInfo:state.login.profile,
+        errors:state.approve.errors,
     };
 }
 

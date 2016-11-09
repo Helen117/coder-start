@@ -41,6 +41,16 @@ export function issue(state = {}, action = {}) {
                 errors: action.payload.errorMsg, loading: false
             };
 
+        case 'GET_MY_ISSUE_PENDING':
+            return Object.assign({}, {myIssueLoading: true});
+        case 'GET_MY_ISSUE_SUCCESS':
+            return Object.assign({}, {myIssueLoading: false, myIssueList: action.payload});
+        case 'GET_MY_ISSUE_ERROR':
+            return {
+                ...state,
+                myIssueError: action.payload.errorMsg, myIssueLoading: false
+            };
+
         case 'COMMENT_PENDING':
             return Object.assign({}, {commentLoading: true});
         case 'COMMENT_SUCCESS':
