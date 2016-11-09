@@ -8,7 +8,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchMrListData from './actions/mergeRequest-list-action'
-import {mergeMr,closeMr} from './actions/mergeRequest-edit-action';
+import {acceptMr,closeMr} from './actions/mergeRequest-edit-action';
 
 class mergeRequestList extends React.Component {
     constructor(props) {
@@ -33,22 +33,14 @@ class mergeRequestList extends React.Component {
         }
         //数据加载错误提示
         if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
+            this.errCallback('数据加载失败',errMessage);
         }
     }
 
-    errCallback(errMessage){
+    errCallback(type,errMessage){
         notification.error({
-            message: '数据加载失败',
+            message: type,
             description: errMessage,
-            duration: 2
-        });
-    }
-
-    errChosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
             duration: 2
         });
     }
@@ -69,17 +61,17 @@ class mergeRequestList extends React.Component {
     }
 
     closeMr(record){
-        console.log('close',record);
+        //console.log('close',record);
         const project_id = this.props.getProjectInfo.id;
         const id = record.key;
-        this.props.closeMrAction(project_id,id);
+        //this.props.closeMrAction(project_id,id);
     }
 
-    mergeMr(record){
-        console.log('merge',record);
+    acceptMr(record){
+        //console.log('merge',record);
         const project_id = this.props.getProjectInfo.id;
         const id = record.key;
-        this.props.mergeMrAction(project_id,id);
+        //this.props.acceptMrAction(project_id,id);
     }
 
     mapMrList(mrList){
@@ -163,7 +155,7 @@ mergeRequestList.prototype.columns = (self)=> [{
             <span>
                 <a onClick = {self.closeMr.bind(self,record)}>关闭</a>
                 <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
-                <a onClick = {self.mergeMr.bind(self,record)}>合并</a>
+                <a onClick = {self.acceptMr.bind(self,record)}>合并</a>
             </span>:
                 <span></span>
 
@@ -190,7 +182,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
-        mergeMrAction: bindActionCreators(mergeMr,dispatch),
+        acceptMrAction: bindActionCreators(acceptMr,dispatch),
         closeMrAction: bindActionCreators(closeMr,dispatch),
     }
 }

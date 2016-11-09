@@ -3,8 +3,7 @@
  */
 import {ACQUIRE_MILESTONES,
     ACQUIRE_MILESTONES_DETAIL,
-    PUT_MILESTONES_PROID,
-    ACQUIRE_PROJECT_SET_MILESTONES} from '../constants/milestones-action-types';
+    PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
 export function getProjectSetMilestones(set_id, page, timeLineData) {

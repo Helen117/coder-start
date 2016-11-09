@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/24.
  */
 import React,{ PropTypes } from 'react';
-import { Transfer, Button, Form ,Modal, Input,Spin, notification} from 'antd';
+import { Transfer, Button, Form ,Modal, Input,Spin, notification,message} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
 import fetchProjectMsg from './actions/fetch-project-msg-action';
@@ -62,11 +62,7 @@ class projectSetCreate extends React.Component {
     }
 
     insertCallback(type){
-        notification.success({
-            message: type+'成功',
-            description: type+'成功',
-            duration: 2
-        });
+        message.success(type+'成功');
         this.props.fetchProjectSetTree(this.props.logInfo.userId);
         this.context.router.goBack();
     }

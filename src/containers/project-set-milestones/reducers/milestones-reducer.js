@@ -7,8 +7,7 @@ import {
     ACQUIRE_MILESTONES_PENDING,
     ACQUIRE_MILESTONES_ERROR,
     PUT_MILESTONES_PROID,
-    PUT_MILESTONES_PROID_SUCCESS,
-    PUT_MILESTONES_PROID_ERROR,
+   PUT_MILESTONES_PROID_ERROR,
 } from '../constants/milestones-action-types';
 
 const initialState = {
@@ -25,6 +24,19 @@ export function milestones(state = initialState, action = {}) {
             let timeLineData = action.meta.timeLineData;
             for(let i=0; i<action.payload.length; i++) {
                 timeLineData.push(action.payload[i]);
+            }
+
+            let temp = 0;
+            for (let i = timeLineData.length - 1; i > 0; --i) {
+                for (let j = 0; j < i; ++j)
+                { console.log(timeLineData[j + 1].due_date < timeLineData[j].due_date,timeLineData[j + 1].due_date,timeLineData[j].due_date)
+                    if (timeLineData[j + 1].due_date < timeLineData[j].due_date)
+                    {
+                        temp = timeLineData[j];
+                        timeLineData[j] = timeLineData[j + 1];
+                        timeLineData[j + 1] = temp;
+                    }
+                }
             }
             return Object.assign({}, initialState, {items: action.payload, timeLineData:timeLineData, loading: false, acquireData:true, errMessage:null});
 

@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin } from 'antd';
+import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
@@ -90,12 +90,8 @@ class projectSetTree extends React.Component{
     }
 
     successCallback(type){
+        message.success(type+'成功');
         const userId = this.props.loginInfo.userId;
-        notification.success({
-            message: type+'成功',
-            description: '',
-            duration: 1
-        });
         this.props.fetchProjectSetTree(userId);
     }
 
@@ -114,9 +110,13 @@ class projectSetTree extends React.Component{
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/projectSetTree'){
-                    if(node.id){
+                    if(node.id.indexOf('_p')>0){
                         this.context.router.push({
                             pathname: '/projectSetTree/projectInfo',
+                        });
+                    }else{
+                        this.context.router.push({
+                            pathname: '/projectSetTree',
                         });
                     }
                 }else{
@@ -154,24 +154,27 @@ class projectSetTree extends React.Component{
                     <Col span={18}>
                         {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
                             <Row>
-                                <div style={{margin:15}}>
-                                    <Button className="pull-right"
-                                            type="primary"
-                                            disabled = {loading || errMessage}
-                                            onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
-                                </div>
-                                <div style={{margin:15}}>
-                                    <Button className="pull-right"
-                                            type="primary"
-                                            disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                            onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
-                                </div>
-                                <div style={{margin:15}}>
-                                    <Button className="pull-right"
-                                            type="primary"
-                                            disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                            onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
-                                </div>
+                                {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?
+                                    <div>
+                                        <div style={{margin:15}}>
+                                            <Button className="pull-right"
+                                                    type="primary"
+                                                    disabled = {loading || errMessage}
+                                                    onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
+                                        </div>
+                                        <div style={{margin:15}}>
+                                            <Button className="pull-right"
+                                                    type="primary"
+                                                    disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                                    onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
+                                        </div>
+                                        <div style={{margin:15}}>
+                                            <Button className="pull-right"
+                                                    type="primary"
+                                                    disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                                    onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
+                                        </div>
+                                        </div>:<div></div>:<div></div>}
                             </Row>
                         ):(<div></div>)}
                         <Row>
