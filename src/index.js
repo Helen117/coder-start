@@ -27,19 +27,21 @@ import NotFound from './components/page/not-found';
 
 import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/project-set';
-import {projectSetMilestones,projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
+import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import ApproveList from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
-
+import projectMilestones from './containers/project-milestone';
+import projectSetMilestones from './containers/project-set-milestone'
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
 import FileTree from './containers/code-files/file-tree';
 import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
+
 
 
 //import authUtils from './utils/auth';
@@ -84,7 +86,7 @@ ReactDOM.render(
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
-                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectSetMilestones}/>
+                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
