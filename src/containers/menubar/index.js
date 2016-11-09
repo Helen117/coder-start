@@ -107,15 +107,16 @@ class MenuBar extends React.Component {
                         oneKey_return = menuOneKey[0],twoKey_return = menuTwoKey[0];
                     }
                     let truePath = window.location.pathname;
-                    while(!oneKey_return && !twoKey_return && menuOneKey.length == 0){//如果没有找到key,去掉最后一个“/”，继续找
+                    while(!oneKey_return && oneKey_return!="" && !twoKey_return
+                    && menuOneKey.length == 0){//如果没有找到key,去掉最后一个“/”，继续找
                         let trueIndex = truePath.lastIndexOf("/");
-                        if(trueIndex == 0 && currentTwo.length>0){
+                        if(trueIndex == 0 && currentTwo.length>0){//在非主页面点击非菜单路由
                             oneKey_return = currentOne[0];
                             twoKey_return = currentTwo[0];
-                        }else if(trueIndex == 0 && currentTwo.length==0){
+                        }else if(trueIndex == 0 && currentTwo.length==0){//首页点击
                             oneKey_return = "";
                             twoKey_return = "";
-                        }else{
+                        }else{//顺路由一级一级往上找到菜单路由
                             truePath = truePath.substr(0,trueIndex);
                             let {menuOneKey, menuTwoKey} = this.findMenuBarInfoByLocation(menuData,truePath);
                             oneKey_return = menuOneKey[0];
