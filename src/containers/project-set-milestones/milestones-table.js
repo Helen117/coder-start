@@ -34,7 +34,7 @@ class projectSetMilestonesDetail extends React.Component {
         const milestoneDetail = this.props.milestoneDetail;
         const isLoading = this.props.loading;
         return(
-            <Box title="项目集问题列表信息" >
+            <Box title="问题列表信息" >
                 <IssuesList loading = {isLoading} dataSource={milestoneDetail} loginInfo={this.props.loginInfo}>
                 </IssuesList>
             </Box>
