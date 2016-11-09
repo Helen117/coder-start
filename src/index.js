@@ -41,7 +41,8 @@ import FileTree from './containers/code-files/file-tree';
 import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
-//import AddProjectMember from './containers/project-list/add-project-member';
+import UserGroupDetail from './containers/user-relation/user-group-detail';
+import UserAddModify from './containers/user-relation/user-detail';
 
 
 //import authUtils from './utils/auth';
@@ -115,6 +116,8 @@ ReactDOM.render(
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
+                        <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
+                        <Route name="userAddModify" breadcrumbName="新修人员" path="userAddModify" component={UserAddModify}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

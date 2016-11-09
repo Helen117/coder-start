@@ -23,7 +23,6 @@ class ProjectMember extends Component {
 
     addMember(projectId){
         this.context.router.push({
-            //pathname: '/addProjectMember',
             pathname: '/userRelation',
             state:{addMember:true,projectId:projectId}
         });

@@ -11,7 +11,8 @@ const initialState = {
 export default function getSelectNode(state = initialState, action = {}) {
     switch (action.type) {
         case SET_SELECT_USER_NODE:
-            return Object.assign({}, initialState, {selectedNode: action.selectNodeData});
+            return Object.assign({}, initialState, {selectedNode: action.selectNodeData,
+                selectedUserGroup:action.selectedUserGroup});
         default:
             return state;
     }

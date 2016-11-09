@@ -3,15 +3,16 @@
  */
 import {SET_SELECT_USER_NODE} from '../constants/select-node-types';
 
-export function getSelectNodeSuss(selectedNode) {
+export function getSelectNodeSuss(selectedNode,selectedUserGroup) {
     return {
         type:SET_SELECT_USER_NODE,
-        selectNodeData: selectedNode
+        selectNodeData: selectedNode,
+        selectedUserGroup:selectedUserGroup
     }
 }
 
-export function getSelectNode(selectedNode) {
+export function getSelectNode(selectedNode,selectedUserGroup) {
     if (selectedNode) {
-        return getSelectNodeSuss(selectedNode);
+        return getSelectNodeSuss(selectedNode,selectedUserGroup);
     }
 }

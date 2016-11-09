@@ -49,6 +49,18 @@ class UserInfo extends React.Component {
 
     }
 
+    editUser(type,selectedRow){//修改人员
+
+    }
+
+    userGroupRelation(){//移动人员
+
+    }
+
+    deleteUser(selectedUserGroup){//删除人员
+
+    }
+
     render(){
         const {userInfoData, loading} = this.props;
         let add_member = this.props.location.state.addMember;
@@ -76,8 +88,8 @@ class UserInfo extends React.Component {
                            loading={loading?true:false}></Table>
                 </Row>
                 <Row>
-                    <Button type="primary"
-                     onClick={this.roleApply.bind(this)}>角色申请</Button>
+                    {/*<Button type="primary"
+                     onClick={this.roleApply.bind(this)}>角色申请</Button>*/}
                     {add_member?(
                         <Button type="primary"
                                 onClick={this.addToProject.bind(this)}>添加到项目</Button>
@@ -115,4 +127,16 @@ UserInfo.prototype.groupColumns = (self)=>[
     {title: "上级领导", dataIndex: "leader", key: "leader"},
     {title: "角色", dataIndex: "role", key: "role"},
     {title: "人员状态", dataIndex: "status", key: "status"},
+    {title:"操作",dataIndex:"operate",key:"operate",
+        render(text,record){
+            return (
+                <div>
+                    <Button type="ghost"
+                            onClick={self.editUser.bind(self, 'modify', record)}>修改</Button>
+                    <Button type="ghost"
+                            onClick={self.deleteUser.bind(self, 'delete', record)}>删除</Button>
+                </div>
+            )
+        }
+    }
 ];
