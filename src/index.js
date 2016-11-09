@@ -18,7 +18,6 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
-import {Milestones,MilestoneDetail} from './containers/milestones';
 import {mergeRequestList,createMergeRequest} from './containers/mergeRequest';
 import {branchesList,createBranches} from './containers/branches';
 import Register from './containers/register'
@@ -31,7 +30,7 @@ import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/proj
 import {projectSetMilestones,projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
-import ApproveList from './containers/approve';
+import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
 
@@ -87,7 +86,7 @@ ReactDOM.render(
                             <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
                                 <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
                             </Route>
-                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={Milestones}/>
+                            <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectSetMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={branchesList}/>
@@ -108,11 +107,11 @@ ReactDOM.render(
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="projectSetMilestonesEdit" breadcrumbName="创建里程碑" path="projectSetMilestonesEdit" component={projectSetMilestonesEdit}/>
-                        <Route name="projectSetMilestonesDetail" breadcrumbName="项目集合里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
-                        <Route name="milestonesDetail" breadcrumbName="里程碑详细内容" path="milestonesDetail" component={MilestoneDetail}/>
+                        <Route name="projectMilestonesDetail" breadcrumbName="里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
-                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
+                        <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
+                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>

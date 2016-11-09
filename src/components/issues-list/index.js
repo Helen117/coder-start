@@ -58,21 +58,10 @@ export default class IssueList extends Component {
             selectedRow = this.getListNode(selectedRow,this.props.dataSource);
             selectedRow.title = selectedRow.issue_name;
         }
-        //console.log('window.location:',window.location);
-        //查看我的问题不选择项目时不能新增问题
-        if(this.props.state=='myIssue' && type=='add'&& !this.props.projectInfo){
-            notification.error({
-                message: '未选择项目',
-                description:'请先在“代码管理“中选择一个项目！',
-                duration: 2
-            });
-        }else{
-            this.context.router.push({
-                pathname: '/issueEdit',
-                state: {editType: type, selectedRow}
-            });
-        }
-
+        this.context.router.push({
+            pathname: '/issueEdit',
+            state: {editType: type, selectedRow}
+        });
     }
 
     issueNotes(records) {
@@ -112,7 +101,10 @@ export default class IssueList extends Component {
                                 list[i].children[j].children[k].children[n].created_at = this.getTime(list[i].children[j].children[k].children[n].created_at);
                             }
                             list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].labels && list[i].children[j].children[k].children[n].labels.length > 0 ? list[i].children[j].children[k].children[n].labels + '' : null;
-                            list[i].children[j].children[k].children[n].issueType = "需求";
+                            if(list[i].children[j].children[k].children[n].type=='demand'){
+                                list[i].children[j].children[k].children[n].issueType = "需求";
+                            }
+
                             for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
                                 if(typeof(list[i].children[j].children[k].children[n].children[m].due_date)=="number") {
                                     list[i].children[j].children[k].children[n].children[m].due_date = this.getTime(list[i].children[j].children[k].children[n].children[m].due_date);
@@ -154,8 +146,6 @@ export default class IssueList extends Component {
         };
 
         return (
-            <Box title="问题列表信息" >
-                <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
                 <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource(this.props.dataSource)}
                        bordered
                        size="middle"
@@ -166,7 +156,6 @@ export default class IssueList extends Component {
                     //scroll={{y:300}}
                 >
                 </Table>
-            </Box>
 
         )
 
@@ -182,16 +171,51 @@ IssueList.contextTypes = {
 };
 
 
+const renderContent = function (value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (value) {
+            obj.props.colSpan = 1;
+        } else if (row.sets_name || row.project_name || row.milestone_name) {
+            obj.props.colSpan = 0;
+        }
+        return obj;
+};
+
 IssueList.prototype.issueListColumns = (self)=>[
     {
     title: '项目集',
     dataIndex: 'sets_name',
     width: '7%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (value) {
+            obj.props.colSpan = 13;
+        }
+        return obj;
+    }
 },
     {
     title: '项目',
     dataIndex: 'project_name',
     width: '7%',
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (value) {
+            obj.props.colSpan = 12;
+        }else if (row.sets_name){
+            obj.props.colSpan = 0;
+        }
+        return obj;
+    }
     // render(value, row, index) {
     //     const obj = {
     //         children: value,
@@ -210,47 +234,72 @@ IssueList.prototype.issueListColumns = (self)=>[
     title: '里程碑',
     dataIndex: 'milestone_name',
     width: '7%',
+        render(value, row, index) {
+            const obj = {
+                children: value,
+                props: {},
+            };
+            if (value) {
+                obj.props.colSpan = 11;
+            }else if (row.sets_name||row.project_name){
+                obj.props.colSpan = 0;
+            }
+            return obj;
+        }
 },{
     title: '问题类型',
     dataIndex: 'issueType',
     width: '7%',
+    render:renderContent,
 },{
     title: '问题名称',
     dataIndex: 'issue_name',
-    width: '7%'
+    width: '7%',
+    render:renderContent,
 },{
     title: '问题描述',
     dataIndex: 'description',
-    width: '7%'
+    width: '7%',
+    render:renderContent,
 },{
     title: '问题标签',
     dataIndex: 'labels',
     width: '7%',
+    render:renderContent,
 }, {
     title: '创建人',
     dataIndex: 'author_name',
     width: '7%',
+    render:renderContent,
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
     width: '7%',
+    render:renderContent,
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
     width: '9%',
+    render:renderContent,
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',
-    width: '9%'
+    width: '9%',
+    render:renderContent,
 },{
     title: '状态',
     dataIndex: 'state',
     width: '7%',
+    render:renderContent,
 },{
     title: '操作',
     dataIndex: 'key',
     width: '13%',
     render: (text, record, index)=> {
+        const obj = {
+            children: text,
+            props: {},
+        };
         let style={'display':'none'};
         let modifyStyle={'display':'none'};
         // console.log('self:',self);
@@ -259,6 +308,10 @@ IssueList.prototype.issueListColumns = (self)=>[
         }
         if(record.key.indexOf('i')!=-1&&record.author_id==self.props.loginInfo.userId){
             modifyStyle={'display':''}
+        }
+        if (record.sets_name||record.project_name||record.milestone_name){
+            obj.props.colSpan = 0;
+            return obj;
         }
 
         return <div>

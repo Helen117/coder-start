@@ -81,32 +81,6 @@ export function comment(notes) {
     }
 }
 
-export function closeIssue(issueId) {
-    return {
-        type: 'CLOSEISSUE',
-        payload: {
-            promise: api.post('/issue/close',{
-                params: {
-                    issueId: issueId
-                }
-            })
-        }
-    }
-}
-
-export function delIssue(projectId,issueId) {
-    return {
-        type: 'DELETE_ISSUE',
-        payload: {
-            promise: api.post('/issue/delete',{
-                params: {
-                    projectId: projectId,
-                    issueId: issueId
-                }
-            })
-        }
-    }
-}
 
 export function getIssueDemand(projectId,milestoneId) {
     return {

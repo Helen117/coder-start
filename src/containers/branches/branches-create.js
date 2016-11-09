@@ -3,7 +3,7 @@
  */
 
 import React,{ PropTypes, Component } from 'react';
-import { Col, Button, Modal, Form, Input, Select,notification} from 'antd';
+import { Col, Button, Modal, Form, Input, Select,notification,message} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -27,46 +27,34 @@ class createBranches extends Component {
         }else{
             const {router} = this.context;
             router.goBack();
-            this.errChosePro();
+            this.errCallback('未选择项目','请先在“代码管理“中选择一个项目！');
         }
 
     }
 
-    errChosePro(){
-        notification.error({
-            message: '未选择项目',
-            description:'请先在“代码管理“中选择一个项目！',
-            duration: 2
-        });
+    componentWillReceiveProps(nextProps) {
+        const { result, errMessage } = nextProps;
+        if (this.props.result != result && result){
+            this.insertCallback('创建成功');
+        }else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback('创建失败',errMessage);
+        }
     }
 
-    insertCallback(){
-        notification.success({
-            message: '创建成功',
-            description: '',
-            duration: 1
-        });
+    insertCallback(type){
+        message.success(type);
         this.props.fetchBranchesData(this.props.getProjectInfo.id);
         this.context.router.goBack();
     }
 
-    errCallback(errMessage){
+    errCallback(type,errMessage){
         notification.error({
             message: '创建失败',
             description:errMessage,
             duration: 2
         });
     }
-
-    componentWillReceiveProps(nextProps) {
-        const { result, errMessage } = nextProps;
-        if (this.props.result != result && result){
-            this.insertCallback();
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage);
-        }
-    }
-
+    
     titleExists(rule, value, callback){
         const {branchesData} = this.props;
         if (!value) {

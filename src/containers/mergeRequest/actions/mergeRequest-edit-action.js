@@ -16,19 +16,21 @@ export function createMr(data) {
 }
 
 
-export function mergeMr(project_id,id) {
+export function acceptMr(project_id,id) {
     return {
         type: 'ACCEPT_MR',
         payload: {
             promise: api.post('/project/accept-mr', {
                 params:{
                     project_id: project_id,
-                    id: id
+                    id: id,
+                    merge_commit_message:'123'
                 }
             })
         }
     }
 }
+
 
 export function closeMr(project_id,id) {
     return {
