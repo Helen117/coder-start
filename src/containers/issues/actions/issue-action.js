@@ -95,3 +95,17 @@ export function getIssueDemand(projectId,milestoneId) {
         }
     }
 }
+
+export function getMyIssue(project_id,user_id) {
+    return {
+        type: 'GET_MY_ISSUE',
+        payload: {
+            promise: api.post('/project/my-issues',{
+                params: {
+                    project_id: project_id,
+                    user_id:user_id
+                }
+            })
+        }
+    }
+}
