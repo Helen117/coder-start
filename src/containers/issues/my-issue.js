@@ -9,6 +9,7 @@ import * as issue from './actions/issue-action';
 import * as getAllUser from '../register/actions/register-action';
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
+import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -54,6 +55,21 @@ class MyIssueList extends Component {
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
         console.log('查询条件：',data);
+    }
+
+    editIssue(type, selectedRow) {
+        if (!this.props.projectInfo) {
+            notification.error({
+                message: '未选择项目',
+                description: '请先在“代码管理“中选择一个项目！',
+                duration: 2
+            });
+        } else {
+            this.context.router.push({
+                pathname: '/issueEdit',
+                state: {editType: type, selectedRow}
+            });
+        }
     }
 
 
@@ -109,13 +125,14 @@ class MyIssueList extends Component {
                         </Form>
                     </Panel>
                 </Collapse>
-                <IssueList  dataSource={this.props.issueList}
-                            loading={this.props.loading}
-                            projectInfo={this.props.projectInfo}
-                            state="myIssue"
-                            loginInfo={this.props.loginInfo}
-                >
-                </IssueList>
+                <Box title="我的问题列表信息" >
+                    <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
+                    <IssueList  dataSource={this.props.issueList}
+                                loading={this.props.loading}
+                                loginInfo={this.props.loginInfo}
+                    >
+                    </IssueList>
+                </Box>
             </div>
         )
 

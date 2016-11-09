@@ -36,11 +36,12 @@ class ProjectIssueList extends Component {
         }
     }
 
-    componentDidMount() {
+    // componentDidMount() {
+    //
+    // }
 
-    }
     // shouldComponentUpdate(nextProps, nextState){
-    //     return true;
+    //         return true;
     // }
 
     errChosePro(){
@@ -53,8 +54,10 @@ class ProjectIssueList extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {actions,projectInfo} = this.props;
-
-        if(projectInfo && nextProps.projectInfo && projectInfo.id != nextProps.projectInfo.id) {
+        const thisProId = projectInfo?projectInfo.id:'';
+        const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        //点击不同项目，重新加载数据
+        if(thisProId != nextProId && nextProId!=''){
             actions.getIssueList(nextProps.projectInfo.id,0);
             actions.fetchDataSource(nextProps.projectInfo.id);
         }
@@ -78,6 +81,12 @@ class ProjectIssueList extends Component {
     //         this.setState({formSearch:{'display':''}});
     //     }
     // }
+    editIssue(type, selectedRow) {
+            this.context.router.push({
+                pathname: '/issueEdit',
+                state: {editType: type, selectedRow}
+            });
+    }
 
 
     render() {
@@ -169,12 +178,14 @@ class ProjectIssueList extends Component {
                         </Form>
                     </Panel>
                 </Collapse>
-
-                <IssueList  dataSource={this.props.issueList}
-                            loading={this.props.loading}
-                            loginInfo={this.props.loginInfo}
-                >
-                </IssueList>
+                <Box title="项目问题列表信息" >
+                    <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
+                    <IssueList  dataSource={this.props.issueList}
+                                loading={this.props.loading}
+                                loginInfo={this.props.loginInfo}
+                    >
+                    </IssueList>
+                </Box>
             </div>
 
         )
