@@ -53,11 +53,11 @@ export default class IssueList extends Component {
     }
 
     editIssue(type, selectedRow){
-        console.log('row:',selectedRow);
         if(selectedRow){
             selectedRow = this.getListNode(selectedRow,this.props.dataSource);
             selectedRow.title = selectedRow.issue_name;
         }
+        console.log('row:',selectedRow);
         this.context.router.push({
             pathname: '/issueEdit',
             state: {editType: type, selectedRow}
@@ -127,6 +127,27 @@ export default class IssueList extends Component {
         return list;
     }
 
+    getdefaultExpandedRowKeys(list){
+        const defaultExpandedRowKeys=[];
+        if(list) {
+            for (var i = 0; i < list.length; i++) {//项目集
+                defaultExpandedRowKeys.push(list[i].key);
+                for (var j = 0; j < list[i].children.length; j++) {//项目
+                    defaultExpandedRowKeys.push(list[i].children[j].key);
+                    if(this.props.issueType=='project'){
+
+                    }else{
+                        for (var k = 0; k < list[i].children[j].children.length; k++) {//里程碑
+                            defaultExpandedRowKeys.push(list[i].children[j].children[k].key);
+                        }
+                    }
+                }
+            }
+        }
+        // console.log('defaultExpandedRowKeys:',defaultExpandedRowKeys);
+        return defaultExpandedRowKeys;
+    }
+
     rowClassName(record, index) {
         if (record.state == 'opened') {
             return 'open';
@@ -142,8 +163,10 @@ export default class IssueList extends Component {
 
     render() {
         const pagination = {
-            pageSize:20,
+            pageSize:2,
         };
+
+        // const data = ["31_s","223_p","277_m","278_m","285_m"];
 
         return (
                 <Table columns={this.issueListColumns(this)} dataSource={this.getDataSource(this.props.dataSource)}
@@ -152,6 +175,7 @@ export default class IssueList extends Component {
                        loading={this.props.loading}
                        pagination={pagination}
                        rowClassName={this.rowClassName}
+                       defaultExpandedRowKeys = {this.getdefaultExpandedRowKeys(this.props.dataSource)}
                     //onRowClick ={this.editIssue.bind(this,'modify')}
                     //scroll={{y:300}}
                 >
@@ -188,7 +212,7 @@ IssueList.prototype.issueListColumns = (self)=>[
     {
     title: '项目集',
     dataIndex: 'sets_name',
-    width: '7%',
+    width: '15%',
     render(value, row, index) {
         const obj = {
             children: value,
@@ -203,7 +227,7 @@ IssueList.prototype.issueListColumns = (self)=>[
     {
     title: '项目',
     dataIndex: 'project_name',
-    width: '7%',
+    width: '5%',
     render(value, row, index) {
         const obj = {
             children: value,
@@ -233,7 +257,7 @@ IssueList.prototype.issueListColumns = (self)=>[
 },{
     title: '里程碑',
     dataIndex: 'milestone_name',
-    width: '7%',
+    width: '5%',
         render(value, row, index) {
             const obj = {
                 children: value,
@@ -250,51 +274,60 @@ IssueList.prototype.issueListColumns = (self)=>[
     title: '问题类型',
     dataIndex: 'issueType',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '问题名称',
     dataIndex: 'issue_name',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '问题描述',
     dataIndex: 'description',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '问题标签',
     dataIndex: 'labels',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 }, {
     title: '创建人',
     dataIndex: 'author_name',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '修复人',
     dataIndex: 'assignee_name',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 }, {
     title: '问题创建时间',
     dataIndex: 'created_at',
     width: '9%',
+    className:'columnClass',
     render:renderContent,
 }, {
     title: '计划完成时间',
     dataIndex: 'due_date',
     width: '9%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '状态',
     dataIndex: 'state',
     width: '7%',
+    className:'columnClass',
     render:renderContent,
 },{
     title: '操作',
     dataIndex: 'key',
-    width: '13%',
+    width: '8%',
     render: (text, record, index)=> {
         const obj = {
             children: text,
