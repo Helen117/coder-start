@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
+import { Button, Row, Col, notification, Affix, Icon, Modal, message, Input, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getGroupMembers} from './actions/group_members_action';
@@ -19,6 +19,7 @@ import {setGroupDelete} from './actions/create-group-action';
 import 'pubsub-js';
 import * as Cookies from "js-cookie";
 import styles from './index.css';
+import PopoverImg from '../../components/popover-img';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -32,7 +33,6 @@ class ProjectMgr extends React.Component{
         this.state = {
             selectGroupName:null,
             selectGroupId:null,
-            showSettingDiv:true,
             modalVisible:false
         };
     }
@@ -148,12 +148,6 @@ class ProjectMgr extends React.Component{
 
     }
 
-    clickSettingImg(){
-        this.setState({
-            showSettingDiv:!this.state.showSettingDiv
-        })
-    }
-
     insertCallback(type){
         const {loginInfo} = this.props;
         notification.success({
@@ -175,6 +169,7 @@ class ProjectMgr extends React.Component{
     handleOk(groupInfo) {
         const { form } = this.props;
         const formData = form.getFieldsValue();
+        //console.log("formData:",formData)
         const {setGroupDelete, loginInfo} = this.props;
         //调删除项目组的接口
         setGroupDelete(loginInfo.username, groupInfo.id)
@@ -218,13 +213,13 @@ class ProjectMgr extends React.Component{
         const {getFieldProps} = this.props.form;
         const content = (
             <div>
-                <a className={styles.setting_operate_content}
+                <a style={{paddingLeft:10}}
                    onClick={this.deleteGroup.bind(this,groupInfo)}>删除项目组</a>
-                <a className={styles.setting_operate_content}
+                <a style={{paddingLeft:10}}
                    onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
-                <a className={styles.setting_operate_content}
+                <a style={{paddingLeft:10}}
                    onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
-                <a className={styles.setting_operate_content}
+                <a style={{paddingLeft:10}}
                    onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
             </div>
         );
@@ -247,18 +242,7 @@ class ProjectMgr extends React.Component{
                 <Col span={18}>
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr')?(
                         <Row>
-                            <Popover
-                                content={content}
-                                trigger="click"
-                                placement="left"
-                                visible={this.state.showSettingDiv}
-                                overlayStyle={this.state.showSettingDiv?{"zIndex":0}:{}}
-                            >
-                                <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
-                                    <Icon type="setting" className={styles.setting_img} />
-                                    <Icon type="down" className={styles.down_img}/>
-                                </div>
-                            </Popover>
+                            <PopoverImg content={content}/>
                             <Modal title="确认删除此项目组吗?"
                                    visible={this.state.modalVisible}
                                    onOk={this.handleOk.bind(this,groupInfo)}

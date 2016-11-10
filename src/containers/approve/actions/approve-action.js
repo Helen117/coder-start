@@ -3,13 +3,26 @@
  */
 import api from '../../../api';
 
-export function getApproveList(userId) {
+export function getApproveList(username) {
     return {
         type: 'GET_APPROVE_LIST',
         payload: {
-            promise: api.post('http://10.10.152.144:11000/examination/list', {
+            promise: api.post('/examination/backlog', {
                 params: {
-                    leaderId: userId
+                    username: username
+                }
+            })
+        }
+    }
+}
+
+export function approvalDetail(task_id) {
+    return {
+        type: 'APPROVAL_DETAIL',
+        payload: {
+            promise: api.post('/examination/info', {
+                params: {
+                    task_id: task_id
                 }
             })
         }
@@ -17,10 +30,11 @@ export function getApproveList(userId) {
 }
 
 export function approveResult(data) {
+    console.log(data);
     return {
         type: 'APPROVE_RESULT',
         payload: {
-            promise: api.post('http://10.10.152.144:11000/examination/updateExamination', {
+            promise: api.post('/examination/register-examine', {
                 data:data
             })
         }

@@ -5,7 +5,6 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import 'pubsub-js';
 import {connect} from 'react-redux';
 import {Button} from 'antd';
 import TableView from '../../components/table';
@@ -22,8 +21,11 @@ class ProjectMember extends Component {
         return newDate.toLocaleString();
     }
 
-    addMember(){
-
+    addMember(projectId){
+        this.context.router.push({
+            pathname: '/userRelation',
+            state:{addMember:true,projectId:projectId}
+        });
     }
 
     deleteMember(){
@@ -61,10 +63,9 @@ class ProjectMember extends Component {
                                dataSource={dataSource}
                     ></TableView>
                     <div>
-                        <Button type="Primary" onClick={this.addMember.bind(this)}/>
-                        <Button type="Primary" onClick={this.deleteMember.bind(this)}/>
+                        <Button type="primary" onClick={this.addMember.bind(this,projectInfo.id)}>添加人员</Button>
+                        <Button type="primary" onClick={this.deleteMember.bind(this)}>删除人员</Button>
                     </div>
-
                 </div>
             )
     }

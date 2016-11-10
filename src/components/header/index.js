@@ -28,7 +28,7 @@ export default class Header extends React.Component {
         this.props.showSideBar();
     }
     approveList(){
-        this.context.router.replace('/approveRegister');
+        this.context.router.replace('/approveList');
     }
 
     render() {

@@ -2,13 +2,14 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse  } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
 import * as getAllUser from '../register/actions/register-action';
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
+import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -26,9 +27,9 @@ class MyIssueList extends Component {
         const {actions,projectInfo,loginInfo,getUserAction} = this.props;
         getUserAction.getAllUser();
         if(projectInfo){
-            actions.getIssueList(projectInfo.id,loginInfo.username);
+            actions.getMyIssue(projectInfo.id,loginInfo.userId);
         }else{
-            actions.getIssueList(null,loginInfo.username);
+            actions.getMyIssue(0,loginInfo.userId);
         }
     }
 
@@ -38,10 +39,14 @@ class MyIssueList extends Component {
 
 
     componentWillReceiveProps(nextProps) {
-        const {actions,projectInfo,loginInfo} = this.props;
+        const {actions,projectInfo,loginInfo,myIssueError} = this.props;
 
         if(projectInfo && nextProps.projectInfo && projectInfo.id != nextProps.projectInfo.id) {
-            actions.getIssueList(nextProps.projectInfo.id,loginInfo.username);
+            actions.getMyIssue(nextProps.projectInfo.id,loginInfo.userId);
+        }
+
+        if(myIssueError&&myIssueError!=this.props.myIssueError){
+            message.error('获取数据失败'+myIssueError,3);
         }
     }
 
@@ -54,6 +59,21 @@ class MyIssueList extends Component {
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
         console.log('查询条件：',data);
+    }
+
+    editIssue(type, selectedRow) {
+        if (!this.props.projectInfo) {
+            notification.error({
+                message: '未选择项目',
+                description: '请先在“代码管理“中选择一个项目！',
+                duration: 2
+            });
+        } else {
+            this.context.router.push({
+                pathname: '/issueEdit',
+                state: {editType: type, selectedRow}
+            });
+        }
     }
 
 
@@ -109,13 +129,14 @@ class MyIssueList extends Component {
                         </Form>
                     </Panel>
                 </Collapse>
-                <IssueList  dataSource={this.props.issueList}
-                            loading={this.props.loading}
-                            projectInfo={this.props.projectInfo}
-                            state="myIssue"
-                            loginInfo={this.props.loginInfo}
-                >
-                </IssueList>
+                <Box title="我的问题列表信息" >
+                    <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
+                    <IssueList  dataSource={this.props.issueList}
+                                loading={this.props.loading}
+                                loginInfo={this.props.loginInfo}
+                    >
+                    </IssueList>
+                </Box>
             </div>
         )
 
@@ -133,8 +154,9 @@ MyIssueList = Form.create()(MyIssueList);
 
 function mapStateToProps(state) {
     return {
-        issueList: state.issue.issueList,
-        loading:state.issue.loading,
+        issueList: state.issue.myIssueList,
+        loading:state.issue.myIssueLoading,
+        myIssueError:state.issue.myIssueError,
         projectInfo:state.getProjectInfo.projectInfo,
         loginInfo:state.login.profile,
         user:state.register.users,

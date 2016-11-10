@@ -30,7 +30,7 @@ import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/proj
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
-import ApproveList from './containers/approve';
+import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
 //import ProjectItem from './containers/project-list';
 import projectMilestones from './containers/project-milestone';
@@ -41,6 +41,8 @@ import FileTree from './containers/code-files/file-tree';
 import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
+import UserGroupDetail from './containers/user-relation/user-group-detail';
+import UserAddModify from './containers/user-relation/user-detail';
 
 
 
@@ -110,10 +112,13 @@ ReactDOM.render(
                         <Route name="projectMilestonesDetail" breadcrumbName="里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>
                         <Route name="createMergeRequest" breadcrumbName="创建MR" path="createMergeRequest" component={createMergeRequest}/>
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
-                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={ApproveList}/>
+                        <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
+                        <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
+                        <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
+                        <Route name="userAddModify" breadcrumbName="新修人员" path="userAddModify" component={UserAddModify}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
