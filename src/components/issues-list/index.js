@@ -227,7 +227,7 @@ IssueList.prototype.issueListColumns = (self)=>[
     {
     title: '项目',
     dataIndex: 'project_name',
-    width: '6%',
+    width: '5%',
     render(value, row, index) {
         const obj = {
             children: value,
@@ -257,7 +257,7 @@ IssueList.prototype.issueListColumns = (self)=>[
 },{
     title: '里程碑',
     dataIndex: 'milestone_name',
-    width: '6%',
+    width: '5%',
         render(value, row, index) {
             const obj = {
                 children: value,
