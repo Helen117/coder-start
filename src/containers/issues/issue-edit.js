@@ -19,21 +19,32 @@ class AddIssue extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
-    componentWillMount(){
+    // componentWillMount(){
+    //     const {actions,projectInfo} = this.props;
+    //     const {selectedRow} = this.props.location.state;
+    //     console.log('selectedRow:',selectedRow.projecct_id);
+    //     console.log('projectInfo:',selectedRow);
+    //     if(projectInfo){
+    //         actions.fetchDataSource(projectInfo.id);
+    //         actions.getIssueDemand(projectInfo.id,0);
+    //     }else if(selectedRow){
+    //         actions.fetchDataSource(selectedRow.projecct_id);
+    //         actions.getIssueDemand(selectedRow.project_id,0);
+    //     }
+    //
+    // }
+    componentDidMount() {
         const {actions,projectInfo} = this.props;
         const {selectedRow} = this.props.location.state;
-        if(projectInfo){
+
+        if(selectedRow){
+            actions.fetchDataSource(selectedRow.project_id);
+            actions.getIssueDemand(selectedRow.project_id,0);
+        }else if(projectInfo){
             actions.fetchDataSource(projectInfo.id);
             actions.getIssueDemand(projectInfo.id,0);
-        }else if(selectedRow){
-            actions.fetchDataSource(selectedRow.projecct_id);
-            actions.getIssueDemand(selectedRow.project_id,0);
         }
 
-    }
-    componentDidMount() {
-
-        const {selectedRow} = this.props.location.state;
         // console.log('selectedRow:',selectedRow);
         if (selectedRow){
             const {setFieldsValue} = this.props.form;

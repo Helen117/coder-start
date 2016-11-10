@@ -183,6 +183,7 @@ class ProjectIssueList extends Component {
                     <IssueList  dataSource={this.props.issueList}
                                 loading={this.props.loading}
                                 loginInfo={this.props.loginInfo}
+                                issueType="project"
                     >
                     </IssueList>
                 </Box>
