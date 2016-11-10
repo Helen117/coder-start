@@ -4,33 +4,47 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification} from 'antd';
+import {Form, Input, Button, Modal, notification, Row, Col, Icon, Select} from 'antd';
 import Box from '../../components/box';
+import MoreUserGroup from '../../components/more-user-group';
 import 'pubsub-js';
+import styles from './index.css';
+import TransferFilter from '../../components/transfer-filter';
+import {getAllUserInfo} from './actions/user-info-action';
+import {createUser,setUserDelete} from './actions/user-detail-action';
+import {getUserInfo} from './actions/user-info-action';
 
 const FormItem = Form.Item;
+const confirm = Modal.confirm;
+const Option = Select.Option;
 
 class UserAddModify extends React.Component {
     constructor(props) {
         super(props);
+        this.targetKeys=[];
         this.state={
-            reveiveGroup:null,
+            //modalVisible:false,
         }
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        const { form } = this.props;
+        const { form,createUser,loginInfo,selectedUserGroup,setUserDelete } = this.props;
         const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-                const formData = form.getFieldsValue();
+                let data = {};
+                data.creator_id = loginInfo.userId;
+                data.group_id = selectedUserGroup.id;
+                data.user_ids = this.targetKeys;
                 if(editType == 'add'){
-                    //调创建组织的接口
+                    //调新增人员的接口
+                    createUser(data)
                 }else{
-                    //调修改组织的接口
+                    //调修改人员的接口
+                    setUserDelete(data)
                 }
             }
         })
@@ -53,12 +67,14 @@ class UserAddModify extends React.Component {
     }
 
     insertCallback(message){
+        const {selectedUserGroup, getUserInfo} = this.props;
         notification.success({
             message: message,
             description: '',
             duration: 2
         });
         //调展示成员接口
+        getUserInfo(selectedUserGroup.id);
         this.context.router.goBack();
     }
 
@@ -71,24 +87,35 @@ class UserAddModify extends React.Component {
     }
 
     componentWillMount() {
-        /*const {selectedRow} = this.props.location.state;
-         if (selectedRow){
-         const {setFieldsValue} = this.props.form;
-         setFieldsValue({name:selectedRow.name});
-         setFieldsValue({description:selectedRow.description});
-         setFieldsValue({visibility_level:selectedRow.visibility_level.toString()});
-         }*/
+        const {allUserInfo} = this.props;
+        if(allUserInfo.length == 0){
+            this.props.getAllUserInfo();
+        }
+        /*const {selectedUserGroup} = this.props;
+        const {editType,selectedRow} = this.props.location.state;
+        const {setFieldsValue} = this.props.form;
+        if(selectedUserGroup){
+            if(editType == 'add'){
+                setFieldsValue({group_id:selectedUserGroup.name});
+            }else{
+                setFieldsValue({group_id:selectedUserGroup.name});
+                setFieldsValue({name:selectedRow.userName});
+                setFieldsValue({leader:selectedRow.leader});
+                setFieldsValue({role:selectedRow.role});
+                setFieldsValue({status:selectedRow.status});
+            }
+        }*/
     }
 
     componentWillReceiveProps(nextProps) {
-        /*const {result, errMessage, updateResult, updateErrors} = nextProps;
+        const {result, errMessage, updateResult, updateErrors} = nextProps;
          //创建返回信息
          if (this.props.result != result && result) {
-         this.insertCallback("创建成功");
+         this.insertCallback("新增成功");
          } else if (this.props.errMessage != errMessage && errMessage) {
-         this.errCallback("创建失败",errMessage);
+         this.errCallback("新增失败",errMessage);
          }
-         //修改返回信息
+         /*//修改返回信息
          if (this.props.updateResult != updateResult && updateResult) {
          this.insertCallback("修改成功");
          } else if (this.props.updateErrors != updateErrors && updateErrors) {
@@ -96,36 +123,35 @@ class UserAddModify extends React.Component {
          }*/
     }
 
+    handleChange(targetKeys){
+        this.targetKeys = targetKeys;
+    }
+
     render() {
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
+        const {allUserInfo,allUserloading,userInfoData,selectedUserGroup} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        const nameProps = getFieldProps('name',
-            {rules:[
-                {required:true, message:'请输入员工名称！'},
-            ]});
-        const modifyResultProps = getFieldProps('modify_result',
-            {rules:[
-                {required:editType == 'add'?false:true, message:'请输入修改原因！'}
-            ]});
+        const targetKeys = (editType == 'add')?[]:(userInfoData.length==0?[]:userInfoData);
+        let title = selectedUserGroup?((editType == 'add')?(selectedUserGroup.name+'组新增人员'):(selectedUserGroup.name+'组删除人员')):'';
 
         return(
-            <Box title={editType == 'add' ? '新增人员' : '修改人员'}>
+            <Box title={title}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="员工姓名">
-                        <Input type="text" {...nameProps} placeholder="请输入员工姓名"/>
+                    <FormItem {...formItemLayout} label="人员操作">
+                        <TransferFilter {...getFieldProps('user_ids')}
+                                        dataSource={allUserInfo}
+                                        onChange={this.handleChange.bind(this)}
+                                        targetKeys={targetKeys}
+                                        loadingProMsg={allUserloading }/>
                     </FormItem>
-                    {editType == 'add' ? (<div></div>) : (
-                        <FormItem {...formItemLayout} label="修改原因">
-                            <Input type="textarea" {...modifyResultProps} rows={4} />
-                        </FormItem>
-                    )}
-                    <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                    <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"
-                        >
+                                loading={editType == 'add'?this.props.loading:this.props.updateLoading}
+                                disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
                             确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
@@ -146,20 +172,29 @@ UserAddModify = Form.create()(UserAddModify);
 
 function mapStateToProps(state) {
     return {
-        /*result: state.createUserGroup.result,
-         errMessage:state.createUserGroup.errors,
-         loading:state.createUserGroup.loading,
-         disabled:state.createUserGroup.disabled,
-         updateResult:state.createUserGroup.updateResult,
-         updateErrors:state.createUserGroup.updateErrors,
-         updateLoading:state.createUserGroup.updateLoading,
-         updateDisabled:state.createUserGroup.updateDisabled,*/
+        loginInfo:state.login.profile,
+        userTreeData: state.getUserRelationTree.userTreeData,
+        selectedUserGroup: state.getSelectNode.selectedUserGroup,
+        userInfoData:state.getUserInfo.userInfoData,
+        allUserInfo: state.getUserInfo.allUserInfo,
+        allUserloading: state.getUserInfo.allUserloading,
+        result: state.createUser.result,
+         errMessage:state.createUser.errors,
+         loading:state.createUser.loading,
+         disabled:state.createUser.disabled,
+         updateResult:state.createUser.updateResult,
+         updateErrors:state.createUser.updateErrors,
+         updateLoading:state.createUser.updateLoading,
+         updateDisabled:state.createUser.updateDisabled,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        getAllUserInfo:bindActionCreators(getAllUserInfo, dispatch),
+        createUser:bindActionCreators(createUser, dispatch),
+        getUserInfo:bindActionCreators(getUserInfo, dispatch),
+        setUserDelete:bindActionCreators(setUserDelete, dispatch),
     }
 }
 

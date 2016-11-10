@@ -1,8 +1,6 @@
 /**
  * Created by Administrator on 2016-11-03.
  */
-import {notification} from 'antd';
-
 export function searchGroupByGroupId(groupId,treeData){
     var groupInfo;
     for(var i=0;i<treeData.length;i++){
