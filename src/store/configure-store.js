@@ -40,6 +40,7 @@ import getUserRelationTree from '../containers/user-relation/reducers/user-relat
 import getUserInfo from '../containers/user-relation/reducers/user-info-reducer';
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
 import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
+import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 
 
 const reducer = combineReducers({
@@ -91,7 +92,8 @@ const reducer = combineReducers({
     getUserRelationTree,
     getUserInfo,
     getSelectNode,
-    createUserGroup
+    createUserGroup,
+    createUser
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

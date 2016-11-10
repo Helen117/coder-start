@@ -136,7 +136,7 @@ class UserAddModify extends React.Component {
             wrapperCol: {span: 14},
         };
         const targetKeys = (editType == 'add')?[]:(userInfoData.length==0?[]:userInfoData);
-        let title = (editType == 'add')?(selectedUserGroup.name+'组新增人员'):(selectedUserGroup.name+'组删除人员')
+        let title = selectedUserGroup?((editType == 'add')?(selectedUserGroup.name+'组新增人员'):(selectedUserGroup.name+'组删除人员')):'';
 
         return(
             <Box title={title}>
