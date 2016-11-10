@@ -29,7 +29,7 @@ class ProjectSetMilestones extends React.Component {
         this.setState({id:projectId})
         this.props.putProIdToStateAction(projectId);
         if(this.props.milestoneProId != projectId && projectId){
-            this.state.timeLineData = [];
+            this.setState({ timeLineData:[]})
             this.distributeActions(projectId,1,[]);
             this.props.putProIdToStateAction(projectId);
         }
@@ -105,7 +105,8 @@ class ProjectSetMilestones extends React.Component {
         this.setState={
             hisPage: this.state.hisPage--,
         }
-        console.log("查看历史第",this.state.hisPage,"页")
+        console.log("查看历史第",this.state.hisPage,"页");
+        //this.distributeActions(this.state.id,this.state.page,this.props.timeLineData);
     }
 
     createMilestones(type){
@@ -124,6 +125,7 @@ class ProjectSetMilestones extends React.Component {
         const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
+        //console.log('timeLineData',timeLineData)
         return (
             <Spin spinning={closeSetMsLoading} tip="正在关闭里程碑，请稍候..." >
                 <div style={{margin:15}}>

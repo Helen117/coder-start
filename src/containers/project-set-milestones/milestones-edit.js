@@ -18,11 +18,14 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     componentDidMount() {
-        const {item} = this.props.location.state;
+        const item = this.props.location.state.item;
         const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
-            this.props.form.setFieldsValue({'title':item.title,'due_date':new Date(item.due_date),'description':item.description});
+            let due_date = item.due_date;
+            item.due_date = new Date(item.due_date);
+            this.props.form.setFieldsValue(item);
+            item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
@@ -109,7 +112,6 @@ class projectSetMilestonesEdit extends React.Component {
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
         const errStr = '计划完成时间超出允许设定范围';
-        console.log('日期value',value);
         fetchData(path,params,callback,errStr);
     }
 
