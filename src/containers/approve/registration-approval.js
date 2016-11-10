@@ -131,9 +131,9 @@ RegistrationApproval = Form.create()(RegistrationApproval);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        getDetailLoading:state.approve.getDetailLoading,
-        approvalDetail:state.approve.approvalDetail,
-        getDetailError:state.approve.getDetailError,
+        getDetailLoading:state.approveDetail.getDetailLoading,
+        approvalDetail:state.approveDetail.approvalDetail,
+        getDetailError:state.approveDetail.getDetailError,
         commitLoading:state.approve.commitLoading,
         result:state.approve.approveResult,
         error:state.approve.resultErrors,

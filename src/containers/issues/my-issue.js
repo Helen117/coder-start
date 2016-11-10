@@ -41,7 +41,10 @@ class MyIssueList extends Component {
     componentWillReceiveProps(nextProps) {
         const {actions,projectInfo,loginInfo,myIssueError} = this.props;
 
-        if(projectInfo && nextProps.projectInfo && projectInfo.id != nextProps.projectInfo.id) {
+        const thisProId = projectInfo?projectInfo.id:'';
+        const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        //点击不同项目，重新加载数据
+        if(thisProId != nextProId && nextProId!=''){
             actions.getMyIssue(nextProps.projectInfo.id,loginInfo.userId);
         }
 
