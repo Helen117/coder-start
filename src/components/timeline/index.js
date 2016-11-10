@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/19.
  */
 import React,{PropTypes} from 'react';
-import { Timeline,Progress,BackTop , Tooltip ,Button, Modal, notification,Icon} from 'antd';
+import { Timeline,Progress,BackTop , Tooltip ,Button, Modal, notification} from 'antd';
 
 const confirm = Modal.confirm;
 export default class TimelineMilestone extends React.Component {
@@ -17,11 +17,11 @@ export default class TimelineMilestone extends React.Component {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    setMilestoneColor(state,due_date,expired){
+    setMilestoneColor(state,due_date){
         let timelineColor = '';
         if (state == 'closed'){
             timelineColor="green";
-        }else if(state == 'active' && due_date <= Date.now() && expired >0){
+        }else if(state == 'active' && due_date <= Date.now()){
             timelineColor="red";
         }else{
             timelineColor="blue";
@@ -30,6 +30,7 @@ export default class TimelineMilestone extends React.Component {
     }
 
     milestonesDetail(milestonesId){
+        console.log('点击查看里程碑下问题')
         const projectId = this.props.projectId;
         const id = this.props.id;
         const milestonesDetailPath = this.props.milestonesDetailPath;
@@ -95,42 +96,39 @@ export default class TimelineMilestone extends React.Component {
                     let revocable = false;
                     let closable = false;
                     if(timeLineData[i+1] && timeLineData[i-1]){
-                        if(timeLineData[i].state!='closed' && timeLineData[i-1].state=='closed' && timeLineData[i+1].state!='closed'){
+                        if(timeLineData[i].state!='closed' && timeLineData[i+1].state=='closed' && timeLineData[i-1].state!='closed'){
                             closable = true;
                         }
-                    }else if(!timeLineData[i-1] && timeLineData[i].state != 'closed' ){
+                    }else if(!timeLineData[i+1] && timeLineData[i].state != 'closed' ){
                         closable = true;
-                    }else if(!timeLineData[i+1] && timeLineData[i].state != 'closed' && timeLineData[i-1].state=='closed'){
+                    }else if(!timeLineData[i-1] && timeLineData[i].state != 'closed' && timeLineData[i+1].state=='closed'){
                         closable = true;
                     }
 
                     if(timeLineData[i].state != 'closed'){
                         revocable = true;
                     }
-                    const timelineColor = this.setMilestoneColor(timeLineData[i].state,timeLineData[i].due_date,timeLineData[i].expired);
+                    const timelineColor = this.setMilestoneColor(timeLineData[i].state,timeLineData[i].due_date);
                     const groupId = this.props.id.toString();
-                    const isGroup = groupId? groupId.indexOf("_g")>0? true: false: false;
                     timeLine.push (
-                            <Timeline.Item color={timelineColor}  dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />} key={'milestones' + timeLineData[i].id} >
-                                {revocable?isGroup?
-                                    <Tooltip placement="rightBottom" title={"点击可修改"}>
-                                        <a onClick = {revocable?this.editMilestone.bind(this,timeLineData[i]):null}>
-                                            <h4 style={ {color:timelineColor=='red'? '#d21920': '#100ab9'}}>里程碑 {timeLineData[i].title}</h4>
-                                        </a>
-                                    </Tooltip>:
-                                    <h4 style={ {color:timelineColor=='red'? '#d21920': '#100ab9'}}>里程碑 {timeLineData[i].title}</h4>:
-                                    <h4 style={ {color:timelineColor=='red'? '#d21920': '#100ab9'}}>里程碑 {timeLineData[i].title}</h4>}
+                            <Timeline.Item color={timelineColor}  key={'milestones' + timeLineData[i].id} >
+                                <Tooltip placement="rightBottom" title={revocable?"点击可修改":''}>
+                                    <a onClick = {revocable?this.editMilestone.bind(this,timeLineData[i]):null}>
+                                        <h4 style={{color:'rgba(6, 19, 126, 0.86)'}}>里程碑 {timeLineData[i].title}</h4>
+                                    </a>
+                                </Tooltip>
+
                                 {timeLineData[i].description}
                                 <div style={{marginLeft:12}}>
                                     <p>计划发布时间：{this.getTime(timeLineData[i].due_date)}</p>
                                     当前里程碑共有事宜 <span>{timeLineData[i].total}</span> 项,还有待办事宜 <span>{timeLineData[i].unfinished}</span> 项，超时未完成事宜 <span>{timeLineData[i].expired}</span> 项
                                     <Progress percent={timeLineData[i].rate}  /> {/*showInfo={true} status="exception"*/}
                                     <div className="pull-right" >
-                                        {isGroup?
+                                        {groupId?groupId.indexOf("_g")>0?
                                             <div>
                                                 {revocable?<a style={{marginRight:15}} onClick = {this.editMilestone.bind(this,timeLineData[i])}>修改</a>:<div/>}
                                                 {closable?<a style={{marginRight:20}} onClick = {this.closeMilestone.bind(this,timeLineData[i])}>关闭</a>:<div/>}
-                                            </div>:<div/>}
+                                            </div>:<div></div>:<div></div>}
                                     </div>
                                     <a onClick={this.milestonesDetail.bind(this, timeLineData[i].id)}>查看问题</a>
                                 </div>

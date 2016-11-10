@@ -29,7 +29,7 @@ export function milestones(state = initialState, action = {}) {
             let temp = 0;
             for (let i = timeLineData.length - 1; i > 0; --i) {
                 for (let j = 0; j < i; ++j)
-                {
+                { console.log(timeLineData[j + 1].due_date < timeLineData[j].due_date,timeLineData[j + 1].due_date,timeLineData[j].due_date)
                     if (timeLineData[j + 1].due_date < timeLineData[j].due_date)
                     {
                         temp = timeLineData[j];

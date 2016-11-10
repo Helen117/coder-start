@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as fetchMessageAction from './actions/fetch-datasource-action';
 import fetchMrListData from './actions/mergeRequest-list-action'
-import {createMr} from './actions/mergeRequest-edit-action';
+import createMr from './actions/mergeRequest-edit-action';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
