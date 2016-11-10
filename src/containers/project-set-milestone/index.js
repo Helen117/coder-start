@@ -17,7 +17,6 @@ class projectSetMilestones extends React.Component {
         const selectedProjectSet = this.props.selectedProjectSet;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
         if(projectId) {
-            console.log('顶层projectId',projectId);
             return (
                 <ProjectSetMilestones projectId={projectId}/>
             )

@@ -14,8 +14,8 @@ export function getProjectSetMilestones(set_id, page, timeLineData) {
         payload: {
             promise: api.post(path, {
                 params: {
-                    set_id:set_id,
-                    page:page
+                    set_id: set_id,
+                    page: page
                 }
             })
         }
@@ -26,7 +26,7 @@ export function getProjectMilestones(projectId,page,timeLineData) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:{timeLineData},
+        meta: {timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
@@ -45,8 +45,8 @@ export function getMilestonesIssues(milestonesId,projectId) {
         payload: {
             promise: api.post(path, {
                 params: {
-                    milestoneId:milestonesId,
-                    projectId:projectId
+                    milestoneId: milestonesId,
+                    projectId: projectId
                 }
             })
         }
@@ -54,14 +54,15 @@ export function getMilestonesIssues(milestonesId,projectId) {
 }
 
 export function getSetMilestonesIssues(milestonesId,projectId) {
+    console.log('milestonesId,projectId',milestonesId,projectId);
     var path ='/project/sets-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {
             promise: api.post(path, {
                 params: {
-                    milestoneId:milestonesId,
-                    projectId:projectId
+                    milestoneId: milestonesId,
+                    projectId: projectId
                 }
             })
         }

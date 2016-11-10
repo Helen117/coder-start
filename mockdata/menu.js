@@ -150,7 +150,7 @@ module.exports.menu ={
                             "parentId": 13,
                             "cLevel": 3,
                             "name": "项目集合里程碑",
-                            "link": "/projectSetTree/ProjectSetMilestones",
+                            "link": "/projectSetTree/projectSetMilestones",
                             "description": "",
                             "icon": null,
                             "subMenu": []

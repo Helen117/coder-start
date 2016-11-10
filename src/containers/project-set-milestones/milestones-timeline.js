@@ -25,38 +25,21 @@ class ProjectSetMilestones extends React.Component {
     }
 
     componentDidMount() {
-
         const {projectId} = this.props;
+        this.setState({id:projectId})
         this.props.putProIdToStateAction(projectId);
-        console.log('第二层componentDidMount projectId',projectId);
         if(this.props.milestoneProId != projectId && projectId){
-            //点击不同项目，重新加载数据
             this.state.timeLineData = [];
             this.distributeActions(projectId,1,[]);
             this.props.putProIdToStateAction(projectId);
         }
-//        this.props.putProIdToStateAction(projectId);
-
     }
-
-    componentWillMount(){
-        const {projectId} = this.props;
-        console.log('componentWillMount',projectId,this.props.milestoneProId);
-    }
-
-    componentWillUnmount(){
-        console.log("组件销毁")
-    }
-
 
     componentWillReceiveProps(nextProps) {
-        const {projectId} = this.props;
-        console.log('componentWillReceiveProps projectId',projectId,this.props.milestoneProId);
-        const {acquireData,errMessage,closeSetMsResult,closeSetMsErr} = nextProps;
-
-        if(this.props.milestoneProId != projectId && projectId){
+        const {acquireData,errMessage,closeSetMsResult,closeSetMsErr,projectId} = nextProps;
+        if(this.props.milestoneProId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
-            this.state.timeLineData = [];
+            this.setState({id:projectId, timeLineData:[], page:1})
             this.distributeActions(projectId,1,[]);
             this.props.putProIdToStateAction(projectId);
         }
@@ -81,7 +64,6 @@ class ProjectSetMilestones extends React.Component {
             page: 1,
             timeLineData: [],
         }
-        const {getProjectInfo,selectedProjectSet} = this.props;
         this.distributeActions(this.props.projectId,this.state.page,this.state.timeLineData);
     }
 
@@ -116,17 +98,14 @@ class ProjectSetMilestones extends React.Component {
             page: this.state.page++,
         }
         this.distributeActions(this.state.id,this.state.page,this.props.timeLineData);
-        //this.props.getProjectMilestonesAction(id,this.state.page,this.props.timeLineData);
     }
 
-    viewHis(){
-        const {getProjectInfo,selectedProjectSet} = this.props;
+    hisMilestones(){
         console.log(this.state.hisPage);
         this.setState={
             hisPage: this.state.hisPage--,
         }
         console.log("查看历史第",this.state.hisPage,"页")
-        //this.distributeActions(id,this.hisPage,this.props.timeLineData);
     }
 
     createMilestones(type){
@@ -143,8 +122,7 @@ class ProjectSetMilestones extends React.Component {
     render(){
         const {loading,notFoundMsg,timeLineData} = this.props;
         const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
-        const id = this.props.projectId.toString();
-        //console.log('第二层id',id)
+        const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
             <Spin spinning={closeSetMsLoading} tip="正在关闭里程碑，请稍候..." >
@@ -163,7 +141,7 @@ class ProjectSetMilestones extends React.Component {
                                        milestonesDetailPath="/projectSetMilestonesDetail"
                                        milestoneEditPath="/projectSetMilestonesEdit"
                                        milestoneClose = {this.closeMilestone.bind(this)}
-                                       viewHis= {this.viewHis.bind(this)}/>
+                                       viewHis= {this.hisMilestones.bind(this)}/>
                 </div>
             </Spin>
         )
@@ -189,8 +167,6 @@ function mapStateToProps(state) {
         acquireData: state.milestones.acquireData,
         loading: state.milestones.loading,
         errMessage: state.milestones.errMessage,
-        getProjectInfo:state.getProjectInfo.projectInfo,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
         milestoneProId: state.putMilestonesProId.milestoneProId,
         closeSetMsLoading: state.closeSetMilestone.loading,
         closeSetMsResult: state.closeSetMilestone.result,
