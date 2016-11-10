@@ -223,10 +223,10 @@ class ProjectMgr extends React.Component{
                    onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
             </div>
         );
-        const deleteResultProps = getFieldProps('delete_result',
+        /*const deleteResultProps = getFieldProps('delete_result',
             {rules:[
                 {required:true, message:'请输入删除原因！'}
-            ]});
+            ]});*/
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
@@ -249,10 +249,11 @@ class ProjectMgr extends React.Component{
                                    confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
                             >
-                                <p>如果确认此操作，请在下框输入原因：</p>
+                                <p>{groupInfo.name}</p>
+                                {/*<p>如果确认此操作，请在下框输入原因：</p>
                                 <FormItem>
                                     <Input type="textarea" {...deleteResultProps} rows={4} />
-                                </FormItem>
+                                </FormItem>*/}
                             </Modal>
                         </Row>
                     ):(<Row></Row>)}

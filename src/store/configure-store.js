@@ -39,6 +39,7 @@ import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
 import getUserInfo from '../containers/user-relation/reducers/user-info-reducer';
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
+import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
 
 
 const reducer = combineReducers({
@@ -88,7 +89,8 @@ const reducer = combineReducers({
     closeSetMilestone,
     getUserRelationTree,
     getUserInfo,
-    getSelectNode
+    getSelectNode,
+    createUserGroup
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

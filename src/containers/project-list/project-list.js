@@ -151,10 +151,10 @@ class ProjectList extends Component {
         if(this.state.listType == true){//展示项目组信息
             const {treeData,getGroupInfo, deleteLoading} = this.props;
             const {getFieldProps} = this.props.form;
-            const deleteResultProps = getFieldProps('delete_result',
+            /*const deleteResultProps = getFieldProps('delete_result',
                 {rules:[
                     {required:true, message:'请输入删除原因！'}
-                ]});
+                ]});*/
             if(getGroupInfo && treeData.length>0){
                 var groupId = this.state.listNode;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);
@@ -176,10 +176,10 @@ class ProjectList extends Component {
                                    confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
                             >
-                                <p>如果确认此操作，请在下框输入原因：</p>
+                                {/*<p>如果确认此操作，请在下框输入原因：</p>
                                 <FormItem>
                                     <Input type="textarea" {...deleteResultProps} rows={4} />
-                                </FormItem>
+                                </FormItem>*/}
                             </Modal>
                         </Row>
                     </div>
