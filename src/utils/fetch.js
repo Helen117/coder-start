@@ -1,7 +1,7 @@
 
 
 export default function fetchData(url,params,callback,errStr) {
-    const baseURI = 'http://10.10.152.144:11000/gitlab';
+   const baseURI = 'http://10.10.152.144:11000/gitlab';
     //const baseURI = 'http://10.10.156.188:11000/gitlab'
     url = baseURI+url;
     const opts = {
@@ -23,7 +23,6 @@ export default function fetchData(url,params,callback,errStr) {
         if(res.ok){
             return res.json().then(function(json) {
                 if (json.success) {
-                    console.log(json);
                     if(json.result){
                         callback();
                     }else{

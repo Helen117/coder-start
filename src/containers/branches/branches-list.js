@@ -95,6 +95,7 @@ class branchesList extends React.Component {
         const result = this.props.form.getFieldsValue().result;
         const deleteBranchAction = this.props.deleteBranchAction;
         deleteBranchAction(branch,project_id,result);
+        this.props.form.resetFields();
     }
 
     handleCancel() {

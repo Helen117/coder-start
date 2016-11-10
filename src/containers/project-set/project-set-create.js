@@ -110,7 +110,6 @@ class projectSetCreate extends React.Component {
                     this.props.createProjectSet(formData);
                 }else{
                     formData.id = this.props.selectedProjectSet.selectedItemId;
-                    console.log("保存修改",formData);
                     this.props.updateProjectSetAction(formData)
                 }
             }

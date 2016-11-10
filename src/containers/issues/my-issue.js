@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse  } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
@@ -27,9 +27,9 @@ class MyIssueList extends Component {
         const {actions,projectInfo,loginInfo,getUserAction} = this.props;
         getUserAction.getAllUser();
         if(projectInfo){
-            actions.getIssueList(projectInfo.id,loginInfo.username);
+            actions.getMyIssue(projectInfo.id,loginInfo.userId);
         }else{
-            actions.getIssueList(null,loginInfo.username);
+            actions.getMyIssue(0,loginInfo.userId);
         }
     }
 
@@ -39,10 +39,17 @@ class MyIssueList extends Component {
 
 
     componentWillReceiveProps(nextProps) {
-        const {actions,projectInfo,loginInfo} = this.props;
+        const {actions,projectInfo,loginInfo,myIssueError} = this.props;
 
-        if(projectInfo && nextProps.projectInfo && projectInfo.id != nextProps.projectInfo.id) {
-            actions.getIssueList(nextProps.projectInfo.id,loginInfo.username);
+        const thisProId = projectInfo?projectInfo.id:'';
+        const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        //点击不同项目，重新加载数据
+        if(thisProId != nextProId && nextProId!=''){
+            actions.getMyIssue(nextProps.projectInfo.id,loginInfo.userId);
+        }
+
+        if(myIssueError&&myIssueError!=this.props.myIssueError){
+            message.error('获取数据失败'+myIssueError,3);
         }
     }
 
@@ -150,8 +157,9 @@ MyIssueList = Form.create()(MyIssueList);
 
 function mapStateToProps(state) {
     return {
-        issueList: state.issue.issueList,
-        loading:state.issue.loading,
+        issueList: state.issue.myIssueList,
+        loading:state.issue.myIssueLoading,
+        myIssueError:state.issue.myIssueError,
         projectInfo:state.getProjectInfo.projectInfo,
         loginInfo:state.login.profile,
         user:state.register.users,

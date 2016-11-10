@@ -14,15 +14,18 @@ const confirm = Modal.confirm;
 class projectSetMilestonesEdit extends React.Component {
     constructor(props) {
         super(props);
-        this.groupId = this.props.selectedProjectSet.selectedItemId;
+        this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.selectedItemId:'';
     }
 
     componentDidMount() {
-        const {item} = this.props.location.state;
+        const item = this.props.location.state.item;
         const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
-            this.props.form.setFieldsValue({'title':item.title,'due_date':new Date(item.due_date),'description':item.description});
+            let due_date = item.due_date;
+            item.due_date = new Date(item.due_date);
+            this.props.form.setFieldsValue(item);
+            item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
@@ -42,7 +45,6 @@ class projectSetMilestonesEdit extends React.Component {
         }else if(this.props.updateMsg !=updateMsg && updateMsg){
             this.insertCallback('修改成功');
         }
-
     }
 
     insertCallback(type){
@@ -76,7 +78,7 @@ class projectSetMilestonesEdit extends React.Component {
                 }else{
                     if(item.title==formData.title && item.description==formData.description &&
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
-                        this.nothingUpdate('未作任何信息改动','未作任何信息改动,无需提交表单！');
+                        this.errCallback('未作任何信息改动','未作任何信息改动,无需提交表单！');
                     }else{
                         formData.id = this.props.location.state.item.id;
                         this.props.updateMilestoneAction(formData);
@@ -109,7 +111,7 @@ class projectSetMilestonesEdit extends React.Component {
         const due_date = new Date(value).toLocaleDateString();
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
-        const errStr = '计划完成时间超出允许设定范围'
+        const errStr = '计划完成时间超出允许设定范围';
         fetchData(path,params,callback,errStr);
     }
 

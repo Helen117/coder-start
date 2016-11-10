@@ -12,7 +12,7 @@ import getMilestonesIssues from '../containers/project-set-milestones/reducers/m
 import {register,getLeaderInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
-import approve from '../containers/approve/reducers/approve-reducer';
+import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -86,6 +86,7 @@ const reducer = combineReducers({
     updateMilestones,
     checkDueDate,
     approve,
+    approveDetail,
     closeSetMilestone,
     getUserRelationTree,
     getUserInfo,

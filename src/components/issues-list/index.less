@@ -1,3 +1,6 @@
+table{
+  table-layout: fixed;
+}
 table > tbody {
   > tr.close{
     background-color: #dff0d8;
@@ -8,5 +11,12 @@ table > tbody {
   > tr.reopen{
     background-color: #f2dede;
   };
+  >tr{
+    > td.columnClass{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    };
+  }
 
 }
