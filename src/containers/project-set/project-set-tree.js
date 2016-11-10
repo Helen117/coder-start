@@ -154,7 +154,7 @@ class projectSetTree extends React.Component{
                     <Col span={18}>
                         {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
                             <Row>
-                                {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?
+                                {selectedProjectSet?selectedProjectSet.id.indexOf('_p')<0?
                                     <div>
                                         <div style={{margin:15}}>
                                             <Button className="pull-right"
@@ -174,7 +174,26 @@ class projectSetTree extends React.Component{
                                                     disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
                                                     onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
                                         </div>
-                                        </div>:<div></div>:<div></div>}
+                                        </div>:<div></div>:<div>
+                                    <div style={{margin:15}}>
+                                        <Button className="pull-right"
+                                                type="primary"
+                                                disabled = {loading || errMessage}
+                                                onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
+                                    </div>
+                                    <div style={{margin:15}}>
+                                        <Button className="pull-right"
+                                                type="primary"
+                                                disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                                onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
+                                    </div>
+                                    <div style={{margin:15}}>
+                                        <Button className="pull-right"
+                                                type="primary"
+                                                disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
+                                                onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
+                                    </div>
+                                </div>}
                             </Row>
                         ):(<div></div>)}
                         <Row>
