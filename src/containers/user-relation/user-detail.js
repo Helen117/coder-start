@@ -150,7 +150,8 @@ class UserAddModify extends React.Component {
                     </FormItem>
                     <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"
-                                >
+                                loading={editType == 'add'?this.props.loading:this.props.updateLoading}
+                                disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
                             确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
@@ -177,14 +178,14 @@ function mapStateToProps(state) {
         userInfoData:state.getUserInfo.userInfoData,
         allUserInfo: state.getUserInfo.allUserInfo,
         allUserloading: state.getUserInfo.allUserloading,
-        result: state.createUserGroup.result,
-         errMessage:state.createUserGroup.errors,
-         loading:state.createUserGroup.loading,
-         disabled:state.createUserGroup.disabled,
-         updateResult:state.createUserGroup.updateResult,
-         updateErrors:state.createUserGroup.updateErrors,
-         updateLoading:state.createUserGroup.updateLoading,
-         updateDisabled:state.createUserGroup.updateDisabled,
+        result: state.createUser.result,
+         errMessage:state.createUser.errors,
+         loading:state.createUser.loading,
+         disabled:state.createUser.disabled,
+         updateResult:state.createUser.updateResult,
+         updateErrors:state.createUser.updateErrors,
+         updateLoading:state.createUser.updateLoading,
+         updateDisabled:state.createUser.updateDisabled,
     }
 }
 

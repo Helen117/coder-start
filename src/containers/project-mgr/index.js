@@ -249,7 +249,7 @@ class ProjectMgr extends React.Component{
                                    confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
                             >
-                                <p>{groupInfo.name}</p>
+                                <p>{groupInfo?groupInfo.name:''}</p>
                                 {/*<p>如果确认此操作，请在下框输入原因：</p>
                                 <FormItem>
                                     <Input type="textarea" {...deleteResultProps} rows={4} />

@@ -84,15 +84,18 @@ class ProjectDetail extends React.Component {
 
     insertCallback(message){
         const {groupInfo} = this.props;
+        const {editType} = this.props.location.state;
         notification.success({
             message: message,
             description: '',
             duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
-        let groupId = groupInfo.id;
-        let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
-        this.props.getGroupInfo(resetGroupInfo, groupId);
+        if(editType != 'add'){
+            let groupId = groupInfo.id;
+            let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
+            this.props.getGroupInfo(resetGroupInfo, groupId);
+        }
         this.context.router.goBack();
     }
 
