@@ -11,11 +11,13 @@ import {
 } from '../constants/user-info-types';
 
 const initialState = {
-    userInfoData:[],
+    userInfoData:[]
+};
+const initialState_1 = {
     allUserInfo:[]
 };
 
-export default function getUserInfo(state = initialState, action = {}) {
+export function getUserInfo(state = initialState, action = {}) {
     switch (action.type) {
         case GET_USER_INFO_PENDING:
             return Object.assign({}, initialState, {loading: true});
@@ -26,10 +28,17 @@ export default function getUserInfo(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.message, loading: false
             };
+        default:
+            return state;
+    }
+}
+
+export function getAllUserInfo(state = initialState_1, action = {}) {
+    switch (action.type) {
         case GET_ALL_USER_INFO_PENDING:
-            return Object.assign({}, initialState, {allUserloading: true});
+            return Object.assign({}, initialState_1, {allUserloading: true});
         case GET_ALL_USER_INFO_SUCCESS:
-            return Object.assign({}, initialState, {allUserloading: false, allUserInfo: action.payload});
+            return Object.assign({}, initialState_1, {allUserloading: false, allUserInfo: action.payload});
         case GET_ALL_USER_INFO_ERROR:
             return {
                 ...state,

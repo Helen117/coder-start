@@ -131,7 +131,6 @@ class UserAddModify extends React.Component {
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const {allUserInfo,allUserloading,userInfoData,selectedUserGroup} = this.props;
-        //console.log("allUserInfo:",allUserInfo)
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
@@ -177,8 +176,8 @@ function mapStateToProps(state) {
         userTreeData: state.getUserRelationTree.userTreeData,
         selectedUserGroup: state.getSelectNode.selectedUserGroup,
         userInfoData:state.getUserInfo.userInfoData,
-        allUserInfo: state.getUserInfo.allUserInfo,
-        allUserloading: state.getUserInfo.allUserloading,
+        allUserInfo: state.getAllUserInfo.allUserInfo,
+        allUserloading: state.getAllUserInfo.allUserloading,
         result: state.createUser.result,
          errMessage:state.createUser.errors,
          loading:state.createUser.loading,
