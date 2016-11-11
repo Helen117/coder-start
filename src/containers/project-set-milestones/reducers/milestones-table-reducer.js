@@ -24,7 +24,7 @@ export default function getMilestonesIssues(state = initialState, action = {}) {
             return Object.assign({}, initialState, {milestoneIssues: action.payload});
 
         case ACQUIRE_MILESTONES_DETAIL_ERROR:
-            return {state, loadIssuesErrors: action.payload.errorMsg};
+            return {state, errMessage: action.payload.errorMsg};
 
         default:
             return state;

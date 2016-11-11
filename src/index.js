@@ -26,7 +26,7 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 import ForkList from './containers/fork';
-import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/project-set';
+import {projectSetCreate,projectSetTree,selectedProInfo,selectedSetInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
 import CompileStage from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
@@ -102,7 +102,9 @@ ReactDOM.render(
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
-                            <Route name="projectSetProjectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
+                            <Route name="projectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
+                            <Route name="projectSetInfo" breadcrumbName="项目信息" path="projectSetInfo" component={selectedSetInfo}/>
+
                             <Route name="projectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>
                         <Route name="projectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={projectSetCreate}/>
