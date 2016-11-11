@@ -37,7 +37,7 @@ import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '
 
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
-import getUserInfo from '../containers/user-relation/reducers/user-info-reducer';
+import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
 import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
@@ -93,7 +93,8 @@ const reducer = combineReducers({
     getUserInfo,
     getSelectNode,
     createUserGroup,
-    createUser
+    createUser,
+    getAllUserInfo
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
