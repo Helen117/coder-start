@@ -131,6 +131,7 @@ class UserAddModify extends React.Component {
         const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
         const {allUserInfo,allUserloading,userInfoData,selectedUserGroup} = this.props;
+        //console.log("allUserInfo:",allUserInfo)
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},

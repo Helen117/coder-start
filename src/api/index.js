@@ -2,7 +2,8 @@ import Api from './api';
 
 const api = new Api({
      //baseURI: '/gitlab',
-     baseURI: 'http://10.10.152.144:11000/gitlab',
+     //baseURI: 'http://10.10.152.144:11000/gitlab',
+    baseURI: 'http://10.10.156.199:11000/gitlab',
 
     headers: {
         //'Accept': 'application/json',
