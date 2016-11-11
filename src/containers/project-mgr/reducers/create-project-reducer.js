@@ -16,7 +16,6 @@ import {
     DELETE_PROJECT_PENDING,
     DELETE_PROJECT_SUCCESS,
     DELETE_PROJECT_ERROR,
-    RESET_DELETE_RESULT
 } from '../constants/create-project-types';
 
 const initialState = {
@@ -56,8 +55,6 @@ export default function createProject(state = initialState, action = {}) {
                 deleteResult: "false",
                 deleteErrors: action.payload.errorMsg,
             };
-        case RESET_DELETE_RESULT:
-            return Object.assign({}, initialState, {deleteResult: action.data});
         default:
             return state;
     }

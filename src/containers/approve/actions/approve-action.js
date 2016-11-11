@@ -30,7 +30,6 @@ export function approvalDetail(task_id) {
 }
 
 export function approveResult(data) {
-    console.log(data);
     return {
         type: 'APPROVE_RESULT',
         payload: {

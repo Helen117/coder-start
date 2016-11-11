@@ -18,7 +18,6 @@ const Step = Steps.Step;
     }
 
      readSetting(){
-         console.log(true);
      }
 
     render() {

@@ -73,11 +73,9 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
-        //console.log('调用render');
         this.getMock();
         this.targetKeys = this.getTarget();
         const targetKeys = (!this.isChange && this.state.targetKeys.length==0)?this.targetKeys:this.state.targetKeys;
-        //console.log('targetKeys',targetKeys);
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer

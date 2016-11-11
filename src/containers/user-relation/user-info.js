@@ -68,7 +68,6 @@ class UserInfo extends React.Component {
     handleOk() {
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        console.log("formData:",formData)
         //掉删除人员接口
     }
 

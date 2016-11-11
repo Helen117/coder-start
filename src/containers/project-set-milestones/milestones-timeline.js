@@ -101,11 +101,9 @@ class ProjectSetMilestones extends React.Component {
     }
 
     hisMilestones(){
-        console.log(this.state.hisPage);
         this.setState={
             hisPage: this.state.hisPage--,
         }
-        console.log("查看历史第",this.state.hisPage,"页");
         //this.distributeActions(this.state.id,this.state.page,this.props.timeLineData);
     }
 

@@ -41,7 +41,6 @@ class UserGroupDetail extends React.Component {
                 data.parent_id = this.state.selectedUserGroup;
                 if(editType == 'add'){
                     //调创建组织的接口
-                    console.log("data:",data)
                     actions.createUserGroup(data);
                 }else{
                     //调修改组织的接口
