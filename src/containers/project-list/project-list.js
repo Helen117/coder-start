@@ -15,7 +15,7 @@ import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import styles from './index.css';
 import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
-import {setProjectDelete, resetDeleteResult} from '../project-mgr/actions/create-project-action';
+import {setProjectDelete} from '../project-mgr/actions/create-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 
 const confirm = Modal.confirm;
@@ -75,14 +75,13 @@ class ProjectList extends Component {
     componentWillReceiveProps(nextProps) {
         const { deleteResult, deleteErrors } = nextProps;
         //删除返回信息
-        if (deleteResult == "success"){
+        if (this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
             });
-            this.insertCallback("删除成功!");
-            this.props.resetDeleteResult("false");
+            this.insertCallback('删除成功!');
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback("删除失败!",deleteErrors);
+            this.errCallback('删除失败!',deleteErrors);
         }
 
         const {node} = nextProps.location.state;
@@ -99,13 +98,13 @@ class ProjectList extends Component {
     }
 
     handleOk() {
-        const {setProjectDelete, treeData} = this.props;
+        const {loginInfo,setProjectDelete, treeData} = this.props;
         const { form } = this.props;
         const formData = form.getFieldsValue();
         let projectId = findProjectIdByProjectName(this.state.selectProjectName, treeData);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
-        setProjectDelete(projectId);
+        setProjectDelete(loginInfo.username,projectId);
     }
 
     handleCancel() {
@@ -151,10 +150,10 @@ class ProjectList extends Component {
         if(this.state.listType == true){//展示项目组信息
             const {treeData,getGroupInfo, deleteLoading} = this.props;
             const {getFieldProps} = this.props.form;
-            const deleteResultProps = getFieldProps('delete_result',
+            /*const deleteResultProps = getFieldProps('delete_result',
                 {rules:[
                     {required:true, message:'请输入删除原因！'}
-                ]});
+                ]});*/
             if(getGroupInfo && treeData.length>0){
                 var groupId = this.state.listNode;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);
@@ -176,10 +175,10 @@ class ProjectList extends Component {
                                    confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
                             >
-                                <p>如果确认此操作，请在下框输入原因：</p>
+                                {/*<p>如果确认此操作，请在下框输入原因：</p>
                                 <FormItem>
                                     <Input type="textarea" {...deleteResultProps} rows={4} />
-                                </FormItem>
+                                </FormItem>*/}
                             </Modal>
                         </Row>
                     </div>
@@ -238,7 +237,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setProjectDelete:bindActionCreators(setProjectDelete, dispatch),
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
-        resetDeleteResult:bindActionCreators(resetDeleteResult, dispatch),
     }
 }
 

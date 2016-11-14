@@ -54,7 +54,6 @@ export function getMilestonesIssues(milestonesId,projectId) {
 }
 
 export function getSetMilestonesIssues(milestonesId,projectId) {
-    console.log('milestonesId,projectId',milestonesId,projectId);
     var path ='/project/sets-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
