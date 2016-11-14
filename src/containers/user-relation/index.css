@@ -3,3 +3,7 @@
     font-size: 25px;
     cursor: pointer;
 }
+
+.filter_style{
+    z-index: 1000;
+}

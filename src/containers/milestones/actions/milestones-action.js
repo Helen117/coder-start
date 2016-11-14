@@ -6,11 +6,10 @@ import {ACQUIRE_MILESTONES,
     PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getProjectSetMilestones(set_id, page, timeLineData) {
+export function getProjectSetMilestones(set_id, page) {
     var path ='/project/milestones';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:{timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
@@ -22,11 +21,10 @@ export function getProjectSetMilestones(set_id, page, timeLineData) {
     }
 }
 
-export function getProjectMilestones(projectId,page,timeLineData) {
+export function getProjectMilestones(projectId,page) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
-        meta: {timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
@@ -54,7 +52,6 @@ export function getMilestonesIssues(milestonesId,projectId) {
 }
 
 export function getSetMilestonesIssues(milestonesId,projectId) {
-    console.log('milestonesId,projectId',milestonesId,projectId);
     var path ='/project/sets-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,

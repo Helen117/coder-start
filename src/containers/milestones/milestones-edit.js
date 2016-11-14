@@ -74,6 +74,7 @@ class projectSetMilestonesEdit extends React.Component {
                 formData.set_id= this.groupId;
                 formData.author_id = logInfo.userId;
                 if(editType == 'add'){
+                    console.log(formData)
                     this.props.createMilestone(formData);
                 }else{
                     if(item.title==formData.title && item.description==formData.description &&

@@ -10,6 +10,8 @@ import {getUserRelationTree} from './actions/user-relation-tree-action';
 import {getSelectNode} from './actions/select-node-action';
 import PopoverImg from '../../components/popover-img';
 import 'pubsub-js';
+import {findUserGroupById} from './utils';
+import {setUserGroupDelete} from './actions/user-group-detail-action';
 
 const FormItem = Form.Item;
 
@@ -41,7 +43,10 @@ class UserRelation extends React.Component{
     }
 
     onSelectNode(node){
-        this.props.getSelectNode(node.id);
+        //根据node.id找到点击的节点的组织的信息
+        const {userTreeData} = this.props;
+        let selectedGroup = findUserGroupById(node.id,userTreeData)
+        this.props.getSelectNode(node.id,selectedGroup);
         let add_member="",projectId=""
         if(this.props.location.state){
             add_member = this.props.location.state.addMember;
@@ -53,40 +58,40 @@ class UserRelation extends React.Component{
         });
     }
 
-    handleOk(groupInfo) {
-        const { form } = this.props;
-        const formData = form.getFieldsValue();
-        //console.log("formData:",formData)
-        const {setGroupDelete, loginInfo} = this.props;
-        //调删除项目组的接口
-        setGroupDelete(loginInfo.username, groupInfo.id)
+    handleOk() {
+        const { form,setUserGroupDelete,selectedUserGroup,loginInfo } = this.props;
+        /*const formData = form.getFieldsValue();
+        console.log("formData:",formData)*/
+        //调删除组织接口
+        setUserGroupDelete(selectedUserGroup.id,loginInfo.userId)
     }
 
     handleCancel() {
+        const { form } = this.props;
+        form.resetFields();
         this.setState({
             modalVisible: false,
         });
     }
 
     deleteUserGroup(selectedUserGroup){//删除组织
+        const {userInfoData} = this.props;
         if(selectedUserGroup){
-            this.setState({
-                modalVisible: true,
-            });
-            /*if(selectedUserGroup.children.length == 0){
+            if(selectedUserGroup.children.length == 0 && userInfoData.length == 0){
                 this.setState({
                     modalVisible: true,
                 });
             }else{
                 message.error('组织不为空，不能删除!',3);
-            }*/
+            }
         }else{
             message.error('请选择需要删除的组织！',3);
         }
     }
 
     editUserGroup(type,selectedRow){//新增、修改组织
-        if(!type && !selectedRow){
+        const {selectedUserGroup} = this.props;
+        if(!selectedUserGroup && !type){
             message.error('请选择要修改的组织!',3);
         }else{
             this.context.router.push({
@@ -97,11 +102,33 @@ class UserRelation extends React.Component{
     }
 
     editUser(type,selectedRow){//新增人员
+        const {selectedUserGroup} = this.props;
+        if(!selectedUserGroup){
+            message.error('请选择人员所在组织!',3);
+        }else{
+            this.context.router.push({
+                pathname: '/userAddModify',
+                state: {editType: type, selectedRow}
+            });
+        }
+    }
 
+    componentWillReceiveProps(nextProps) {
+        const {deleteResult, deleteErrors} = nextProps;
+        //删除返回信息
+        if (this.props.deleteResult != deleteResult && deleteResult){
+            this.setState({
+                modalVisible: false,
+            });
+            this.insertCallback('删除成功!');
+        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('删除失败!',deleteErrors);
+        }
     }
 
     render(){
         const {userTreeData, loading, selectedNode, selectedUserGroup} = this.props;
+        const {getFieldProps} = this.props.form;
         const content = (
             <div>
                 <a style={{paddingLeft:10}}
@@ -112,6 +139,8 @@ class UserRelation extends React.Component{
                    onClick={this.deleteUserGroup.bind(this, selectedUserGroup)}>删除组织</a>
                 <a style={{paddingLeft:10}}
                    onClick={this.editUser.bind(this, 'add', null)}>新增人员</a>
+                <a style={{paddingLeft:10}}
+                   onClick={this.editUser.bind(this, null, null)}>删除人员</a>
             </div>
         );
         /*const deleteResultProps = getFieldProps('delete_result',
@@ -134,17 +163,17 @@ class UserRelation extends React.Component{
                 <Col span={18}>
                     <Row>
                         <PopoverImg content={content}/>
-                        {/*<Modal title="确认删除此项目组吗?"
+                        <Modal title="确认删除此组织吗?"
                                visible={this.state.modalVisible}
-                               onOk={this.handleOk.bind(this,groupInfo)}
-                               confirmLoading={deleteLoading?true:false}
+                               onOk={this.handleOk.bind(this)}
                                onCancel={this.handleCancel.bind(this)}
                         >
-                            <p>如果确认此操作，请在下框输入原因：</p>
+                            <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
+                            {/*<p>如果确认此操作，请在下框输入原因：</p>
                             <FormItem>
                                 <Input type="textarea" {...deleteResultProps} rows={4} />
-                            </FormItem>
-                        </Modal>*/}
+                            </FormItem>*/}
+                        </Modal>
                     </Row>
                     <Row>
                         {this.props.children}
@@ -161,12 +190,18 @@ UserRelation.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+UserRelation = Form.create()(UserRelation);
+
 function mapStateToProps(state) {
     return {
+        loginInfo:state.login.profile,
         loading : state.getUserRelationTree.loading,
         userTreeData: state.getUserRelationTree.userTreeData,
+        userInfoData:state.getUserInfo.userInfoData,
         selectedNode: state.getSelectNode.selectedNode,
         selectedUserGroup: state.getSelectNode.selectedUserGroup,
+        deleteResult: state.createUserGroup.deleteResult,
+        deleteErrors:state.createUserGroup.errors,
     }
 }
 
@@ -174,6 +209,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
         getSelectNode:bindActionCreators(getSelectNode, dispatch),
+        setUserGroupDelete:bindActionCreators(setUserGroupDelete, dispatch),
     }
 }
 
