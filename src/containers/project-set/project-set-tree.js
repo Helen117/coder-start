@@ -58,16 +58,6 @@ class projectSetTree extends React.Component{
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/projectSetTree'){
-                    if(node.id.indexOf('_p')>0){
-                        this.context.router.push({
-                            pathname: '/projectSetTree/projectInfo',
-                        });
-                    }else{
-                        this.context.router.push({
-                            pathname: '/projectSetTree/projectSetInfo',
-                        });
-                    }
-                }else{
                     this.context.router.push({
                         pathname: currentTwoInfo.link,
                     });

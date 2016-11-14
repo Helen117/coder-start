@@ -29,7 +29,7 @@ import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,selectedProInfo,selectedSetInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
 import CompileStage from './containers/compile-stage';
-import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
+import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
@@ -103,7 +103,7 @@ ReactDOM.render(
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
                             <Route name="projectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
-                            <Route name="projectSetInfo" breadcrumbName="项目信息" path="projectSetInfo" component={selectedSetInfo}/>
+                            <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={selectedSetInfo}/>
 
                             <Route name="projectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>

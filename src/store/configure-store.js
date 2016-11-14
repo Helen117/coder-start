@@ -7,8 +7,8 @@ import DevTools from '../tools/ReduxDevTools';
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
-import {milestones,putMilestonesProId} from '../containers/project-set-milestones/reducers/milestones-reducer';
-import getMilestonesIssues from '../containers/project-set-milestones/reducers/milestones-table-reducer';
+import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
+import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
 import {register,getLeaderInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -33,7 +33,7 @@ import projectSetToState from '../containers/project-set/reducers/put-project-se
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
 
-import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/project-set-milestones/reducers/edit-milestones-reducer'
+import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/milestones/reducers/edit-milestones-reducer'
 
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
