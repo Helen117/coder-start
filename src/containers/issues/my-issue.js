@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse,message  } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
@@ -49,8 +49,17 @@ class MyIssueList extends Component {
         }
 
         if(myIssueError&&myIssueError!=this.props.myIssueError){
-            message.error('获取数据失败'+myIssueError,3);
+            // message.error('获取数据失败'+myIssueError,3);
+            this.errorMessage('获取数据失败!',myIssueError);
         }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
     handleReset(e) {

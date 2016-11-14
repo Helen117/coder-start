@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Tooltip, Row} from 'antd';
+import { Select,Input, Button, message, Tooltip, Row,notification} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -72,7 +72,8 @@ class ProjectItem extends Component {
             PubSub.publish("evtRefreshGroupTree",{});
             message.success('Fork成功!',3);
         }else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
-            message.error('Fork失败!'+forkResult.errors,3);
+            // message.error('Fork失败!'+forkResult.errors,3);
+            this.errorMessage('Fork失败!',forkResult.errors);
         }
 
         if(getProjectInfo){
@@ -80,6 +81,14 @@ class ProjectItem extends Component {
                 url: getProjectInfo.sshUrl,
             });
         }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
     fork(){
