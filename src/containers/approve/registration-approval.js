@@ -2,7 +2,7 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Input,Table,Collapse,message,Spin  } from 'antd';
+import { Button,Form,Input,Table,Collapse,message,Spin,notification  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -29,15 +29,25 @@ class RegistrationApproval  extends Component {
         const getDetailError = nextProps.getDetailError;
 
         if(getDetailError&& getDetailError != this.props.getDetailError){
-            message.error('获取待审批详情失败！'+getDetailError,3);
+            // message.error('获取待审批详情失败！'+getDetailError,3);
+            this.errorMessage('获取待审批详情失败！',getDetailError);
         }
         if(nextError&& nextError != this.props.error){
-            message.error('审批失败！'+nextError,3);
+            // message.error('审批失败！'+nextError,3);
+            this.errorMessage('审批失败！',nextError);
         }
         if (!commit && !nextError && nextResult && nextResult!=this.props.result) {
             message.success('审批成功！');
             this.context.router.goBack();
         }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
 

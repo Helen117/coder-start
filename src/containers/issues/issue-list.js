@@ -56,11 +56,25 @@ class ProjectIssueList extends Component {
         const {actions,projectInfo} = this.props;
         const thisProId = projectInfo?projectInfo.id:'';
         const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        const errorMsg = nextProps.errors;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
             actions.getIssueList(nextProps.projectInfo.id,0);
             actions.fetchDataSource(nextProps.projectInfo.id);
         }
+
+        if(errorMsg&&errorMsg!=this.props.errors){
+            // message.error('获取数据失败'+errorMsg,3);
+            this.errorMessage('获取数据失败!',errorMsg);
+        }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
     handleReset(e) {
@@ -207,8 +221,9 @@ function mapStateToProps(state) {
         milestones:state.GetIssueDependent.milestones,
         labels:state.GetIssueDependent.labels,
         members : state.GetIssueDependent.members,
-        issueList: state.issue.issueList,
         loading:state.issue.loading,
+        issueList: state.issue.issueList,
+        errors:state.issue.errors,
         projectInfo:state.getProjectInfo.projectInfo,
         groupInfo:state.getGroupInfo.groupInfo,
         loginInfo:state.login.profile,

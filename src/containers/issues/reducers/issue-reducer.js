@@ -71,7 +71,8 @@ export function issue(state = {}, action = {}) {
 
 export function GetIssueDemand(state = {}, action = {}) {
     switch (action.type) {
-
+        case 'GET_DEMAND_PENDING':
+            return Object.assign({}, {pending:true});
         case 'GET_DEMAND_SUCCESS':
             return Object.assign({}, {demands: action.payload,errors: null});
         case 'GET_DEMAND_ERROR':
