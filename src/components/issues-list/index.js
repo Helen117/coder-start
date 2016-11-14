@@ -57,7 +57,6 @@ export default class IssueList extends Component {
             selectedRow = this.getListNode(selectedRow,this.props.dataSource);
             selectedRow.title = selectedRow.issue_name;
         }
-        console.log('row:',selectedRow);
         this.context.router.push({
             pathname: '/issueEdit',
             state: {editType: type, selectedRow}

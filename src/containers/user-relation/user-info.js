@@ -7,12 +7,16 @@ import {connect} from 'react-redux';
 import {Table, Button, Row, Col, message, Modal, Form, Input} from 'antd';
 import {getUserInfo} from './actions/user-info-action';
 import styles from './index.css';
+import MoreUserGroup from '../../components/more-user-group';
 
 const FormItem = Form.Item;
 
 class UserInfo extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            modalVisible:false,
+        }
     }
 
     componentDidMount(){
@@ -58,22 +62,34 @@ class UserInfo extends React.Component {
         if(!selectedUserGroup){
             message.error('请选择人员所在组织!',3);
         }else{
-            this.context.router.push({
-                pathname: '/userAddModify',
-                state: {editType: type, selectedRow}
-            });
+            this.setState({
+                modalVisible:true,
+            })
         }
     }
 
     handleOk() {
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        console.log("formData:",formData)
         //掉删除人员接口
     }
 
     handleSubmit(){
 
+    }
+
+    comfirmChoose(node){
+        //调移动接口
+        //action.XXX(username,node.id);
+        this.setState({
+            modalVisible:false,
+        })
+    }
+
+    cancelChoose(){
+        this.setState({
+            modalVisible:false,
+        })
     }
 
     render(){
@@ -95,6 +111,11 @@ class UserInfo extends React.Component {
                            dataSource={dataSource}
                            rowSelection={rowSelection}
                            loading={loading?true:false}></Table>
+                    <MoreUserGroup modalVisible={this.state.modalVisible}
+                                   loading={this.props.loadingTree}
+                                   nodesData={this.props.userTreeData}
+                                   handleOk={this.comfirmChoose.bind(this)}
+                                   cancelChoose={this.cancelChoose.bind(this)}/>
                 </Row>
                 <Row>
                     {/*<Button type="primary"
@@ -148,6 +169,8 @@ function mapStateToProps(state) {
         userInfoData:state.getUserInfo.userInfoData,
         loading:state.getUserInfo.loading,
         selectedUserGroup: state.getSelectNode.selectedUserGroup,
+        loadingTree : state.getUserRelationTree.loading,
+        userTreeData: state.getUserRelationTree.userTreeData,
     }
 }
 

@@ -34,13 +34,14 @@ export function UpdateProject(projectData) {
     }
 }
 
-export function setProjectDelete(projectId) {
+export function setProjectDelete(username,projectId) {
     var path = '/project/delete';
     return {
         type: DELETE_PROJECT,
         payload: {
             promise: api.post(path, {
                 params: {
+                    username:username,
                     projectId: projectId
                 }
             })
@@ -48,11 +49,3 @@ export function setProjectDelete(projectId) {
     }
 }
 
-export function resetDeleteResult(resetResult) {
-    if (resetResult) {
-        return {
-            type:RESET_DELETE_RESULT,
-            data:resetResult,
-        }
-    }
-}

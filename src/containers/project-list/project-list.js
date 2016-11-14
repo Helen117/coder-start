@@ -15,7 +15,7 @@ import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import styles from './index.css';
 import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
-import {setProjectDelete, resetDeleteResult} from '../project-mgr/actions/create-project-action';
+import {setProjectDelete} from '../project-mgr/actions/create-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 
 const confirm = Modal.confirm;
@@ -75,14 +75,13 @@ class ProjectList extends Component {
     componentWillReceiveProps(nextProps) {
         const { deleteResult, deleteErrors } = nextProps;
         //删除返回信息
-        if (deleteResult == "success"){
+        if (this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
             });
-            this.insertCallback("删除成功!");
-            this.props.resetDeleteResult("false");
+            this.insertCallback('删除成功!');
         }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback("删除失败!",deleteErrors);
+            this.errCallback('删除失败!',deleteErrors);
         }
 
         const {node} = nextProps.location.state;
@@ -99,13 +98,13 @@ class ProjectList extends Component {
     }
 
     handleOk() {
-        const {setProjectDelete, treeData} = this.props;
+        const {loginInfo,setProjectDelete, treeData} = this.props;
         const { form } = this.props;
         const formData = form.getFieldsValue();
         let projectId = findProjectIdByProjectName(this.state.selectProjectName, treeData);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
-        setProjectDelete(projectId);
+        setProjectDelete(loginInfo.username,projectId);
     }
 
     handleCancel() {
@@ -238,7 +237,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setProjectDelete:bindActionCreators(setProjectDelete, dispatch),
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
-        resetDeleteResult:bindActionCreators(resetDeleteResult, dispatch),
     }
 }
 
