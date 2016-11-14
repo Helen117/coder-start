@@ -2,15 +2,12 @@
  * Created by Administrator on 2016-11-10.
  */
 import {
-    CREATE_USER_PENDING,
-    CREATE_USER_SUCCESS,
-    CREATE_USER_ERROR,
-    UPDATE_USER_PENDING,
-    UPDATE_USER_SUCCESS,
-    UPDATE_USER_ERROR,
-    DELETE_USER_PENDING,
-    DELETE_USER_SUCCESS,
-    DELETE_USER_ERROR
+    MOVE_USER_PENDING,
+    MOVE_USER_SUCCESS,
+    MOVE_USER_ERROR,
+    DELETE_GROUP_USER_PENDING,
+    DELETE_GROUP_USER_SUCCESS,
+    DELETE_GROUP_USER_ERROR
 } from '../constants/user-detail-types';
 
 const initialState = {
@@ -18,36 +15,29 @@ const initialState = {
 
 export default function createUser(state = initialState, action = {}) {
     switch (action.type) {
-        case CREATE_USER_PENDING:
-            return Object.assign({}, initialState, {loading:true,disabled:true});
-        case CREATE_USER_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
-        case CREATE_USER_ERROR:
+        case MOVE_USER_PENDING:
+            return Object.assign({}, initialState, {moveLoading:true,moveDisabled:true});
+        case MOVE_USER_SUCCESS:
+            return Object.assign({}, initialState, {moveResult: action.payload,moveLoading:false,
+                moveDisabled:false});
+        case MOVE_USER_ERROR:
             return {
                 ...state,
-                errors: action.payload.errorMsg,
-                loading:false,
-                disabled:false,
+                moveErrors: action.payload.errorMsg,
+                moveLoading:false,
+                moveDisabled:false,
             };
-        case UPDATE_USER_PENDING:
-            return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
-        case UPDATE_USER_SUCCESS:
-            return Object.assign({}, initialState, {updateResult: action.payload,updateLoading:false,updateDisabled:false});
-        case UPDATE_USER_ERROR:
-            return {
-                ...state,
-                updateErrors: action.payload.errorMsg,
-                updateLoading:false,
-                updateDisabled:false,
-            };
-        case DELETE_USER_PENDING:
-            return Object.assign({}, initialState, );
-        case DELETE_USER_SUCCESS:
-            return Object.assign({}, initialState, {deleteResult: action.payload});
-        case DELETE_USER_ERROR:
+        case DELETE_GROUP_USER_PENDING:
+            return Object.assign({}, initialState, {deleteLoading:true,deleteDisabled:true});
+        case DELETE_GROUP_USER_SUCCESS:
+            return Object.assign({}, initialState, {deleteResult: action.payload,deleteLoading:false,
+                deleteDisabled:false});
+        case DELETE_GROUP_USER_ERROR:
             return {
                 ...state,
                 deleteErrors: action.payload.errorMsg,
+                deleteLoading:false,
+                deleteDisabled:false,
             };
         default:
             return state;

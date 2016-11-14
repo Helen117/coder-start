@@ -2,13 +2,12 @@
  * Created by Administrator on 2016-11-10.
  */
 import api from '../../../api';
-import {CREATE_USER, UPDATE_USER, DELETE_USER} from '../constants/user-detail-types';
+import {MOVE_USER,DELETE_GROUP_USER} from '../constants/user-detail-types';
 
-export function createUser(groupData) {
-    //var path = '/project-mgr/createGroup';
-    var path = '/service-groups/add-user';
+export function MoveUser(groupData) {
+    var path = '/service-groups/move-group-user';
     return {
-        type: CREATE_USER,
+        type: MOVE_USER,
         payload: {
             promise: api.post(path, {
                 data: groupData
@@ -17,28 +16,13 @@ export function createUser(groupData) {
     }
 }
 
-export function UpdateUser(groupData) {
-    var path = '/service-groups/update-user';
+export function DeleteGroupUser(groupData) {
+    var path = '/service-groups/delete-group-user';
     return {
-        type: UPDATE_USER,
+        type: DELETE_GROUP_USER,
         payload: {
             promise: api.post(path, {
                 data: groupData
-            })
-        }
-    }
-}
-
-export function setUserDelete(username, groupId) {
-    var path = '/service-groups/delete-user';
-    return {
-        type: DELETE_USER,
-        payload: {
-            promise: api.post(path, {
-                params: {
-                    username:username,
-                    groupId: groupId
-                }
             })
         }
     }

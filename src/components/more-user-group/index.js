@@ -2,11 +2,13 @@
  * Created by Administrator on 2016-11-09.
  */
 import React, {PropTypes} from 'react';
-import {Modal, Icon} from 'antd';
+import {Modal, Icon, Form, Input} from 'antd';
 import styles from './index.css';
 import TreeFilter from '../tree-filter';
 
-export default class MoreUserGroup extends React.Component{
+const FormItem = Form.Item;
+
+class MoreUserGroup extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -50,13 +52,21 @@ export default class MoreUserGroup extends React.Component{
 
     render(){
         const {loading, nodesData} = this.props;
+        const {getFieldProps} = this.props.form;
+        const reasonProps = getFieldProps('reason',
+            {});
 
         return(
             <Modal title="组织选择"
                    visible={this.state.modalVisible}
                    onOk={this.handleOk.bind(this)}
                    onCancel={this.cancelChoose.bind(this)}
+                   confirmLoading={this.props.confirmLoading}
             >
+                <span>请输入原因：</span>
+                <FormItem>
+                    <Input type="textarea" {...reasonProps} rows={2} />
+                </FormItem>
                 <TreeFilter
                     loading={loading}
                     notFoundMsg='找不到项目'
@@ -68,3 +78,5 @@ export default class MoreUserGroup extends React.Component{
         )
     }
 }
+
+export default  MoreUserGroup = Form.create()(MoreUserGroup);

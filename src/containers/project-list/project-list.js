@@ -151,9 +151,7 @@ class ProjectList extends Component {
             const {treeData,getGroupInfo, deleteLoading} = this.props;
             const {getFieldProps} = this.props.form;
             /*const deleteResultProps = getFieldProps('delete_result',
-                {rules:[
-                    {required:true, message:'请输入删除原因！'}
-                ]});*/
+                {});*/
             if(getGroupInfo && treeData.length>0){
                 var groupId = this.state.listNode;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);

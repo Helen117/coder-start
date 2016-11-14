@@ -198,7 +198,7 @@ class UserGroupDetail extends React.Component {
                         </Row>
                     ) : (
                         <div>
-                            <Row>
+                            {/*<Row>
                                 <Col span={16}>
                                     <FormItem {...formItemLayout_1} label="父组织名称">
                                         <Input type="text" {...parentGroupProps} disabled/>
@@ -208,17 +208,17 @@ class UserGroupDetail extends React.Component {
                                     <Icon type="share-alt" className={styles.more_group}
                                           onClick={this.clickMoreGroup.bind(this)}/>
                                 </Col>
-                            </Row>
+                            </Row>*/}
                             <FormItem {...formItemLayout} label="修改原因">
                                 <Input type="textarea" {...modifyResultProps} rows={4} />
                             </FormItem>
                         </div>
                     )}
-                    <MoreUserGroup modalVisible={this.state.modalVisible}
+                    {/*<MoreUserGroup modalVisible={this.state.modalVisible}
                                    loading={loadingTree}
                                    nodesData={userTreeData}
                                    handleOk={this.handleOk.bind(this)}
-                                   cancelChoose={this.cancelChoose.bind(this)}/>
+                                   cancelChoose={this.cancelChoose.bind(this)}/>*/}
                     <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"
                                 loading={editType == 'add'?this.props.loading:this.props.updateLoading}

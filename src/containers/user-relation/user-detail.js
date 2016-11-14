@@ -8,11 +8,9 @@ import {Form, Input, Button, Modal, notification, Row, Col, Icon, Select} from '
 import Box from '../../components/box';
 import MoreUserGroup from '../../components/more-user-group';
 import 'pubsub-js';
-import styles from './index.css';
-import TransferFilter from '../../components/transfer-filter';
-import {getAllUserInfo} from './actions/user-info-action';
-import {createUser,setUserDelete} from './actions/user-detail-action';
+import {UpdateUser} from './actions/user-detail-action';
 import {getUserInfo} from './actions/user-info-action';
+import styles from './index.css';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -23,29 +21,21 @@ class UserAddModify extends React.Component {
         super(props);
         this.targetKeys=[];
         this.state={
-            //modalVisible:false,
+            modalVisible:false,
+            selectedUserGroup:null
         }
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        const { form,createUser,loginInfo,selectedUserGroup,setUserDelete } = this.props;
-        const {editType} = this.props.location.state;
+        const { form } = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-                let data = {};
-                data.creator_id = loginInfo.userId;
-                data.group_id = selectedUserGroup.id;
-                data.user_ids = this.targetKeys;
-                if(editType == 'add'){
-                    //调新增人员的接口
-                    createUser(data)
-                }else{
-                    //调修改人员的接口
-                    setUserDelete(data)
-                }
+                const formData = form.getFieldsValue();
+                //console.log("formData:",formData)
+                //调修改成员信息接口
             }
         })
     }
@@ -87,75 +77,113 @@ class UserAddModify extends React.Component {
     }
 
     componentWillMount() {
-        const {allUserInfo} = this.props;
-        if(allUserInfo.length == 0){
-            this.props.getAllUserInfo();
-        }
-        /*const {selectedUserGroup} = this.props;
-        const {editType,selectedRow} = this.props.location.state;
+        const {selectedUserGroup} = this.props;
         const {setFieldsValue} = this.props.form;
+        const {record} = this.props.location.state;
         if(selectedUserGroup){
-            if(editType == 'add'){
-                setFieldsValue({group_id:selectedUserGroup.name});
-            }else{
-                setFieldsValue({group_id:selectedUserGroup.name});
-                setFieldsValue({name:selectedRow.userName});
-                setFieldsValue({leader:selectedRow.leader});
-                setFieldsValue({role:selectedRow.role});
-                setFieldsValue({status:selectedRow.status});
-            }
-        }*/
+            this.setState({
+                selectedUserGroup:selectedUserGroup.id,
+            })
+            setFieldsValue({group_id:selectedUserGroup.name});
+            setFieldsValue({name:record.name});
+        }else{
+            this.setState({
+                selectedUserGroup:0,
+            })
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {result, errMessage, updateResult, updateErrors} = nextProps;
-         //创建返回信息
-         if (this.props.result != result && result) {
-         this.insertCallback("新增成功");
-         } else if (this.props.errMessage != errMessage && errMessage) {
-         this.errCallback("新增失败",errMessage);
-         }
-         /*//修改返回信息
+        const {updateResult, updateErrors} = nextProps;
+         //修改返回信息
          if (this.props.updateResult != updateResult && updateResult) {
          this.insertCallback("修改成功");
          } else if (this.props.updateErrors != updateErrors && updateErrors) {
          this.errCallback("修改失败",updateErrors);
-         }*/
+         }
     }
 
-    handleChange(targetKeys){
-        this.targetKeys = targetKeys;
+    clickMoreGroup(){
+        this.setState({
+            modalVisible:true,
+        })
+    }
+
+    handleOk(node){
+        this.setState({
+            modalVisible:false,
+            selectedUserGroup:node.id,
+        })
+        if(node){
+            const {setFieldsValue} = this.props.form;
+            setFieldsValue({group_id:node.name});
+        }
+    }
+
+    cancelChoose(){
+        this.setState({
+            modalVisible:false,
+        })
     }
 
     render() {
-        const {editType} = this.props.location.state;
         const {getFieldProps} = this.props.form;
-        const {allUserInfo,allUserloading,userInfoData,selectedUserGroup} = this.props;
         const formItemLayout = {
-            labelCol: {span: 6},
-            wrapperCol: {span: 14},
+            labelCol: {span: 8},
+            wrapperCol: {span: 8},
         };
-        const targetKeys = (editType == 'add')?[]:(userInfoData.length==0?[]:userInfoData);
-        let title = selectedUserGroup?((editType == 'add')?(selectedUserGroup.name+'组新增人员'):(selectedUserGroup.name+'组删除人员')):'';
+        const formItemLayout_1 = {
+            labelCol: {span: 12},
+            wrapperCol: {span: 12},
+        };
+        const nameProps = getFieldProps('name',
+            {rules:[
+                {required:true, message:'请输入员工姓名！'},
+            ]});
+        const groupProps = getFieldProps('group_id',
+            {rules:[
+                {required:true, message:'请选择组织！'},
+            ],initialValue: '0'});
+        const modifyResultProps = getFieldProps('reason',
+            {rules:[
+                {required:true, message:'请输入修改原因！'}
+            ]});
 
         return(
-            <Box title={title}>
+            <Box title="修改员工信息">
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="人员操作">
-                        <TransferFilter {...getFieldProps('user_ids')}
-                                        dataSource={allUserInfo}
-                                        onChange={this.handleChange.bind(this)}
-                                        targetKeys={targetKeys}
-                                        loadingProMsg={allUserloading }/>
-                    </FormItem>
-                    <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit"
-                                loading={editType == 'add'?this.props.loading:this.props.updateLoading}
-                                disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
-                            确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    <FormItem {...formItemLayout} label="员工姓名">
+                        <Input type="text" {...nameProps} placeholder="请输入员工姓名"/>
                     </FormItem>
                 </Form>
+                <div>
+                    <Row>
+                        <Col span={16}>
+                            <FormItem {...formItemLayout_1} label="所属组织">
+                                <Input type="text" {...groupProps} disabled/>
+                            </FormItem>
+                        </Col>
+                        <Col span={2}>
+                            <Icon type="share-alt" className={styles.more_group}
+                                  onClick={this.clickMoreGroup.bind(this)}/>
+                        </Col>
+                    </Row>
+                    <FormItem {...formItemLayout} label="修改原因">
+                        <Input type="textarea" {...modifyResultProps} rows={4} />
+                    </FormItem>
+                </div>
+                <MoreUserGroup modalVisible={this.state.modalVisible}
+                               loading={this.props.loadingTree}
+                               nodesData={this.props.userTreeData}
+                               handleOk={this.handleOk.bind(this)}
+                               cancelChoose={this.cancelChoose.bind(this)}/>
+                <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
+                    <Button type="primary" htmlType="submit"
+                            loading={this.props.updateLoading}
+                            disabled={this.props.updateDisabled}>
+                        确定</Button>
+                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                </FormItem>
             </Box>
         )
     }
@@ -173,15 +201,10 @@ UserAddModify = Form.create()(UserAddModify);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
+        loadingTree : state.getUserRelationTree.loading,
         userTreeData: state.getUserRelationTree.userTreeData,
         selectedUserGroup: state.getSelectNode.selectedUserGroup,
         userInfoData:state.getUserInfo.userInfoData,
-        allUserInfo: state.getAllUserInfo.allUserInfo,
-        allUserloading: state.getAllUserInfo.allUserloading,
-        result: state.createUser.result,
-         errMessage:state.createUser.errors,
-         loading:state.createUser.loading,
-         disabled:state.createUser.disabled,
          updateResult:state.createUser.updateResult,
          updateErrors:state.createUser.updateErrors,
          updateLoading:state.createUser.updateLoading,
@@ -191,10 +214,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getAllUserInfo:bindActionCreators(getAllUserInfo, dispatch),
-        createUser:bindActionCreators(createUser, dispatch),
+        UpdateUser:bindActionCreators(UpdateUser, dispatch),
         getUserInfo:bindActionCreators(getUserInfo, dispatch),
-        setUserDelete:bindActionCreators(setUserDelete, dispatch),
     }
 }
 
