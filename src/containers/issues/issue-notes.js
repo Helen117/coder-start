@@ -2,7 +2,7 @@
  * Created by helen on 2016/9/20.
  */
 import React, {PropTypes,Component} from 'react';
-import { Form, Input, Button, message,Modal} from 'antd';
+import { Form, Input, Button, message,Modal,notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import styles from './index.css';
@@ -43,15 +43,18 @@ const FormItem = Form.Item;
          const record = this.props.location.state.record;
 
          if(issueNotesError && issueNotesError!= this.props.issue.issueNotesError){
-             message.error('获取问题讨论失败!'+issueNotesError,3);
+             // message.error('获取问题讨论失败!'+issueNotesError,3);
+             this.errorMessage('获取问题讨论失败!',issueNotesError);
          }
 
          if(commentError && commentError!= this.props.issue.commentError){
-             message.error('提交失败!'+commentError,3);
+             // message.error('提交失败!'+commentError,3);
+             this.errorMessage('提交失败!',commentError);
          }
 
          if(updateIssueError && updateIssueError!= this.props.issue.updateIssueError){
-             message.error('操作失败!'+updateIssueError,3);
+             // message.error('操作失败!'+updateIssueError,3);
+             this.errorMessage('操作失败!',updateIssueError);
          }
 
          if(result){
@@ -76,6 +79,14 @@ const FormItem = Form.Item;
              const {actions} = this.props;
              actions.issueNotes(record.project_id,record.id);
          }
+     }
+
+     errorMessage(info,error){
+         notification.error({
+             message: info,
+             description:error,
+             duration:null,
+         });
      }
 
     handleSubmit(e) {

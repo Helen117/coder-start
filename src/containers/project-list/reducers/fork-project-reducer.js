@@ -17,6 +17,8 @@ export default function forkProject(state = initialState, action = {}) {
                 errors: action.payload.errorMsg, loading: false
             };
 
+        case 'GET_FORK_LIST_PENDING':
+            return Object.assign({}, initialState, {pending:true});
         case 'GET_FORK_LIST_SUCCESS':
             return Object.assign({}, initialState, {forksInfo: action.payload, error: null});
         case 'GET_FORK_LIST_ERROR':
