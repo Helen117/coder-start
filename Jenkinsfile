@@ -8,7 +8,7 @@ def deployTargetPath = '/home/devops-web'
 def gitUrl = 'ssh://git@10.10.152.146:10022/devops/devops-web.git'
 def gitCredentialsId = 'd10d8ad2-c4d7-4ff9-b49b-61302ee43c47'
 def sshagentCredentialsId = 'e2687fc3-2b72-4129-8678-e114919d1567'
-notificationUrl = 'http://10.10.152.144:11000/jenkins/stageStatus'
+notificationUrl = 'http://10.10.152.144:13000/jenkins/stageStatus'
 //notificationUrl = 'http://10.10.156.153:11000/jenkins/stageStatus'
 
 
