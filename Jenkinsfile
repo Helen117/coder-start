@@ -16,6 +16,7 @@ node (){
     //event = [:]
     def event = [jobName: env.JOB_NAME]
     event.stageName = 'checkout from git'
+    event.stageId = '1'
     stage (event.stageName){
         notification(started(event))
         try{
@@ -24,13 +25,13 @@ node (){
             def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
             echo gitCommit
 
-            sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
-            git_branch = readFile('GIT_BRANCH').trim()
-            echo git_branch
-
-            sh 'git rev-parse HEAD > GIT_COMMIT'
-            git_commit = readFile('GIT_COMMIT').trim()
-            echo git_commit
+//            sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
+//            git_branch = readFile('GIT_BRANCH').trim()
+//            echo git_branch
+//
+//            sh 'git rev-parse HEAD > GIT_COMMIT'
+//            git_commit = readFile('GIT_COMMIT').trim()
+//            echo git_commit
 
             success(event)
         }catch (e){
@@ -42,6 +43,7 @@ node (){
     }
 
     event.stageName = 'build and package'
+    event.stageId = '100'
     stage (event.stageName){
         notification(started(event))
         try{
@@ -58,6 +60,7 @@ node (){
     }
 
     event.stageName = 'deploy to nginx'
+    event.stageId = '200'
     stage (event.stageName){
         notification(started(event))
         try {
