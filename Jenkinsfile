@@ -14,9 +14,9 @@ notificationUrl = 'http://10.10.156.153:11000/jenkins/stageStatus'
 
 node (){
     //event = [:]
-    def event = [jobName: env.JOB_NAME]
+    def event = [jobName: env.JOB_NAME, buildNumber: env.BUILD_NUMBER]
     event.stageName = 'checkout from git'
-    event.stageId = '1'
+    event.stageId = 1
     stage (event.stageName){
         notification(started(event))
         try{
@@ -43,7 +43,7 @@ node (){
     }
 
     event.stageName = 'build and package'
-    event.stageId = '100'
+    event.stageId = 100
     stage (event.stageName){
         notification(started(event))
         try{
@@ -60,7 +60,7 @@ node (){
     }
 
     event.stageName = 'deploy to nginx'
-    event.stageId = '200'
+    event.stageId = 200
     stage (event.stageName){
         notification(started(event))
         try {
@@ -110,18 +110,21 @@ def toJson(input) {
 
 
 def started(event){
-    event.status = 'STARTED'
+//    event.status = 'STARTED'
+    event.status = 0
     event.timestamp = System.currentTimeMillis()
     return event
 }
 
 def success(event){
-    event.status = 'SUCCESS'
+//    event.status = 'SUCCESS'
+    event.status = 1
     event.timestamp = System.currentTimeMillis()
 }
 
 def failed(event, msg){
-    event.status = 'FAILED'
+//    event.status = 'FAILED'
+    event.status = 2
     event.msg = msg
     event.timestamp = System.currentTimeMillis()
 }
