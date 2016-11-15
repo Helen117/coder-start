@@ -3,7 +3,7 @@
  *
  */
 import React ,{PropTypes}from 'react';
-import { Calendar,Tooltip ,Progress} from 'antd';
+import { Calendar,Tooltip ,Progress,Icon} from 'antd';
 import './index.less';
 
 
@@ -12,36 +12,17 @@ export default class MilestonesCalendar extends React.Component{
         super(props);
     }
 
-    getListData(milestoneData,value) {
-        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
-        const tooltip = this.tooltip(milestoneData);
-        let revocable = false;
-        if(milestoneData.state != 'closed'){
-            revocable = true;
-        }
-        return(
-            <Tooltip placement="top" title={tooltip}>
-                <a onClick = {revocable?this.editMilestone.bind(this,milestoneData):null} >
-                    <ol className="events">
-                        <h4><span className={`event-${type}`}>● {milestoneData.title}</span></h4>
-                        <li>{milestoneData.description}</li>
-                    </ol>
-                </a>
-            </Tooltip>
-        )
 
-
-    }
 
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    editMilestone(item){
+    editMilestone(item,value){
         const milestoneEditPath = this.props.milestoneEditPath;
         this.context.router.push({
             pathname: milestoneEditPath,
-            state: {editType: "update", item: item}
+            state: {editType: "update", item: item, date: new Date(value.time)}
         });
 
     }
@@ -73,32 +54,58 @@ export default class MilestonesCalendar extends React.Component{
         )
     }
 
+    setMilestoneType(state,due_date,unfinished){
+        let type = {};
+        if (state == 'closed'){
+            type={state:"closed",icon : <Icon type="check-circle-o" />}
+        }else if(state == 'active' && due_date <= Date.now() && unfinished>0){
+            type={state:"error",icon : <Icon type="exclamation-circle-o" />}
+        }else{
+            type={state:"normal",icon : <Icon type="clock-circle-o" />}
+        }
+        return type;
+    }
+
+    getListData(milestoneData,value) {
+        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
+        const tooltip = this.tooltip(milestoneData);
+        let revocable = false;
+        if(milestoneData.state != 'closed'){
+            revocable = true;
+        }
+        const calendarTime = this.getTime(value.time);
+        const due_date = this.getTime(milestoneData.due_date);
+        return(
+                calendarTime==due_date?<Tooltip placement="top" title={tooltip}>
+                    <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,value):null} >
+                        <ol className="events">
+                            <h4 ><span className={`event-${type.state}`}>{type.icon} {milestoneData.title}</span></h4>
+                            <li>{milestoneData.description}</li>
+                        </ol>
+                    </a>
+                </Tooltip>:<div></div>
+        )
+
+
+    }
     dateCellRender(milestoneData,value) {
         let dateCellData;
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
-                const calendarTime = this.getTime(value.time);
-                const due_date = this.getTime(milestoneData[i].due_date);
-                if (calendarTime == due_date) {
+                const colorId = i%3;
+                const calendarTime = value.getDayOfMonth();
+                const due_date = new Date(milestoneData[i].due_date).getDate();
+                if(calendarTime <= due_date && value.getMonth()==new Date(milestoneData[i].due_date).getMonth()){
                     dateCellData = this.getListData(milestoneData[i],value);
-                    break;
+                    return <div className={`background-${colorId}`} >{dateCellData}</div>;
                 }
+
             }
         }
-        return dateCellData;
+        //return <div style={{backgroundColor:'red'}} >11111</div>
     }
 
-    setMilestoneType(state,due_date,unfinished){
-        let type = '';
-        if (state == 'closed'){
-            type="closed";
-        }else if(state == 'active' && due_date <= Date.now() && unfinished>0){
-            type="error";
-        }else{
-            type="normal";
-        }
-        return type;
-    }
+
 
     getMonthData(milestoneData,value) {
         if (value.getMonth() === 8) {
@@ -109,10 +116,12 @@ export default class MilestonesCalendar extends React.Component{
     monthCellRender(milestoneData,value) {
         let num = this.getMonthData(milestoneData,value);
         return num ? <div className="notes-month">
-            <section>{num}</section>
-            <span>待办事项数</span>
-        </div> : null;
+                <section>{num}</section>
+                <span>待办事项数</span>
+            </div> : null
     }
+
+
 
 
     onPanelChange(date,mode){

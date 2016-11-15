@@ -21,7 +21,22 @@ export function milestones(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: true, items:[], acquireData:false, errMessage:null});
 
         case ACQUIRE_MILESTONES_SUCCESS:
-            return Object.assign({}, initialState, {items: action.payload, loading: false, errMessage:null});
+
+            let temp = '';
+            let items = action.payload
+            for (let i = items.length - 1; i > 0; --i) {
+                for (let j = 0; j < i; ++j)
+                {
+                    if (items[j + 1].due_date < items[j].due_date)
+                    {
+                        temp = items[j];
+                        items[j] = items[j + 1];
+                        items[j + 1] = temp;
+                    }
+                }
+            }
+
+            return Object.assign({}, initialState, {items: items, loading: false, errMessage:null});
 
         case ACQUIRE_MILESTONES_ERROR:
             return {state, errMessage: action.payload.errorMsg,items: [], loading: false, acquireData:false};

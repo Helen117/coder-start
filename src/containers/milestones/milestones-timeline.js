@@ -20,10 +20,12 @@ class ProjectSetMilestones extends React.Component {
     }
 
     componentDidMount() {
+        console.log('调用componentDidMount');
         const {projectId} = this.props;
+        const dateNow = new Date(Date.now());
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
-            this.distributeActions(projectId,1);
+            this.distributeActions(projectId,dateNow);
 
         }
     }
@@ -32,7 +34,7 @@ class ProjectSetMilestones extends React.Component {
         const {errMessage,closeSetMsResult,closeSetMsErr,projectId} = nextProps;
         if(this.props.milestoneProId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
-            this.distributeActions(projectId,1);
+            this.distributeActions(projectId,new Date(Date.now()));
             this.props.putProIdToStateAction(projectId);
         }
         //数据加载错误提示
@@ -48,7 +50,7 @@ class ProjectSetMilestones extends React.Component {
 
     sucCallback(type){
         message.success(type);
-        this.distributeActions(this.props.projectId,this.state.page);
+        this.distributeActions(this.props.projectId,new Date(Date.now()));
     }
 
     errCallback(errMessage,type){
@@ -60,12 +62,12 @@ class ProjectSetMilestones extends React.Component {
     }
 
 
-    distributeActions(id,page){
+    distributeActions(id,date){
         const itemId = (id.toString().indexOf("_g") > 0 || id.toString().indexOf("_p") > 0)? id.substring(0,id.length-2):id;
         if(id.toString().indexOf("_g") > 0 ){
-            this.props.getProjectSetMilestonesAction(itemId,page);
+            this.props.getProjectSetMilestonesAction(itemId,date);
         }else{
-            this.props.getProjectMilestonesAction(itemId,page);
+            this.props.getProjectMilestonesAction(itemId,date);
         }
 
     }
@@ -80,16 +82,14 @@ class ProjectSetMilestones extends React.Component {
 
     onPanelChange(date,mode){
         if(mode == 'month'){
-            console.log('调用container onPanelChange',date.getYear()+'/'+date.getMonth(),mode)
-            this.distributeActions(this.props.projectId,1)
+            this.distributeActions(this.props.projectId,new Date(date))
         }else{
-            console.log('调用container onPanelChange',date.getYear(),mode)
+            //console.log('调用container onPanelChange',date.getYear(),mode)
         }
     }
 
     render(){
         const {loading,notFoundMsg,milestoneData} = this.props;
-        //console.log('milestoneData',milestoneData);
         const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
@@ -97,8 +97,8 @@ class ProjectSetMilestones extends React.Component {
             <Spin spinning={loading} tip="正在加载数据，请稍候..." >
                 <div style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
-                    <div >
-                        <Button className="pull-right" type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
+                    <div  >
+                        <Button  type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                     </div>:<div></div>}
 
                     <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
