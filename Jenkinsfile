@@ -23,7 +23,7 @@ node (){
             git url: gitUrl, credentialsId: gitCredentialsId
 
             def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-            echo gitCommit
+//            echo gitCommit
 
 //            sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
 //            git_branch = readFile('GIT_BRANCH').trim()
@@ -32,7 +32,7 @@ node (){
 //            sh 'git rev-parse HEAD > GIT_COMMIT'
 //            git_commit = readFile('GIT_COMMIT').trim()
 //            echo git_commit
-
+            event.gitCommitId = gitCommit
             success(event)
         }catch (e){
             failed(event, e.toString())
