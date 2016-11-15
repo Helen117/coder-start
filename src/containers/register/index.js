@@ -2,7 +2,7 @@
  * Created by helen on 2016/9/14.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Tooltip } from 'antd';
+import { Form, Input, Button, Select,message,Tooltip,notification,Spin  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -20,7 +20,7 @@ message.config({
 class Register extends Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {error:''};
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
@@ -35,7 +35,7 @@ class Register extends Component{
         const result = nextProps.registerState.registerResult;
         const error = nextProps.registerState.errors;
         const registering = nextProps.registerState.registering;
-
+        const errorInfo = nextProps.errorMsg;
         // const user = nextProps.registerState.users;
         // if(userName&&userName.length<=0 && this.props.registerState.users) {
         //     for(var i =0;i<user.length;i++){
@@ -44,12 +44,26 @@ class Register extends Component{
         // }
 
         if(error&& error != this.props.registerState.errors){
-            message.error('注册失败！'+error,3);
+            // message.error('注册失败！'+error,3);
+            this.errorMessage('注册失败！',error);
         }
+
+        if(errorInfo&&errorInfo!=this.props.errorMsg){
+            this.errorMessage('获取上级领导信息失败！',errorInfo);
+        }
+
         if (!registering && !error && result && result!=this.props.registerState.registerResult) {
             message.success('提交成功，等待审批！');
             this.context.router.replace('/login');
         }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
     userExists(rule, value, callback) {
@@ -136,6 +150,9 @@ class Register extends Component{
 
     render() {
         const { getFieldProps } = this.props.form;
+
+        const pending = this.props.pending?true:false;
+
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 8 },
@@ -150,57 +167,60 @@ class Register extends Component{
         const leader = this.props.leaderInfo?this.props.leaderInfo.map(data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
 
         return (
-            <Box title='新用户注册'>
-                <Form horizontal onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout}  label="用户名" >
-                        <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})} />
-                    </FormItem>
-                    <FormItem {...formItemLayout}  label="中文名" >
-                        <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
-                    </FormItem>
-                    <FormItem {...formItemLayout}  label="邮箱" >
-                        <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})} addonAfter={selectAfter}/>
-                    </FormItem>
+            <Spin spinning={pending}>
+                <Box title='新用户注册'>
+                    <Form horizontal onSubmit={this.handleSubmit}>
+                        <FormItem {...formItemLayout}  label="用户名" >
+                            <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})} />
+                        </FormItem>
+                        <FormItem {...formItemLayout}  label="中文名" >
+                            <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
+                        </FormItem>
+                        <FormItem {...formItemLayout}  label="邮箱" >
+                            <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})} addonAfter={selectAfter}/>
+                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="密码" >
-                        <Input type="password" {...getFieldProps('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})} placeholder="password" />
-                    </FormItem>
+                        <FormItem {...formItemLayout} label="密码" >
+                            <Input type="password" {...getFieldProps('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})} placeholder="password" />
+                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="ssh key" >
-                        <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
-                        <Tooltip placement="right" title="1、下载Git-Bash,运行git-bash.exe;
-                        2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
-                        3、打开文件:notepad ~/.ssh/id_rsa.pub">
-                            <a href="/assets/tool/Git-Bash.exe" >Git-Bash 下载</a>
-                        </Tooltip>
-                    </FormItem>
+                        <FormItem {...formItemLayout} label="ssh key" >
+                            <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                            <Tooltip placement="right" title="1、下载Git-Bash,运行git-bash.exe;
+                            2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
+                            3、打开文件:notepad ~/.ssh/id_rsa.pub">
+                                <a href="/assets/tool/Git-Bash.exe" >Git-Bash 下载</a>
+                            </Tooltip>
+                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="申请角色" >
-                        <Select id="role_id"  {...getFieldProps('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})} >
-                            <Option value="4">测试人员</Option>
-                            <Option value="3">开发人员</Option>
-                            <Option value="2" >BM</Option>
-                            <Option value="1">项目经理</Option>
-                        </Select>
-                    </FormItem>
+                        <FormItem {...formItemLayout} label="申请角色" >
+                            <Select id="role_id"  {...getFieldProps('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})} >
+                                <Option value="5">需求</Option>
+                                <Option value="4">测试人员</Option>
+                                <Option value="3">开发人员</Option>
+                                <Option value="2" >BM</Option>
+                                <Option value="1">项目经理</Option>
+                            </Select>
+                        </FormItem>
 
-                    <FormItem {...formItemLayout}  label="上级领导" >
-                        <Select showSearch
-                                showArrow={false}
-                                placeholder="leader"
-                                optionFilterProp="children"
-                                notFoundContent="无法找到"
-                                {...getFieldProps('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})}>
-                            {leader}
-                        </Select>
-                    </FormItem>
+                        <FormItem {...formItemLayout}  label="上级领导" >
+                            <Select showSearch
+                                    showArrow={false}
+                                    placeholder="leader"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到"
+                                    {...getFieldProps('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})}>
+                                {leader}
+                            </Select>
+                        </FormItem>
 
-                    <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit" loading={this.props.registerState.registering}>提交</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Box>
+                        <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
+                            <Button type="primary" htmlType="submit" loading={this.props.registerState.registering}>提交</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Box>
+            </Spin>
         );
     }
 }
@@ -218,6 +238,8 @@ function mapStateToProps(state) {
     return {
         registerState:state.register,
         leaderInfo:state.getLeaderInfo.leader,
+        errorMsg:state.getLeaderInfo.errorMsg,
+        pending:state.getLeaderInfo.pending,
     };
 }
 

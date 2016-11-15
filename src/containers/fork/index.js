@@ -2,6 +2,7 @@
  * Created by helen on 2016/10/9.
  */
 import React, {PropTypes,Component} from 'react';
+import {notification,Spin  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as fork from '../project-list/actions/fork-project-action';
@@ -19,9 +20,26 @@ class ForkList extends Component {
         actions.getForkList(projectId);
     }
 
+    componentWillReceiveProps(nextProps) {
+        const errorMsg = nextProps.error;
+        if(errorMsg&& errorMsg != this.props.errorMsg){
+            this.errorMessage('获取Fork列表信息失败！',error);
+        }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
+    }
+
     render() {
-        const { forkList } = this.props;
+        const { forkList,loading } = this.props;
         //console.log('fork-list:',forkList);
+
+        const pending = loading?true:false;
 
         const list =forkList?forkList.map(data => <li key={data.id}>
             <div className={styles.forks_list} >
@@ -33,20 +51,24 @@ class ForkList extends Component {
         </li>):[];
 
         return (
-            <Box title="Fork信息">
-                <div>
-                    <ul>
-                        {list}
-                    </ul>
-                </div>
-            </Box>
+            <Spin spinning={pending}>
+                <Box title="Fork信息">
+                    <div>
+                        <ul>
+                            {list}
+                        </ul>
+                    </div>
+                </Box>
+            </Spin>
         )
     }
 }
 
 function mapStateToProps(state) {
     return {
-        forkList:state.forkProject.forksInfo
+        forkList:state.forkProject.forksInfo,
+        loading:state.forkProject.pending,
+        error:state.forkProject.error,
     };
 }
 

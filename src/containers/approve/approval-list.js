@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/31.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table,message  } from 'antd';
+import { Table,message,notification  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -23,8 +23,17 @@ class ApproveList extends Component {
     componentWillReceiveProps(nextProps) {
         const {errors} = nextProps;
         if(errors&&errors!=this.props.errors){
-            message.error('获取待审批列表失败！'+errors,3);
+            // message.error('获取待审批列表失败！'+errors,3);
+            this.errorMessage('获取待审批列表失败！',errors);
         }
+    }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
     }
 
     approveDetail(record, index){

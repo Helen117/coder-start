@@ -2,7 +2,7 @@
  * Created by helen on 2016/9/19.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon} from 'antd';
+import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -78,9 +78,19 @@ class AddIssue extends Component{
         const error = nextProps.issue.addIssueError;
         const updateIssueError = nextProps.issue.updateIssueError;
         const updateIssue = nextProps.issue.updateIssue;
+        const dataSourceErrors = nextProps.fetchErrors;
+        const demandError = nextProps.errors;
+
+        if(dataSourceErrors && dataSourceErrors!= this.props.fetchErrors){
+            this.errorMessage('获取数据失败!',dataSourceErrors);
+        }
+        if(demandError && demandError!= this.props.errors){
+            this.errorMessage('获取需求信息失败!',demandError);
+        }
 
         if(error && error!= this.props.issue.addIssueError){
-            message.error('新增失败!'+error);
+            // message.error('新增失败!'+error);
+            this.errorMessage('新增失败!',error);
         }
         if (!error && result) {
             message.success('新增成功');
@@ -88,7 +98,8 @@ class AddIssue extends Component{
         }
 
         if(updateIssueError && updateIssueError!= this.props.issue.updateIssueError){
-            message.error('操作失败!'+updateIssueError);
+            // message.error('操作失败!'+updateIssueError);
+            this.errorMessage('操作失败!',updateIssueError);
         }
         if (!updateIssueError && updateIssue) {
             message.success('操作成功');
@@ -104,6 +115,15 @@ class AddIssue extends Component{
         // }
 
     }
+
+    errorMessage(info,error){
+        notification.error({
+            message: info,
+            description:error,
+            duration:null,
+        });
+    }
+
     getMilestoneDueDate(id){
         const {milestones} = this.props;
         for(let i=0; i<milestones.length;i++){
@@ -260,6 +280,8 @@ class AddIssue extends Component{
             wrapperCol: { span: 12 },
         };
 
+        const pending = this.props.pending?true:false;
+
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
@@ -275,8 +297,9 @@ class AddIssue extends Component{
             <Input type="textarea" rows="5" {...getFieldProps('reason',{rules:[{ required:true,message:'修改原因不能为空'}]})} />
         </FormItem>:'';
         return (
+            <Spin spinning={pending}>
             <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
-                <Form horizontal onSubmit={this.handleSubmit}>
+                 <Form horizontal onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout}  label="问题名称" >
                         <Input placeholder="title" {...getFieldProps('title',{rules:[{ required:true,message:'问题名称不能为空'}]})} />
                     </FormItem>
@@ -370,6 +393,7 @@ class AddIssue extends Component{
                     </FormItem>
                 </Form>
             </Box>
+            </Spin>
         );
     }
 }
@@ -398,10 +422,13 @@ function mapStateToProps(state) {
         milestones:state.GetIssueDependent.milestones,
         labels:state.GetIssueDependent.labels,
         members : state.GetIssueDependent.members,
+        fetchErrors:state.GetIssueDependent.fetchErrors,
         issue:state.issue,
         loginInfo:state.login.profile,
         projectInfo:state.getProjectInfo.projectInfo,
+        pending:state.GetIssueDemand.pending,
         demandList:state.GetIssueDemand.demands,
+        errors:state.GetIssueDemand.errors,
     };
 }
 

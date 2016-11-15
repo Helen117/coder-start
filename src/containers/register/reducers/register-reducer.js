@@ -24,8 +24,12 @@ export  function getLeaderInfo(state = initialState, action = {}) {
 
     switch (action.type) {
 
+        case 'GET_LEADER_PENDING':
+            return Object.assign({}, initialState, {pending: true});
         case 'GET_LEADER_SUCCESS':
             return Object.assign({}, initialState, {leader: action.payload});
+        case 'GET_LEADER_ERROR':
+            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
 
         default:
             return state;
