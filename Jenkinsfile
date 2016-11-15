@@ -14,7 +14,7 @@ notificationUrl = 'http://10.10.152.144:13000/jenkins/stageStatus'
 
 node (){
     //event = [:]
-    def event = [jobName: env.JOB_NAME, buildNumber: env.BUILD_NUMBER]
+    def event = [jobName: env.JOB_NAME, buildNumber: env.BUILD_NUMBER, projectId: 185]
     event.stageName = 'checkout from git'
     event.stageId = 1
     stage (event.stageName){
