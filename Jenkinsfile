@@ -124,6 +124,6 @@ def success(event){
 def failed(event, msg){
 //    event.status = 'FAILED'
     event.status = 2
-    event.msg = msg
+    event.errorMsg = msg
     event.timestamp = System.currentTimeMillis()
 }
