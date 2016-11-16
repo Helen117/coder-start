@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Row} from 'antd';
+import { Select,Input, Button, message, Row, notification} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -29,6 +29,7 @@ class selectedProInfo extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const {selectedItemInfo,getProjectInfoErrors} = nextProps
         const thisProId = this.props.selectedItemInfo ? this.props.selectedItemInfo.selectedItemId : '';
         const nextProId = nextProps.selectedItemInfo ? nextProps.selectedItemInfo.selectedItemId : '';
         //点击不同项目，重新加载数据
@@ -36,13 +37,20 @@ class selectedProInfo extends Component {
             this.props.getProjectInfoAction(nextProps.selectedItemInfo.selectedItemId);
             this.props.getProjectMembersAction(nextProps.selectedItemInfo.selectedItemId);
         }
+        if(this.props.getProjectInfoErrors != getProjectInfoErrors && getProjectInfoErrors){
+            this.errCallback(getProjectInfoErrors,"数据加载失败");
+        }
+
     }
 
-    memberCountClick(record){
-        this.context.router.push({
-            pathname: '/project-mgr/project-item/project-member',
+    errCallback(errMessage,type){
+        notification.error({
+            message: type,
+            description: errMessage,
+            duration: 2
         });
     }
+
 
     getDataSource(projectMembers,getProjectInfo) {
         const data = [];
@@ -60,12 +68,11 @@ class selectedProInfo extends Component {
     render(){
         const {projectMembers,getProjectInfo} = this.props;
         const dataSource = this.getDataSource(projectMembers,getProjectInfo);
-        const selectedProjectSet = this.props.selectedItemInfo;
         return (
-            <div className={styles.project_list_div}>
+            <div>
                 <TableView columns={columns(this)}
                            dataSource={dataSource}
-                           loading={this.props.loadGetProjectInfo || this.props.loadProjectMembers}
+                           loading={this.props.getProjectInfoLoading || this.props.projectMembersLoading}
                 ></TableView>
             </div>
         )
@@ -77,7 +84,7 @@ const columns = (self)=>[
     {title: "项目描述", dataIndex: "description", key: "description"},
     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
         render(text,record){
-            return <a onClick={self.memberCountClick.bind(self,record)}>{text}</a>
+            return <a >{text}</a>
         }
     },
     {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
@@ -95,9 +102,10 @@ selectedProInfo.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
-        loadGetProjectInfo: state.getProjectInfo.loading,
+        getProjectInfoLoading: state.getProjectInfo.loading,
+        getProjectInfoErrors: state.getProjectInfo.errors,
         projectMembers:state.getProjectMembers.projectMembers,
-        loadProjectMembers:state.getProjectMembers.loading,
+        projectMembersLoading:state.getProjectMembers.loading,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
     }
 }

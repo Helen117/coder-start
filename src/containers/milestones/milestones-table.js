@@ -2,6 +2,7 @@
  * Created by zhaojp on 2016/9/18.
  */
 import React, {PropTypes} from 'react';
+import {notification} from 'antd'
 import IssuesList from '../../components/issues-list';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
@@ -16,9 +17,6 @@ class projectSetMilestonesDetail extends React.Component {
         super(props);
     }
 
-    componentWillMount() {
-    }
-
     componentDidMount() {
         const {milestonesId,projectId,id} = this.props.location.state;
         if (milestonesId && projectId && id){
@@ -29,6 +27,23 @@ class projectSetMilestonesDetail extends React.Component {
             }
         }
     }
+
+    componentWillReceiveProps(nextProps) {
+        const {  errMessage} = nextProps;
+        if (this.props.errMessage != errMessage && errMessage){
+            this.errCallback(errMessage,'获取数据失败');
+        }
+    }
+
+    errCallback(errMessage,type){
+        notification.error({
+            message: type,
+            description: errMessage,
+            duration: 2
+        });
+    }
+
+
 
     render(){
         const milestoneDetail = this.props.milestoneDetail;
@@ -51,6 +66,7 @@ projectSetMilestonesDetail.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        errMessage: state.getMilestonesIssues.errMessage,
         milestoneDetail: state.getMilestonesIssues.milestoneIssues,
         loading:state.getMilestonesIssues.loading,
         loginInfo:state.login.profile,

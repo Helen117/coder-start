@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as fetchMessageAction from './actions/fetch-datasource-action';
 import fetchMrListData from './actions/mergeRequest-list-action'
-import createMr from './actions/mergeRequest-edit-action';
+import {createMr} from './actions/mergeRequest-edit-action';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -30,9 +30,9 @@ class createMergeRequest extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
-        if(this.props.isMR != isMR && isMR==false){
+        /*if(this.props.isMR != isMR && isMR==false){
             this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
-        }
+        }*/
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
@@ -184,8 +184,7 @@ class createMergeRequest extends Component {
                         </Col>
                         <Col span="4">
                             <FormItem  {...formItemLayout} label="目标分支" >
-                                <Select disabled={true}
-                                        style={{ width: 200 }}
+                                <Select style={{ width: 200 }}
                                         {...getFieldProps('target_project_path',{initialValue: targetPath})} >
                                     <Option value={targetPath}>{targetPath}</Option>
                                 </Select>
@@ -193,8 +192,7 @@ class createMergeRequest extends Component {
                         </Col>
                         <Col span="6" offset="1">
                             <FormItem required={true} {...formItemLayout} label="">
-                               <Select disabled={true}
-                                       style={{ width: 100,marginLeft:5 }}
+                               <Select  style={{ width: 100,marginLeft:5 }}
                                        {...getFieldProps('target_branch',
                                            {initialValue: initialTargetBranch, rules:[{required:true,message:'没有与其对应的目标分支'}]})} >
                                     {targetBranch}

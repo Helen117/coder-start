@@ -26,10 +26,11 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 import ForkList from './containers/fork';
-import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/project-set';
+import {projectSetCreate,projectSetTree,selectedProInfo,selectedSetInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
+
 import {StageView,CodeChangesList} from './containers/compile-stage';
-import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
+import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
@@ -42,7 +43,8 @@ import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
-import UserAddModify from './containers/user-relation/user-detail';
+import UpdateUserInfo from './containers/user-relation/user-detail';
+import UpdatePassword from './containers/user-relation/update-password';
 
 
 
@@ -102,7 +104,9 @@ ReactDOM.render(
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
-                            <Route name="projectSetProjectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
+                            <Route name="projectInfo" breadcrumbName="项目信息" path="projectInfo" component={selectedProInfo}/>
+                            <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={selectedSetInfo}/>
+
                             <Route name="projectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>
                         <Route name="projectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={projectSetCreate}/>
@@ -118,7 +122,9 @@ ReactDOM.render(
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
-                        <Route name="userAddModify" breadcrumbName="新修人员" path="userAddModify" component={UserAddModify}/>
+                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}>
+                            <Route name="updatePassword" breadcrumbName="修改密码" path="updatePassword" component={UpdatePassword}/>
+                        </Route>
                         <Route name="jenkins" breadcrumbName="Jenkins" path="jenkins">
                             <Route name="stageView" breadcrumbName="编译步骤" path="stageView" component={StageView}/>
                             <Route name="codeChange" breadcrumbName="代码变更" path="codeChange" component={CodeChangesList}/>

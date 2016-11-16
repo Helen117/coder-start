@@ -43,7 +43,7 @@ export default class TransferFilter extends React.Component {
             for(let i=0; i<dataSource.length; i++){
                 const data = {
                     key: dataSource[i].id,
-                    projectName: dataSource[i].name,
+                    name: dataSource[i].name,
                 };
                 mockData.push(data);
             }
@@ -51,21 +51,18 @@ export default class TransferFilter extends React.Component {
                 for(let i=0; i<targetData.length; i++){
                     const data = {
                         key: targetData[i].id.substring(0,targetData[i].id.length-2),
-                        projectName: targetData[i].name,
+                        name: targetData[i].name,
                     };
                     mockData.push(data);
                 }
             }
         }
-        //console.log(mockData);
         this.mockData = mockData
     }
 
     handleChange(targetKeys) {
         this.targetKeys = targetKeys;
         this.setState({ targetKeys });
-        //console.log('this.state.targetKeys',this.state.targetKeys);
-        //console.log('this.targetKeys',this.targetKeys);
         const {onChange} = this.props;
         this.isChange = true;
         onChange(targetKeys);
@@ -89,7 +86,7 @@ export default class TransferFilter extends React.Component {
                     targetKeys={targetKeys}
                     onChange={this.handleChange.bind(this)}
                     notFoundContent={this.props.fetchProMsgErr?<div>数据加载失败</div>:<div>没有数据</div>}
-                    render={item => `${item.projectName}`}
+                    render={item => `${item.name}`}
                 />
             </Spin>
         );
