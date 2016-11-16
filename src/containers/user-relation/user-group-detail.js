@@ -4,16 +4,18 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification, Icon, Row, Col} from 'antd';
+import {Form, Input, Button, Modal, notification, Icon, Row, Col,Select} from 'antd';
 import Box from '../../components/box';
 import MoreUserGroup from '../../components/more-user-group';
 import 'pubsub-js';
 import styles from './index.css';
 import {findUserGroupById} from './utils';
 import {createUserGroup, UpdateUserGroup} from './actions/user-group-detail-action';
+import {getLeader} from '../register/actions/register-action';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
+const Option = Select.Option;
 
 class UserGroupDetail extends React.Component {
     constructor(props) {
@@ -39,6 +41,7 @@ class UserGroupDetail extends React.Component {
                 data.owner_id = loginInfo.userId;
                 data.reason = formData.reason;
                 data.parent_id = this.state.selectedUserGroup;
+                data.leaderId = formData.leader_id;
                 if(editType == 'add'){
                     //调创建组织的接口
                     actions.createUserGroup(data);
@@ -87,9 +90,10 @@ class UserGroupDetail extends React.Component {
     }
 
     componentWillMount() {
-        const {selectedUserGroup, userTreeData} = this.props;
+        const {selectedUserGroup, userTreeData,actions} = this.props;
         const {editType} = this.props.location.state;
         const {setFieldsValue} = this.props.form;
+        actions.getLeader();
         if(selectedUserGroup){
             this.setState({
                 selectedUserGroup:selectedUserGroup.id,
@@ -158,10 +162,6 @@ class UserGroupDetail extends React.Component {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
         };
-        const formItemLayout_1 = {
-            labelCol: {span: 12},
-            wrapperCol: {span: 12},
-        };
         const nameProps = getFieldProps('name',
             {rules:[
                 {required:true, message:'请输入组织名称！'},
@@ -178,6 +178,9 @@ class UserGroupDetail extends React.Component {
             {rules:[
                 {required:true, message:'请输入描述！'}
             ]});
+        console.log("this.props.leaderInfo:",this.props.leaderInfo)
+        const leader = this.props.leaderInfo?this.props.leaderInfo.map(
+            data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
 
         return(
             <Box title={editType == 'add' ? '新建组织' : '修改组织'}>
@@ -188,37 +191,27 @@ class UserGroupDetail extends React.Component {
                     <FormItem {...formItemLayout} label="描述">
                         <Input type="textarea" {...descriptionProps} />
                     </FormItem>
-                    {editType == 'add' ? (
-                        <Row>
-                            <Col span={16}>
-                                <FormItem {...formItemLayout_1} label="父组织名称">
-                                    <Input type="text" {...parentGroupProps} disabled/>
-                                </FormItem>
-                            </Col>
-                        </Row>
-                    ) : (
+                    <FormItem {...formItemLayout}  label="领导" >
+                        <Select showSearch
+                                showArrow={false}
+                                placeholder="leader"
+                                optionFilterProp="children"
+                                notFoundContent="无法找到"
+                                {...getFieldProps('leader_id',{rules:[{
+                                    required:true,message:'请选择组织领导'}]})}>
+                            {leader}
+                        </Select>
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="父组织名称">
+                        <Input type="text" {...parentGroupProps} disabled/>
+                    </FormItem>
+                    {editType == 'add' ? (<div></div>) : (
                         <div>
-                            <Row>
-                                <Col span={16}>
-                                    <FormItem {...formItemLayout_1} label="父组织名称">
-                                        <Input type="text" {...parentGroupProps} disabled/>
-                                    </FormItem>
-                                </Col>
-                                <Col span={2}>
-                                    <Icon type="share-alt" className={styles.more_group}
-                                          onClick={this.clickMoreGroup.bind(this)}/>
-                                </Col>
-                            </Row>
                             <FormItem {...formItemLayout} label="修改原因">
                                 <Input type="textarea" {...modifyResultProps} rows={4} />
                             </FormItem>
                         </div>
                     )}
-                    <MoreUserGroup modalVisible={this.state.modalVisible}
-                                   loading={loadingTree}
-                                   nodesData={userTreeData}
-                                   handleOk={this.handleOk.bind(this)}
-                                   cancelChoose={this.cancelChoose.bind(this)}/>
                     <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"
                                 loading={editType == 'add'?this.props.loading:this.props.updateLoading}
@@ -255,12 +248,13 @@ function mapStateToProps(state) {
         updateErrors:state.createUserGroup.updateErrors,
         updateLoading:state.createUserGroup.updateLoading,
         updateDisabled:state.createUserGroup.updateDisabled,
+        leaderInfo:state.getLeaderInfo.leader,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch)
+        actions: bindActionCreators({createUserGroup, UpdateUserGroup,getLeader}, dispatch)
     }
 }
 

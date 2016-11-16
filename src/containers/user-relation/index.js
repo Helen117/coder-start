@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Row, Col, message, Modal, Input, Form} from 'antd';
+import {Row, Col, message, Modal, Input, Form, notification} from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getUserRelationTree} from './actions/user-relation-tree-action';
 import {getSelectNode} from './actions/select-node-action';
@@ -60,8 +60,6 @@ class UserRelation extends React.Component{
 
     handleOk() {
         const { form,setUserGroupDelete,selectedUserGroup,loginInfo } = this.props;
-        /*const formData = form.getFieldsValue();
-        console.log("formData:",formData)*/
         //调删除组织接口
         setUserGroupDelete(selectedUserGroup.id,loginInfo.userId)
     }
@@ -101,16 +99,21 @@ class UserRelation extends React.Component{
         }
     }
 
-    editUser(type,selectedRow){//新增人员
-        const {selectedUserGroup} = this.props;
-        if(!selectedUserGroup){
-            message.error('请选择人员所在组织!',3);
-        }else{
-            this.context.router.push({
-                pathname: '/userAddModify',
-                state: {editType: type, selectedRow}
-            });
-        }
+    insertCallback(messageInfo){
+        notification.success({
+            message: messageInfo,
+            description: '',
+            duration: 1
+        });
+        this.props.getUserRelationTree();
+    }
+
+    errCallback(messageInfo,errMessage){
+        notification.error({
+            message: messageInfo,
+            description:errMessage,
+            duration: 4
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -137,16 +140,8 @@ class UserRelation extends React.Component{
                    onClick={this.editUserGroup.bind(this, null, selectedUserGroup)}>修改组织</a>
                 <a style={{paddingLeft:10}}
                    onClick={this.deleteUserGroup.bind(this, selectedUserGroup)}>删除组织</a>
-                <a style={{paddingLeft:10}}
-                   onClick={this.editUser.bind(this, 'add', null)}>新增人员</a>
-                <a style={{paddingLeft:10}}
-                   onClick={this.editUser.bind(this, null, null)}>删除人员</a>
             </div>
         );
-        /*const deleteResultProps = getFieldProps('delete_result',
-            {rules:[
-                {required:true, message:'请输入删除原因！'}
-            ]});*/
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -167,12 +162,9 @@ class UserRelation extends React.Component{
                                visible={this.state.modalVisible}
                                onOk={this.handleOk.bind(this)}
                                onCancel={this.handleCancel.bind(this)}
+                               confirmLoading={this.props.deleteLoading?true:false}
                         >
                             <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
-                            {/*<p>如果确认此操作，请在下框输入原因：</p>
-                            <FormItem>
-                                <Input type="textarea" {...deleteResultProps} rows={4} />
-                            </FormItem>*/}
                         </Modal>
                     </Row>
                     <Row>
@@ -202,6 +194,7 @@ function mapStateToProps(state) {
         selectedUserGroup: state.getSelectNode.selectedUserGroup,
         deleteResult: state.createUserGroup.deleteResult,
         deleteErrors:state.createUserGroup.errors,
+        deleteLoading:state.createUserGroup.deleteLoading,
     }
 }
 

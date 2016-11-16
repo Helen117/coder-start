@@ -22,13 +22,20 @@ export default class Header extends React.Component {
         if (item.key == 'setting:2') {
             this.props.logout();
         }
+        if(item.key == 'setting:1'){
+            this.context.router.push({
+                pathname: '/updateUserInfo',
+            });
+        }
     }
 
     showSideBar(){
         this.props.showSideBar();
     }
     approveList(){
-        this.context.router.replace('/approveList');
+        this.context.router.push({
+            pathname: '/approveList',
+        });
     }
 
     render() {
@@ -51,7 +58,7 @@ export default class Header extends React.Component {
                 <Col span={2}>
                     <Menu className="header-menu" onClick={this.handleClick.bind(this)} mode="horizontal">
                         <SubMenu title={<span><Icon type="user"/>{username}</span>}>
-                            <Menu.Item key="setting:1">修改密码</Menu.Item>
+                            <Menu.Item key="setting:1">修改信息</Menu.Item>
                             <Menu.Divider />
                             <Menu.Item key="setting:2">登出</Menu.Item>
                         </SubMenu>

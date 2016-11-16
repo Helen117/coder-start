@@ -17,3 +17,11 @@ export function findUserGroupById(userGroupId,userTreeData) {
     }
     return selectedUserGroup;
 }
+
+export function findUserIdByEmail(email,userInfoData) {
+    for(let i=0; i<userInfoData.length; i++){
+        if(email == userInfoData[i].email){
+            return userInfoData[i].id;
+        }
+    }
+}
