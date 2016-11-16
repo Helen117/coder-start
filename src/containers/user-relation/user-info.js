@@ -223,8 +223,7 @@ UserInfo.contextTypes = {
 UserInfo.prototype.groupColumns = (self)=>[
     {title: (<TableFilterTitle title="员工姓名"
                   comfirmFilter={self.comfirmFilter.bind(self)}
-                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name",
-        onFilter: (value, record) => record.name.indexOf(value) === 0,},
+                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
     {title: (<TableFilterTitle title="角色"
                   comfirmFilter={self.comfirmFilter.bind(self)}
                   cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
