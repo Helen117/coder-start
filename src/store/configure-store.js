@@ -13,6 +13,7 @@ import {register,getLeaderInfo} from '../containers/register/reducers/register-r
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
+import {stageView,stageDetail,codeChange} from '../containers/compile-stage/reducers/jenkins-build-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -94,7 +95,10 @@ const reducer = combineReducers({
     getSelectNode,
     createUserGroup,
     createUser,
-    getAllUserInfo
+    getAllUserInfo,
+    codeChange,
+    stageView,
+    stageDetail
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

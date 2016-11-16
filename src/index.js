@@ -28,7 +28,7 @@ import NotFound from './components/page/not-found';
 import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,selectedProInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
-import CompileStage from './containers/compile-stage';
+import {StageView,CodeChangesList} from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/project-set-milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
@@ -120,7 +120,8 @@ ReactDOM.render(
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="userAddModify" breadcrumbName="新修人员" path="userAddModify" component={UserAddModify}/>
                         <Route name="jenkins" breadcrumbName="Jenkins" path="jenkins">
-                            <Route name="compileStage" breadcrumbName="编译步骤" path="compileStage" component={CompileStage}/>
+                            <Route name="stageView" breadcrumbName="编译步骤" path="stageView" component={StageView}/>
+                            <Route name="codeChange" breadcrumbName="代码变更" path="codeChange" component={CodeChangesList}/>
                         </Route>
                     </Route>
                     <Route path="register" component={Register}/>
