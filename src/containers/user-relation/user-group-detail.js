@@ -156,29 +156,28 @@ class UserGroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const {userTreeData, loadingTree} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
         };
-        const nameProps = getFieldProps('name',
+        const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入组织名称！'},
-            ]});
-        const modifyResultProps = getFieldProps('reason',
+            ]})(<Input type="text" placeholder="请输入组织名称"/>);
+        const modifyResultProps = getFieldDecorator('reason',
             {rules:[
                 {required:editType == 'add'?false:true, message:'请输入修改原因！'}
-            ]});
-        const parentGroupProps = getFieldProps('parent_id',
+            ]})(<Input type="textarea" rows={4} />);
+        const parentGroupProps = getFieldDecorator('parent_id',
             {rules:[
                 {required:true, message:'请选择组织！'},
-            ],initialValue: '0'});
-        const descriptionProps = getFieldProps('description',
+            ],initialValue: '0'})(<Input type="text" disabled/>);
+        const descriptionProps = getFieldDecorator('description',
             {rules:[
                 {required:true, message:'请输入描述！'}
-            ]});
-        console.log("this.props.leaderInfo:",this.props.leaderInfo)
+            ]})(<Input type="textarea" />);
         const leader = this.props.leaderInfo?this.props.leaderInfo.map(
             data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
 
@@ -186,29 +185,30 @@ class UserGroupDetail extends React.Component {
             <Box title={editType == 'add' ? '新建组织' : '修改组织'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="组织名称">
-                        <Input type="text" {...nameProps} placeholder="请输入组织名称"/>
+                        {nameProps}
                     </FormItem>
                     <FormItem {...formItemLayout} label="描述">
-                        <Input type="textarea" {...descriptionProps} />
+                        {descriptionProps}
                     </FormItem>
                     <FormItem {...formItemLayout}  label="领导" >
-                        <Select showSearch
-                                showArrow={false}
-                                placeholder="leader"
-                                optionFilterProp="children"
-                                notFoundContent="无法找到"
-                                {...getFieldProps('leader_id',{rules:[{
-                                    required:true,message:'请选择组织领导'}]})}>
-                            {leader}
-                        </Select>
+                        {getFieldDecorator('leader_id',{rules:[{
+                            required:true,message:'请选择组织领导'}]})(
+                            <Select showSearch
+                                    showArrow={false}
+                                    placeholder="leader"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到">
+                                {leader}
+                            </Select>
+                        )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="父组织名称">
-                        <Input type="text" {...parentGroupProps} disabled/>
+                        {parentGroupProps}
                     </FormItem>
                     {editType == 'add' ? (<div></div>) : (
                         <div>
                             <FormItem {...formItemLayout} label="修改原因">
-                                <Input type="textarea" {...modifyResultProps} rows={4} />
+                                {modifyResultProps}
                             </FormItem>
                         </div>
                     )}
