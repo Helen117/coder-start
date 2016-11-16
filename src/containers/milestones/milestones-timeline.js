@@ -3,7 +3,7 @@
  */
 
 import React, {PropTypes} from 'react';
-import {Timeline,Button,Row,Col,Progress,notification,BackTop,Spin,message} from 'antd';
+import {Timeline,Button,Row,Col,Progress,notification,BackTop,Spin,message,Badge} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -20,12 +20,11 @@ class ProjectSetMilestones extends React.Component {
     }
 
     componentDidMount() {
-        console.log('调用componentDidMount');
+        console.log('调用componentDidMount',Date.now());
         const {projectId} = this.props;
-        const dateNow = new Date(Date.now());
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
-            this.distributeActions(projectId,dateNow);
+            this.distributeActions(projectId,parseInt(Date.now()));
 
         }
     }
@@ -34,7 +33,7 @@ class ProjectSetMilestones extends React.Component {
         const {errMessage,closeSetMsResult,closeSetMsErr,projectId} = nextProps;
         if(this.props.milestoneProId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
-            this.distributeActions(projectId,new Date(Date.now()));
+            this.distributeActions(projectId,parseInt(Date.now()));
             this.props.putProIdToStateAction(projectId);
         }
         //数据加载错误提示
@@ -50,7 +49,7 @@ class ProjectSetMilestones extends React.Component {
 
     sucCallback(type){
         message.success(type);
-        this.distributeActions(this.props.projectId,new Date(Date.now()));
+        this.distributeActions(this.props.projectId,parseInt(Date.now()));
     }
 
     errCallback(errMessage,type){
@@ -82,7 +81,7 @@ class ProjectSetMilestones extends React.Component {
 
     onPanelChange(date,mode){
         if(mode == 'month'){
-            this.distributeActions(this.props.projectId,new Date(date))
+            this.distributeActions(this.props.projectId,parseInt(date))
         }else{
             //console.log('调用container onPanelChange',date.getYear(),mode)
         }
@@ -94,18 +93,22 @@ class ProjectSetMilestones extends React.Component {
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
+
             <Spin spinning={loading} tip="正在加载数据，请稍候..." >
+
                 <div style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
-                    <div  >
-                        <Button  type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
-                    </div>:<div></div>}
+                        <Row>
+                    <div>
+                        <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
+                    </div></Row>:<div></div>}
 
                     <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
                                         milestoneData = {milestoneData}
                                         milestonesDetailPath="/projectSetMilestonesDetail"
                                         milestoneEditPath="/projectSetMilestonesEdit"/>/>
                 </div>
+
             </Spin>
         )
     }
