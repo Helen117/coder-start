@@ -4,10 +4,10 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Table, Button, Row, Col, message, Modal, notification, Form, Input} from 'antd';
+import {Table, Button, Row, Col, message, Modal, notification, Form, Input,Icon} from 'antd';
 import {getUserInfo} from './actions/user-info-action';
 import {MoveUser,DeleteGroupUser} from './actions/user-detail-action';
-import TableFilter from '../../components/table-filter';
+import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
 import {findUserIdByEmail} from './utils';
 
@@ -16,14 +16,16 @@ const FormItem = Form.Item;
 class UserInfo extends React.Component {
     constructor(props) {
         super(props);
+        this.data = [];
         this.state = {
             moveOutVisible:false,
             moreGroupVisible:false,
             source_user_id:null,
+            dataSource:[]
         }
     }
 
-    componentDidMount(){
+    componentWillMount(){
         const {userInfoData,selectedUserGroup} = this.props;
         if(selectedUserGroup){
             if(userInfoData.length == 0){
@@ -52,10 +54,16 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors} = nextProps;
+        const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors,userInfoData} = nextProps;
         const node = nextProps.location.state.node;
         if(node != this.props.location.state.node && node){
             this.props.getUserInfo(selectedUserGroup.id);
+        }
+        if(userInfoData != this.props.userInfoData && userInfoData){
+            this.setState({
+                dataSource:userInfoData
+            })
+            this.data = this.getDataSource(userInfoData);
         }
         //移除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
@@ -91,10 +99,6 @@ class UserInfo extends React.Component {
         return dataSource;
     }
 
-    roleApply(){
-
-    }
-
     addToProject(){
 
     }
@@ -106,9 +110,9 @@ class UserInfo extends React.Component {
         data.user_id = loginInfo.userId;
         data.source_user_id = this.state.source_user_id;
         data.reason = formData.reason;
+        data.source_group_id = selectedUserGroup.id;
         if(this.state.moveOutVisible == true){
             //调移除接口
-            data.dest_group_id = selectedUserGroup.id;
             DeleteGroupUser(data);
         }else if(this.state.moreGroupVisible == true){
             //调移动接口
@@ -142,6 +146,24 @@ class UserInfo extends React.Component {
         });
     }
 
+    comfirmFilter(formData){
+        let newData=[];
+        for(let i=0; i<this.state.dataSource.length; i++){
+            if(this.state.dataSource[i].name.indexOf(formData.searchContext) >=0 ){
+                newData.push(this.state.dataSource[i]);
+            }
+        }
+        this.setState({
+            dataSource:newData
+        })
+    }
+
+    cancleFilter(){
+        this.setState({
+            dataSource:this.data
+        })
+    }
+
     render(){
         const {userInfoData, loading} = this.props;
         const {getFieldProps} = this.props.form;
@@ -151,7 +173,7 @@ class UserInfo extends React.Component {
             onSelect(record, selected, selectedRows) {},
             onSelectAll(selected, selectedRows, changeRows) {},
         };
-        let dataSource = this.getDataSource(userInfoData);
+        let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldProps('reason',
             {});
 
@@ -182,8 +204,6 @@ class UserInfo extends React.Component {
                                    cancelChoose={this.handleCancel.bind(this)}/>
                 </Row>
                 <Row>
-                    {/*<Button type="primary"
-                     onClick={this.roleApply.bind(this)}>角色申请</Button>*/}
                     {add_member?(
                         <Button type="primary"
                                 onClick={this.addToProject.bind(this)}>添加到项目</Button>
@@ -201,15 +221,13 @@ UserInfo.contextTypes = {
 };
 
 UserInfo.prototype.groupColumns = (self)=>[
-    {title: "员工姓名", dataIndex: "name", key: "name",
-        filterDropdown:(
-            <TableFilter/>)},
-    {title: "角色", dataIndex: "role", key: "role",
-        filters: [
-            { text: 'Joe', value: 'Joe' },
-            { text: 'Jim', value: 'Jim' },
-        ],
-        onFilter: (value, record) => record.name.includes(value)},
+    {title: (<TableFilterTitle title="员工姓名"
+                  comfirmFilter={self.comfirmFilter.bind(self)}
+                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name",
+        onFilter: (value, record) => record.name.indexOf(value) === 0,},
+    {title: (<TableFilterTitle title="角色"
+                  comfirmFilter={self.comfirmFilter.bind(self)}
+                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
     {title: "邮箱", dataIndex: "email", key: "email"},
     {title:"操作",dataIndex:"operate",key:"operate",
         render(text,record){

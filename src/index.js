@@ -42,7 +42,8 @@ import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
-import UserAddModify from './containers/user-relation/user-detail';
+import UpdateUserInfo from './containers/user-relation/user-detail';
+import UpdatePassword from './containers/user-relation/update-password';
 
 
 
@@ -118,7 +119,9 @@ ReactDOM.render(
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
-                        <Route name="userAddModify" breadcrumbName="新修人员" path="userAddModify" component={UserAddModify}/>
+                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}>
+                            <Route name="updatePassword" breadcrumbName="修改密码" path="updatePassword" component={UpdatePassword}/>
+                        </Route>
                         <Route name="jenkins" breadcrumbName="Jenkins" path="jenkins">
                             <Route name="compileStage" breadcrumbName="编译步骤" path="compileStage" component={CompileStage}/>
                         </Route>

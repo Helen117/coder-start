@@ -134,11 +134,11 @@ app.post('/gitlab/group', function (req, res) {
     res.json(group);
 });
 
-app.post('/gitlab/userRelation', function (req, res) {
+app.post('/gitlab/service-groups/list', function (req, res) {
     res.json(userRelation);
 });
 
-app.post('/gitlab/userInfoData', function (req, res) {
+app.post('/gitlab/service-groups/users', function (req, res) {
     res.json(userInfoData);
 });
 
