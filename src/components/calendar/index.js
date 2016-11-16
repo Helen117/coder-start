@@ -66,20 +66,18 @@ export default class MilestonesCalendar extends React.Component{
         return type;
     }
 
-    getListData(milestoneData,value) {
+    getListData(milestoneData,calendarTime) {
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
         const tooltip = this.tooltip(milestoneData);
         let revocable = false;
         if(milestoneData.state != 'closed'){
             revocable = true;
         }
-        const calendarTime = this.getTime(value.time);
         const due_date = this.getTime(milestoneData.due_date);
         return(
             calendarTime==due_date?<Tooltip placement="top" title={tooltip}>
-
                 <div style={{height:'100%'}}>
-                    <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,value):null} >
+                    <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
                         <Badge className="pull-right" count={milestoneData.expired}>
                         </Badge>
                         <ol className="events">
@@ -97,13 +95,14 @@ export default class MilestonesCalendar extends React.Component{
 
     }
     dateCellRender(milestoneData,value) {
+        //console.log(parseInt(value.format('MM'))-1);
+        const calendarTime = new Date(value.format('YYYY'),parseInt(value.format('MM'))-1,value.format('DD')).getTime();
+        //console.log(calendarTime,new Date(calendarTime))
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
                 const colorId = i%6;
-                const calendarTime = value.getDayOfMonth();
-                const due_date = new Date(milestoneData[i].due_date).getDate();
-                if(value.time<milestoneData[i].due_date+60*60*24*1000){
-                    const dateCellData = this.getListData(milestoneData[i],value);
+                if(calendarTime <= milestoneData[i].due_date){
+                    const dateCellData = this.getListData(milestoneData[i],calendarTime);
                     return <div className={`background-${colorId}`} >{dateCellData}</div>;
                 }
 
@@ -130,8 +129,9 @@ export default class MilestonesCalendar extends React.Component{
 
 
     onPanelChange(date,mode){
+        const calendarTime = new Date(date.format('YYYY'),date.format('MM'),date.format('DD')).getTime();
         const onPanelChange = this.props.onPanelChange;
-        onPanelChange(date.time,mode);
+        onPanelChange(calendarTime,mode);
     }
 
 
