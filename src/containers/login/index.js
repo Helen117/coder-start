@@ -56,6 +56,7 @@ class Login extends React.Component {
         const {actions} = this.props;
 
         const data = this.props.form.getFieldsValue();
+        console.log("data:",data)
 
         if(data.user && data.password){
             actions.login(data.user, data.password);
@@ -74,7 +75,10 @@ class Login extends React.Component {
     }
 
     render() {
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator,getFieldProps} = this.props.form;
+        /*console.log("getFieldProps:",getFieldProps('user'))
+        console.log("getFieldProps-1:",getFieldProps)
+        console.log("getFieldDecorator:",getFieldDecorator('user'))*/
         return (
             <Row className="login-row" type="flex" justify="space-around" align="middle">
                 <Col span="8">
