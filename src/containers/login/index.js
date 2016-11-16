@@ -56,7 +56,7 @@ class Login extends React.Component {
         const {actions} = this.props;
 
         const data = this.props.form.getFieldsValue();
-
+        console.info(data);
         if(data.user && data.password){
             actions.login(data.user, data.password);
         }else{
@@ -74,16 +74,20 @@ class Login extends React.Component {
     }
 
     render() {
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         return (
             <Row className="login-row" type="flex" justify="space-around" align="middle">
                 <Col span="8">
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} className="login-form">
                         <FormItem label='用户名：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
-                            <Input placeholder='请输入账号' {...getFieldProps('user')} />
+                            {getFieldDecorator('user')(
+                                <Input placeholder='请输入账号' />
+                            )}
                         </FormItem>
                         <FormItem label='密码：' labelCol={{span: 6}} wrapperCol={{span: 14}}>
-                            <Input type='password' placeholder='请输入密码' {...getFieldProps('password')} />
+                            {getFieldDecorator('password')(
+                                <Input type='password' placeholder='请输入密码' />
+                            )}
                         </FormItem>
                         <Row>
                             <Col span='16' offset='6'>
