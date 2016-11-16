@@ -28,7 +28,9 @@
     "redux": "^3.5.2",
     "redux-react-fetch": "^0.0.4",
     "redux-thunk": "^1.0.3",
-    "superagent": "^2.2.0"
+    "superagent": "^2.2.0",
+    "highlight.js": "~9.7.0",
+    "lowlight": "^1.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",

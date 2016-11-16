@@ -54,9 +54,7 @@ class Login extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const {actions} = this.props;
-
         const data = this.props.form.getFieldsValue();
-        console.info(data);
         if(data.user && data.password){
             actions.login(data.user, data.password);
         }else{
