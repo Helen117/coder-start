@@ -8,16 +8,30 @@ def deployTargetPath = '/home/devops-web'
 def gitUrl = 'ssh://git@10.10.152.146:10022/devops/devops-web.git'
 def gitCredentialsId = 'd10d8ad2-c4d7-4ff9-b49b-61302ee43c47'
 def sshagentCredentialsId = 'e2687fc3-2b72-4129-8678-e114919d1567'
-notificationUrl = 'http://10.10.152.144:11000/jenkins/stageStatus'
+notificationUrl = 'http://10.10.152.144:13000/jenkins/stageStatus'
+//notificationUrl = 'http://10.10.156.153:11000/jenkins/stageStatus'
+
 
 node (){
     //event = [:]
-    def event = [jobName: env.JOB_NAME]
+    def event = [jobName: env.JOB_NAME, buildNumber: env.BUILD_NUMBER, projectId: 185]
     event.stageName = 'checkout from git'
+    event.stageId = 1
     stage (event.stageName){
         notification(started(event))
         try{
             git url: gitUrl, credentialsId: gitCredentialsId
+            def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+//            echo gitCommit
+
+//            sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
+//            git_branch = readFile('GIT_BRANCH').trim()
+//            echo git_branch
+//
+//            sh 'git rev-parse HEAD > GIT_COMMIT'
+//            git_commit = readFile('GIT_COMMIT').trim()
+//            echo git_commit
+            event.gitCommitId = gitCommit
             success(event)
         }catch (e){
             failed(event, e.toString())
@@ -28,6 +42,7 @@ node (){
     }
 
     event.stageName = 'build and package'
+    event.stageId = 100
     stage (event.stageName){
         notification(started(event))
         try{
@@ -44,6 +59,7 @@ node (){
     }
 
     event.stageName = 'deploy to nginx'
+    event.stageId = 200
     stage (event.stageName){
         notification(started(event))
         try {
@@ -93,15 +109,21 @@ def toJson(input) {
 
 
 def started(event){
-    event.status = 'STARTED'
+//    event.status = 'STARTED'
+    event.status = 0
+    event.timestamp = System.currentTimeMillis()
     return event
 }
 
 def success(event){
-    event.status = 'SUCCESS'
+//    event.status = 'SUCCESS'
+    event.status = 1
+    event.timestamp = System.currentTimeMillis()
 }
 
 def failed(event, msg){
-    event.status = 'FAILED'
-    event.msg = msg
+//    event.status = 'FAILED'
+    event.status = 2
+    event.errorMsg = msg
+    event.timestamp = System.currentTimeMillis()
 }

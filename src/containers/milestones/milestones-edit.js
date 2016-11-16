@@ -48,8 +48,9 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     insertCallback(type){
-        message.success(type)
-        this.props.getProjectSetMilestones(this.groupId, 1, []);
+        message.success(type);
+        const date = this.props.location.state?this.props.location.state.date:new Date(Date.now());
+        this.props.getProjectSetMilestones(this.groupId,date);
         this.context.router.goBack();
     }
 
@@ -74,6 +75,7 @@ class projectSetMilestonesEdit extends React.Component {
                 formData.set_id= this.groupId;
                 formData.author_id = logInfo.userId;
                 if(editType == 'add'){
+                    console.log(formData);
                     this.props.createMilestone(formData);
                 }else{
                     if(item.title==formData.title && item.description==formData.description &&
@@ -124,6 +126,10 @@ class projectSetMilestonesEdit extends React.Component {
         fetchData(path,params,callback,errStr);
     }
 
+    disabledDate(current) {
+    // can not select days before today and today
+    return current && current.getTime() < Date.now();
+    }
 
     render(){
         const {editType} = this.props.location.state;
@@ -159,7 +165,7 @@ class projectSetMilestonesEdit extends React.Component {
                             <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
                         </FormItem>
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            <DatePicker size="large"  placeholder="计划完成时间"  {...dueDateProps}/>
+                            <DatePicker disabledDate={this.disabledDate} placeholder="计划完成时间"  {...dueDateProps}/>
                         </FormItem>
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">

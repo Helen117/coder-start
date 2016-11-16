@@ -6,32 +6,30 @@ import {ACQUIRE_MILESTONES,
     PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
 import api from '../../../api';
 
-export function getProjectSetMilestones(set_id, page, timeLineData) {
+export function getProjectSetMilestones(set_id, date) {
     var path ='/project/milestones';
     return {
         type: ACQUIRE_MILESTONES,
-        meta:{timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
                     set_id: set_id,
-                    page: page
+                    date: date
                 }
             })
         }
     }
 }
 
-export function getProjectMilestones(projectId,page,timeLineData) {
+export function getProjectMilestones(projectId,date) {
     var path ='/milestone/project';
     return {
         type: ACQUIRE_MILESTONES,
-        meta: {timeLineData},
         payload: {
             promise: api.post(path, {
                 params: {
                     projectId:projectId,
-                    page:page
+                    date:date
                 }
             })
         }
