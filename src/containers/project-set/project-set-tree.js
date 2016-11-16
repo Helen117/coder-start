@@ -6,12 +6,11 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
+import Popover from '../../components/popover-img';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
-import {deleteProjectSet} from './actions/project-set-create-action'
 import 'pubsub-js';
 
-const confirm = Modal.confirm;
 class projectSetTree extends React.Component{
     constructor(props){
         super(props);
@@ -29,70 +28,19 @@ class projectSetTree extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {  errMessage ,delErrorMsg,delResult} = nextProps;
+        const {  errMessage } = nextProps;
         if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'项目集加载');
-        }
-        if(this.props.delErrorMsg != delErrorMsg && delErrorMsg){
-            this.errCallback(delErrorMsg,'删除项目集')
-        }else if(this.props.delResult != delResult && delResult){
-            this.successCallback('删除');
-
+            this.errCallback(errMessage,'项目集数据加载失败');
         }
 
     }
 
     errCallback(errMessage,type){
         notification.error({
-            message: type+'失败',
+            message: type,
             description: errMessage,
             duration: 2
         });
-    }
-
-    editProjectSet(type){
-        this.context.router.push({
-            pathname: '/editProjectSet',
-            state:{editType: type}
-        });
-    }
-
-    delProjectSet(type,selectedProjectSet){
-        const deleteProjectSetAction = this.props.deleteProjectSetAction;
-        const userId = this.props.loginInfo.userId;
-        const projectSet = this.props.projectSet;
-        let i = 0;
-        for(i=0; i< projectSet.length; i++){
-            if(projectSet[i].id==selectedProjectSet.id && projectSet[i].children.length>0){
-                this.delForbidden();
-                break;
-            }
-        }
-        if(i >= projectSet.length) {
-            confirm({
-                title: '您是否确定要删除此项目集合',
-                content: '删除之后项目集合内容将会被丢弃',
-                onOk() {
-                    deleteProjectSetAction(selectedProjectSet.selectedItemId, userId);
-                },
-                onCancel() {
-                }
-            })
-        }
-    }
-
-    delForbidden(errMessage){
-        notification.error({
-            message: '项目集非空，不允许删除',
-            description: '请将项目集中的项目全部移除后，才能进行删除操作',
-            duration: 2
-        });
-    }
-
-    successCallback(type){
-        message.success(type+'成功');
-        const userId = this.props.loginInfo.userId;
-        this.props.fetchProjectSetTree(userId);
     }
 
     isEmptyObject(obj){
@@ -110,16 +58,6 @@ class projectSetTree extends React.Component{
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 if(currentTwoInfo.link == '/projectSetTree'){
-                    if(node.id.indexOf('_p')>0){
-                        this.context.router.push({
-                            pathname: '/projectSetTree/projectInfo',
-                        });
-                    }else{
-                        this.context.router.push({
-                            pathname: '/projectSetTree',
-                        });
-                    }
-                }else{
                     this.context.router.push({
                         pathname: currentTwoInfo.link,
                     });
@@ -133,75 +71,26 @@ class projectSetTree extends React.Component{
     }
 
 
-
-
     render(){
-        const selectedProjectSet = this.props.selectedProjectSet;
-        const {projectSet, loading, currentTwoInfo,errMessage} = this.props;
-        const spinning = this.props.delLoading?true:false;
+        const {projectSet, loading,errMessage} = this.props;
+
         return (
-            <Spin spinning={spinning} tip="正在删除数据">
-                <Row className="ant-layout-content" style={{minHeight:300}}>
-                    <Col span={6}>
-                        <TreeFilter
-                            loading={loading}
-                            notFoundMsg={errMessage}
-                            inputPlaceholder="快速查询项目"
-                            loadingMsg="正在加载项目信息..."
-                            nodesData={projectSet}
-                            onSelect={this.onSelectNode.bind(this)}/>
-                    </Col>
-                    <Col span={18}>
-                        {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/projectSetTree')?(
-                            <Row>
-                                {selectedProjectSet?selectedProjectSet.id.indexOf('_p')<0?
-                                    <div>
-                                        <div style={{margin:15}}>
-                                            <Button className="pull-right"
-                                                    type="primary"
-                                                    disabled = {loading || errMessage}
-                                                    onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
-                                        </div>
-                                        <div style={{margin:15}}>
-                                            <Button className="pull-right"
-                                                    type="primary"
-                                                    disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                                    onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
-                                        </div>
-                                        <div style={{margin:15}}>
-                                            <Button className="pull-right"
-                                                    type="primary"
-                                                    disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                                    onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
-                                        </div>
-                                        </div>:<div></div>:<div>
-                                    <div style={{margin:15}}>
-                                        <Button className="pull-right"
-                                                type="primary"
-                                                disabled = {loading || errMessage}
-                                                onClick={this.editProjectSet.bind(this,'add')}>创建项目集</Button>
-                                    </div>
-                                    <div style={{margin:15}}>
-                                        <Button className="pull-right"
-                                                type="primary"
-                                                disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                                onClick={this.editProjectSet.bind(this,'update')}>修改项目集</Button>
-                                    </div>
-                                    <div style={{margin:15}}>
-                                        <Button className="pull-right"
-                                                type="primary"
-                                                disabled = {selectedProjectSet?selectedProjectSet.id.indexOf('_g')>0?false:true:true}
-                                                onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</Button>
-                                    </div>
-                                </div>}
-                            </Row>
-                        ):(<div></div>)}
-                        <Row>
-                            {this.props.children}
-                        </Row>
-                    </Col>
-                </Row>
-            </Spin>
+            <Row className="ant-layout-content" style={{minHeight:300}}>
+                <Col span={6}>
+                    <TreeFilter
+                        loading={loading}
+                        notFoundMsg={errMessage}
+                        inputPlaceholder="快速查询项目"
+                        loadingMsg="正在加载项目信息..."
+                        nodesData={projectSet}
+                        onSelect={this.onSelectNode.bind(this)}/>
+                </Col>
+                <Col span={18}>
+                    <Row>
+                        {this.props.children}
+                    </Row>
+                </Col>
+            </Row>
         );
     }
 
@@ -222,9 +111,7 @@ function mapStateToProps(state) {
         errMessage: state.fetchProjectSetTree.errMessage,
         loading: state.fetchProjectSetTree.loading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
-        delErrorMsg: state.deleteProjectSet.errorMsg,
-        delResult: state.deleteProjectSet.result,
-        delLoading: state.deleteProjectSet.loading,
+
     }
 }
 
@@ -232,7 +119,6 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         putProjectSetToState: bindActionCreators(putProjectSetToState, dispatch),
-        deleteProjectSetAction: bindActionCreators(deleteProjectSet, dispatch),
     }
 }
 

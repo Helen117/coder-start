@@ -144,7 +144,7 @@ class branchesList extends React.Component {
                                 />
                     </div>
                     <div>
-                        <Modal title="确认删除此项目组吗?"
+                        <Modal title="确认删除此分支吗?"
                                visible={this.state.modalVisible}
                                onOk={this.handleOk.bind(this)}
                                confirmLoading={this.props.delLoading}
