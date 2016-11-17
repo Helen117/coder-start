@@ -75,7 +75,7 @@ class RegistrationApproval  extends Component {
 
     render() {
 
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
 
         const formItemLayout = {
             labelCol: { span: 2 },
@@ -95,7 +95,7 @@ class RegistrationApproval  extends Component {
                     <div style={{marginTop: 16}}>
                         <Form horizontal>
                             <FormItem {...formItemLayout} label="审批原因" >
-                                <Input type="textarea" placeholder="reason" rows="5"  {...getFieldProps('reason',{rules:[{required:true,message:'不能为空'}]})} />
+                                {getFieldDecorator('reason',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="reason" rows="5"   />)}
                             </FormItem>
                             <FormItem wrapperCol={{ span: 16, offset: 6 }}>
                                 <Button type="primary" onClick={this.approve.bind(this, 'agree')}>同意</Button>

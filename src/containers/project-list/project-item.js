@@ -215,10 +215,10 @@ class ProjectItem extends Component {
                             </Tooltip>
                             <span className={styles.arrow}></span>
                             <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
-                            <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onChange={this.handleChange.bind(this)}>
+                            <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onSelect={this.handleChange.bind(this)}>
                                 <Option value="ssh">SSH</Option>
                             </Select>
-                            <Input style={{ width: 300 }}  value={this.state.url}/>
+                            <Input style={{ width: 300 }}  value={this.state.url} type="text"/>
                             <TableView columns={columns(this)}
                                        dataSource={dataSource}
                             ></TableView>
