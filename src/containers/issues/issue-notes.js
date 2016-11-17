@@ -182,7 +182,7 @@ const FormItem = Form.Item;
 
     }
     render() {
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const { issue } = this.props;
         const record = this.props.location.state.record;
 
@@ -238,7 +238,7 @@ const FormItem = Form.Item;
                                     >
                                         <p>如确定，请输入原因：</p>
                                         <FormItem>
-                                            <Input type="textarea" placeholder="reason" rows="5" {...getFieldProps('reason',{rules:[{required:true,message:'不能为空'}]})} />
+                                            {getFieldDecorator('reason',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="reason" rows="5"  />)}
                                         </FormItem>
                                     </Modal>
 
