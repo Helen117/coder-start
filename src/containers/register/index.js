@@ -149,7 +149,7 @@ class Register extends Component{
     }
 
     render() {
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
 
         const pending = this.props.pending?true:false;
 
@@ -157,12 +157,11 @@ class Register extends Component{
             labelCol: { span: 8 },
             wrapperCol: { span: 8 },
         };
-        const selectAfter = (
-            <Select {...getFieldProps('option',{initialValue:'@shpso.com'})} style={{ width: 100 }}>
-                <Option value="@shpso.com">@shpso.com</Option>
-                <Option value="@boss.com">@boss.com</Option>
-            </Select>
-        );
+        const selectAfter = getFieldDecorator('option',{initialValue:'@shpso.com'})(
+                 <Select style={{ width: 105 }}>
+                    <Option value="@shpso.com">@shpso.com</Option>
+                    <Option value="@boss.com">@boss.com</Option>
+                </Select>);
 
         const leader = this.props.leaderInfo?this.props.leaderInfo.map(data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
 
@@ -171,21 +170,21 @@ class Register extends Component{
                 <Box title='新用户注册'>
                     <Form horizontal onSubmit={this.handleSubmit}>
                         <FormItem {...formItemLayout}  label="用户名" >
-                            <Input placeholder="userName" {...getFieldProps('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})} />
+                            {getFieldDecorator('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})(<Input placeholder="userName" />)}
                         </FormItem>
                         <FormItem {...formItemLayout}  label="中文名" >
-                            <Input placeholder="Name" {...getFieldProps('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})} />
+                            {getFieldDecorator('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})(<Input placeholder="Name" />)}
                         </FormItem>
                         <FormItem {...formItemLayout}  label="邮箱" >
-                            <Input placeholder="email"  {...getFieldProps('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})} addonAfter={selectAfter}/>
+                            {getFieldDecorator('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})(<Input placeholder="email" addonAfter={selectAfter}/> )}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="密码" >
-                            <Input type="password" {...getFieldProps('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})} placeholder="password" />
+                            {getFieldDecorator('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})(<Input type="password"  placeholder="password" />)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="ssh key" >
-                            <Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" {...getFieldProps('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})} />
+                            {getFieldDecorator('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})(<Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" />)}
                             <Tooltip placement="right" title="1、下载Git-Bash,运行git-bash.exe;
                             2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
                             3、打开文件:notepad ~/.ssh/id_rsa.pub">
@@ -194,24 +193,24 @@ class Register extends Component{
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="申请角色" >
-                            <Select id="role_id"  {...getFieldProps('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})} >
+                            {getFieldDecorator('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})(<Select id="role_id"  >
                                 <Option value="5">需求</Option>
                                 <Option value="4">测试人员</Option>
                                 <Option value="3">开发人员</Option>
                                 <Option value="2" >BM</Option>
                                 <Option value="1">项目经理</Option>
-                            </Select>
+                            </Select>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout}  label="上级领导" >
-                            <Select showSearch
-                                    showArrow={false}
-                                    placeholder="leader"
-                                    optionFilterProp="children"
-                                    notFoundContent="无法找到"
-                                    {...getFieldProps('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})}>
-                                {leader}
-                            </Select>
+                                {getFieldDecorator('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})(
+                                    <Select showSearch
+                                            showArrow={false}
+                                            placeholder="leader"
+                                            optionFilterProp="children"
+                                            notFoundContent="无法找到">
+                                        {leader}
+                                    </Select>)}
                         </FormItem>
 
                         <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
