@@ -131,7 +131,7 @@ class UserRelation extends React.Component{
 
     render(){
         const {userTreeData, loading, selectedNode, selectedUserGroup} = this.props;
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const content = (
             <div>
                 <a style={{paddingLeft:10}}

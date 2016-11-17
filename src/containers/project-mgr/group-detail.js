@@ -132,49 +132,49 @@ class GroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldProps, getFieldError} = this.props.form;
+        const {getFieldDecorator, getFieldError} = this.props.form;
         const {list} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
         if(list){
-            const nameProps = getFieldProps('name',
+            const nameProps = getFieldDecorator('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
                     //{validator:this.groupNameExists.bind(this)},
-                ]});
-            const descriptionProps = getFieldProps('description',
+                ]})(<Input type="text" placeholder="请输入项目名称"/>);
+            const descriptionProps = getFieldDecorator('description',
                 {rules:[
                     {required:true, message:'请输入描述！'}
-                ]});
-            const visibilityProps = getFieldProps('visibility_level',
+                ]})(<Input type="textarea" />);
+            const visibilityProps = getFieldDecorator('visibility_level',
                 {rules:[
                     {required:true, message:'请选择可见级别！'}
-                ]});
-            const modifyResultProps = getFieldProps('modify_result',
+                ]})(    <RadioGroup>
+                            <Radio value="0">仅对自己可见</Radio>
+                            <Radio value="20">所有人可见</Radio>
+                        </RadioGroup>);
+            const modifyResultProps = getFieldDecorator('modify_result',
                 {rules:[
                     {required:editType == 'add'?false:true, message:'请输入修改原因！'}
-                ]});
+                ]})(<Input type="textarea" rows={4} />);
 
             return (
                 <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <FormItem {...formItemLayout} label="项目组名称">
-                            <Input type="text" {...nameProps} placeholder="请输入项目名称"/>
+                            {nameProps}
                         </FormItem>
                         <FormItem {...formItemLayout} label="描述">
-                            <Input type="textarea" {...descriptionProps} />
+                            {descriptionProps}
                         </FormItem>
                         <FormItem {...formItemLayout} label="可见级别">
-                            <RadioGroup {...visibilityProps}>
-                                <Radio value="0">仅对自己可见</Radio>
-                                <Radio value="20">所有人可见</Radio>
-                            </RadioGroup>
+                            {visibilityProps}
                         </FormItem>
                         {editType == 'add' ? (<div></div>) : (
                             <FormItem {...formItemLayout} label="修改原因">
-                                <Input type="textarea" {...modifyResultProps} rows={4} />
+                                {modifyResultProps}
                             </FormItem>
                         )}
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
