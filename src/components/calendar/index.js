@@ -18,11 +18,11 @@ export default class MilestonesCalendar extends React.Component{
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    editMilestone(item,value){
+    editMilestone(item,date){
         const milestoneEditPath = this.props.milestoneEditPath;
         this.context.router.push({
             pathname: milestoneEditPath,
-            state: {editType: "update", item: item, date: value.time}
+            state: {editType: "update", item: item, date: date}
         });
 
     }
@@ -73,37 +73,33 @@ export default class MilestonesCalendar extends React.Component{
         if(milestoneData.state != 'closed'){
             revocable = true;
         }
-        const due_date = this.getTime(milestoneData.due_date);
         return(
-            calendarTime==due_date?<Tooltip placement="top" title={tooltip}>
-                <div style={{height:'100%'}}>
-                    <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
-                        <Badge className="pull-right" count={milestoneData.expired}>
-                        </Badge>
-                        <ol className="events">
-                                <h4 > <Badge status={type} />{milestoneData.title}</h4>
-                            <li>{milestoneData.description}</li>
-                        </ol>
-
-                    </a>
-
-                </div>
-
-            </Tooltip>:<div></div>
-        )
+            <Tooltip placement="top" title={tooltip}>
+             <div style={{height:'100%'}}>
+                 <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
+                     {milestoneData.expired>0?<Badge className="pull-right" count={milestoneData.expired}>
+                     </Badge>:<div></div>}
+                     <ol className="events">
+                     <h4 > <Badge status={type} />{milestoneData.title}</h4>
+                     <li>{milestoneData.description}</li>
+                     </ol>
+                 </a>
+             </div>
+         </Tooltip>
+    )
 
 
     }
     dateCellRender(milestoneData,value) {
-        //console.log(parseInt(value.format('MM'))-1);
-        const calendarTime = new Date(value.format('YYYY'),parseInt(value.format('MM'))-1,value.format('DD')).getTime();
-        //console.log(calendarTime,new Date(calendarTime))
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
+                const calendarTime = new Date(value).getTime();
+                const milestoneTime = milestoneData[i].due_date+60*60*24*1000;
                 const colorId = i%6;
-                if(calendarTime <= milestoneData[i].due_date){
+                if(calendarTime < milestoneTime){
+                    //console.log(calendarTime,milestoneTime,this.getTime(calendarTime),this.getTime(milestoneTime))
                     const dateCellData = this.getListData(milestoneData[i],calendarTime);
-                    return <div className={`background-${colorId}`} >{dateCellData}</div>;
+                    return <div className={`background-${colorId}`} >{this.getTime(calendarTime)==this.getTime(milestoneData[i].due_date) ?dateCellData:null}</div>;
                 }
 
             }
@@ -129,7 +125,8 @@ export default class MilestonesCalendar extends React.Component{
 
 
     onPanelChange(date,mode){
-        const calendarTime = new Date(date.format('YYYY'),date.format('MM'),date.format('DD')).getTime();
+        const calendarTime = new Date(date).getTime();
+        console.log('onPanelChange',calendarTime,new Date(calendarTime))
         const onPanelChange = this.props.onPanelChange;
         onPanelChange(calendarTime,mode);
     }

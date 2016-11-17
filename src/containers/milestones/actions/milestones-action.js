@@ -7,7 +7,7 @@ import {ACQUIRE_MILESTONES,
 import api from '../../../api';
 
 export function getProjectSetMilestones(set_id, date,mode) {
-    console.log(' getProjectSetMilestones',set_id, date,mode)
+    console.log(' getProjectSetMilestones',set_id, date,new Date(date),mode)
     var path ='/project/milestones';
     return {
         type: ACQUIRE_MILESTONES,

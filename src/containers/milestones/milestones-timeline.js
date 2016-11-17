@@ -34,6 +34,7 @@ class ProjectSetMilestones extends React.Component {
         const {errMessage,closeSetMsResult,closeSetMsErr,projectId} = nextProps;
         if(this.props.milestoneProId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
+            console.log('点击不同项目，重新加载数据',this.props.milestoneProId,nextProps.projectId)
             this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
             this.props.putProIdToStateAction(projectId);
         }
