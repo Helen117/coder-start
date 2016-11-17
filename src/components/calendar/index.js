@@ -61,7 +61,7 @@ export default class MilestonesCalendar extends React.Component{
         }else if(state == 'active' && due_date <= Date.now() && unfinished>0){
             type="error"
         }else{
-            type="processing"
+            type="default"
         }
         return type;
     }
@@ -80,16 +80,14 @@ export default class MilestonesCalendar extends React.Component{
                      {milestoneData.expired>0?<Badge className="pull-right" count={milestoneData.expired}>
                      </Badge>:<div></div>}
                      <ol className="events">
-                     <h4 > <Badge status={type} />{milestoneData.title}</h4>
+                     <h4 style={{color:type=="error"?"red":"default"}}> <Badge status={type} />{milestoneData.title}</h4>
                      <li>{milestoneData.description}</li>
                      </ol>
                  </a>
              </div>
-         </Tooltip>
-    )
-
-
+         </Tooltip>)
     }
+
     dateCellRender(milestoneData,value) {
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
@@ -108,32 +106,43 @@ export default class MilestonesCalendar extends React.Component{
     }
 
 
+    getMonthData(milestoneList,calendarTime) {
+        return <ul className="events">
+            {
+                milestoneList.map((item, index) =>
+                    <Tooltip key={index} placement="left" title={this.tooltip(item)}>
+                        <li key={index} >
+                            <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
+                        </li>
+                    </Tooltip>
+                )
+            }
+        </ul>
 
-    getMonthData(milestoneData,value) {
-        if (value.getMonth() === 8) {
-            return 1394;
+    }
+
+    monthCellRender(milestoneData,value){
+        if(milestoneData) {
+            let milestoneList = [];
+            for (let i = 0; i < milestoneData.length; i++) {
+                if (value.month() == new Date(milestoneData[i].due_date).getMonth()) {
+                    milestoneList.push(milestoneData[i]);
+                }
+            }
+            const monthCellData = this.getMonthData(milestoneList, value.month());
+            return monthCellData;
         }
     }
 
-    monthCellRender(milestoneData,value) {
-        let num = this.getMonthData(milestoneData,value);
-        return num ? <div className="notes-month">
-            <section>{num}</section>
-            <span>待办事项数</span>
-        </div> : null
-    }
-
-
     onPanelChange(date,mode){
         const calendarTime = new Date(date).getTime();
-        console.log('onPanelChange',calendarTime,new Date(calendarTime))
         const onPanelChange = this.props.onPanelChange;
         onPanelChange(calendarTime,mode);
     }
 
 
     render(){
-        const milestoneData = this.props.milestoneData
+        const milestoneData = this.props.milestoneData;
         return (
             <Calendar dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}

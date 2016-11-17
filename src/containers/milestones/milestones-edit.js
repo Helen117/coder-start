@@ -3,6 +3,7 @@ import { DatePicker, Button, Modal, Form, Input, Col,notification, message,Spin}
 import Box from '../../components/box';
 import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
+import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchData from '../../utils/fetch'
@@ -22,10 +23,11 @@ class projectSetMilestonesEdit extends React.Component {
         const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
-            let due_date = item.due_date;
-            item.due_date = new Date(item.due_date);
+            // let due_date = item.due_date;
+            console.log('item.due_date',item.due_date);
             this.props.form.setFieldsValue(item);
-            item.due_date = due_date;
+            this.props.form.setFieldsValue("due_date",moment(item.due_date,"YYYY-MM-DD"));
+            // item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);

@@ -38,6 +38,21 @@ export function getSetMilestonesIssues(milestonesId,projectId) {
     }
 }
 
+export function getMilestonesIssues(milestonesId,projectId) {
+    var path ='/project/project-issues'
+    return {
+        type: ACQUIRE_MILESTONES_DETAIL,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    milestoneId: milestonesId,
+                    projectId: projectId
+                }
+            })
+        }
+    }
+}
+
 export function putProIdToState(projectId) {
     return {
         type: PUT_MILESTONES_PROID,
