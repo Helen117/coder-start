@@ -20,7 +20,7 @@ class ProjectSetMilestones extends React.Component {
     }
 
     componentDidMount() {
-        console.log('调用componentDidMount',Date.now());
+        //console.log('调用componentDidMount',Date.now());
         const {projectId} = this.props;
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
@@ -32,8 +32,9 @@ class ProjectSetMilestones extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const {errMessage,closeSetMsResult,closeSetMsErr,projectId} = nextProps;
-        if(this.props.milestoneProId != nextProps.projectId && projectId){
+        if(this.props.projectId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
+            //console.log('点击不同项目，重新加载数据',this.props.milestoneProId,nextProps.projectId)
             this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
             this.props.putProIdToStateAction(projectId);
         }
@@ -75,24 +76,25 @@ class ProjectSetMilestones extends React.Component {
 
     render(){
         const {loading,notFoundMsg,milestoneData} = this.props;
-        const closeSetMsLoading = this.props.closeSetMsLoading?true:false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
 
             <Spin spinning={loading} tip="正在加载数据，请稍候..." >
 
-                <div style={{margin:15}}>
+                <div id="mycalender" style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
                         <Row>
-                    <div>
+                    <div style={{textAlign:"right"}}>
                         <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                     </div></Row>:<div></div>}
 
                     <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
                                         milestoneData = {milestoneData}
                                         milestonesDetailPath="/projectSetMilestonesDetail"
-                                        milestoneEditPath="/projectSetMilestonesEdit"/>/>
+                                        milestoneEditPath="/projectSetMilestonesEdit"
+                                        projectId = {projectId}
+                                        id = {id}/>/>
                 </div>
 
             </Spin>

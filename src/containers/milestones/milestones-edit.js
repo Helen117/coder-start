@@ -3,6 +3,7 @@ import { DatePicker, Button, Modal, Form, Input, Col,notification, message,Spin}
 import Box from '../../components/box';
 import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
 import {getProjectSetMilestones} from './actions/milestones-action';
+import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchData from '../../utils/fetch'
@@ -22,10 +23,10 @@ class projectSetMilestonesEdit extends React.Component {
         const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
-            let due_date = item.due_date;
-            item.due_date = new Date(item.due_date);
+            // let due_date = item.due_date;
             this.props.form.setFieldsValue(item);
-            item.due_date = due_date;
+            this.props.form.setFieldsValue("due_date",moment(item.due_date,"YYYY-MM-DD"));
+            // item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
                 this.props.getProjectSetMilestones(this.groupId, 1, []);
@@ -128,13 +129,14 @@ class projectSetMilestonesEdit extends React.Component {
 
     disabledDate(current) {
     // can not select days before today and today
-    return current && current.getTime() < Date.now();
+
+    return current && new Date(current).getTime() < Date.now();
     }
 
     render(){
         const {editType} = this.props.location.state;
-        const {getFieldProps} = this.props.form;
-        const titleProps = getFieldProps('title', {
+        const {getFieldDecorator} = this.props.form;
+        const titleProps = getFieldDecorator('title', {
             rules: [
                 { required: true, message:'请输入里程碑名称' },
                 { max: 30, message: '名称长度为 1~30 个字符' },
@@ -142,7 +144,7 @@ class projectSetMilestonesEdit extends React.Component {
             ],
         });
 
-        const dueDateProps = getFieldProps('due_date', {
+        const dueDateProps = getFieldDecorator('due_date', {
             rules: [
                 { required: true, type: 'date', message: '请选择结束日期' },
                 { validator: this.checkDuedate.bind(this) }
@@ -159,19 +161,21 @@ class projectSetMilestonesEdit extends React.Component {
                 <Spin spinning={updateLoading} tip="正在保存数据,请稍候..." >
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                         <FormItem   {...formItemLayout} label="名称">
-                            <Input {...titleProps} placeholder="请输入里程碑名称" />
+                            {titleProps(<Input placeholder="请输入里程碑名称" /> )}
                         </FormItem>
+
                         <FormItem {...formItemLayout} label="描述" >
-                            <Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" {...getFieldProps('description')} />
+                            {getFieldDecorator('description')( < Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" />)}
                         </FormItem>
+
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            <DatePicker disabledDate={this.disabledDate} placeholder="计划完成时间"  {...dueDateProps}/>
+                            {dueDateProps(<DatePicker disabledDate={this.disabledDate} placeholder="计划完成时间" />)}
+
                         </FormItem>
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">
-                                <Input  type="textarea" rows="5"
-                                        {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
-                                        placeholder="请输入里程碑的修改原因 " />
+                                {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
+                                (<Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
                             </FormItem>:<div></div>}
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>

@@ -112,13 +112,13 @@ class createBranches extends Component {
 
     render(){
         const {editType} = this.props.location.state;
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const {branchesData} = this.props;
 
         const branches =branchesData? branchesData.branch.map(data => <Option key={data}>{data}</Option>):[];
         const initialBranch = branchesData? branchesData.branch[0]:null;
 
-        const newBranchProps = getFieldProps('new_branch', {
+        const newBranchProps = getFieldDecorator('new_branch', {
             rules: [
                 { required: true,message: '请输入分支名称', },
                 {max: 30,message: '分支名称需在30字符以内'},
@@ -136,14 +136,14 @@ class createBranches extends Component {
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
 
                     <FormItem {...formItemLayout}  label="新分支名称" >
-                        <Input placeholder="请输入分支名称" {...newBranchProps} />
+                        {newBranchProps(<Input placeholder="请输入分支名称" />)}
+
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="源分支名称" >
-                        <Select  {...getFieldProps('ref_branch',{initialValue: initialBranch})} >
-                            {branches}
-                        </Select>
-                    </FormItem>
+                        {getFieldDecorator('ref_branch',{initialValue: initialBranch})(<Select>{branches}</Select>)}
+
+                </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>

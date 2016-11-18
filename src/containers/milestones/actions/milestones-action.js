@@ -7,7 +7,6 @@ import {ACQUIRE_MILESTONES,
 import api from '../../../api';
 
 export function getProjectSetMilestones(set_id, date,mode) {
-    console.log(' getProjectSetMilestones',set_id, date,mode)
     var path ='/project/milestones';
     return {
         type: ACQUIRE_MILESTONES,
@@ -25,6 +24,21 @@ export function getProjectSetMilestones(set_id, date,mode) {
 
 export function getSetMilestonesIssues(milestonesId,projectId) {
     var path ='/project/sets-issues'
+    return {
+        type: ACQUIRE_MILESTONES_DETAIL,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    milestoneId: milestonesId,
+                    projectId: projectId
+                }
+            })
+        }
+    }
+}
+
+export function getMilestonesIssues(milestonesId,projectId) {
+    var path ='/project/project-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,
         payload: {
