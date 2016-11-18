@@ -4,6 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import ReactDOM from "react-dom";
 import {Table, Button, Row, Col, message, Modal, notification, Form, Input,Icon} from 'antd';
 import {getUserInfo} from './actions/user-info-action';
 import {MoveUser,DeleteGroupUser} from './actions/user-detail-action';
@@ -21,7 +22,7 @@ class UserInfo extends React.Component {
             moveOutVisible:false,
             moreGroupVisible:false,
             source_user_id:null,
-            dataSource:[]
+            dataSource:[],
         }
     }
 
@@ -54,9 +55,10 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
+        //console.log("componentWillReceiveProps")
         const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors,userInfoData} = nextProps;
-        const node = nextProps.location.state.node;
-        if(node != this.props.location.state.node && node){
+        const node = nextProps.selectedNode;
+        if(node != this.props.selectedNode && node){
             this.props.getUserInfo(selectedUserGroup.id);
         }
         if(userInfoData != this.props.userInfoData && userInfoData){
@@ -97,10 +99,6 @@ class UserInfo extends React.Component {
             });
         }
         return dataSource;
-    }
-
-    addToProject(){
-
     }
 
     handleOk(node) {
@@ -148,6 +146,10 @@ class UserInfo extends React.Component {
 
     comfirmFilter(formData){
         let newData=[];
+        let column = this.groupColumns(this);
+        /*console.log("columns:",column)
+         console.log("this.state.dataSource:",this.state.dataSource)
+         console.log("formData:",formData);*/
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name.indexOf(formData.searchContext) >=0 ){
                 newData.push(this.state.dataSource[i]);
@@ -165,9 +167,10 @@ class UserInfo extends React.Component {
     }
 
     render(){
-        const {userInfoData, loading} = this.props;
+        /*console.log("this.data:",this.data)
+         console.log("this.state.dataSource:",this.state.dataSource)*/
+        const {userInfoData, loading, showUserInfo,visible} = this.props;
         const {getFieldDecorator} = this.props.form;
-        let add_member = this.props.location.state.addMember;
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {},
             onSelect(record, selected, selectedRows) {},
@@ -176,41 +179,39 @@ class UserInfo extends React.Component {
         let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
+        let showOpt = true;
+        if(visible){ showOpt = false; }
 
-        return(
-            <div style={{"paddingLeft":10}}>
-                <Row>
-                    <Table style={{"paddingTop":10}}
-                           columns={this.groupColumns(this)}
-                           dataSource={dataSource}
-                           rowSelection={rowSelection}
-                           loading={loading?true:false}></Table>
-                    <Modal title="确认移除此成员吗?"
-                           visible={this.state.moveOutVisible}
-                           onOk={this.handleOk.bind(this)}
-                           confirmLoading={this.props.deleteLoading?true:false}
-                           onCancel={this.handleCancel.bind(this)}
-                    >
-                        <span>移除成员后，该成员再进入系统需要使用新邮箱重新注册！如果确认，请输入原因：</span>
-                         <FormItem>
-                             {reasonProps}
-                         </FormItem>
-                    </Modal>
-                    <MoreUserGroup modalVisible={this.state.moreGroupVisible}
-                                   loading={this.props.loadingTree}
-                                   confirmLoading={this.props.moveLoading?true:false}
-                                   nodesData={this.props.userTreeData}
-                                   handleOk={this.handleOk.bind(this)}
-                                   cancelChoose={this.handleCancel.bind(this)}/>
-                </Row>
-                <Row>
-                    {add_member?(
-                        <Button type="primary"
-                                onClick={this.addToProject.bind(this)}>添加到项目</Button>
-                    ):(<div></div>)}
-                </Row>
-            </div>
-        )
+        if(showUserInfo == true){
+            return(
+                <div style={{"paddingLeft":10}}>
+                    <Row>
+                        <Table style={{"paddingTop":10}}
+                               columns={this.groupColumns(this,showOpt)}
+                               dataSource={dataSource}
+                               rowSelection={rowSelection}
+                               loading={loading?true:false}></Table>
+                        <Modal title="确认移除此成员吗?"
+                               visible={this.state.moveOutVisible}
+                               onOk={this.handleOk.bind(this)}
+                               confirmLoading={this.props.deleteLoading?true:false}
+                               onCancel={this.handleCancel.bind(this)}
+                        >
+                            <span>移除成员后，该成员再进入系统需要使用新邮箱重新注册！如果确认，请输入原因：</span>
+                            <FormItem>
+                                {reasonProps}
+                            </FormItem>
+                        </Modal>
+                        <MoreUserGroup modalVisible={this.state.moreGroupVisible}
+                                       loading={this.props.loadingTree}
+                                       confirmLoading={this.props.moveLoading?true:false}
+                                       nodesData={this.props.userTreeData}
+                                       handleOk={this.handleOk.bind(this)}
+                                       cancelChoose={this.handleCancel.bind(this)}/>
+                    </Row>
+                </div>
+            )
+        }else {return <div></div>}
     }
 }
 
@@ -220,25 +221,39 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self)=>[
-    {title: (<TableFilterTitle title="员工姓名"
-                  comfirmFilter={self.comfirmFilter.bind(self)}
-                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
-    {title: (<TableFilterTitle title="角色"
-                  comfirmFilter={self.comfirmFilter.bind(self)}
-                  cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
-    {title: "邮箱", dataIndex: "email", key: "email"},
-    {title:"操作",dataIndex:"operate",key:"operate",
-        render(text,record){
-            return (
-                <div>
-                    <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>移除</Button>
-                    <Button type="ghost" onClick={self.editUser.bind(self, 'move',record)}>移动</Button>
-                </div>
-            )
-        }
+UserInfo.prototype.groupColumns = (self,showOpt)=>{
+    if(showOpt==true){
+        return [
+            {title: (<TableFilterTitle id="name" title="员工姓名"
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
+            {title: (<TableFilterTitle id="role" title="角色"
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
+            {title: "邮箱", dataIndex: "email", key: "email"},
+            {title:"操作",dataIndex:"operate",key:"operate",
+                render(text,record){
+                    return (
+                        <div>
+                            <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>移除</Button>
+                            <Button type="ghost" onClick={self.editUser.bind(self, 'move',record)}>移动</Button>
+                        </div>
+                    )
+                }
+            }
+        ]
+    }else{
+        return [
+            {title: (<TableFilterTitle id="name" title="员工姓名"
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
+            {title: (<TableFilterTitle id="role" title="角色"
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
+            {title: "邮箱", dataIndex: "email", key: "email"},
+        ]
     }
-];
+};
 
 UserInfo = Form.create()(UserInfo);
 

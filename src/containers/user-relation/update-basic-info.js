@@ -92,6 +92,7 @@ class UpdateBasicInfo extends React.Component {
     }
 
     render() {
+        console.log("this.props.loginInfo:",this.props.loginInfo)
         const {visible} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
