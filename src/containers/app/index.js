@@ -150,15 +150,13 @@ class App extends React.Component {
                 />
                 <Affix>
                     <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
+                    <NavPath />
+                    <MenuBar menuData={this.props.menuData}
+                             navpath={this.props.navpath}
+                             is_menuclick={this.props.is_menuclick}
+                    />
                 </Affix>
                 <div className="ant-layout-main" >
-                    <Affix offsetTop={66}>
-                        <NavPath />
-                        <MenuBar menuData={this.props.menuData}
-                                 navpath={this.props.navpath}
-                                 is_menuclick={this.props.is_menuclick}
-                        />
-                    </Affix>
                     <div className="ant-layout-container">
                         {/*<div className="ant-layout-content">*/}
                         {this.props.children}
