@@ -5,13 +5,13 @@
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
 import './index.less';
+import ReactDOM from 'react-dom'
 
 
 export default class MilestonesCalendar extends React.Component{
     constructor (props) {
         super(props);
     }
-
 
 
     getTime(date) {
@@ -77,10 +77,16 @@ export default class MilestonesCalendar extends React.Component{
             <Tooltip placement="top" title={tooltip}>
              <div style={{height:'100%'}}>
                  <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
-                     {milestoneData.expired>0?<Badge className="pull-right" count={milestoneData.expired}>
-                     </Badge>:<div></div>}
                      <ol className="events">
-                     <h4 style={{color:type=="error"?"red":"default"}}> <Badge status={type} />{milestoneData.title}</h4>
+
+                         <li style={{paddingTop:5}}>
+                             <Badge count={milestoneData.expired}>
+                                 <h4 style={{color:type=="error"?"red":"default"}}>
+                                <Badge status={type} />{milestoneData.title}
+                                 </h4>
+                             </Badge>
+                         </li>
+
                      <li>{milestoneData.description}</li>
                      </ol>
                  </a>
@@ -89,20 +95,19 @@ export default class MilestonesCalendar extends React.Component{
     }
 
     dateCellRender(milestoneData,value) {
+        const calendarTime = new Date(value).getTime();
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
-                const calendarTime = new Date(value).getTime();
                 const milestoneTime = milestoneData[i].due_date+60*60*24*1000;
                 const colorId = i%6;
                 if(calendarTime < milestoneTime){
-                    //console.log(calendarTime,milestoneTime,this.getTime(calendarTime),this.getTime(milestoneTime))
                     const dateCellData = this.getListData(milestoneData[i],calendarTime);
-                    return <div className={`background-${colorId}`} >{this.getTime(calendarTime)==this.getTime(milestoneData[i].due_date) ?dateCellData:null}</div>;
+                    let dateCellMount = <div className={`background-${colorId}`} >{this.getTime(calendarTime)==this.getTime(milestoneData[i].due_date) ?dateCellData:null}</div>
+                    return dateCellMount
                 }
 
             }
         }
-        //return <div style={{backgroundColor:'red'}} >11111</div>
     }
 
 
@@ -110,11 +115,17 @@ export default class MilestonesCalendar extends React.Component{
         return <ul className="events">
             {
                 milestoneList.map((item, index) =>
-                    <Tooltip key={index} placement="left" title={this.tooltip(item)}>
-                        <li key={index} >
+
+
+                        <li style={{paddingTop:5}} key={index} >
+                            <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                                <Badge count={item.expired}>
                             <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
+                                </Badge>
+                            </Tooltip>
                         </li>
-                    </Tooltip>
+
+
                 )
             }
         </ul>

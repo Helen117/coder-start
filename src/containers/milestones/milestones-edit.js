@@ -24,7 +24,6 @@ class projectSetMilestonesEdit extends React.Component {
         if (item){
             item.description = item.description? item.description:"";
             // let due_date = item.due_date;
-            console.log('item.due_date',item.due_date);
             this.props.form.setFieldsValue(item);
             this.props.form.setFieldsValue("due_date",moment(item.due_date,"YYYY-MM-DD"));
             // item.due_date = due_date;
