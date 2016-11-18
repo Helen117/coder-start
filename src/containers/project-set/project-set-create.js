@@ -140,9 +140,9 @@ class projectSetCreate extends React.Component {
 
     render(){
         const {editType} = this.props.location.state;
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const spinning = this.props.loading? true: false;
-        const titleProps = getFieldProps('name', {
+        const titleProps = getFieldDecorator('name', {
             rules: [
                 { required: true, message:'请输入项目集合名称' },
                 { max: 30, message: '名称长度最大 30 个字符' },
@@ -159,30 +159,29 @@ class projectSetCreate extends React.Component {
                 <Spin spinning={this.props.updateLoading} tip="正在保存数据" >
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                         <FormItem   {...formItemLayout} label="名称">
-                            <Input {...titleProps} placeholder="请输入项目集合名称" />
+                            {titleProps(<Input  placeholder="请输入项目集合名称" />)}
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="描述">
-                            <Input  type="textarea" rows="5"
-                                    {...getFieldProps('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )}
-                                    placeholder="请输入项目集合描述 " />
+                            {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )
+                            (<Input  type="textarea" rows="5" placeholder="请输入项目集合描述 " />)}
                         </FormItem>
 
                         <FormItem   {...formItemLayout} label="项目">
                                 <Spin spinning={spinning}>
-                                    <TransferFilter dataSource = {this.props.projectInfo}
-                                                    {...getFieldProps('project_set')}
-                                                    onChange={this.handleChange.bind(this)}
-                                                    loadingProMsg={this.props.loadingProMsg }
-                                                    fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                    targetKeys = {targetKeys}/>
+                                    {getFieldDecorator('project_set')(<TransferFilter dataSource = {this.props.projectInfo}
+
+                                                                                      onChange={this.handleChange.bind(this)}
+                                                                                      loadingProMsg={this.props.loadingProMsg }
+                                                                                      fetchProMsgErr ={this.props.fetchProMsgErr}
+                                                                                      targetKeys = {targetKeys}/>)}
                                 </Spin>
                         </FormItem>
                         {editType == 'update' ?
                         <FormItem  {...formItemLayout} label="修改原因">
-                            <Input  type="textarea" rows="5"
-                                    {...getFieldProps('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]} )}
-                                    placeholder="请输入项目集合的修改原因 " />
+                            {getFieldDecorator('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
+                            (<Input  type="textarea" rows="5" placeholder="请输入项目集合的修改原因 " />)}
+
                         </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
