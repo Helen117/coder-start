@@ -5,6 +5,7 @@
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
 import './index.less';
+import moment from 'moment';
 import ReactDOM from 'react-dom'
 
 
