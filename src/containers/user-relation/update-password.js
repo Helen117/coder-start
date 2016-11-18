@@ -1,9 +1,6 @@
 /**
  * Created by Administrator on 2016-11-15.
  */
-/**
- * Created by Administrator on 2016-11-09.
- */
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -17,6 +14,9 @@ const confirm = Modal.confirm;
 class UpdatePassword extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            visible:false
+        }
     }
 
     handleSubmit(e) {
@@ -39,34 +39,24 @@ class UpdatePassword extends React.Component {
 
     handleCancel() {
         const {form} = this.props;
-        const {router} = this.context;
-
-        confirm({
-            title: '您是否确定要取消表单的编辑',
-            content: '取消之后表单内未提交的修改将会被丢弃',
-            onOk() {
-                router.goBack();
-                form.resetFields();
-            },
-            onCancel() {
-            }
-        })
+        form.resetFields();
     }
 
     insertCallback(message){
+        const {form} = this.props;
         notification.success({
             message: message,
             description: '',
-            duration: 2
+            duration: null,
         });
-        this.context.router.goBack();
+        form.resetFields();
     }
 
     errCallback(message,errmessage){
         notification.error({
             message: message,
             description:errmessage,
-            duration: 4
+            duration:null,
         });
     }
 
@@ -90,48 +80,53 @@ class UpdatePassword extends React.Component {
     }
 
     render() {
-        const {getFieldProps} = this.props.form;
+        const {visible} = this.props;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
             wrapperCol: {span: 8},
         };
-        const oldPasswordProps = getFieldProps('old_password',
+        const oldPasswordProps = getFieldDecorator('old_password',
             {rules:[
                 {required:true, message:'请输入原始密码！'},
-            ]});
-        const newPasswordProps = getFieldProps('new_password',
+            ]})(<Input type="password" placeholder="请输入原密码"/>);
+        const newPasswordProps = getFieldDecorator('new_password',
             {rules:[
                 {required:true, message:'请输入新密码！'},
-            ]});
-        const comfirmNewPassword = getFieldProps('comfirm_password',
+            ]})(<Input type="password" placeholder="请输入新密码"/>);
+        const comfirmNewPassword = getFieldDecorator('comfirm_password',
             {rules:[
                 {required:true, message:'请输入新密码！'},
                 {validator: this.comfirmNewPass.bind(this)}
-            ]});
+            ]})(<Input type="password" placeholder="请再次输入新密码"/>);
+        let showPassword = this.state.visible;
+        if(visible){ showPassword = true }
 
-        return(
-            <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                <FormItem {...formItemLayout} label="原密码">
-                    <Input type="password" {...oldPasswordProps} placeholder="请输入原密码"/>
-                </FormItem>
+        if(showPassword == true){
+            return(
+                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                    <FormItem {...formItemLayout} label="原密码">
+                        {oldPasswordProps}
+                    </FormItem>
 
-                <FormItem {...formItemLayout} label="新密码">
-                    <Input type="password" {...newPasswordProps} placeholder="请输入新密码"/>
-                </FormItem>
+                    <FormItem {...formItemLayout} label="新密码">
+                        {newPasswordProps}
+                    </FormItem>
 
-                <FormItem {...formItemLayout} label="确认新密码">
-                    <Input type="password" {...comfirmNewPassword} placeholder="请再次输入新密码"/>
-                </FormItem>
+                    <FormItem {...formItemLayout} label="确认新密码">
+                        {comfirmNewPassword}
+                    </FormItem>
 
-                <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
-                    <Button type="primary" htmlType="submit"
-                            loading={this.props.updateLoading}
-                            disabled={this.props.updateDisabled}>
-                        确定</Button>
-                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                </FormItem>
-            </Form>
-        )
+                    <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
+                        <Button type="primary" htmlType="submit"
+                                loading={this.props.updateLoading}
+                                disabled={this.props.updateDisabled}>
+                            确定</Button>
+                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>重置</Button>
+                    </FormItem>
+                </Form>
+            )
+        }else {return <div></div>}
     }
 }
 
