@@ -85,6 +85,7 @@ class ProjectIssueList extends Component {
         e.preventDefault();
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
+        console.log("查询条件：",data);
     }
 
     // onToggle(){
@@ -103,7 +104,7 @@ class ProjectIssueList extends Component {
 
 
     render() {
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 14 },
@@ -124,61 +125,61 @@ class ProjectIssueList extends Component {
                             <Row gutter={16}>
                                 <Col sm={8}>
                                     <FormItem label="里程碑" {...formItemLayout} >
-                                        <Select showSearch
-                                                showArrow={false}
-                                                placeholder="请选择里程碑"
-                                                optionFilterProp="children"
-                                                notFoundContent="无法找到"
-                                                {...getFieldProps('milestone')}>
+                                        {getFieldDecorator('milestone')(
+                                            <Select showSearch
+                                                    showArrow={false}
+                                                    placeholder="请选择里程碑"
+                                                    optionFilterProp="children"
+                                                    notFoundContent="无法找到">
                                             {mileStoneOptions}
-                                        </Select>
+                                        </Select>)}
                                     </FormItem>
                                     <FormItem label="修复人" {...formItemLayout} >
-                                        <Select showSearch
-                                                showArrow={false}
-                                                placeholder="请选择人员"
-                                                optionFilterProp="children"
-                                                notFoundContent="无法找到"
-                                                {...getFieldProps('assignee')}>
+                                        {getFieldDecorator('assignee')(
+                                            <Select showSearch
+                                                    showArrow={false}
+                                                    placeholder="请选择人员"
+                                                    optionFilterProp="children"
+                                                    notFoundContent="无法找到">
                                             {assignee}
-                                        </Select>
+                                        </Select>)}
                                     </FormItem>
                                     <FormItem label="状态" {...formItemLayout}>
-                                        <Select {...getFieldProps('state')}>
+                                         {getFieldDecorator('state')(<Select>
                                             <Option value="opened">打开</Option>
                                             <Option value="closed">关闭</Option>
                                             <Option value="reopened" >重开</Option>
-                                        </Select>
+                                        </Select>)}
                                     </FormItem>
                                 </Col>
                                 <Col sm={8}>
                                     <FormItem label="问题标签" {...formItemLayout}>
-                                        <Select showSearch
-                                                showArrow={false}
-                                                placeholder="请选择标签"
-                                                optionFilterProp="children"
-                                                notFoundContent="无法找到"
-                                                {...getFieldProps('label')}>
+                                        {getFieldDecorator('label')(
+                                            <Select showSearch
+                                                    showArrow={false}
+                                                    placeholder="请选择标签"
+                                                    optionFilterProp="children"
+                                                    notFoundContent="无法找到">
                                             {label}
-                                        </Select>
+                                        </Select>)}
                                     </FormItem>
                                     <FormItem label="创建时间" {...formItemLayout}>
-                                        <RangePicker size="default" {...getFieldProps('created_at')}/>
+                                        {getFieldDecorator('created_at')(<RangePicker size="default" />)}
                                     </FormItem>
                                     <FormItem label="计划完成时间" {...formItemLayout}>
-                                        <RangePicker size="default" {...getFieldProps('due_date')}/>
+                                        {getFieldDecorator('due_date')(<RangePicker size="default" />)}
                                     </FormItem>
                                 </Col>
                                 <Col sm={8}>
                                     <FormItem label="创建人"{...formItemLayout}>
-                                        <Select showSearch
-                                                showArrow={false}
-                                                placeholder="请选择人员"
-                                                optionFilterProp="children"
-                                                notFoundContent="无法找到"
-                                                {...getFieldProps('author_name')}>
+                                        {getFieldDecorator('author_name')(
+                                            <Select showSearch
+                                                    showArrow={false}
+                                                    placeholder="请选择人员"
+                                                    optionFilterProp="children"
+                                                    notFoundContent="无法找到">
                                             {userInfo}
-                                        </Select>
+                                        </Select>)}
                                     </FormItem>
                                 </Col>
                             </Row>

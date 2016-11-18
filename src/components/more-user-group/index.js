@@ -52,9 +52,9 @@ class MoreUserGroup extends React.Component{
 
     render(){
         const {loading, nodesData} = this.props;
-        const {getFieldProps} = this.props.form;
-        const reasonProps = getFieldProps('reason',
-            {});
+        const {getFieldDecorator} = this.props.form;
+        const reasonProps = getFieldDecorator('reason',
+            {})(<Input type="textarea" rows={2} />);
 
         return(
             <Modal title="组织选择"
@@ -65,7 +65,7 @@ class MoreUserGroup extends React.Component{
             >
                 <span>请输入原因：</span>
                 <FormItem>
-                    <Input type="textarea" {...reasonProps} rows={2} />
+                    {reasonProps}
                 </FormItem>
                 <TreeFilter
                     loading={loading}

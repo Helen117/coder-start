@@ -137,7 +137,7 @@ class createMergeRequest extends Component {
 
     render(){
         const {editType} = this.props.location.state;
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const {mergeBranch} = this.props;
         let targetPath,sourceBranch,initialSourceBranch;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
@@ -168,74 +168,54 @@ class createMergeRequest extends Component {
                     <Row>
                         <Col span="9">
                             <FormItem  labelCol={{ span: 16 }} wrapperCol={{ span: 4 }} label="源分支">
-                                <Select style={{ width: 200 }} {...getFieldProps('path',{initialValue: sourcePath,rules: [{ required: true, message: '请选择源分支' }]})} >
-                                    <Option key={sourcePath}>{sourcePath}</Option>
-                                </Select>
+                                {getFieldDecorator('path',{initialValue: sourcePath,rules: [{ required: true, message: '请选择源分支' }]})
+                                ( <Select style={{ width: 200 }}> <Option key={sourcePath}>{sourcePath}</Option></Select>)}
                             </FormItem>
                         </Col>
                         <Col span="3" offset="1">
                             <FormItem  {...formItemLayout} label="" >
-                                <Select style={{ width: 100,marginLeft:5 }}
-                                        onSelect={this.changeTargetBranch.bind(this)}
-                                        {...getFieldProps('source_branch',{initialValue: initialSourceBranch})} >
-                                        {sourceBranch}
-                                </Select>
+                                {getFieldDecorator('source_branch',{initialValue: initialSourceBranch})
+                                (<Select style={{ width: 100,marginLeft:5 }}onSelect={this.changeTargetBranch.bind(this)}>{sourceBranch}</Select>)}
                             </FormItem>
                         </Col>
                         <Col span="4">
                             <FormItem  {...formItemLayout} label="目标分支" >
-                                <Select style={{ width: 200 }}
-                                        {...getFieldProps('target_project_path',{initialValue: targetPath})} >
-                                    <Option value={targetPath}>{targetPath}</Option>
-                                </Select>
+                                {getFieldDecorator('target_project_path',{initialValue: targetPath})
+                                (<Select style={{ width: 200 }}><Option value={targetPath}>{targetPath}</Option></Select>)}
+
                             </FormItem>
                         </Col>
                         <Col span="6" offset="1">
                             <FormItem required={true} {...formItemLayout} label="">
-                               <Select  style={{ width: 100,marginLeft:5 }}
-                                       {...getFieldProps('target_branch',
-                                           {initialValue: initialTargetBranch, rules:[{required:true,message:'没有与其对应的目标分支'}]})} >
-                                    {targetBranch}
-                                </Select>
+                                {getFieldDecorator('target_branch',{initialValue: initialTargetBranch, rules:[{required:true,message:'没有与其对应的目标分支'}]})
+                                (<Select  style={{ width: 100,marginLeft:5 }}>{targetBranch}</Select>)}
                             </FormItem>
                         </Col>
                     </Row>
 
                     <FormItem {...formItemLayout}  label="MR名称" >
-                        <Input placeholder="请输入MR名称"
-                               {...getFieldProps('title',
-                                   {rules:[{ required:true,message:'请填写MR名称'},
-                                       { max:30,message:'MR名称长度最大30个字符'}]})} />
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写MR名称'},{ max:30,message:'MR名称长度最大30个字符'}]})
+                        (<Input placeholder="请输入MR名称"/>)}
+
                     </FormItem>
                     <FormItem {...formItemLayout} label="MR描述" >
-                        <Input type="textarea"
-                               placeholder="请输入MR描述"
-                               rows="5"
-                               {...getFieldProps('description',
-                                   {rules:[{required:true,message:'请填写MR描述'}]})} />
+                        {getFieldDecorator('description', {rules:[{required:true,message:'请填写MR描述'}]})
+                        (<Input type="textarea" placeholder="请输入MR描述" rows="5" />)}
+
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑"  >
-                        <Select size="large"
-                                allowClear={true}
-                                {...getFieldProps('milestone.id')}
-                                onSelect={this.loadIssues.bind(this)}>
-                            {mileStoneOptions}
-                        </Select>
+                        {getFieldDecorator('milestone.id')
+                        (<Select size="large" allowClear={true} onSelect={this.loadIssues.bind(this)}>{mileStoneOptions}</Select>)}
+
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题">
-                        <Select size="large"
-                                allowClear={true}
-                                {...getFieldProps('issue_id')} >
-                            {issuesOptions}
-                        </Select>
+                        {getFieldDecorator('issue_id')(<Select size="large" allowClear={true} > {issuesOptions} </Select>)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="MR标签" >
-                        <Select multiple size="large"  {...getFieldProps('labels')} >
-                            {label}
-                        </Select>
+                        {getFieldDecorator('labels')(<Select multiple size="large" > {label} </Select>)}
                     </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>

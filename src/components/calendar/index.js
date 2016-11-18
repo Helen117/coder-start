@@ -5,6 +5,7 @@
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
 import './index.less';
+import ReactDOM from 'react-dom'
 
 
 export default class MilestonesCalendar extends React.Component{
@@ -13,16 +14,15 @@ export default class MilestonesCalendar extends React.Component{
     }
 
 
-
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    editMilestone(item,value){
+    editMilestone(item,date){
         const milestoneEditPath = this.props.milestoneEditPath;
         this.context.router.push({
             pathname: milestoneEditPath,
-            state: {editType: "update", item: item, date: value.time}
+            state: {editType: "update", item: item, date: date}
         });
 
     }
@@ -61,82 +61,99 @@ export default class MilestonesCalendar extends React.Component{
         }else if(state == 'active' && due_date <= Date.now() && unfinished>0){
             type="error"
         }else{
-            type="processing"
+            type="default"
         }
         return type;
     }
 
-    getListData(milestoneData,value) {
+    getListData(milestoneData,calendarTime) {
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
         const tooltip = this.tooltip(milestoneData);
         let revocable = false;
         if(milestoneData.state != 'closed'){
             revocable = true;
         }
-        const calendarTime = this.getTime(value.time);
-        const due_date = this.getTime(milestoneData.due_date);
         return(
-            calendarTime==due_date?<Tooltip placement="top" title={tooltip}>
+            <Tooltip placement="top" title={tooltip}>
+             <div style={{height:'100%'}}>
+                 <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
+                     <ol className="events">
 
-                <div style={{height:'100%'}}>
-                    <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,value):null} >
-                        <Badge className="pull-right" count={milestoneData.expired}>
-                        </Badge>
-                        <ol className="events">
-                                <h4 > <Badge status={type} />{milestoneData.title}</h4>
-                            <li>{milestoneData.description}</li>
-                        </ol>
+                         <li style={{paddingTop:5}}>
+                             <Badge count={milestoneData.expired}>
+                                 <h4 style={{color:type=="error"?"red":"default"}}>
+                                <Badge status={type} />{milestoneData.title}
+                                 </h4>
+                             </Badge>
+                         </li>
 
-                    </a>
-
-                </div>
-
-            </Tooltip>:<div></div>
-        )
-
-
+                     <li>{milestoneData.description}</li>
+                     </ol>
+                 </a>
+             </div>
+         </Tooltip>)
     }
+
     dateCellRender(milestoneData,value) {
+        const calendarTime = new Date(value).getTime();
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
+                const milestoneTime = milestoneData[i].due_date+60*60*24*1000;
                 const colorId = i%6;
-                const calendarTime = value.getDayOfMonth();
-                const due_date = new Date(milestoneData[i].due_date).getDate();
-                if(value.time<milestoneData[i].due_date+60*60*24*1000){
-                    const dateCellData = this.getListData(milestoneData[i],value);
-                    return <div className={`background-${colorId}`} >{dateCellData}</div>;
+                if(calendarTime < milestoneTime){
+                    const dateCellData = this.getListData(milestoneData[i],calendarTime);
+                    let dateCellMount = <div className={`background-${colorId}`} >{this.getTime(calendarTime)==this.getTime(milestoneData[i].due_date) ?dateCellData:null}</div>
+                    return dateCellMount
                 }
 
             }
         }
-        //return <div style={{backgroundColor:'red'}} >11111</div>
     }
 
 
+    getMonthData(milestoneList,calendarTime) {
+        return <ul className="events">
+            {
+                milestoneList.map((item, index) =>
 
-    getMonthData(milestoneData,value) {
-        if (value.getMonth() === 8) {
-            return 1394;
+
+                        <li style={{paddingTop:5}} key={index} >
+                            <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                                <Badge count={item.expired}>
+                            <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
+                                </Badge>
+                            </Tooltip>
+                        </li>
+
+
+                )
+            }
+        </ul>
+
+    }
+
+    monthCellRender(milestoneData,value){
+        if(milestoneData) {
+            let milestoneList = [];
+            for (let i = 0; i < milestoneData.length; i++) {
+                if (value.month() == new Date(milestoneData[i].due_date).getMonth()) {
+                    milestoneList.push(milestoneData[i]);
+                }
+            }
+            const monthCellData = this.getMonthData(milestoneList, value.month());
+            return monthCellData;
         }
     }
 
-    monthCellRender(milestoneData,value) {
-        let num = this.getMonthData(milestoneData,value);
-        return num ? <div className="notes-month">
-            <section>{num}</section>
-            <span>待办事项数</span>
-        </div> : null
-    }
-
-
     onPanelChange(date,mode){
+        const calendarTime = new Date(date).getTime();
         const onPanelChange = this.props.onPanelChange;
-        onPanelChange(date.time,mode);
+        onPanelChange(calendarTime,mode);
     }
 
 
     render(){
-        const milestoneData = this.props.milestoneData
+        const milestoneData = this.props.milestoneData;
         return (
             <Calendar dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}
