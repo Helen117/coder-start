@@ -166,7 +166,7 @@ class UserInfo extends React.Component {
 
     render(){
         const {userInfoData, loading} = this.props;
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         let add_member = this.props.location.state.addMember;
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {},
@@ -174,8 +174,8 @@ class UserInfo extends React.Component {
             onSelectAll(selected, selectedRows, changeRows) {},
         };
         let dataSource = this.getDataSource(this.state.dataSource);
-        const reasonProps = getFieldProps('reason',
-            {});
+        const reasonProps = getFieldDecorator('reason',
+            {})(<Input type="textarea" rows={4} />);
 
         return(
             <div style={{"paddingLeft":10}}>
@@ -193,7 +193,7 @@ class UserInfo extends React.Component {
                     >
                         <span>移除成员后，该成员再进入系统需要使用新邮箱重新注册！如果确认，请输入原因：</span>
                          <FormItem>
-                         <Input type="textarea" {...reasonProps} rows={4} />
+                             {reasonProps}
                          </FormItem>
                     </Modal>
                     <MoreUserGroup modalVisible={this.state.moreGroupVisible}

@@ -4,9 +4,12 @@
 import React, { PropTypes, Component } from 'react';
 import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin} from 'antd';
 import {bindActionCreators} from 'redux';
+import moment from 'moment';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as issue from './actions/issue-action';
+// import 'moment/locale/zh-cn';
+// moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -61,7 +64,7 @@ class AddIssue extends Component{
                 setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
             }
             if(selectedRow.due_date){
-                setFieldsValue({'due_date': new Date(selectedRow.due_date)});
+                setFieldsValue({'due_date': moment(selectedRow.due_date,"YYYY-MM-DD")});
                 }
 
             if(selectedRow.author_id==this.props.loginInfo.userId){
@@ -145,13 +148,13 @@ class AddIssue extends Component{
             } else {
                 const data = form.getFieldsValue();
                 data.username=loginInfo.username;
-                //console.log('收到表单值：', data);
+                // console.log('收到表单值：', data);
                 if(data.milestone.id&&data.due_date){
                     const due_date = this.getMilestoneDueDate(data.milestone.id);
                     if(data.due_date<=new Date(parseInt(due_date))){
 
                     }else{
-                        message.error('问题计划完成时间不能大于里程碑时间！',2);
+                        message.error('问题计划完成时间不能大于里程碑时间:'+new Date(parseInt(due_date)).toLocaleDateString(),3);
                         return;
                     }
                 }
@@ -169,7 +172,7 @@ class AddIssue extends Component{
                             //message.error(errors,2);
                             return;
                         } else {
-                            if (data.title == selectedRow.title && data.description == selectedRow.description && data.due_date == selectedRow.due_date
+                            if (data.title == selectedRow.title && data.description == selectedRow.description && new Date(parseInt(data.due_date.valueOf())).toLocaleDateString() == selectedRow.due_date
                                 && data.assignee.id == selectedRow.assign_id && data.milestone.id == selectedRow.milestone_id) {
                                 message.info('数据没有变更，不需提交', 2);
                             } else {
@@ -189,8 +192,9 @@ class AddIssue extends Component{
     }
 
     checkDueDay(rule, value, callback) {
-        if (value && value.getTime() <= Date.now()) {
-            callback(new Error('时间得大于现在!'));
+        // console.log(new Date(value) <= Date.now());
+        if (value && value.valueOf() < Date.now()) {
+            callback(new Error('时间不能小于现在!'));
         } else {
             callback();
         }
@@ -274,7 +278,7 @@ class AddIssue extends Component{
     render() {
 
         const {editType} = this.props.location.state;
-        const { getFieldProps } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
@@ -294,86 +298,90 @@ class AddIssue extends Component{
 
         const delButton = this.state.delable?<Button type="primary" onClick={this.deleteIssue.bind(this)} loading={this.props.issue.delLoading}>删除</Button>:'';
         const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="问题修改原因" >
-            <Input type="textarea" rows="5" {...getFieldProps('reason',{rules:[{ required:true,message:'修改原因不能为空'}]})} />
+            {getFieldDecorator('reason',{rules:[{ required:true,message:'修改原因不能为空'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
         return (
             <Spin spinning={pending}>
             <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
                  <Form horizontal onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout}  label="问题名称" >
-                        <Input placeholder="title" {...getFieldProps('title',{rules:[{ required:true,message:'问题名称不能为空'}]})} />
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'问题名称不能为空'}]})(<Input placeholder="title"/>)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="问题描述" >
-                        <Input type="textarea" placeholder="description" rows="5" {...getFieldProps('description',{rules:[{required:true,message:'不能为空'}]})} />
+                        {getFieldDecorator('description',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="description" rows="5" />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题类型" >
-                        <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)} {...getFieldProps('type',{rules:[{required:true,message:'请选择问题类型'}]})} >
-                            <Option value="demand">需求</Option>
-                            <Option value="defect">缺陷</Option>
-                            <Option value="bug" >Bug</Option>
-                        </Select>
+                        {getFieldDecorator('type',{rules:[{required:true,message:'请选择问题类型'}]})(
+                            <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)}>
+                                <Option value="demand">需求</Option>
+                                <Option value="defect">缺陷</Option>
+                                <Option value="bug" >Bug</Option>
+                             </Select>)
+                        }
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
-                        <Select  showSearch
-                                 showArrow={false}
-                                 placeholder="请选择里程碑"
-                                 optionFilterProp="children"
-                                 notFoundContent="无法找到"
-                                 onSelect={this.loadIssues.bind(this)}
-                                 style={{ width: 300 }}
-                                 {...getFieldProps('milestone.id')} >
+                        {getFieldDecorator('milestone.id')(
+                            <Select  showSearch
+                                     showArrow={false}
+                                     placeholder="请选择里程碑"
+                                     optionFilterProp="children"
+                                     notFoundContent="无法找到"
+                                     onSelect={this.loadIssues.bind(this)}
+                                     style={{ width: 300 }}>
                             {mileStoneOptions}
-                        </Select>
+                        </Select>)}
                         <br/>
                         <a href="/project-mgr/createMilestones">Create new mileStone</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="需求" >
-                        <Select  showSearch
-                                 showArrow={false}
-                                 placeholder="请选择对应的需求"
-                                 optionFilterProp="children"
-                                 notFoundContent="无法找到"
-                                 disabled={this.state.able}
-                                 style={{ width: 300 }}
-                                 {...getFieldProps('parent_id')} >
+                        {getFieldDecorator('parent_id')(
+                            <Select  showSearch
+                                     showArrow={false}
+                                     placeholder="请选择对应的需求"
+                                     optionFilterProp="children"
+                                     notFoundContent="无法找到"
+                                     disabled={this.state.able}
+                                     style={{ width: 300 }} >
                             {demands}
-                        </Select>
+                        </Select>)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="问题标签" >
-                        <Select multiple
-                                style={{ width: 300 }} {...getFieldProps('labels')} >
+                        {getFieldDecorator('labels')(
+                            <Select multiple
+                                    style={{ width: 300 }} >
                             {label}
-                        </Select>
+                        </Select>)}
                         <br/>
                         <a href="label">Create new label</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        <DatePicker style={{ width: 300 }} {...getFieldProps('due_date',{rules:[{validator:this.checkDueDay}]})} />
+                        {getFieldDecorator('due_date',{rules:[{validator:this.checkDueDay}]})(<DatePicker style={{ width: 300 }}  />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
-                        <Select showSearch
-                                showArrow={false}
-                                placeholder="请选择人员"
-                                optionFilterProp="children"
-                                notFoundContent="无法找到"
-                                style={{ width: 300 }}
-                                {...getFieldProps('assignee.id')} >
-                            {assignee}
-                        </Select>
+                        {getFieldDecorator('assignee.id')(
+                            <Select showSearch
+                                    showArrow={false}
+                                    placeholder="请选择人员"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到"
+                                    style={{ width: 300 }}>
+                                {assignee}
+                            </Select>)}
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="上传" >
-                        <Upload {...getFieldProps('attachment')}>
-                            <Button type="ghost">
-                                <Icon type="upload" /> 点击上传
-                            </Button>
-                        </Upload>
+                        {getFieldDecorator('attachment')(
+                            <Upload >
+                                <Button type="ghost">
+                                    <Icon type="upload" /> 点击上传
+                                </Button>
+                            </Upload>)}
                     </FormItem>
                     {modifyReason}
 
@@ -382,7 +390,7 @@ class AddIssue extends Component{
                     >
                         <p>如确定删除，请输入删除原因：</p>
                         <FormItem>
-                            <Input type="textarea" placeholder="reason" rows="5" {...getFieldProps('delete_reason',{rules:[{required:true,message:'不能为空'}]})} />
+                            {getFieldDecorator('delete_reason',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="reason" rows="5"  />)}
                         </FormItem>
                     </Modal>
 
