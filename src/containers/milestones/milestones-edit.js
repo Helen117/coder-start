@@ -15,7 +15,7 @@ const confirm = Modal.confirm;
 class projectSetMilestonesEdit extends React.Component {
     constructor(props) {
         super(props);
-        this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.selectedItemId:'';
+        this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
     }
 
     componentDidMount() {
@@ -29,7 +29,7 @@ class projectSetMilestonesEdit extends React.Component {
             item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
-                this.props.getProjectSetMilestones(this.groupId, 1, []);
+                this.props.getProjectSetMilestones(this.groupId,Date.now(), 'month');
             }
         }
     }
@@ -51,8 +51,8 @@ class projectSetMilestonesEdit extends React.Component {
     insertCallback(type){
         message.success(type);
         const date = this.props.location.state?this.props.location.state.date:moment().valueOf();
-        console.log(this.groupId,new Date(date),"month")
-        this.props.getProjectSetMilestones(this.groupId,new Date(date),"month");
+        console.log(this.groupId,date,"month",Date.now())
+        this.props.getProjectSetMilestones(this.groupId,date,"month");
         this.context.router.goBack();
     }
 
@@ -74,7 +74,7 @@ class projectSetMilestonesEdit extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                formData.set_id= this.groupId;
+                formData.set_id= this.groupId.substring(0,this.groupId.length-2);
                 formData.author_id = logInfo.userId;
                 formData.due_date = formData.due_date.utc()
                 if(editType == 'add'){
@@ -175,7 +175,7 @@ class projectSetMilestonesEdit extends React.Component {
                         </FormItem>
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">
-                                {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
+                                {getFieldDecorator('result',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
                                 (<Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
                             </FormItem>:<div></div>}
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>

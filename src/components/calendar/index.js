@@ -68,31 +68,39 @@ export default class MilestonesCalendar extends React.Component{
     }
 
     getListData(milestoneData,calendarTime) {
+        const id = this.props.id
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
         const tooltip = this.tooltip(milestoneData);
         let revocable = false;
-        if(milestoneData.state != 'closed'){
+        if(milestoneData.state != 'closed' && id.indexOf('_g')>0){
             revocable = true;
         }
         return(
-            <Tooltip placement="top" title={tooltip}>
-             <div style={{height:'100%'}}>
-                 <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
-                     <ol className="events">
 
-                         <li style={{paddingTop:5}}>
-                             <Badge count={milestoneData.expired}>
-                                 <h4 style={{color:type=="error"?"red":"default"}}>
-                                <Badge status={type} />{milestoneData.title}
-                                 </h4>
-                             </Badge>
-                         </li>
+                <div style={{height:'100%'}}>
+                    <Tooltip placement="top" title={tooltip}>
+                        <ol className="events">
+                            <li style={{paddingTop:5}}>
+                                <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
+                                     <h4 style={{color:type=="error"?"red":"default"}}>
+                                        <Badge status={type}/>{milestoneData.title}
+                                     </h4>
+                                 </a>
+                            </li>
+                            <li>{milestoneData.description}</li>
+                        </ol>
+                    </Tooltip>
 
-                     <li>{milestoneData.description}</li>
-                     </ol>
-                 </a>
-             </div>
-         </Tooltip>)
+                        <div style={{textAlign:"right", marginRight:5}}>
+                            <Tooltip placement="top" title={"点击查看超时任务"}>
+                            <Badge className="pull-right" onClick={this.milestonesDetail.bind(this, milestoneData.id)} count={milestoneData.expired}/>
+                            </Tooltip>
+                        </div>
+
+                </div>
+
+
+         )
     }
 
     dateCellRender(milestoneData,value) {
@@ -116,17 +124,13 @@ export default class MilestonesCalendar extends React.Component{
         return <ul className="events">
             {
                 milestoneList.map((item, index) =>
-
-
-                        <li style={{paddingTop:5}} key={index} >
-                            <Tooltip key={index} placement="top" title={this.tooltip(item)}>
-                                <Badge count={item.expired}>
-                            <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
-                                </Badge>
-                            </Tooltip>
-                        </li>
-
-
+                    <li style={{paddingTop:5}} key={index} >
+                        <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                            <Badge count={item.expired}>
+                                <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
+                            </Badge>
+                        </Tooltip>
+                    </li>
                 )
             }
         </ul>
@@ -158,7 +162,8 @@ export default class MilestonesCalendar extends React.Component{
         return (
             <Calendar dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}
-                      onPanelChange = {this.onPanelChange.bind(this)}/>);
+                      onPanelChange = {this.onPanelChange.bind(this)}/>)
+
     }
 }
 
