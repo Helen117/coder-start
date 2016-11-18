@@ -15,11 +15,17 @@
             var userAgent = navigator.userAgent;
             if (!(window.applicationCache && (userAgent.indexOf("Firefox") > -1 || userAgent.indexOf("Chrome") > -1 || userAgent.indexOf("Safari") > -1))) {
                 alert("请使用支持HTML5的Firefox,Chrome,Safari浏览器");
+            }else{
+                //document.write("<script src='/bundle.js'><\/script>");
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src = "/bundle.js";
+                document.getElementsByTagName("body")[0].appendChild(script);
             }
         }
     </script>
 </head>
 <body style="background: #ECECEC">
 </body>
-<script src="/bundle.js"></script>
+<!--<script src="/bundle.js"></script>-->
 </html>
