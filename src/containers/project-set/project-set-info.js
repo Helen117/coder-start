@@ -26,6 +26,17 @@ class selectedSetInfo extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { delErrorMsg,delResult} = nextProps;
+        const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
+        const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:''
+        if(thisId != nextId && nextId){
+            //点击不同项目，重新加载数据
+            if(nextId.indexOf("_g")<0) {
+                this.context.router.push({
+                    pathname: "/projectSetTree/projectInfo",
+                });
+            }
+        }
+
         if(this.props.delErrorMsg != delErrorMsg && delErrorMsg){
             this.errCallback(delErrorMsg,'删除失败')
         }else if(this.props.delResult != delResult && delResult){

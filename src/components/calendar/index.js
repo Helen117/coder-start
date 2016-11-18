@@ -4,6 +4,7 @@
  */
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
+import zh_CN from 'antd/lib/calendar/locale/en_US';
 import './index.less';
 import moment from 'moment';
 import ReactDOM from 'react-dom'
@@ -160,7 +161,8 @@ export default class MilestonesCalendar extends React.Component{
     render(){
         const milestoneData = this.props.milestoneData;
         return (
-            <Calendar dateCellRender={this.dateCellRender.bind(this,milestoneData)}
+            <Calendar locale={zh_CN}
+                      dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}
                       onPanelChange = {this.onPanelChange.bind(this)}/>)
 
