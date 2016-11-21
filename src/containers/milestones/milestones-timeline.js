@@ -11,22 +11,24 @@ import {putProIdToState,getProjectSetMilestones} from './actions/milestones-acti
 import {closeSetMilestone} from './actions/edit-milestones-actions';
 import MilestonesCalendar from '../../components/calendar'
 //import TimelineMilestone from '../../components/timeline';
+import moment from 'moment'
 import 'pubsub-js';
 import './index.less';
 
+let defaultDate=moment()
 class ProjectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
+
+
     }
 
     componentDidMount() {
-        //console.log('调用componentDidMount',Date.now());
+        console.log('componentDidMount');
         const {projectId} = this.props;
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
             this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
-
-
         }
     }
 
@@ -74,6 +76,11 @@ class ProjectSetMilestones extends React.Component {
         this.props.getProjectSetMilestonesAction(this.props.projectId,date,mode);
     }
 
+    setDefaultDate(date){
+        defaultDate=date
+
+    }
+
     render(){
         const {milestoneData} = this.props;
         const isSpinning = this.props.loading? this.props.loading :false;
@@ -95,7 +102,9 @@ class ProjectSetMilestones extends React.Component {
                                         milestonesDetailPath="/projectSetMilestonesDetail"
                                         milestoneEditPath="/projectSetMilestonesEdit"
                                         projectId = {projectId}
-                                        id = {id}/>
+                                        id = {id}
+                                        defaultValue = {defaultDate}
+                                        setDefaultDate ={this.setDefaultDate.bind(this)}/>
                 </div>
 
             </Spin>
@@ -107,12 +116,6 @@ ProjectSetMilestones.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
-};
-
-ProjectSetMilestones.propTypes = {
-    loadingMsg: PropTypes.string,
-    notFoundMsg: PropTypes.string,
-    loading: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
