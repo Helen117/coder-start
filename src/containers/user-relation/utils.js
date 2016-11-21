@@ -25,3 +25,11 @@ export function findUserIdByEmail(email,userInfoData) {
         }
     }
 }
+
+export function findEmailByUserId(userId,allUser) {
+    for(let i=0; i<allUser.length; i++){
+        if(userId == allUser[i].id){
+            return allUser[i].email;
+        }
+    }
+}

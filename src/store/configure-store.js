@@ -42,6 +42,8 @@ import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/u
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
 import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
+import AddSshKey from '../containers/user-relation/reducers/ssh-key-reducer';
+import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
 
 
 const reducer = combineReducers({
@@ -98,7 +100,9 @@ const reducer = combineReducers({
     getAllUserInfo,
     codeChange,
     stageView,
-    stageDetail
+    stageDetail,
+    AddSshKey,
+    addProjectMember
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

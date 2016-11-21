@@ -134,11 +134,9 @@ export default class MilestonesCalendar extends React.Component{
                 milestoneList.map((item, index) =>
                     <li style={{paddingTop:5}} key={index} >
                         <Tooltip key={index} placement="top" title={this.tooltip(item)}>
-                            <a onClick = {item.state != 'closed' && this.props.id.indexOf('_g')>0?this.editMilestone.bind(this,item,calendarTime):null} >
                             <Badge count={item.expired}>
                                 <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
                             </Badge>
-                            </a>
                         </Tooltip>
                     </li>
                 )
