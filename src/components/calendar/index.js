@@ -4,7 +4,7 @@
  */
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
-import zh_CN from 'antd/lib/calendar/locale/en_US';
+//import zhCN from 'antd/lib/calendar/locale/en_US';
 import './index.less';
 import moment from 'moment';
 import ReactDOM from 'react-dom'
@@ -98,7 +98,7 @@ export default class MilestonesCalendar extends React.Component{
                             </a>
                         </Tooltip>
 
-                        <div style={{textAlign:"right", marginRight:5}}>
+                        <div style={{textAlign:"right", marginRight:0}}>
                             <Tooltip placement="top" title={"点击查看超时任务"}>
                             <Badge className="pull-right" onClick={this.milestonesDetail.bind(this, milestoneData.id)} count={milestoneData.expired}/>
                             </Tooltip>
@@ -167,16 +167,16 @@ export default class MilestonesCalendar extends React.Component{
 
 
     render(){
-        //console.log(this.state.defaultDate,'22222222')
+        //locale={zhCN}
+
         const milestoneData = this.props.milestoneData;
         return (
-            <Calendar locale={zh_CN}
+            <Calendar
                       dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}
                       onPanelChange = {this.onPanelChange.bind(this)}
                       defaultValue={this.props.defaultValue}
                       setDefaultDate = {this.props.setDefaultDate}/>)
-
     }
 }
 
