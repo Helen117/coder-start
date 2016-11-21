@@ -5,8 +5,6 @@ import api from '../../../api';
 import {FETCH_DATA,FETCH_TARGET_PROJECT,FETCH_ISSUES_DATA} from '../constants/action-types';
 
 export function fetchSourceProData(projectId) {
-    console.log('fetchSourceProData',projectId)
-
     return {
         type: 'FETCH_DATA',
         payload: {
@@ -20,7 +18,6 @@ export function fetchSourceProData(projectId) {
 }
 
 export function fetchMergeBranchData(projectId) {
-    console.log('fetchMergeBranchData',projectId)
     return {
         type: 'FETCH_TARGET_PROJECT',
         payload: {
