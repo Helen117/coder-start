@@ -30,12 +30,18 @@ class selectedProInfo extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {selectedItemInfo,getProjectInfoErrors} = nextProps
-        const thisProId = this.props.selectedItemInfo ? this.props.selectedItemInfo.selectedItemId : '';
-        const nextProId = nextProps.selectedItemInfo ? nextProps.selectedItemInfo.selectedItemId : '';
+        const thisProId = this.props.selectedItemInfo ? this.props.selectedItemInfo.id : '';
+        const nextProId = nextProps.selectedItemInfo ? nextProps.selectedItemInfo.id : '';
         //点击不同项目，重新加载数据
-        if (thisProId != nextProId) {
-            this.props.getProjectInfoAction(nextProps.selectedItemInfo.selectedItemId);
-            this.props.getProjectMembersAction(nextProps.selectedItemInfo.selectedItemId);
+        if (thisProId != nextProId && nextProId) {
+            if(nextProId.indexOf("_g")>0) {
+                this.context.router.push({
+                    pathname: "/projectSetTree/projectSetInfo",
+                });
+            }else {
+                this.props.getProjectInfoAction(nextProId.substring(0,nextProId.length-2));
+                this.props.getProjectMembersAction(nextProId.substring(0,nextProId.length-2));
+            }
         }
         if(this.props.getProjectInfoErrors != getProjectInfoErrors && getProjectInfoErrors){
             this.errCallback(getProjectInfoErrors,"数据加载失败");

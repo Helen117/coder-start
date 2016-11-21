@@ -15,7 +15,7 @@ const confirm = Modal.confirm;
 class projectSetMilestonesEdit extends React.Component {
     constructor(props) {
         super(props);
-        this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.selectedItemId:'';
+        this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
     }
 
     componentDidMount() {
@@ -23,13 +23,13 @@ class projectSetMilestonesEdit extends React.Component {
         const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
-            // let due_date = item.due_date;
+            let due_date = item.due_date;
+            item.due_date = moment(item.due_date);
             this.props.form.setFieldsValue(item);
-            this.props.form.setFieldsValue("due_date",moment(item.due_date,"YYYY-MM-DD"));
-            // item.due_date = due_date;
+            item.due_date = due_date;
         }else{
             if (this.props.selectedProjectSet) {
-                this.props.getProjectSetMilestones(this.groupId, 1, []);
+                this.props.getProjectSetMilestones(this.groupId,Date.now(), 'month');
             }
         }
     }
@@ -50,8 +50,9 @@ class projectSetMilestonesEdit extends React.Component {
 
     insertCallback(type){
         message.success(type);
-        const date = this.props.location.state?this.props.location.state.date:new Date(Date.now());
-        this.props.getProjectSetMilestones(this.groupId,date);
+        const date = this.props.location.state?this.props.location.state.date:moment().valueOf();
+        console.log(this.groupId,date,"month",Date.now())
+        this.props.getProjectSetMilestones(this.groupId,date,"month");
         this.context.router.goBack();
     }
 
@@ -73,14 +74,15 @@ class projectSetMilestonesEdit extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                formData.set_id= this.groupId;
+                formData.set_id= this.groupId.substring(0,this.groupId.length-2);
                 formData.author_id = logInfo.userId;
+                formData.due_date = formData.due_date.utc()
                 if(editType == 'add'){
                     console.log(formData);
                     this.props.createMilestone(formData);
                 }else{
                     if(item.title==formData.title && item.description==formData.description &&
-                        new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date).toLocaleDateString()){
+                        new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date.format()).toLocaleDateString()){
                         this.errCallback('未作任何信息改动','未作任何信息改动,无需提交表单！');
                     }else{
                         formData.id = this.props.location.state.item.id;
@@ -111,11 +113,12 @@ class projectSetMilestonesEdit extends React.Component {
         const item = this.props.location.state.item;
         const milestone_id = item? item.id: '';
         const sets_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
-        const due_date = new Date(value).toLocaleDateString();
+        const due_date = new Date(value.valueOf()).toLocaleDateString();
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
         const errStr = '计划完成时间超出允许设定范围';
         fetchData(path,params,callback,errStr);
+
     }
 
     checkTitle(rule, value, callback){
@@ -128,9 +131,7 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     disabledDate(current) {
-    // can not select days before today and today
-
-    return current && new Date(current).getTime() < Date.now();
+    return current && current < moment();;
     }
 
     render(){
@@ -146,7 +147,7 @@ class projectSetMilestonesEdit extends React.Component {
 
         const dueDateProps = getFieldDecorator('due_date', {
             rules: [
-                { required: true, type: 'date', message: '请选择结束日期' },
+                { required: true, type: 'object', message: '请选择结束日期' },
                 { validator: this.checkDuedate.bind(this) }
             ],
         });
@@ -169,12 +170,12 @@ class projectSetMilestonesEdit extends React.Component {
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            {dueDateProps(<DatePicker disabledDate={this.disabledDate} placeholder="计划完成时间" />)}
+                            {dueDateProps(<DatePicker disabledDate={this.disabledDate.bind(this)} placeholder="计划完成时间" />)}
 
                         </FormItem>
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">
-                                {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
+                                {getFieldDecorator('result',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
                                 (<Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
                             </FormItem>:<div></div>}
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>

@@ -42,18 +42,18 @@ class ProjectSetMilestones extends React.Component {
         if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage,'数据加载失败');
         }
-        if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
+        /*if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
             this.sucCallback('里程碑关闭成功');
         }else if(this.props.closeSetMsErr != closeSetMsErr && closeSetMsErr){
             this.errCallback(closeSetMsErr,'里程碑关闭失败');
-        }
+        }*/
     }
 
-    sucCallback(type){
+    /*sucCallback(type){
         message.success(type);
         this.props.getProjectSetMilestonesAction(this.props.projectId,Date.now(),'year');
 
-    }
+    }*/
 
     errCallback(errMessage,type){
         notification.error({
@@ -75,12 +75,13 @@ class ProjectSetMilestones extends React.Component {
     }
 
     render(){
-        const {loading,notFoundMsg,milestoneData} = this.props;
+        const {milestoneData} = this.props;
+        const isSpinning = this.props.loading? this.props.loading :false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
 
-            <Spin spinning={loading} tip="正在加载数据，请稍候..." >
+            <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
 
                 <div id="mycalender" style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
@@ -94,7 +95,7 @@ class ProjectSetMilestones extends React.Component {
                                         milestonesDetailPath="/projectSetMilestonesDetail"
                                         milestoneEditPath="/projectSetMilestonesEdit"
                                         projectId = {projectId}
-                                        id = {id}/>/>
+                                        id = {id}/>
                 </div>
 
             </Spin>

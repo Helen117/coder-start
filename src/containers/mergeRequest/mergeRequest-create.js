@@ -22,6 +22,7 @@ class createMergeRequest extends Component {
 
     componentWillMount() {
         const {router} = this.context;
+        console.log('this.props.getProjectInfo',this.props.getProjectInfo)
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
@@ -30,9 +31,9 @@ class createMergeRequest extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
-        /*if(this.props.isMR != isMR && isMR==false){
+        if(this.props.isMR != isMR && isMR==false){
             this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
-        }*/
+        }
         if (this.props.inserted != inserted && inserted){
             this.insertCallback();
         }else if(this.props.errMessage != errMessage && errMessage){
@@ -142,6 +143,7 @@ class createMergeRequest extends Component {
         let targetPath,sourceBranch,initialSourceBranch;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch){
+            console.log('mergeBranch222',mergeBranch)
             if(mergeBranch.length>1){
                 sourcePath = mergeBranch[0].path_with_namespace;
                 targetPath = mergeBranch[1].path_with_namespace;
@@ -149,6 +151,7 @@ class createMergeRequest extends Component {
                 targetBranch = this.mapSelectOption(mergeBranch[1].branches);
                 initialSourceBranch = mergeBranch[0].branches[0];
                 initialTargetBranchAll = mergeBranch[1].branches;
+                console.log(333);
             }
         }
 
@@ -156,75 +159,108 @@ class createMergeRequest extends Component {
         const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const issuesOptions = this.props.issues?this.props.issues.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
-
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
 
-        return (
-            <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
-                <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <Row>
-                        <Col span="9">
-                            <FormItem  labelCol={{ span: 16 }} wrapperCol={{ span: 4 }} label="源分支">
-                                {getFieldDecorator('path',{initialValue: sourcePath,rules: [{ required: true, message: '请选择源分支' }]})
-                                ( <Select style={{ width: 200 }}> <Option key={sourcePath}>{sourcePath}</Option></Select>)}
-                            </FormItem>
-                        </Col>
-                        <Col span="3" offset="1">
-                            <FormItem  {...formItemLayout} label="" >
-                                {getFieldDecorator('source_branch',{initialValue: initialSourceBranch})
-                                (<Select style={{ width: 100,marginLeft:5 }}onSelect={this.changeTargetBranch.bind(this)}>{sourceBranch}</Select>)}
-                            </FormItem>
-                        </Col>
-                        <Col span="4">
-                            <FormItem  {...formItemLayout} label="目标分支" >
-                                {getFieldDecorator('target_project_path',{initialValue: targetPath})
-                                (<Select style={{ width: 200 }}><Option value={targetPath}>{targetPath}</Option></Select>)}
 
-                            </FormItem>
-                        </Col>
-                        <Col span="6" offset="1">
-                            <FormItem required={true} {...formItemLayout} label="">
-                                {getFieldDecorator('target_branch',{initialValue: initialTargetBranch, rules:[{required:true,message:'没有与其对应的目标分支'}]})
-                                (<Select  style={{ width: 100,marginLeft:5 }}>{targetBranch}</Select>)}
-                            </FormItem>
-                        </Col>
-                    </Row>
+            if(mergeBranch) {
+                return (
+                <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                        <Row>
+                            <Col span="9">
 
-                    <FormItem {...formItemLayout}  label="MR名称" >
-                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写MR名称'},{ max:30,message:'MR名称长度最大30个字符'}]})
-                        (<Input placeholder="请输入MR名称"/>)}
+                                <FormItem labelCol={{span: 16}} wrapperCol={{span: 4}} label="源分支">
 
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="MR描述" >
-                        {getFieldDecorator('description', {rules:[{required:true,message:'请填写MR描述'}]})
-                        (<Input type="textarea" placeholder="请输入MR描述" rows="5" />)}
+                                    {getFieldDecorator('path', {
+                                        initialValue: sourcePath,
+                                        rules: [{
+                                            required: true, message: '请选择源分支'
+                                        }
+                                        ]
+                                    })(
+                                        <Select style={{width: 200}}>
+                                            <Option key={sourcePath}>{sourcePath}</Option>
+                                        </Select>)}
 
-                    </FormItem>
 
-                    <FormItem {...formItemLayout} label="里程碑"  >
-                        {getFieldDecorator('milestone.id')
-                        (<Select size="large" allowClear={true} onSelect={this.loadIssues.bind(this)}>{mileStoneOptions}</Select>)}
+                                </FormItem>
+                            </Col>
+                           <Col span="3" offset="1">
+                                <FormItem  {...formItemLayout} label="">
+                                    {getFieldDecorator('source_branch', {
+                                        initialValue: initialSourceBranch
+                                    })
+                                    (<Select style={{width: 100, marginLeft: 5}} onSelect={this.changeTargetBranch.bind(this)}>
+                                        {sourceBranch}
+                                        </Select>)}
+                                </FormItem>
+                            </Col>
+                            <Col span="4">
+                                <FormItem  {...formItemLayout} label="目标分支">
+                                    {getFieldDecorator('target_project_path', {initialValue: targetPath})
+                                    (<Select style={{width: 200}}><Option
+                                        value={targetPath}>{targetPath}</Option></Select>)}
 
-                    </FormItem>
+                                </FormItem>
+                            </Col>
+                            <Col span="6" offset="1">
+                                <FormItem required={true} {...formItemLayout} label="">
+                                    {getFieldDecorator('target_branch', {
+                                        initialValue: initialTargetBranch,
+                                        rules: [{required: true, message: '没有与其对应的目标分支'}]
+                                    })
+                                    (<Select style={{width: 100, marginLeft: 5}}>{targetBranch}</Select>)}
+                                </FormItem>
+                            </Col>
+                        </Row>
 
-                    <FormItem {...formItemLayout} label="问题">
-                        {getFieldDecorator('issue_id')(<Select size="large" allowClear={true} > {issuesOptions} </Select>)}
-                    </FormItem>
+                        <FormItem {...formItemLayout} label="MR名称">
+                            {getFieldDecorator('title', {
+                                rules: [{required: true, message: '请填写MR名称'}, {
+                                    max: 30,
+                                    message: 'MR名称长度最大30个字符'
+                                }]
+                            })
+                            (<Input placeholder="请输入MR名称"/>)}
 
-                    <FormItem {...formItemLayout} label="MR标签" >
-                        {getFieldDecorator('labels')(<Select multiple size="large" > {label} </Select>)}
-                    </FormItem>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="MR描述">
+                            {getFieldDecorator('description', {rules: [{required: true, message: '请填写MR描述'}]})
+                            (<Input type="textarea" placeholder="请输入MR描述" rows="5"/>)}
 
-                    <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Box>
-        );
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="里程碑">
+                            {getFieldDecorator('milestone.id')
+                            (<Select size="large" allowClear={true}
+                                     onSelect={this.loadIssues.bind(this)}>{mileStoneOptions}</Select>)}
+
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="问题">
+                            {getFieldDecorator('issue_id')
+                            (<Select size="large" allowClear={true}>{issuesOptions}</Select>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="MR标签" >
+                            {getFieldDecorator('labels')
+                            (<Select multiple size="large" >{label}</Select>)}
+                        </FormItem>
+
+                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading}
+                                    disabled={this.props.disabled}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Box>);
+            }else{
+                return <div></div>
+            }
+
     }
 }
 
