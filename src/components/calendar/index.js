@@ -68,14 +68,19 @@ export default class MilestonesCalendar extends React.Component{
         return type;
     }
 
+    isRevocable(state,id){
+        let revocable = false;
+        if(state != 'closed' && id.indexOf('_g')>0){
+            revocable = true;
+        }
+        return revocable;
+    }
+
     getListData(milestoneData,calendarTime) {
         const id = this.props.id
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
         const tooltip = this.tooltip(milestoneData);
-        let revocable = false;
-        if(milestoneData.state != 'closed' && id.indexOf('_g')>0){
-            revocable = true;
-        }
+        let revocable = this.isRevocable(milestoneData.state,id)
         return(
 
                 <div style={{height:'100%'}}>
@@ -127,9 +132,11 @@ export default class MilestonesCalendar extends React.Component{
                 milestoneList.map((item, index) =>
                     <li style={{paddingTop:5}} key={index} >
                         <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                            <a onClick = {item.state != 'closed' && this.props.id.indexOf('_g')>0?this.editMilestone.bind(this,item,calendarTime):null} >
                             <Badge count={item.expired}>
                                 <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
                             </Badge>
+                            </a>
                         </Tooltip>
                     </li>
                 )
