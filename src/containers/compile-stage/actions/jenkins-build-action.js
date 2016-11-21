@@ -7,7 +7,7 @@ export function workflowStage(projectId) {
     return {
         type: 'FULL_STAGE',
         payload: {
-            promise: api.post('/jenkins/build', {
+            promise: api.post('http://10.10.152.144:13000/jenkins/getBuildList', {
                 params: {
                     projectId: projectId
                 }
