@@ -51,6 +51,7 @@ export function fetchMergeBranchData(state = initialState, action = {}) {
                 if(action.payload.length > 1){
                     isMR = true;
                 }
+                console.log('mergeBranch: action.payload', action.payload)
                 return Object.assign({}, initialState, {mergeBranch: action.payload,fetchErrors: null, isMR:isMR,loading: false});
 
             case FETCH_TARGET_PROJECT_ERROR:
