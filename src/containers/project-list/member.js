@@ -6,17 +6,58 @@ import React,{
     Component
 } from 'react';
 import {connect} from 'react-redux';
-import {Button,Modal} from 'antd';
+import {bindActionCreators} from 'redux';
+import {Button,Modal,Select,notification} from 'antd';
 import TableView from '../../components/table';
 import styles from './index.css';
 import UserRelation from '../user-relation';
+import {addProjectMember} from './actions/project-member-action';
+import {getProjectMembers} from '../project-mgr/actions/project-members-action';
+
+
+const Option = Select.Option;
 
 class ProjectMember extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            addProjectMember:false
+            addProjectMember:false,
+            accessLevel:40,
+            selectedUsers:[],
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {addResult, addErrors} = nextProps;
+        //添加返回信息
+        if (this.props.addResult != addResult && addResult) {
+            this.insertCallback("添加成功");
+        } else if (this.props.addErrors != addErrors && addErrors) {
+            this.errCallback("添加失败",addErrors);
+        }
+    }
+
+    insertCallback(message){
+        notification.success({
+            message: message,
+            description: '',
+            duration: 2
+        });
+        this.setState({
+            addProjectMember: false
+        });
+        //调项目成员接口
+        const {actions} = this.props;
+        let projectInfo = this.props.location.state.projectInfo;
+        actions.getProjectMembers(projectInfo.id.substr(0,projectInfo.id.length-2));
+    }
+
+    errCallback(message,errmessage){
+        notification.error({
+            message: message,
+            description:errmessage,
+            duration: null
+        });
     }
 
     transformDate(timestamp){
@@ -36,15 +77,34 @@ class ProjectMember extends Component {
     }
 
     handleOk(){
-        this.setState({
-            addProjectMember: false
-        });
+        //调添加成员接口
+        const {actions} = this.props;
+        let data = {};
+        let projectInfo = this.props.location.state.projectInfo;
+        let projectId = projectInfo.id.substr(0,projectInfo.id.length-2);
+        data.projectId = parseInt(projectId);
+        data.gitlabAccessLevel = this.state.accessLevel;
+        data.userId = this.state.selectedUsers[0];
+        console.log("data:",data)
+        actions.addProjectMember(data);
     }
 
     handleCancel(){
         this.setState({
             addProjectMember: false
         });
+    }
+
+    changeSelect(value){
+        this.setState({
+            accessLevel:value
+        })
+    }
+
+    selectedUser(users){
+        this.setState({
+            selectedUsers:users
+        })
     }
 
     render(){
@@ -83,9 +143,17 @@ class ProjectMember extends Component {
                        onOk={this.handleOk.bind(this)}
                        onCancel={this.handleCancel.bind(this)}
                 >
-                    <UserRelation visible='true'/>
+                    <div style={{paddingLeft:'10px'}}>
+                        <span>添加成员作为：</span>
+                        <Select id="access_level" defaultValue="40"
+                                onChange={this.changeSelect.bind(this)}>
+                            <Option value="40">管理员</Option>
+                            <Option value="30">开发者</Option>
+                        </Select>
+                    </div>
+                    <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
                 </Modal>
-                <div>
+                <div style={{paddingTop:'10px'}}>
                     <Button type="primary" onClick={this.addMember.bind(this,projectInfo.id)}>添加人员</Button>
                     <Button type="primary" onClick={this.deleteMember.bind(this)}>删除人员</Button>
                 </div>
@@ -102,10 +170,20 @@ ProjectMember.contextTypes = {
 function mapStateToProps(state) {
     return {
         projectMembers:state.getProjectMembers,
+        addResult:state.addProjectMember.addResult,
+        addLoading:state.addProjectMember.addLoading,
+        addDisabled:state.addProjectMember.addDisabled,
+        addErrors:state.addProjectMember.addErrors,
     }
 }
 
-export default connect(mapStateToProps)(ProjectMember);
+function mapDispatchToProps(dispatch){
+    return{
+        actions : bindActionCreators({addProjectMember,getProjectMembers},dispatch),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ProjectMember);
 
 
 

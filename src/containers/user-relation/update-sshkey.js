@@ -4,9 +4,10 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, notification,Modal} from 'antd';
+import {Form, Input, Button, notification,Modal,Row,Col} from 'antd';
 import 'pubsub-js';
-import {UpdateUser} from './actions/user-detail-action';
+import {AddSshKey} from './actions/ssh-key-action';
+import styles from './index.css';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -18,36 +19,21 @@ class UpdateSshKey extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { form,loginInfo,UpdateUser } = this.props;
+        const { form,loginInfo,actions } = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                let data = {};
-                data.user_id = loginInfo.userId;
-                data.password = formData.old_password;
-                data.new_password = formData.new_password;
-                //调修改成员信息接口
-                UpdateUser(data);
+                //调修改SSHKEY接口
+                actions.AddSshKey(loginInfo.username,formData.title,formData.sshKey)
             }
         })
     }
 
     handleCancel() {
         const {form} = this.props;
-        const {router} = this.context;
-
-        confirm({
-            title: '您是否确定要取消表单的编辑',
-            content: '取消之后表单内未提交的修改将会被丢弃',
-            onOk() {
-                router.goBack();
-                form.resetFields();
-            },
-            onCancel() {
-            }
-        })
+        form.resetFields();
     }
 
     insertCallback(message){
@@ -63,26 +49,17 @@ class UpdateSshKey extends React.Component {
         notification.error({
             message: message,
             description:errmessage,
-            duration: 4
+            duration: null
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        const {updateResult, updateErrors} = nextProps;
-        //修改返回信息
-        if (this.props.updateResult != updateResult && updateResult) {
-            this.insertCallback("修改成功");
-        } else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);
-        }
-    }
-
-    comfirmNewPass(rule, value, callback){//确认新密码
-        const {getFieldValue} = this.props.form;
-        if (value && value !== getFieldValue('new_password')) {
-            callback('两次密码输入不一致!');
-        } else {
-            callback();
+        const {addResult, addErrors} = nextProps;
+        //添加返回信息
+        if (this.props.addResult != addResult && addResult) {
+            this.insertCallback("添加成功");
+        } else if (this.props.addErrors != addErrors && addErrors) {
+            this.errCallback("添加失败",addErrors);
         }
     }
 
@@ -90,46 +67,39 @@ class UpdateSshKey extends React.Component {
         const {visible} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
-            labelCol: {span: 5},
-            wrapperCol: {span: 8},
+            labelCol: {span: 2},
+            wrapperCol: {span: 10},
         };
-        const oldPasswordProps = getFieldDecorator('old_password',
+        const sshKeyProps = getFieldDecorator('sshKey',
             {rules:[
-                {required:true, message:'请输入原始密码！'},
-            ]})(<Input type="password" placeholder="请输入原密码"/>);
-        const newPasswordProps = getFieldDecorator('new_password',
-            {rules:[
-                {required:true, message:'请输入新密码！'},
-            ]})(<Input type="password" placeholder="请输入新密码"/>);
-        const comfirmNewPassword = getFieldDecorator('comfirm_password',
-            {rules:[
-                {required:true, message:'请输入新密码！'},
-                {validator: this.comfirmNewPass.bind(this)}
-            ]})(<Input type="password" placeholder="请再次输入新密码"/>);
+                {required:true, message:'请输入上面步骤3打开的内容！'},
+            ]})(<Input type="textarea" rows={4} placeholder="请输入上面步骤3打开的内容！"/>);
+        const titleProps = getFieldDecorator('title')(<Input type="text" placeholder="请输入SSH Key标题！"/>);
 
         if(visible == true){
             return(
-                <div>
-                    <span>帮助信息：</span>
-                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                        <FormItem {...formItemLayout} label="原密码">
-                            {oldPasswordProps}
+                <div style={{paddingLeft:'50px'}}>
+                    <p style={{fontSize:14}}>
+                        你的SSH Keys:
+                    </p>
+                    <p style={{fontSize:15,paddingTop:'10px'}}>添加SSH Key步骤：
+                        1、<a href="/assets/tool/Git-Bash.exe" >下载Git-Bash</a>,运行git-bash.exe;
+                        2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
+                        3、打开文件:notepad ~/.ssh/id_rsa.pub"
+                    </p>
+                    <Form horizontal style={{paddingTop:'10px'}} onSubmit={this.handleSubmit.bind(this)}>
+                        <FormItem {...formItemLayout} label="SSH Key">
+                            {sshKeyProps}
                         </FormItem>
-
-                        <FormItem {...formItemLayout} label="新密码">
-                            {newPasswordProps}
+                        <FormItem {...formItemLayout} label="标题">
+                            {titleProps}
                         </FormItem>
-
-                        <FormItem {...formItemLayout} label="确认新密码">
-                            {comfirmNewPassword}
-                        </FormItem>
-
-                        <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
+                        <FormItem wrapperCol={{span: 10, offset: 5}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
                                     loading={this.props.updateLoading}
                                     disabled={this.props.updateDisabled}>
-                                确定</Button>
-                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                                添加</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>重置</Button>
                         </FormItem>
                     </Form>
                 </div>
@@ -150,16 +120,16 @@ UpdateSshKey = Form.create()(UpdateSshKey);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        updateResult:state.createUser.updateResult,
-        updateErrors:state.createUser.updateErrors,
-        updateLoading:state.createUser.updateLoading,
-        updateDisabled:state.createUser.updateDisabled,
+        addResult:state.AddSshKey.addResult,
+        addErrors:state.AddSshKey.addErrors,
+        addLoading:state.AddSshKey.addLoading,
+        addDisabled:state.AddSshKey.addDisabled,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        UpdateUser:bindActionCreators(UpdateUser, dispatch),
+        actions: bindActionCreators({AddSshKey}, dispatch)
     }
 }
 

@@ -27,8 +27,8 @@ class UpdateBasicInfo extends React.Component {
                 const formData = form.getFieldsValue();
                 let data = {};
                 data.user_id = loginInfo.userId;
-                data.password = formData.old_password;
-                data.new_password = formData.new_password;
+                data.name = formData.name;
+                data.email = formData.email+formData.option;
                 //调修改成员信息接口
                 UpdateUser(data);
             }
@@ -37,34 +37,24 @@ class UpdateBasicInfo extends React.Component {
 
     handleCancel() {
         const {form} = this.props;
-        const {router} = this.context;
-
-        confirm({
-            title: '您是否确定要取消表单的编辑',
-            content: '取消之后表单内未提交的修改将会被丢弃',
-            onOk() {
-                router.goBack();
-                form.resetFields();
-            },
-            onCancel() {
-            }
-        })
+        form.resetFields();
     }
 
     insertCallback(message){
+        const {form} = this.props;
         notification.success({
             message: message,
             description: '',
-            duration: 2
+            duration: null
         });
-        this.context.router.goBack();
+//        form.resetFields();
     }
 
     errCallback(message,errmessage){
         notification.error({
             message: message,
             description:errmessage,
-            duration: 4
+            duration: null
         });
     }
 
@@ -92,8 +82,7 @@ class UpdateBasicInfo extends React.Component {
     }
 
     render() {
-        console.log("this.props.loginInfo:",this.props.loginInfo)
-        const {visible} = this.props;
+        const {visible,loginInfo} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
@@ -102,7 +91,7 @@ class UpdateBasicInfo extends React.Component {
         const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入中文名！'},
-            ]})(<Input type="text" placeholder="请输入中文名"/>);
+            ],initialValue:loginInfo.name})(<Input type="text" placeholder="请输入中文名"/>);
         const selectAfter = getFieldDecorator('option',{initialValue:'@shpso.com'})(
             <Select style={{ width: 100 }}>
                 <Option value="@shpso.com">@shpso.com</Option>

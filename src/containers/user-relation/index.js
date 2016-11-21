@@ -119,6 +119,13 @@ class UserRelation extends React.Component{
         }
     }
 
+    selectedUser(users){
+        const {onSelected} = this.props;
+        if(onSelected){
+            onSelected(users);
+        }
+    }
+
     render(){
         const {userTreeData, loading, selectedNode, selectedUserGroup,visible} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -164,7 +171,8 @@ class UserRelation extends React.Component{
                     <Row>
                         <UserInfo showUserInfo={this.state.showUserInfo}
                                   selectedNode={selectedNode}
-                                  visible={visible}/>
+                                  visible={visible}
+                                  onSelected={this.selectedUser.bind(this)}/>
                         {this.props.children}
                     </Row>
                 </Col>

@@ -11,6 +11,7 @@ import 'pubsub-js';
 import styles from './index.css';
 import UpdatePassword from './update-password';
 import UpdateBasicInfo from './update-basic-info';
+import UpdateSshKey from './update-sshkey';
 
 const FormItem = Form.Item;
 
@@ -90,12 +91,13 @@ class UpdateUserInfo extends React.Component {
                             <li className={this.state.currentIndex==3?styles.update_li_light:styles.update_li}
                                 onClick={this.updateSshKey.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
-                                sshKey</li>
+                                SSH Keys</li>
                         </ul>
                     </Col>
                     <Col span={19}>
                         <UpdatePassword visible={this.state.showPassword}/>
                         <UpdateBasicInfo visible={this.state.showBasicInfo}/>
+                        <UpdateSshKey visible={this.state.showSshKey}/>
                         {this.props.children}
                     </Col>
                 </Row>
