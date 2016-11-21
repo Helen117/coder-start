@@ -22,7 +22,6 @@ class createMergeRequest extends Component {
 
     componentWillMount() {
         const {router} = this.context;
-        console.log('this.props.getProjectInfo',this.props.getProjectInfo)
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
@@ -32,6 +31,7 @@ class createMergeRequest extends Component {
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
         if(this.props.isMR != isMR && isMR==false){
+            //console.log('无需MR');
             this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
         }
         if (this.props.inserted != inserted && inserted){
@@ -137,21 +137,23 @@ class createMergeRequest extends Component {
 
 
     render(){
+
         const {editType} = this.props.location.state;
         const { getFieldDecorator } = this.props.form;
         const {mergeBranch} = this.props;
+        //console.log('render',mergeBranch);
         let targetPath,sourceBranch,initialSourceBranch;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch){
-            console.log('mergeBranch222',mergeBranch)
+
             if(mergeBranch.length>1){
+                //console.log('mergeBranch222',mergeBranch)
                 sourcePath = mergeBranch[0].path_with_namespace;
                 targetPath = mergeBranch[1].path_with_namespace;
                 sourceBranch = this.mapSelectOption(mergeBranch[0].branches);
                 targetBranch = this.mapSelectOption(mergeBranch[1].branches);
                 initialSourceBranch = mergeBranch[0].branches[0];
                 initialTargetBranchAll = mergeBranch[1].branches;
-                console.log(333);
             }
         }
 
@@ -164,8 +166,8 @@ class createMergeRequest extends Component {
             wrapperCol: { span: 14 },
         };
 
-
-            if(mergeBranch) {
+        if(mergeBranch){
+            if(mergeBranch.length>1) {
                 return (
                 <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -259,7 +261,10 @@ class createMergeRequest extends Component {
                 </Box>);
             }else{
                 return <div></div>
-            }
+            }}else{
+            return <div></div>
+        }
+
 
     }
 }

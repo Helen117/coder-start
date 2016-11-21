@@ -50,10 +50,19 @@ class projectSetMilestonesEdit extends React.Component {
 
     insertCallback(type){
         message.success(type);
-        const date = this.props.location.state?this.props.location.state.date:moment().valueOf();
-        console.log(this.groupId,date,"month",Date.now())
+        const {editType} = this.props.location.state;
+        let date = null;
+        if(editType == 'add'){
+            date = this.props.form.getFieldsValue().due_date
+        }else{
+            date = moment(this.props.location.state.date)
+        }
+        console.log('date',date)
         this.props.getProjectSetMilestones(this.groupId,date,"month");
-        this.context.router.goBack();
+        this.context.router.push({
+            pathname: "/projectSetTree/projectSetMilestones",
+            state: {date: date}
+        });
     }
 
     errCallback(errMessage,type){
@@ -166,18 +175,20 @@ class projectSetMilestonesEdit extends React.Component {
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="描述" >
-                            {getFieldDecorator('description')( < Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" />)}
+                            {getFieldDecorator('description')
+                            ( < Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" />)}
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="计划完成时间">
                             {dueDateProps(<DatePicker disabledDate={this.disabledDate.bind(this)} placeholder="计划完成时间" />)}
-
                         </FormItem>
+
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">
                                 {getFieldDecorator('result',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
                                 (<Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
                             </FormItem>:<div></div>}
+
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>

@@ -6,6 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
 import {ProjectSetMilestones} from '../milestones'
+import moment from 'moment'
 
 
 class projectMilestones extends React.Component {
@@ -18,7 +19,7 @@ class projectMilestones extends React.Component {
         const projectId = getProjectInfo? getProjectInfo.id+'_p':'';
 
         return (
-            <ProjectSetMilestones projectId={projectId}/>
+            <ProjectSetMilestones projectId={projectId} defaultDate = {moment()}/>
         )
     }
 }

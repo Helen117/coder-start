@@ -84,24 +84,26 @@ export default class MilestonesCalendar extends React.Component{
         return(
 
                 <div style={{height:'100%'}}>
-                    <Tooltip placement="top" title={tooltip}>
-                        <ol className="events">
-                            <li style={{paddingTop:5}}>
-                                <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
+
+                        <Tooltip placement="top" title={tooltip}>
+                            <a onClick = {revocable?this.editMilestone.bind(this,milestoneData,calendarTime):null} >
+                            <ol style={{height:"70%"}} className="events">
+                                <li >
                                      <h4 style={{color:type=="error"?"red":"default"}}>
                                         <Badge status={type}/>{milestoneData.title}
                                      </h4>
-                                 </a>
-                            </li>
-                            <li>{milestoneData.description}</li>
-                        </ol>
-                    </Tooltip>
+                                </li>
+                                <li>{milestoneData.description}</li>
+                            </ol>
+                            </a>
+                        </Tooltip>
 
                         <div style={{textAlign:"right", marginRight:5}}>
                             <Tooltip placement="top" title={"点击查看超时任务"}>
                             <Badge className="pull-right" onClick={this.milestonesDetail.bind(this, milestoneData.id)} count={milestoneData.expired}/>
                             </Tooltip>
                         </div>
+
 
                 </div>
 
@@ -132,11 +134,9 @@ export default class MilestonesCalendar extends React.Component{
                 milestoneList.map((item, index) =>
                     <li style={{paddingTop:5}} key={index} >
                         <Tooltip key={index} placement="top" title={this.tooltip(item)}>
-                            <a onClick = {item.state != 'closed' && this.props.id.indexOf('_g')>0?this.editMilestone.bind(this,item,calendarTime):null} >
                             <Badge count={item.expired}>
                                 <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />{item.title}
                             </Badge>
-                            </a>
                         </Tooltip>
                     </li>
                 )
@@ -160,18 +160,22 @@ export default class MilestonesCalendar extends React.Component{
 
     onPanelChange(date,mode){
         const calendarTime = new Date(date).getTime();
-        const onPanelChange = this.props.onPanelChange;
+        const {onPanelChange,setDefaultDate} = this.props;
         onPanelChange(calendarTime,mode);
+        setDefaultDate(date)
     }
 
 
     render(){
+        //console.log(this.state.defaultDate,'22222222')
         const milestoneData = this.props.milestoneData;
         return (
             <Calendar locale={zh_CN}
                       dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}
-                      onPanelChange = {this.onPanelChange.bind(this)}/>)
+                      onPanelChange = {this.onPanelChange.bind(this)}
+                      defaultValue={this.props.defaultValue}
+                      setDefaultDate = {this.props.setDefaultDate}/>)
 
     }
 }
