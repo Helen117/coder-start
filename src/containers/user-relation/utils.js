@@ -19,10 +19,17 @@ export function findUserGroupById(userGroupId,userTreeData) {
 }
 
 export function findUserIdByEmail(email,userInfoData) {
-    console.log("email,userInfoData:",email,userInfoData)
     for(let i=0; i<userInfoData.length; i++){
         if(email == userInfoData[i].email){
             return userInfoData[i].id;
+        }
+    }
+}
+
+export function findEmailByUserId(userId,allUser) {
+    for(let i=0; i<allUser.length; i++){
+        if(userId == allUser[i].id){
+            return allUser[i].email;
         }
     }
 }

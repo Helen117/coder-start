@@ -25,8 +25,11 @@ class UpdateSshKey extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
+                let sshKey_temp;
+                sshKey_temp = formData.sshKey.replace(/\+/g,"%2B");
+                sshKey_temp = sshKey_temp.replace(/\&/g,"%26");
                 //调修改SSHKEY接口
-                actions.AddSshKey(loginInfo.username,formData.title,formData.sshKey)
+                actions.AddSshKey(loginInfo.username,formData.title,sshKey_temp)
             }
         })
     }
@@ -40,9 +43,10 @@ class UpdateSshKey extends React.Component {
         notification.success({
             message: message,
             description: '',
-            duration: 2
+            duration: null
         });
-        this.context.router.goBack();
+        const {form} = this.props;
+        form.resetFields();
     }
 
     errCallback(message,errmessage){
@@ -73,7 +77,7 @@ class UpdateSshKey extends React.Component {
         const sshKeyProps = getFieldDecorator('sshKey',
             {rules:[
                 {required:true, message:'请输入上面步骤3打开的内容！'},
-            ]})(<Input type="textarea" rows={4} placeholder="请输入上面步骤3打开的内容！"/>);
+            ]})(<Input type="textarea" rows="4" placeholder="请输入上面步骤3打开的内容！"/>);
         const titleProps = getFieldDecorator('title')(<Input type="text" placeholder="请输入SSH Key标题！"/>);
 
         if(visible == true){
@@ -96,8 +100,8 @@ class UpdateSshKey extends React.Component {
                         </FormItem>
                         <FormItem wrapperCol={{span: 10, offset: 5}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
-                                    loading={this.props.updateLoading}
-                                    disabled={this.props.updateDisabled}>
+                                    loading={this.props.addLoading}
+                                    disabled={this.props.addDisabled}>
                                 添加</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>重置</Button>
                         </FormItem>

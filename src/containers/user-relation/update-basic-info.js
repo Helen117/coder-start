@@ -7,6 +7,8 @@ import {connect} from 'react-redux';
 import {Form, Input, Button, notification,Modal,Select} from 'antd';
 import 'pubsub-js';
 import {UpdateUser} from './actions/user-detail-action';
+import {getAllUserInfo} from './actions/user-info-action';
+import {findEmailByUserId} from './utils';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -15,6 +17,10 @@ const Option = Select.Option;
 class UpdateBasicInfo extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount(){
+        this.props.getAllUserInfo();
     }
 
     handleSubmit(e) {
@@ -82,7 +88,7 @@ class UpdateBasicInfo extends React.Component {
     }
 
     render() {
-        const {visible,loginInfo} = this.props;
+        const {visible,loginInfo,allUserInfo} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
@@ -100,6 +106,10 @@ class UpdateBasicInfo extends React.Component {
         );
 
         if(visible == true){
+            let initEmail = '';
+            if(allUserInfo){
+                initEmail = findEmailByUserId(loginInfo.userId,allUserInfo);
+            }
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="中文名">
@@ -108,7 +118,8 @@ class UpdateBasicInfo extends React.Component {
 
                     <FormItem {...formItemLayout}  label="邮箱" >
                         {getFieldDecorator('email',{rules:[{
-                            required:true,message:'不能为空'},{validator:this.checkEmail}]})(
+                            required:true,message:'不能为空'},{validator:this.checkEmail}],
+                            initialValue:initEmail})(
                             <Input placeholder="邮箱" addonAfter={selectAfter}/>
                         )}
                     </FormItem>
@@ -142,12 +153,14 @@ function mapStateToProps(state) {
         updateErrors:state.createUser.updateErrors,
         updateLoading:state.createUser.updateLoading,
         updateDisabled:state.createUser.updateDisabled,
+        allUserInfo:state.getAllUserInfo.allUserInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         UpdateUser:bindActionCreators(UpdateUser, dispatch),
+        getAllUserInfo:bindActionCreators(getAllUserInfo, dispatch),
     }
 }
 

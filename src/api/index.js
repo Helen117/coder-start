@@ -1,8 +1,9 @@
 import Api from './api';
 
 const api = new Api({
-     baseURI: 'http://10.10.152.144:11000/gitlab',
-       //baseURI: 'http://10.10.156.193:11000/gitlab',
+     //baseURI: 'http://10.10.152.144:11000/gitlab',
+       baseURI: 'http://10.10.156.46:11000/gitlab',
+    //baseURI: 'http://10.10.156.192:11000/gitlab',
      //baseURI: '/gitlab',
 
     headers: {

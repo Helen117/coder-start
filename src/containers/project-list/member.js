@@ -88,14 +88,12 @@ class ProjectMember extends Component {
                 onOk() {
                     //调删除成员接口
                     let data = [];
-                    console.log("user_ids:",user_ids)
-                    for(let i=0;i<user_ids;i++){
+                    for(let i=0;i<user_ids.length;i++){
                         data.push({
                             projectId:projectId.substr(0,projectId.length-2),
                             userId:user_ids[i]
                         })
                     }
-                    console.log("data:",data)
                     actions.deleteProjectMember(data)
                 },
                 onCancel() {
@@ -167,6 +165,7 @@ class ProjectMember extends Component {
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {},
             onSelect(record, selected, selectedRows) {
+                user_ids.splice(0,user_ids.length);
                 for(let i=0; i<selectedRows.length; i++){
                     let _id = findUserIdByEmail(selectedRows[i].email,projectMembers.projectMembers);
                     user_ids.push(_id);

@@ -44,15 +44,6 @@ class UpdateUserInfo extends React.Component {
         })
     }
 
-    updateRole(){
-        this.setState({
-            currentIndex:2,
-            showPassword:false,
-            showBasicInfo:false,
-            showSshKey:false,
-        })
-    }
-
     updateSshKey(){
         this.setState({
             currentIndex:3,
@@ -84,10 +75,6 @@ class UpdateUserInfo extends React.Component {
                                 onClick={this.updatePassword.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
                                 修改密码</li>
-                            <li className={this.state.currentIndex==2?styles.update_li_light:styles.update_li}
-                                onClick={this.updateRole.bind(this)}>
-                                <Icon type="edit" className={styles.ul_li_icon}/>
-                                修改角色</li>
                             <li className={this.state.currentIndex==3?styles.update_li_light:styles.update_li}
                                 onClick={this.updateSshKey.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
