@@ -4,10 +4,14 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import ReactDOM from "react-dom";
 import {Form, Input, Button,Icon,Row,Col} from 'antd';
 import Box from '../../components/box';
 import 'pubsub-js';
 import styles from './index.css';
+import UpdatePassword from './update-password';
+import UpdateBasicInfo from './update-basic-info';
+import UpdateSshKey from './update-sshkey';
 
 const FormItem = Form.Item;
 
@@ -16,26 +20,44 @@ class UpdateUserInfo extends React.Component {
         super(props);
         this.state = {
             currentIndex:-1,
+            showPassword:false,
+            showBasicInfo:false,
+            showSshKey:false,
         }
+    }
+
+    updateBasicInfo(){
+        this.setState({
+            currentIndex:0,
+            showPassword:false,
+            showBasicInfo:true,
+            showSshKey:false,
+        })
     }
 
     updatePassword(){
         this.setState({
-            currentIndex:0
-        })
-        this.context.router.push({
-            pathname:'/updateUserInfo/updatePassword'
+            currentIndex:1,
+            showPassword:true,
+            showBasicInfo:false,
+            showSshKey:false,
         })
     }
 
-    updateRole(){
+    updateSshKey(){
         this.setState({
-            currentIndex:1
+            currentIndex:3,
+            showPassword:false,
+            showBasicInfo:false,
+            showSshKey:true,
         })
     }
 
     handleClick(e){
         //console.log("e",e)
+        /*console.log("e.target:",e.target)
+         let node = ReactDOM.findDOMNode(this);
+         console.log("node:",node)*/
     }
 
     render() {
@@ -46,16 +68,23 @@ class UpdateUserInfo extends React.Component {
                     <Col span={5}>
                         <ul className={styles.update_ul} onClick={this.handleClick.bind(this)}>
                             <li className={this.state.currentIndex==0?styles.update_li_light:styles.update_li}
+                                onClick={this.updateBasicInfo.bind(this)}>
+                                <Icon type="edit" className={styles.ul_li_icon}/>
+                                修改基本信息</li>
+                            <li className={this.state.currentIndex==1?styles.update_li_light:styles.update_li}
                                 onClick={this.updatePassword.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
                                 修改密码</li>
-                            <li className={this.state.currentIndex==1?styles.update_li_light:styles.update_li}
-                                onClick={this.updateRole.bind(this)}>
+                            <li className={this.state.currentIndex==3?styles.update_li_light:styles.update_li}
+                                onClick={this.updateSshKey.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
-                                修改角色</li>
+                                SSH Keys</li>
                         </ul>
                     </Col>
                     <Col span={19}>
+                        <UpdatePassword visible={this.state.showPassword}/>
+                        <UpdateBasicInfo visible={this.state.showBasicInfo}/>
+                        <UpdateSshKey visible={this.state.showSshKey}/>
                         {this.props.children}
                     </Col>
                 </Row>
