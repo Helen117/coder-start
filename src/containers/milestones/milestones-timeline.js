@@ -75,12 +75,13 @@ class ProjectSetMilestones extends React.Component {
     }
 
     render(){
-        const {loading,notFoundMsg,milestoneData} = this.props;
+        const {milestoneData} = this.props;
+        const isSpinning = this.props.loading? this.props.loading :false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
 
-            <Spin spinning={loading} tip="正在加载数据，请稍候..." >
+            <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
 
                 <div id="mycalender" style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
