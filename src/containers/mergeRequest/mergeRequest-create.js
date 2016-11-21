@@ -22,7 +22,6 @@ class createMergeRequest extends Component {
 
     componentWillMount() {
         const {router} = this.context;
-        console.log('this.props.getProjectInfo',this.props.getProjectInfo)
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
@@ -143,7 +142,6 @@ class createMergeRequest extends Component {
         let targetPath,sourceBranch,initialSourceBranch;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch){
-            console.log('mergeBranch222',mergeBranch)
             if(mergeBranch.length>1){
                 sourcePath = mergeBranch[0].path_with_namespace;
                 targetPath = mergeBranch[1].path_with_namespace;
@@ -151,7 +149,6 @@ class createMergeRequest extends Component {
                 targetBranch = this.mapSelectOption(mergeBranch[1].branches);
                 initialSourceBranch = mergeBranch[0].branches[0];
                 initialTargetBranchAll = mergeBranch[1].branches;
-                console.log(333);
             }
         }
 
