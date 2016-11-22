@@ -144,32 +144,17 @@ class UserInfo extends React.Component {
         });
     }
 
-    filterData(dataSource,filterKey,formData){
-        let newData=[];
-        for(let i=0; i<dataSource.length; i++){
-            if(dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
-                newData.push(dataSource[i]);
-            }
-        }
-        return newData;
-    }
-
-    comfirmFilter(formData,filterKey){
-        this.state.filterKeys.push({filterKey:filterKey,formData:formData});
+    comfirmFilter(filterData,filterKeys){
+        this.state.filterKeys.push(filterKeys[0]);
         this.setState({
-            dataSource:this.filterData(this.state.dataSource,filterKey,formData),
+            dataSource:filterData
         })
     }
 
-    cancleFilter(filterKey){
-        let index = findFilterIndex(this.state.filterKeys,filterKey);
-        this.state.filterKeys.splice(index,1);
-        let newdata = this.data,filterKeys = this.state.filterKeys;
-        for(let i=0; i<filterKeys.length; i++){
-            newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);
-        }
+    cancleFilter(filterData,filterKeys){
         this.setState({
-            dataSource:newdata,
+            dataSource:filterData,
+            filterKeys:filterKeys
         })
     }
 
@@ -201,7 +186,8 @@ class UserInfo extends React.Component {
                 <div style={{"paddingLeft":10}}>
                     <Row>
                         <Table style={{"paddingTop":10}}
-                               columns={this.groupColumns(this,showOpt,this.state)}
+                               columns={this.groupColumns(this,showOpt,this.data,
+                                   this.state.dataSource,this.state.filterKeys)}
                                dataSource={dataSource}
                                rowSelection={rowSelection}
                                loading={loading?true:false}></Table>
@@ -235,15 +221,21 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self,showOpt)=>{
+UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKeys)=>{
     if(showOpt==true){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
                                        filterKey="name"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
