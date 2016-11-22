@@ -126,7 +126,7 @@ mergeRequestList.prototype.columns = (self)=> [{
     title: '申请人',
     dataIndex: 'author',
     key: 'author',
-    width:'10%'
+    width:'10%',
 },{
     title: '处理人',
     dataIndex: 'assignee',

@@ -31,7 +31,6 @@ class createMergeRequest extends Component {
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
         if(this.props.isMR != isMR && isMR==false){
-            //console.log('无需MR');
             this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
         }
         if (this.props.inserted != inserted && inserted){
@@ -173,7 +172,6 @@ class createMergeRequest extends Component {
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <Row>
                             <Col span="9">
-
                                 <FormItem labelCol={{span: 16}} wrapperCol={{span: 4}} label="源分支">
 
                                     {getFieldDecorator('path', {
@@ -186,10 +184,9 @@ class createMergeRequest extends Component {
                                         <Select style={{width: 200}}>
                                             <Option key={sourcePath}>{sourcePath}</Option>
                                         </Select>)}
-
-
                                 </FormItem>
                             </Col>
+
                            <Col span="3" offset="1">
                                 <FormItem  {...formItemLayout} label="">
                                     {getFieldDecorator('source_branch', {
@@ -200,6 +197,7 @@ class createMergeRequest extends Component {
                                         </Select>)}
                                 </FormItem>
                             </Col>
+
                             <Col span="4">
                                 <FormItem  {...formItemLayout} label="目标分支">
                                     {getFieldDecorator('target_project_path', {initialValue: targetPath})
@@ -208,6 +206,7 @@ class createMergeRequest extends Component {
 
                                 </FormItem>
                             </Col>
+
                             <Col span="6" offset="1">
                                 <FormItem required={true} {...formItemLayout} label="">
                                     {getFieldDecorator('target_branch', {
@@ -227,8 +226,8 @@ class createMergeRequest extends Component {
                                 }]
                             })
                             (<Input placeholder="请输入MR名称"/>)}
-
                         </FormItem>
+
                         <FormItem {...formItemLayout} label="MR描述">
                             {getFieldDecorator('description', {rules: [{required: true, message: '请填写MR描述'}]})
                             (<Input type="textarea" placeholder="请输入MR描述" rows="5"/>)}
@@ -239,7 +238,6 @@ class createMergeRequest extends Component {
                             {getFieldDecorator('milestone.id')
                             (<Select size="large" allowClear={true}
                                      onSelect={this.loadIssues.bind(this)}>{mileStoneOptions}</Select>)}
-
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
