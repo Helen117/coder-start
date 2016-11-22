@@ -15,7 +15,8 @@ import moment from 'moment'
 import 'pubsub-js';
 import './index.less';
 
-let defaultDate=moment()
+let defaultDate=moment();
+let setMode = 'month'
 class ProjectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
@@ -24,11 +25,10 @@ class ProjectSetMilestones extends React.Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
         const {projectId} = this.props;
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
-            this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
+            this.props.getProjectSetMilestonesAction(projectId,Date.now(),setMode);
         }
     }
 
@@ -37,7 +37,7 @@ class ProjectSetMilestones extends React.Component {
         if(this.props.projectId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
             //console.log('点击不同项目，重新加载数据',this.props.milestoneProId,nextProps.projectId)
-            this.props.getProjectSetMilestonesAction(projectId,defaultDate.valueOf(),'month');
+            this.props.getProjectSetMilestonesAction(projectId,defaultDate.valueOf(),setMode);
             this.props.putProIdToStateAction(projectId);
         }
         //数据加载错误提示
@@ -68,17 +68,14 @@ class ProjectSetMilestones extends React.Component {
     createMilestones(type){
         this.context.router.push({
             pathname: '/projectSetMilestonesEdit',
-            state: {editType: type}
+            state: {editType: type, mode:setMode, date:defaultDate}
         });
     }
 
-    onPanelChange(date,mode){
-        this.props.getProjectSetMilestonesAction(this.props.projectId,date,mode);
-    }
-
-    setDefaultDate(date){
-        defaultDate=date
-
+    onPanelChange(calendarTime,date,mode){
+        defaultDate=date;
+        setMode = mode;
+        this.props.getProjectSetMilestonesAction(this.props.projectId,calendarTime,mode);
     }
 
     render(){
@@ -104,7 +101,7 @@ class ProjectSetMilestones extends React.Component {
                                         projectId = {projectId}
                                         id = {id}
                                         defaultValue = {defaultDate}
-                                        setDefaultDate ={this.setDefaultDate.bind(this)}/>
+                                        mode = {setMode}/>
                 </div>
 
             </Spin>

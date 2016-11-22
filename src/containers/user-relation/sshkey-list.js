@@ -85,7 +85,7 @@ class SshKeyList extends React.Component {
                     </div>
                 );
                 return (<Panel header={panelTitle} key={item.id} >
-                    <Input type="textarea" defaultValue={item.key} disabled rows="4" />
+                    <Input type="textarea" value={item.key} rows="4" readOnly />
                 </Panel>)
             })
         }
