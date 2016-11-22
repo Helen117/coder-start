@@ -50,18 +50,11 @@ class projectSetMilestonesEdit extends React.Component {
 
     insertCallback(type){
         message.success(type);
-        const {editType} = this.props.location.state;
-        let date = null;
-        if(editType == 'add'){
-            date = this.props.form.getFieldsValue().due_date
-        }else{
-            date = moment(this.props.location.state.date)
-        }
-        console.log('date',date)
-        this.props.getProjectSetMilestones(this.groupId,date,"month");
+        const {date,mode} = this.props.location.state;
+        console.log(this.groupId,date,mode);
+        this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
             pathname: "/projectSetTree/projectSetMilestones",
-            state: {date: date}
         });
     }
 
