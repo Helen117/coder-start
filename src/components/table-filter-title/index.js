@@ -13,6 +13,7 @@ class TableFilterTitle extends React.Component {
         super(props);
         this.state = {
             visible:false,
+            isFiled:false
         }
     }
 
@@ -23,18 +24,20 @@ class TableFilterTitle extends React.Component {
             comfirmFilter(formData,filterKey);
         }
         this.setState({
-            visible:false
+            visible:false,
+            ifFiled:!formData.searchContext?false:true
         })
     }
 
     handleReset(){
-        const {form,cancleFilter} = this.props;
+        const {form,cancleFilter,filterKey} = this.props;
         form.resetFields();
         if(cancleFilter){
-            cancleFilter()
+            cancleFilter(filterKey)
         }
         this.setState({
-            visible:false
+            visible:false,
+            ifFiled:false
         })
     }
 
@@ -71,11 +74,12 @@ class TableFilterTitle extends React.Component {
             <div >
                 <span >
                     {this.props.title}
-                    {/*<Dropdown trigger={['click']} overlay={menu}
+                    <Dropdown trigger={['click']} overlay={menu}
                               visible={this.state.visible}>
                         <Icon type="filter"
+                              style={this.state.ifFiled?{color:'#2db7f5'}:{color:'#aaaaaa'}}
                               onClick={this.clickFilterImg.bind(this)}/>
-                    </Dropdown>*/}
+                    </Dropdown>
                 </span>
             </div>
         )

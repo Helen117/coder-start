@@ -10,7 +10,7 @@ import {getUserInfo} from './actions/user-info-action';
 import {MoveUser,DeleteGroupUser} from './actions/user-detail-action';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
-import {findUserIdByEmail} from './utils';
+import {findUserIdByEmail,findFilterIndex} from './utils';
 
 const FormItem = Form.Item;
 
@@ -23,6 +23,7 @@ class UserInfo extends React.Component {
             moreGroupVisible:false,
             source_user_id:null,
             dataSource:[],
+            filterKeys:[]
         }
     }
 
@@ -55,17 +56,16 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        //console.log("componentWillReceiveProps")
         const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors,userInfoData} = nextProps;
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.props.getUserInfo(selectedUserGroup.id);
         }
-        if(userInfoData != this.props.userInfoData && userInfoData){
+        if(userInfoData){
+            this.data = this.getDataSource(userInfoData);
             this.setState({
                 dataSource:userInfoData
             })
-            this.data = this.getDataSource(userInfoData);
         }
         //移除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
@@ -144,21 +144,32 @@ class UserInfo extends React.Component {
         });
     }
 
-    comfirmFilter(formData,filterKey){
+    filterData(dataSource,filterKey,formData){
         let newData=[];
-        for(let i=0; i<this.state.dataSource.length; i++){
-            if(this.state.dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
-                newData.push(this.state.dataSource[i]);
+        for(let i=0; i<dataSource.length; i++){
+            if(dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
+                newData.push(dataSource[i]);
             }
         }
+        return newData;
+    }
+
+    comfirmFilter(formData,filterKey){
+        this.state.filterKeys.push({filterKey:filterKey,formData:formData});
         this.setState({
-            dataSource:newData,
+            dataSource:this.filterData(this.state.dataSource,filterKey,formData),
         })
     }
 
-    cancleFilter(){
+    cancleFilter(filterKey){
+        let index = findFilterIndex(this.state.filterKeys,filterKey);
+        this.state.filterKeys.splice(index,1);
+        let newdata = this.data,filterKeys = this.state.filterKeys;
+        for(let i=0; i<filterKeys.length; i++){
+            newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);
+        }
         this.setState({
-            dataSource:this.data,
+            dataSource:newdata,
         })
     }
 
@@ -179,8 +190,7 @@ class UserInfo extends React.Component {
             },
             onSelectAll(selected, selectedRows, changeRows) {},
         };
-        //let dataSource = this.getDataSource(this.state.dataSource);
-        let dataSource = this.getDataSource(userInfoData);
+        let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
         let showOpt = true;
