@@ -3,15 +3,12 @@
  */
 
 import React, {PropTypes,Component} from 'react';
-import { Button,notification,Icon,Collapse,Steps,Table,Popover,Modal,Tooltip } from 'antd';
+import { notification,Table,Tooltip } from 'antd';
 import Box from '../../components/box';
 import * as jenkins from './actions/jenkins-build-action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import './index.less';
-
-const Step = Steps.Step;
-const Panel = Collapse.Panel;
 
  export class StageView extends Component {
 
@@ -43,11 +40,6 @@ const Panel = Collapse.Panel;
          });
      }
 
-     stageDetail(text,record){
-         console.log("text:",text);
-         console.log("record:",record);
-         this.setState({visible:true});
-     }
 
      codeChange(text,record){
          console.log("text:",text);
@@ -57,21 +49,6 @@ const Panel = Collapse.Panel;
              pathname: '/jenkins/codeChange',
              state: {record: record}
          });
-     }
-
-     cancel(e) {
-         this.setState({
-             visible: false,
-         });
-     }
-
-     rowClassName(record, index) {
-         if (record.status == 'success') {
-             return 'success';
-         }
-         if (record.status == 'failed') {
-             return 'failed';
-         }
      }
 
      getBuildList(list){
@@ -121,51 +98,6 @@ const Panel = Collapse.Panel;
  };
 
      render() {
-
-         // return(
-         //     <Box title="编译发布过程一览">
-         //         <Steps size="small" style={{marginTop: 16}}>
-         //             <Step status="finish" title="更新代码" />
-         //             <Step status="process" title="编译" />
-         //             <Step status="wait" title="生成单元测试案例" />
-         //             <Step status="wait" title="代码质量扫描"/>
-         //             <Step status="wait" title="单元测试" />
-         //             <Step status="wait" title="打包" />
-         //             <Step status="wait" title="生成镜像"/>
-         //             <Step status="wait" title="发布" />
-         //             <Step status="wait" title="执行自动化测试"  />
-         //         </Steps>
-         //     </Box>
-         // )
-
-         const data = [{
-             "startTime": "2016/11/15 12:00:00",
-             "code_change": "没变更",
-             "stageId_1": '1s',
-             "checkout from git status": '1s',
-             "stageId_100": "20s",
-             "generating_test_case": "1min",
-             "code_quality_scan": "20s",
-             "unit_test": "50s",
-             "package": "1min30s",
-             "generated_mirror": "59s",
-             "stageId_200": "5s",
-             "auto_test": "30s",
-             "status": "success"
-         }, {
-             "startTime": "2016/11/15 08:00:00",
-             "code_change": "10 commits",
-             "stageId_1": '1s',
-             "stageId_100": "",
-             "generating_test_case": "",
-             "code_quality_scan": "",
-             "unit_test": "",
-             "package": "",
-             "generated_mirror": "",
-             "stageId_200": "",
-             "auto_test": "",
-             "status": "failed"
-         }];
 
          const buildList = {
              "rows": [
@@ -288,39 +220,20 @@ const Panel = Collapse.Panel;
              "total": 3
          };
 
-         const text = "A dog is a type of domesticated animal.";
-
-         // console.log("workflowStage:",this.props.workflowStage);
+         console.log("workflowStage:",this.props.workflowStage);
              
              return (
                  <Box title="编译发布过程一览">
                      <div id="mytable">
-                     <Table columns={this.columns(this)} dataSource={this.getBuildList(buildList)}
-                            bordered
-                            size="middle"
-                            loading={this.props.loading}
-                            pagination={false}
-                            //rowClassName={this.rowClassName}
-                    >
-                    </Table>
-                         </div>
-
-                     <Modal title="Stage Logs" visible={this.state.visible}
-                            onCancel={this.cancel.bind(this)}
-                            footer=''
-                     >
-                         <Collapse accordion>
-                             <Panel header="This is panel header 1" key="1">
-                                 <p>{text}</p>
-                             </Panel>
-                             <Panel header="This is panel header 2" key="2">
-                                 <p>{text}</p>
-                             </Panel>
-                             <Panel header="This is panel header 3" key="3">
-                                 <p>{text}</p>
-                             </Panel>
-                         </Collapse>
-                     </Modal>
+                         <Table columns={this.columns(this)} dataSource={this.getBuildList(this.props.workflowStage)}
+                                bordered
+                                size="middle"
+                                loading={this.props.loading}
+                                pagination={false}
+                                //rowClassName={this.rowClassName}
+                        >
+                        </Table>
+                     </div>
                 </Box>
              )
 

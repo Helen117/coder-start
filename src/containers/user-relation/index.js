@@ -12,6 +12,7 @@ import PopoverImg from '../../components/popover-img';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {setUserGroupDelete} from './actions/user-group-detail-action';
+import UserInfo from './user-info';
 
 const FormItem = Form.Item;
 
@@ -19,26 +20,21 @@ class UserRelation extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            modalVisible:false
+            modalVisible:false,
+            showUserInfo:false
         }
     }
 
     componentDidMount(){
         const {userTreeData, selectedNode} = this.props;
         PubSub.subscribe("evtRefreshUserGroupTree",()=>this.props.getUserRelationTree());
-        let add_member="",projectId=""
-        if(this.props.location.state){
-            add_member = this.props.location.state.addMember;
-            projectId = this.props.location.state.projectId;
-        }
         if(userTreeData.length == 0){
             this.props.getUserRelationTree();
         }
         if(selectedNode){
-            this.context.router.push({
-                pathname: '/userRelation/userInfo',
-                state:{addMember:add_member,projectId:projectId,node:selectedNode}
-            });
+            this.setState({
+                showUserInfo:true
+            })
         }
     }
 
@@ -47,15 +43,9 @@ class UserRelation extends React.Component{
         const {userTreeData} = this.props;
         let selectedGroup = findUserGroupById(node.id,userTreeData)
         this.props.getSelectNode(node.id,selectedGroup);
-        let add_member="",projectId=""
-        if(this.props.location.state){
-            add_member = this.props.location.state.addMember;
-            projectId = this.props.location.state.projectId;
-        }
-        this.context.router.push({
-            pathname: '/userRelation/userInfo',
-            state:{addMember:add_member,projectId:projectId,node:node}
-        });
+        this.setState({
+            showUserInfo:true
+        })
     }
 
     handleOk() {
@@ -129,8 +119,15 @@ class UserRelation extends React.Component{
         }
     }
 
+    selectedUser(users){
+        const {onSelected} = this.props;
+        if(onSelected){
+            onSelected(users);
+        }
+    }
+
     render(){
-        const {userTreeData, loading, selectedNode, selectedUserGroup} = this.props;
+        const {userTreeData, loading, selectedNode, selectedUserGroup,visible} = this.props;
         const {getFieldDecorator} = this.props.form;
         const content = (
             <div>
@@ -156,18 +153,26 @@ class UserRelation extends React.Component{
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
+                    {
+                        visible=='true'?<div></div>:(
+                            <Row>
+                                <PopoverImg content={content}/>
+                                <Modal title="确认删除此组织吗?"
+                                       visible={this.state.modalVisible}
+                                       onOk={this.handleOk.bind(this)}
+                                       onCancel={this.handleCancel.bind(this)}
+                                       confirmLoading={this.props.deleteLoading?true:false}
+                                >
+                                    <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
+                                </Modal>
+                            </Row>
+                        )
+                    }
                     <Row>
-                        <PopoverImg content={content}/>
-                        <Modal title="确认删除此组织吗?"
-                               visible={this.state.modalVisible}
-                               onOk={this.handleOk.bind(this)}
-                               onCancel={this.handleCancel.bind(this)}
-                               confirmLoading={this.props.deleteLoading?true:false}
-                        >
-                            <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
-                        </Modal>
-                    </Row>
-                    <Row>
+                        <UserInfo showUserInfo={this.state.showUserInfo}
+                                  selectedNode={selectedNode}
+                                  visible={visible}
+                                  onSelected={this.selectedUser.bind(this)}/>
                         {this.props.children}
                     </Row>
                 </Col>

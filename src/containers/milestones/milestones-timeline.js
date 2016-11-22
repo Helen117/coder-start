@@ -11,22 +11,24 @@ import {putProIdToState,getProjectSetMilestones} from './actions/milestones-acti
 import {closeSetMilestone} from './actions/edit-milestones-actions';
 import MilestonesCalendar from '../../components/calendar'
 //import TimelineMilestone from '../../components/timeline';
+import moment from 'moment'
 import 'pubsub-js';
 import './index.less';
 
+let defaultDate=moment()
 class ProjectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
+
+
     }
 
     componentDidMount() {
-        //console.log('调用componentDidMount',Date.now());
+        console.log('componentDidMount');
         const {projectId} = this.props;
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
             this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
-
-
         }
     }
 
@@ -35,25 +37,25 @@ class ProjectSetMilestones extends React.Component {
         if(this.props.projectId != nextProps.projectId && projectId){
         //点击不同项目，重新加载数据
             //console.log('点击不同项目，重新加载数据',this.props.milestoneProId,nextProps.projectId)
-            this.props.getProjectSetMilestonesAction(projectId,Date.now(),'month');
+            this.props.getProjectSetMilestonesAction(projectId,defaultDate.valueOf(),'month');
             this.props.putProIdToStateAction(projectId);
         }
         //数据加载错误提示
         if(this.props.errMessage != errMessage && errMessage){
             this.errCallback(errMessage,'数据加载失败');
         }
-        if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
+        /*if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
             this.sucCallback('里程碑关闭成功');
         }else if(this.props.closeSetMsErr != closeSetMsErr && closeSetMsErr){
             this.errCallback(closeSetMsErr,'里程碑关闭失败');
-        }
+        }*/
     }
 
-    sucCallback(type){
+    /*sucCallback(type){
         message.success(type);
         this.props.getProjectSetMilestonesAction(this.props.projectId,Date.now(),'year');
 
-    }
+    }*/
 
     errCallback(errMessage,type){
         notification.error({
@@ -74,13 +76,19 @@ class ProjectSetMilestones extends React.Component {
         this.props.getProjectSetMilestonesAction(this.props.projectId,date,mode);
     }
 
+    setDefaultDate(date){
+        defaultDate=date
+
+    }
+
     render(){
-        const {loading,notFoundMsg,milestoneData} = this.props;
+        const {milestoneData} = this.props;
+        const isSpinning = this.props.loading? this.props.loading :false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
 
-            <Spin spinning={loading} tip="正在加载数据，请稍候..." >
+            <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
 
                 <div id="mycalender" style={{margin:15}}>
                     {id.toString().indexOf("_g") > 0?
@@ -94,7 +102,9 @@ class ProjectSetMilestones extends React.Component {
                                         milestonesDetailPath="/projectSetMilestonesDetail"
                                         milestoneEditPath="/projectSetMilestonesEdit"
                                         projectId = {projectId}
-                                        id = {id}/>/>
+                                        id = {id}
+                                        defaultValue = {defaultDate}
+                                        setDefaultDate ={this.setDefaultDate.bind(this)}/>
                 </div>
 
             </Spin>
@@ -106,12 +116,6 @@ ProjectSetMilestones.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
-};
-
-ProjectSetMilestones.propTypes = {
-    loadingMsg: PropTypes.string,
-    notFoundMsg: PropTypes.string,
-    loading: PropTypes.bool,
 };
 
 function mapStateToProps(state) {

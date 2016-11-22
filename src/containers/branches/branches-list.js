@@ -124,14 +124,14 @@ class branchesList extends React.Component {
     render(){
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
-        const {getFieldProps} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
 /*        const deleteResultProps = getFieldProps('result',
             {rules:[ {required:true, message:'请输入删除原因！'}]});*/
         return(
 
             <div style={{margin:15}}>
                 <Spin spinning={this.props.delLoading} tip="正在删除数据">
-                    <Row>
+                    <Row >
                         <Button className="pull-right" type="primary"
                                 disabled={this.props.getProjectInfo?false:true}
                                 onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
@@ -153,7 +153,7 @@ class branchesList extends React.Component {
                             <p>如果确认此操作，请在下框输入原因：</p>
                             <Form>
                                 <FormItem>
-                                    <Input type="textarea" {...getFieldProps('result')} rows={4} />
+                                    {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
                                 </FormItem>
                             </Form>
                         </Modal>

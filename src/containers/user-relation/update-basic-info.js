@@ -1,22 +1,26 @@
 /**
- * Created by Administrator on 2016-11-15.
+ * Created by Administrator on 2016-11-18.
  */
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, notification,Modal} from 'antd';
+import {Form, Input, Button, notification,Modal,Select} from 'antd';
 import 'pubsub-js';
 import {UpdateUser} from './actions/user-detail-action';
+import {getAllUserInfo} from './actions/user-info-action';
+import {findEmailByUserId} from './utils';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
+const Option = Select.Option;
 
-class UpdatePassword extends React.Component {
+class UpdateBasicInfo extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
-            visible:false
-        }
+    }
+
+    componentDidMount(){
+        this.props.getAllUserInfo();
     }
 
     handleSubmit(e) {
@@ -29,8 +33,8 @@ class UpdatePassword extends React.Component {
                 const formData = form.getFieldsValue();
                 let data = {};
                 data.user_id = loginInfo.userId;
-                data.password = formData.old_password;
-                data.new_password = formData.new_password;
+                data.name = formData.name;
+                data.email = formData.email+formData.option;
                 //调修改成员信息接口
                 UpdateUser(data);
             }
@@ -47,16 +51,16 @@ class UpdatePassword extends React.Component {
         notification.success({
             message: message,
             description: '',
-            duration: null,
+            duration: null
         });
-        form.resetFields();
+//        form.resetFields();
     }
 
     errCallback(message,errmessage){
         notification.error({
             message: message,
             description:errmessage,
-            duration:null,
+            duration: null
         });
     }
 
@@ -70,51 +74,54 @@ class UpdatePassword extends React.Component {
         }
     }
 
-    comfirmNewPass(rule, value, callback){//确认新密码
-        const {getFieldValue} = this.props.form;
-        if (value && value !== getFieldValue('new_password')) {
-            callback('两次密码输入不一致!');
-        } else {
+    checkEmail(rule, value, callback){
+        var reg = /^[a-z0-9_\.\-]*$/;
+        if (!value) {
             callback();
+        } else {
+            if (!reg.test(value)) {
+                callback('请输入正确的邮箱！');
+            } else {
+                callback();
+            }
         }
     }
 
     render() {
-        const {visible} = this.props;
+        const {visible,loginInfo,allUserInfo} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
             wrapperCol: {span: 8},
         };
-        const oldPasswordProps = getFieldDecorator('old_password',
+        const nameProps = getFieldDecorator('name',
             {rules:[
-                {required:true, message:'请输入原始密码！'},
-            ]})(<Input type="password" placeholder="请输入原密码"/>);
-        const newPasswordProps = getFieldDecorator('new_password',
-            {rules:[
-                {required:true, message:'请输入新密码！'},
-            ]})(<Input type="password" placeholder="请输入新密码"/>);
-        const comfirmNewPassword = getFieldDecorator('comfirm_password',
-            {rules:[
-                {required:true, message:'请输入新密码！'},
-                {validator: this.comfirmNewPass.bind(this)}
-            ]})(<Input type="password" placeholder="请再次输入新密码"/>);
-        let showPassword = this.state.visible;
-        if(visible){ showPassword = true }
+                {required:true, message:'请输入中文名！'},
+            ],initialValue:loginInfo.name})(<Input type="text" placeholder="请输入中文名"/>);
+        const selectAfter = getFieldDecorator('option',{initialValue:'@shpso.com'})(
+            <Select style={{ width: 100 }}>
+                <Option value="@shpso.com">@shpso.com</Option>
+                <Option value="@boss.com">@boss.com</Option>
+            </Select>
+        );
 
-        if(showPassword == true){
+        if(visible == true){
+            let initEmail = '';
+            if(allUserInfo){
+                initEmail = findEmailByUserId(loginInfo.userId,allUserInfo);
+            }
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="原密码">
-                        {oldPasswordProps}
+                    <FormItem {...formItemLayout} label="中文名">
+                        {nameProps}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="新密码">
-                        {newPasswordProps}
-                    </FormItem>
-
-                    <FormItem {...formItemLayout} label="确认新密码">
-                        {comfirmNewPassword}
+                    <FormItem {...formItemLayout}  label="邮箱" >
+                        {getFieldDecorator('email',{rules:[{
+                            required:true,message:'不能为空'},{validator:this.checkEmail}],
+                            initialValue:initEmail})(
+                            <Input placeholder="邮箱" addonAfter={selectAfter}/>
+                        )}
                     </FormItem>
 
                     <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
@@ -130,14 +137,14 @@ class UpdatePassword extends React.Component {
     }
 }
 
-UpdatePassword.contextTypes = {
+UpdateBasicInfo.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
 
-UpdatePassword = Form.create()(UpdatePassword);
+UpdateBasicInfo = Form.create()(UpdateBasicInfo);
 
 function mapStateToProps(state) {
     return {
@@ -146,13 +153,15 @@ function mapStateToProps(state) {
         updateErrors:state.createUser.updateErrors,
         updateLoading:state.createUser.updateLoading,
         updateDisabled:state.createUser.updateDisabled,
+        allUserInfo:state.getAllUserInfo.allUserInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         UpdateUser:bindActionCreators(UpdateUser, dispatch),
+        getAllUserInfo:bindActionCreators(getAllUserInfo, dispatch),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdatePassword);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateBasicInfo);
