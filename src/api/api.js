@@ -20,8 +20,11 @@ class _Api {
             throw new Error('baseURI option is required');
 
         methods.forEach(method =>
-            this[method] = (path, {params, data, callback} = {}) => new Promise((resolve, reject) => {
+            this[method] = (path, {params, data, callback, urlType} = {}) => new Promise((resolve, reject) => {
                 let url = this.opts.baseURI + path;
+                if (urlType){
+                    url = this.opts[urlType+'BaseURI'] + path;
+                }
                 if (path.indexOf('http://') == 0){
                     url = path;
                 }
