@@ -28,7 +28,7 @@ class ProjectSetMilestones extends React.Component {
         const {projectId} = this.props;
         if(this.props.milestoneProId != projectId && projectId){
             this.props.putProIdToStateAction(projectId);
-            this.props.getProjectSetMilestonesAction(projectId,Date.now(),setMode);
+            this.props.getProjectSetMilestonesAction(projectId,defaultDate.valueOf(),setMode);
         }
     }
 

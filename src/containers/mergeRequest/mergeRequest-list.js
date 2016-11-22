@@ -18,6 +18,7 @@ class mergeRequestList extends React.Component {
     componentWillMount() {
         if(this.props.getProjectInfo) {
             if(!this.props.mrList) {
+                console.log('componentWillMount')
                 this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
         }
@@ -29,6 +30,7 @@ class mergeRequestList extends React.Component {
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
+            console.log('componentWillReceiveProps')
             this.props.fetchMrListData(nextProId);
         }
         //数据加载错误提示
@@ -46,11 +48,10 @@ class mergeRequestList extends React.Component {
     }
 
     createMergeRequest(type){
-
-            this.context.router.push({
-                pathname: '/createMergeRequest',
-                state: {editType: type}
-            });
+        this.context.router.push({
+            pathname: '/createMergeRequest',
+            state: {editType: type}
+        });
     }
 
     onChange(pagination, filters, sorter) {
@@ -125,12 +126,12 @@ mergeRequestList.prototype.columns = (self)=> [{
     title: '申请人',
     dataIndex: 'author',
     key: 'author',
-    width:'7%'
+    width:'10%',
 },{
     title: '处理人',
     dataIndex: 'assignee',
     key: 'assignee',
-    width:'7%'
+    width:'10%'
 },{
     title: 'MR路径',
     dataIndex: 'mrPath',
@@ -140,13 +141,13 @@ mergeRequestList.prototype.columns = (self)=> [{
     title: '创建时间',
     dataIndex: 'created_at',
     key: 'created_at',
-    width:'7%',
+    width:'10%',
 },{
     title: '状态',
     dataIndex: 'state',
     key: 'state',
-    width:'5%',
-},{
+    width:'10%',
+}/*,{
     title: '操作',
     dataIndex: 'opreation',
     width: '10%',
@@ -164,7 +165,7 @@ mergeRequestList.prototype.columns = (self)=> [{
         )
         ;
     }
-}]
+}*/]
 
 mergeRequestList.contextTypes = {
     history: PropTypes.object.isRequired,

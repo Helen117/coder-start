@@ -7,7 +7,8 @@
  * Created by william.xu on 2016/9/4
  */
 import React from 'react';
-import {Row, Col, Collapse, Alert} from 'antd';
+import {bindActionCreators} from 'redux';
+import {Row, Col, Collapse, Alert,Form} from 'antd';
 import {
     MyProjectProgress,
     MyProjectRank,
@@ -15,7 +16,7 @@ import {
     MyIssueList,
     NewIssueList
 } from '../../components/dashboard';
-
+import {connect} from 'react-redux';
 //const Panel = Collapse.Panel;
 
 //import PanelBox from '../../components/panel-box';
@@ -24,14 +25,16 @@ import {
 
 import './index.less'
 
-
-export default class Home extends React.Component {
+class Home extends React.Component {
 
     constructor() {
         super()
     }
 
     componentWillMount() {
+    }
+
+    componentDidMount(){
     }
 
     callback() {
@@ -73,3 +76,16 @@ export default class Home extends React.Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        loginInfo: state.login.profile,
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return{
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Home);

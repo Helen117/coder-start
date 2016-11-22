@@ -72,7 +72,8 @@ class projectSetTree extends React.Component{
 
 
     render(){
-        const {projectSet, loading,errMessage} = this.props;
+        const {projectSet, loading,errMessage,selectedProjectSet} = this.props;
+        const defaultSelectedKeys = selectedProjectSet?selectedProjectSet.id:'';
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -83,6 +84,7 @@ class projectSetTree extends React.Component{
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={projectSet}
+                        defaultSelectedKeys={[defaultSelectedKeys]}
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
