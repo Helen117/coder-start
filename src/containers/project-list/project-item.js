@@ -218,7 +218,7 @@ class ProjectItem extends Component {
                             <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onSelect={this.handleChange.bind(this)}>
                                 <Option value="ssh">SSH</Option>
                             </Select>
-                            <Input style={{ width: 300 }}  value={this.state.url} type="text"/>
+                            <Input style={{ width: 300 }}  value={this.state.url} type="text" readOnly/>
                             <TableView columns={columns(this)}
                                        dataSource={dataSource}
                             ></TableView>
