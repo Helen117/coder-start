@@ -33,3 +33,11 @@ export function findEmailByUserId(userId,allUser) {
         }
     }
 }
+
+export function findFilterIndex(array,data) {
+    for(let i=0; i<array.length; i++){
+        if(array[i].filterKey == data){
+            return i;
+        }
+    }
+}
