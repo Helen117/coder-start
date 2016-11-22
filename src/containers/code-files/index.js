@@ -8,6 +8,8 @@ import {Breadcrumb, Row, Select, Col} from 'antd';
 import {getCodeFile, getCodeContent} from './actions/code-files-actions';
 import styles from "./index.css";
 import 'pubsub-js';
+import FileTree from './file-tree';
+import CodeView from './code-view';
 
 const Option = Select.Option;
 
@@ -17,7 +19,11 @@ class CodeFiles extends React.Component {
         this.state = {
             pathData:[],
             activeKey:0,
-            brand:"master"
+            brand:"master",
+            showFileTree:true,
+            showCodeView:false,
+            filePath:'',
+            pathName:''
         }
     }
 
@@ -41,11 +47,25 @@ class CodeFiles extends React.Component {
         if(projectInfo){
             this.props.getCodeFile(projectInfo.id,"",this.state.brand);
         }
-        this.context.router.push({
-            pathname: '/project-mgr/code-file/file-tree',
-            state:{filePath:"",brand:this.state.brand}
-        });
     }
+
+    componentWillReceiveProps(nextProps){
+        //初始化面包屑
+        const {projectInfo} = nextProps;
+        if(this.props.projectInfo != projectInfo && projectInfo){
+            if(projectInfo){
+                this.props.getCodeFile(projectInfo.id,"",this.state.brand);
+                const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
+                this.setState({
+                    pathData:pathData,
+                    activeKey:pathData[0].pathKey,
+                    showFileTree:true,
+                    showCodeView:false,
+                })
+            }
+        }
+    }
+
     componentWillUnmount(){
         //在此处注销对其他控件发送消息的响应
         PubSub.unsubscribe("evtRefreshFileTree");
@@ -60,9 +80,17 @@ class CodeFiles extends React.Component {
         });
         this.setState({
             pathData:path_temp,
-            activeKey:this.state.activeKey + 1
+            activeKey:this.state.activeKey + 1,
+            pathName:data.path,
+            brand:data.brand,
+            filePath:data.filePath
         })
-
+        if(data.type=='blob'){
+            this.setState({
+                showFileTree:false,
+                showCodeView:true,
+            })
+        }
     }
 
     isEmptyObject(obj){
@@ -85,10 +113,6 @@ class CodeFiles extends React.Component {
             }
         }
         path_temp.splice(clickPathIndex+1,path_temp.length);
-        this.setState({
-            pathData:path_temp,
-            activeKey:path_temp.length
-        });
         let filePath;
         for(let i=0; i<path_temp.length; i++){
             if(i == 0){
@@ -101,17 +125,25 @@ class CodeFiles extends React.Component {
         }
         PubSub.publish("evtClickTreePath",filePath);
         if(type == "tree"){
+            this.setState({
+                pathData:path_temp,
+                activeKey:path_temp.length,
+                filePath:filePath,
+                pathName:pathName,
+                showFileTree:true,
+                showCodeView:false
+            })
             this.props.getCodeFile(projectInfo.id,filePath,this.state.brand);
-            this.context.router.push({
-                pathname: '/project-mgr/code-file/file-tree',
-                state:{filePath:filePath,brand:this.state.brand}
-            });
         }else {
+            this.setState({
+                pathData:path_temp,
+                activeKey:path_temp.length,
+                filePath:filePath,
+                pathName:pathName,
+                showFileTree:false,
+                showCodeView:true
+            })
             this.props.getCodeContent(projectInfo.id,filePath,this.state.brand);
-            this.context.router.push({
-                pathname: '/project-mgr/code-file/code-view',
-                state:{pathName:path_temp,brand:this.state.brand,filePath:filePath}
-            });
         }
     }
 
@@ -122,13 +154,11 @@ class CodeFiles extends React.Component {
         this.setState({
             pathData:pathData,
             activeKey:pathData[0].pathKey,
-            brand:value
+            brand:value,
+            showFileTree:true,
+            showCodeView:false
         });
         PubSub.publish("evtClickBrand",{filePath:""});
-        this.context.router.push({
-            pathname: '/project-mgr/code-file/file-tree',
-            state:{brand:this.state.brand}
-        });
     }
 
     render(){
@@ -156,6 +186,11 @@ class CodeFiles extends React.Component {
                     </Col>
                 </Row>
                 <Row>
+                    <FileTree visible={this.state.showFileTree}
+                              filePath={this.state.filePath}
+                              brand={this.state.brand}/>
+                    <CodeView visible={this.state.showCodeView}
+                              pathName={this.state.pathName}/>
                     {this.props.children}
                 </Row>
             </div>

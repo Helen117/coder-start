@@ -144,31 +144,25 @@ class UserInfo extends React.Component {
         });
     }
 
-    comfirmFilter(formData){
+    comfirmFilter(formData,filterKey){
         let newData=[];
-        let column = this.groupColumns(this);
-        /*console.log("columns:",column)
-         console.log("this.state.dataSource:",this.state.dataSource)
-         console.log("formData:",formData);*/
         for(let i=0; i<this.state.dataSource.length; i++){
-            if(this.state.dataSource[i].name.indexOf(formData.searchContext) >=0 ){
+            if(this.state.dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
                 newData.push(this.state.dataSource[i]);
             }
         }
         this.setState({
-            dataSource:newData
+            dataSource:newData,
         })
     }
 
     cancleFilter(){
         this.setState({
-            dataSource:this.data
+            dataSource:this.data,
         })
     }
 
     render(){
-        /*console.log("this.data:",this.data)
-         console.log("this.state.dataSource:",this.state.dataSource)*/
         const {userInfoData, loading, showUserInfo,visible,onSelected} = this.props;
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
@@ -196,7 +190,7 @@ class UserInfo extends React.Component {
                 <div style={{"paddingLeft":10}}>
                     <Row>
                         <Table style={{"paddingTop":10}}
-                               columns={this.groupColumns(this,showOpt)}
+                               columns={this.groupColumns(this,showOpt,this.state)}
                                dataSource={dataSource}
                                rowSelection={rowSelection}
                                loading={loading?true:false}></Table>
@@ -234,9 +228,11 @@ UserInfo.prototype.groupColumns = (self,showOpt)=>{
     if(showOpt==true){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
+                                       filterKey="name"
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
+                                       filterKey="role"
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
