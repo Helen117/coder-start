@@ -6,8 +6,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, notification,Modal,Row,Col} from 'antd';
 import 'pubsub-js';
-import {AddSshKey} from './actions/ssh-key-action';
+import {AddSshKey,GetSshKeys} from './actions/ssh-key-action';
 import styles from './index.css';
+import SshKeyList from './sshkey-list';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -45,8 +46,9 @@ class UpdateSshKey extends React.Component {
             description: '',
             duration: null
         });
-        const {form} = this.props;
+        const {form,actions,loginInfo} = this.props;
         form.resetFields();
+        actions.GetSshKeys(loginInfo.userId)
     }
 
     errCallback(message,errmessage){
@@ -83,9 +85,7 @@ class UpdateSshKey extends React.Component {
         if(visible == true){
             return(
                 <div style={{paddingLeft:'50px'}}>
-                    <p style={{fontSize:14}}>
-                        你的SSH Keys:
-                    </p>
+                    <SshKeyList/>
                     <p style={{fontSize:15,paddingTop:'10px'}}>添加SSH Key步骤：
                         1、<a href="/assets/tool/Git-Bash.exe" >下载Git-Bash</a>,运行git-bash.exe;
                         2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
@@ -133,7 +133,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({AddSshKey}, dispatch)
+        actions: bindActionCreators({AddSshKey,GetSshKeys}, dispatch)
     }
 }
 
