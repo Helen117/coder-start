@@ -18,11 +18,10 @@ class FileTree extends React.Component {
     }
 
     componentWillMount(){
-        if(this.props.location.state.filePath){
-            this.setState({
-                filePath:this.props.location.state.filePath
-            })
-        }
+        const {filePath} = this.props;
+        this.setState({
+            filePath:filePath
+        })
         PubSub.subscribe("evtClickTreePath",this.refreshFilePath.bind(this));
         PubSub.subscribe("evtClickBrand",this.refreshFilePath.bind(this));
     }
@@ -62,7 +61,7 @@ class FileTree extends React.Component {
         //每次点击table，push一次
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
         //如果不是，调接口，取下一级数据，重新渲染
-        const {projectInfo} = this.props;
+        const {projectInfo,brand} = this.props;
         let type,filePath = this.state.filePath;
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name == record.name){
@@ -77,20 +76,16 @@ class FileTree extends React.Component {
         this.setState({
             filePath:filePath
         })
-        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type});
-        this.props.getCodeFile(projectInfo.id,filePath,this.props.location.state.brand);
+        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
+        this.props.getCodeFile(projectInfo.id,filePath,brand);
         if(type == "blob"){
-            this.props.getCodeContent(projectInfo.id,filePath,this.props.location.state.brand);
-            this.context.router.push({
-                pathname: '/project-mgr/code-file/code-view',
-                state:{pathName:record.name,brand:this.props.location.state.brand,filePath:filePath}
-            });
+            this.props.getCodeContent(projectInfo.id,filePath,brand);
         }
     }
 
     render(){
-        const { fetchCodeStatus } = this.props;
-        if(fetchCodeStatus || false){
+        const { fetchCodeStatus,visible } = this.props;
+        if((fetchCodeStatus || false) && (visible == true) ){
             const column = [
                 {title:"名称", dataIndex:"name", key:"name"},
                 {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},

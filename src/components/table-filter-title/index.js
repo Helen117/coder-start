@@ -17,10 +17,10 @@ class TableFilterTitle extends React.Component {
     }
 
     handleSubmit(e){
-        const {comfirmFilter,form} = this.props;
+        const {comfirmFilter,form,filterKey} = this.props;
         const formData = form.getFieldsValue();
         if(comfirmFilter){
-            comfirmFilter(formData);
+            comfirmFilter(formData,filterKey);
         }
         this.setState({
             visible:false
@@ -71,12 +71,11 @@ class TableFilterTitle extends React.Component {
             <div >
                 <span >
                     {this.props.title}
-                    <Dropdown trigger={['click']} overlay={menu}
+                    {/*<Dropdown trigger={['click']} overlay={menu}
                               visible={this.state.visible}>
                         <Icon type="filter"
-                              className={styles.filter_img_hight}
                               onClick={this.clickFilterImg.bind(this)}/>
-                    </Dropdown>
+                    </Dropdown>*/}
                 </span>
             </div>
         )

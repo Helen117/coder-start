@@ -66,7 +66,7 @@ class UpdateUserInfo extends React.Component {
             <Box title="修改员工信息">
                 <Row>
                     <Col span={5}>
-                        <ul className={styles.update_ul} onClick={this.handleClick.bind(this)}>
+                        <ul className={styles.update_ul}>
                             <li className={this.state.currentIndex==0?styles.update_li_light:styles.update_li}
                                 onClick={this.updateBasicInfo.bind(this)}>
                                 <Icon type="edit" className={styles.ul_li_icon}/>
