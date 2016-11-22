@@ -16,9 +16,12 @@ class CodeChangesList extends Component {
     }
 
     componentWillMount() {
-        const gitCommitId = this.props.location.state.gitCommitId;
+        const gitCommitId = this.props.location.state.record.gitCommitId;
+        const lastTimeGitCommitId = this.props.location.state.record.lastTimeGitCommitId;
+        const projectId = this.props.location.state.record.projectId;
         const {actions} = this.props;
-        actions.codeChanges(gitCommitId);
+        // actions.codeChanges(projectId,gitCommitId,lastTimeGitCommitId);
+        actions.codeChanges(184,'cafa8cb9c2ecf31488a55ecffbf0c1fb33380112','1f0e85e23021cd9daae243f226396d6abb013d35');
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,12 +45,7 @@ class CodeChangesList extends Component {
         const pending = loading?true:false;
 
         const list =commits?commits.map(data => <li key={data.id}>
-            <div>
-                <span>{data.author_name}/{data.project_name}</span>
-                <p>
-                    {data.description}
-                </p>
-            </div>
+            {data.title}
         </li>):[];
 
         return (

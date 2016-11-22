@@ -63,6 +63,7 @@ import './index.less';
                      if(list.rows[i].buildDetails&&list.rows[i].buildDetails.length>0){
                          dataSources.startTime=list.rows[i].buildDetails[0].startTime;
                          dataSources.gitCommitId=list.rows[i].buildDetails[0].gitCommitId;
+                         dataSources.lastTimeGitCommitId=list.rows.length-i>1?list.rows[i+1].buildDetails[0].gitCommitId:'';
                          dataSources.commit = "changes";
                          for(let j=0;j<list.rows[i].buildDetails.length;j++){
                              let stageId = "stageId_"+list.rows[i].buildDetails[j].stageId;
@@ -230,7 +231,6 @@ import './index.less';
                                 size="middle"
                                 loading={this.props.loading}
                                 pagination={false}
-                                //rowClassName={this.rowClassName}
                         >
                         </Table>
                      </div>
