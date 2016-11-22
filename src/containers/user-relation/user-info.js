@@ -179,7 +179,8 @@ class UserInfo extends React.Component {
             },
             onSelectAll(selected, selectedRows, changeRows) {},
         };
-        let dataSource = this.getDataSource(this.state.dataSource);
+        //let dataSource = this.getDataSource(this.state.dataSource);
+        let dataSource = this.getDataSource(userInfoData);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
         let showOpt = true;
