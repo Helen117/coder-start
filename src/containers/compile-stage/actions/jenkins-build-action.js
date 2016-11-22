@@ -10,7 +10,8 @@ export function workflowStage(projectId) {
             promise: api.post('/getBuildList', {
                 params: {
                     projectId: projectId
-                }
+                },
+                urlType:"ci"
             })
         }
     }
@@ -29,14 +30,15 @@ export function getStageDetail(stageId) {
     }
 }
 
-export function codeChanges(gitCommitId,oldId) {
+export function codeChanges(projectId,gitCommitId,oldId) {
     return {
         type: 'CODE_COMMIT',
         payload: {
-            promise: api.post('/project/change', {
+            promise: api.post('/repository/compare-commits', {
                 params: {
-                    newId: gitCommitId,
-                    oldId:oldId
+                    projectId:projectId,
+                    from: gitCommitId,
+                    to:oldId
                 }
             })
         }
