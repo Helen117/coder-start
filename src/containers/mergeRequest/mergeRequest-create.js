@@ -35,14 +35,15 @@ class createMergeRequest extends Component {
             this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
         }
         if (this.props.inserted != inserted && inserted){
-            this.insertCallback();
+            this.insertCallback("创建成功");
         }else if(this.props.errMessage != errMessage && errMessage){
             this.errCallback('创建失败',errMessage);
         }
     }
 
     insertCallback(type){
-        message.success(type+'成功');
+        message.success(type);
+        console.log('this.props.mergeBranch[0].id',this.props.mergeBranch[0].id)
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
@@ -90,7 +91,6 @@ class createMergeRequest extends Component {
                 this.props.createMr(data);
             }
         })
-
     }
 
     mapSelectOption(branches){
