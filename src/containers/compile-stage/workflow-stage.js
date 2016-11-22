@@ -26,7 +26,6 @@ const Panel = Collapse.Panel;
      }
 
      componentDidMount() {
-         console.log("event:",window.event);
      }
 
      componentWillReceiveProps(nextProps) {
@@ -55,7 +54,7 @@ const Panel = Collapse.Panel;
          console.log("record:",record);
 
          this.context.router.push({
-             pathname: '/codeChange',
+             pathname: '/jenkins/codeChange',
              state: {record: record}
          });
      }
@@ -107,18 +106,17 @@ const Panel = Collapse.Panel;
      }
 
      bgColor(status){
-         console.log("status:",status);
+         // console.log("status:",status);
          let style={};
          if (status == '2') {
              style ={backgroundColor: "#ffb6c1",color:"red"};
          }else if(status == '1'){
              style ={backgroundColor: "#f0fff0"};
          }else if(status == '0'){
-             style ={backgroundColor: "#f0fff0"};
+             style ={backgroundColor: "#6ADAFF"};
          }else{
              style ={backgroundColor: "#e9e9e9"};
          }
-         console.log("style:",style);
          return style;
  };
 
@@ -360,24 +358,17 @@ StageView.prototype.columns = (self)=>[
              dataIndex: 'stageId_1',
              width: '10%',
              render(text,record){
-                 let style={textAlign:"center"};
-                 let divStyle={};
+                 var  divStyle = self.bgColor(record.stageId_1_status);
                  if (record.stageId_1_status == '2') {
-                     style={color:'red'};
-                     divStyle ={backgroundColor: "#ffb6c1"}
-                 }else if(record.stageId_1_status == '1'){
-                     divStyle ={backgroundColor: "#f0fff0"}
-                 }else if(record.stageId_1_status == '0'){
-                     divStyle ={backgroundColor: "#579FE9"}
-                 }else{
-                     divStyle ={backgroundColor: "#e9e9e9"}
-                 }
-                 let errorLog =record?record.stageId_1_errorMsg:'';
-                 return <div style={divStyle}>
-                         <Tooltip placement="top" title={errorLog}>
-                             <span style={style}>{text}</span>
+                     return <div style={divStyle}>
+                         <Tooltip placement="top" title={record.stageId_1_errorMsg}>
+                             <span>{text}</span>
                          </Tooltip>
-                 </div>
+                     </div>
+                 }
+                 return <div style={divStyle}>
+                             <span>{text}</span>
+                        </div>
              }
          },
          {
@@ -385,21 +376,17 @@ StageView.prototype.columns = (self)=>[
              dataIndex: 'stageId_100',
              width: '10%',
              render(text,record){
-                 let divStyle={};
+                 var divStyleFun = self.bgColor.bind(self,record.stageId_100_status);
+                 var divStyle = divStyleFun();
                  if (record.stageId_100_status == '2') {
-                     divStyle ={backgroundColor: "#ffb6c1",color:'red'}
-                 }else if(record.stageId_100_status == '1'){
-                     divStyle ={backgroundColor: "#f0fff0"}
-                 }else if(record.stageId_100_status == '0'){
-                     divStyle ={backgroundColor: "#579FE9"}
-                 }else{
-                     divStyle ={backgroundColor: "#e9e9e9"}
+                     return <div style={divStyle}>
+                         <Tooltip placement="top" title={record.stageId_100_errorMsg}>
+                             <span>{text}</span>
+                         </Tooltip>
+                     </div>
                  }
-                 let errorLog =record?record.stageId_1_errorMsg:'';
                  return <div style={divStyle}>
-                     <Tooltip placement="top" title={errorLog}>
-                         <span>{text}</span>
-                     </Tooltip>
+                     <span>{text}</span>
                  </div>
              }
          }, {
@@ -407,49 +394,78 @@ StageView.prototype.columns = (self)=>[
              dataIndex: 'generating_test_case',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                // return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '代码质量扫描',
              dataIndex: 'code_quality_scan',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '单元测试',
              dataIndex: 'unit_test',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '打包',
              dataIndex: 'package',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '生成镜像',
              dataIndex: 'generated_mirror',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '发布',
              dataIndex: 'stageId_200',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record.stageId_200_status);
+                if (record.stageId_200_status == '2') {
+                    return <div style={divStyle}>
+                        <Tooltip placement="top" title={record.stageId_200_errorMsg}>
+                            <span>{text}</span>
+                        </Tooltip>
+                    </div>
+                }
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }, {
              title: '执行自动化测试',
              dataIndex: 'auto_test',
              width: '10%',
             render(text,record){
-                return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
+                var  divStyle = self.bgColor(record);
+                return <div style={divStyle}>
+                    <span>{text}</span>
+                </div>
             }
          }];
 
