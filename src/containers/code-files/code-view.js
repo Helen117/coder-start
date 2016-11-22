@@ -24,10 +24,6 @@ class CodeView extends React.Component {
         }
     }
 
-    componentWillMount(){
-        //console.log("componentWillMount")
-    }
-
     componentWillReceiveProps(nextProps){
         const { codeView, fetchContentStatus} = nextProps;
         if(codeView != this.props.codeView){
@@ -40,12 +36,12 @@ class CodeView extends React.Component {
     }
 
     render(){
-        const {fetchContentStatus} = this.props;
-        if(fetchContentStatus || false){
+        const {fetchContentStatus,visible,pathName} = this.props;
+        if((fetchContentStatus || false) && (visible==true)){
             return (
                 <div className={styles.code_view}>
                     <Row className={styles.blob_commit_info}>
-                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                        <p className={styles.commit_info}>{pathName}</p>
                     </Row>
                     <Row>
                         <div className={styles.blob_commit_info}>
@@ -57,11 +53,11 @@ class CodeView extends React.Component {
                     </Row>
                 </div>
             )
-        }else{
+        }else if((fetchContentStatus == false) && (visible==true)){
             return (
                 <div className={styles.code_view}>
                     <Row className={styles.blob_commit_info}>
-                        <p className={styles.commit_info}>{this.props.location.state.pathName}</p>
+                        <p className={styles.commit_info}>{pathName}</p>
                     </Row>
                     <Row>
                         <div className={styles.blob_commit_info}>
@@ -70,7 +66,7 @@ class CodeView extends React.Component {
                     </Row>
                 </div>
             )
-        }
+        }else {return <div></div>}
     }
 }
 
