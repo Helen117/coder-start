@@ -16,13 +16,14 @@ import styles from './index.css';
 
 const Option = Select.Option;
 
-class selectedProInfo extends Component {
+class SelectedProInfo extends Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
-        if(this.props.selectedItemInfo) {
+        const {getProjectInfo,selectedItemInfo} = this.props
+        if(!getProjectInfo && selectedItemInfo) {
             this.props.getProjectInfoAction(this.props.selectedItemInfo.selectedItemId);
             this.props.getProjectMembersAction(this.props.selectedItemInfo.selectedItemId);
         }
@@ -34,11 +35,7 @@ class selectedProInfo extends Component {
         const nextProId = nextProps.selectedItemInfo ? nextProps.selectedItemInfo.id : '';
         //点击不同项目，重新加载数据
         if (thisProId != nextProId && nextProId) {
-            if(nextProId.indexOf("_g")>0) {
-                this.context.router.push({
-                    pathname: "/projectSetTree/projectSetInfo",
-                });
-            }else {
+            if(nextProId.indexOf("_p")>0) {
                 this.props.getProjectInfoAction(nextProId.substring(0,nextProId.length-2));
                 this.props.getProjectMembersAction(nextProId.substring(0,nextProId.length-2));
             }
@@ -72,16 +69,20 @@ class selectedProInfo extends Component {
 
 
     render(){
-        const {projectMembers,getProjectInfo} = this.props;
+        const {projectMembers,getProjectInfo,visible} = this.props;
         const dataSource = this.getDataSource(projectMembers,getProjectInfo);
-        return (
-            <div>
-                <TableView columns={columns(this)}
-                           dataSource={dataSource}
-                           loading={this.props.getProjectInfoLoading || this.props.projectMembersLoading}
-                ></TableView>
-            </div>
-        )
+        if(visible) {
+            return (
+                <div style={{margin: 15}}>
+                    <TableView columns={columns(this)}
+                               dataSource={dataSource}
+                               loading={this.props.getProjectInfoLoading || this.props.projectMembersLoading}
+                    ></TableView>
+                </div>
+            )
+        }else{
+            return null
+        }
     }
 }
 
@@ -99,7 +100,7 @@ const columns = (self)=>[
     {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
 ];
 
-selectedProInfo.contextTypes = {
+SelectedProInfo.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -123,5 +124,5 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(selectedProInfo);
+export default connect(mapStateToProps,mapDispatchToProps)(SelectedProInfo);
 
