@@ -185,7 +185,7 @@ class ProjectMgr extends React.Component{
     }
 
     deleteGroup(groupInfo){
-        if(groupInfo){
+        if(groupInfo && !this.isEmptyObject(groupInfo)){
             if(groupInfo.children.length == 0){
                 this.setState({
                     modalVisible: true,
