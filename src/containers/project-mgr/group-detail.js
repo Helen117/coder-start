@@ -87,14 +87,14 @@ class GroupDetail extends React.Component {
         //创建返回信息
         if (this.props.result != result && result) {
             this.insertCallback("创建成功");
-        } else if (this.props.errMessage != errMessage && errMessage) {
-            this.errCallback("创建失败",errMessage);
+        /*} else if (this.props.errMessage != errMessage && errMessage) {
+            this.errCallback("创建失败",errMessage);*/
         }
         //修改返回信息
         if (this.props.updateResult != updateResult && updateResult) {
             this.insertCallback("修改成功");
-        } else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);
+        /*} else if (this.props.updateErrors != updateErrors && updateErrors) {
+            this.errCallback("修改失败",updateErrors);*/
         }
     }
 

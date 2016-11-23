@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-11-09.
  */
 import React, {PropTypes} from 'react';
-import {Modal, Icon, Form, Input} from 'antd';
+import {Modal, Icon, Form, Input,message} from 'antd';
 import styles from './index.css';
 import TreeFilter from '../tree-filter';
 
@@ -32,20 +32,25 @@ class MoreUserGroup extends React.Component{
 
     handleOk(){
         const {handleOk,form} = this.props;
-        if(handleOk){
-            handleOk(this.state.selectedNode);
+        if(this.state.selectedNode){
+            if(handleOk){
+                handleOk(this.state.selectedNode);
+            }
+            form.resetFields();
+            this.setState({
+                modalVisible:false,
+            })
+        }else{
+            message.error('请选择目标组织!',3);
         }
-        form.resetFields();
-        this.setState({
-            modalVisible:false,
-        })
     }
 
     cancelChoose(){
-        const {cancelChoose} = this.props;
+        const {cancelChoose,form} = this.props;
         if(cancelChoose){
             cancelChoose(this.state.selectedNode);
         }
+        form.resetFields();
         this.setState({
             modalVisible:false,
         })

@@ -69,8 +69,8 @@ class UpdateBasicInfo extends React.Component {
         //修改返回信息
         if (this.props.updateResult != updateResult && updateResult) {
             this.insertCallback("修改成功");
-        } else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);
+        /*} else if (this.props.updateErrors != updateErrors && updateErrors) {
+            this.errCallback("修改失败",updateErrors);*/
         }
     }
 

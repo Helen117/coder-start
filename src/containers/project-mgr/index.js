@@ -185,7 +185,7 @@ class ProjectMgr extends React.Component{
     }
 
     deleteGroup(groupInfo){
-        if(groupInfo){
+        if(groupInfo && !this.isEmptyObject(groupInfo)){
             if(groupInfo.children.length == 0){
                 this.setState({
                     modalVisible: true,
@@ -206,8 +206,8 @@ class ProjectMgr extends React.Component{
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('删除失败!',deleteErrors);*/
         }
     }
 
