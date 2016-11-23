@@ -6,7 +6,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import Popover from '../../components/popover-img';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
 import 'pubsub-js';

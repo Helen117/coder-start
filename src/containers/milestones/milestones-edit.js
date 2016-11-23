@@ -201,7 +201,6 @@ function mapStateToProps(state) {
     return {
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         getProjectInfo: state.getProjectInfo.projectInfo,
-        milestones: state.milestones.timeLineData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,

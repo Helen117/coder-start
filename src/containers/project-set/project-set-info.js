@@ -7,7 +7,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import {Button, message, Spin, Modal,notification} from 'antd';
+import { message, Modal} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PopoverImg from '../../components/popover-img'
@@ -16,7 +16,7 @@ import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
 
 
 const confirm = Modal.confirm;
-class selectedSetInfo extends Component {
+class SelectedSetInfo extends Component {
     constructor(props) {
         super(props);
     }
@@ -27,14 +27,9 @@ class selectedSetInfo extends Component {
     componentWillReceiveProps(nextProps) {
         const { delErrorMsg,delResult} = nextProps;
         const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
-        const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:''
+        const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
         if(thisId != nextId && nextId){
-            //点击不同项目，重新加载数据
-            if(nextId.indexOf("_g")<0) {
-                this.context.router.push({
-                    pathname: "/projectSetTree/projectInfo",
-                });
-            }
+
         }
 
         if(this.props.delErrorMsg != delErrorMsg && delErrorMsg){
@@ -45,11 +40,16 @@ class selectedSetInfo extends Component {
         }
     }
 
-    editProjectSet(type){
-        this.context.router.push({
-            pathname: '/editProjectSet',
-            state:{editType: type}
-        });
+    editProjectSet(type,selectedProjectSet){
+        if(selectedProjectSet){
+            this.context.router.push({
+                pathname: '/editProjectSet',
+                state:{editType: type}
+            });
+        }else{
+            message.warning('请选择要修改的项目集合')
+        }
+
     }
 
     delProjectSet(type,selectedProjectSet){
@@ -61,7 +61,7 @@ class selectedSetInfo extends Component {
             let i = 0;
             for (i = 0; i < projectSet.length; i++) {
                 if (projectSet[i].id == selectedProjectSet.id && projectSet[i].children.length > 0) {
-                    message.warning('请移除所有项目后再进行删除操作')
+                    message.warning('请移除所有项目后再进行删除操作');
                     break;
                 }
             }
@@ -89,30 +89,37 @@ class selectedSetInfo extends Component {
 
 
     render(){
+        const visible = this.props.visible;
         const selectedProjectSet = this.props.selectedItemInfo;
         const spinning = this.props.delLoading?true:false;
         const content = (
-            <div>
+            <div >
                 <a style={{paddingLeft:10}}
                    onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
                 <a style={{paddingLeft:10}}
-                   onClick={this.editProjectSet.bind(this,'update')}>修改项目集</a>
+                   onClick={this.editProjectSet.bind(this,'update',selectedProjectSet)}>修改项目集</a>
                 <a style={{paddingLeft:10}}
                    onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</a>
             </div>
         );
-        return (
-            <PopoverImg content={content}></PopoverImg>
+        if(visible){
+            return (
+                <div style={{margin:5}}>
+                    <PopoverImg content={content}></PopoverImg>
+                </div>
+            )
+        }else{
+            return null;
+        }
            /* <Spin spinning={spinning} tip="正在删除数据">
 
                {/!* <PopoverImg content={content}></PopoverImg>*!/}
             </Spin>*/
-        )
     }
 }
 
 
-selectedSetInfo.contextTypes = {
+SelectedSetInfo.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -137,5 +144,5 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(selectedSetInfo);
+export default connect(mapStateToProps,mapDispatchToProps)(SelectedSetInfo);
 

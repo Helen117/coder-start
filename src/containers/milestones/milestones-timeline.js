@@ -20,8 +20,6 @@ let setMode = 'month'
 class ProjectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
-
-
     }
 
     componentDidMount() {
@@ -84,16 +82,14 @@ class ProjectSetMilestones extends React.Component {
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
         return (
-
             <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
-
-                <div id="mycalender" style={{margin:15}}>
+                <div id="mycalender" style={{margin:5}}>
                     {id.toString().indexOf("_g") > 0?
                         <Row>
-                    <div style={{textAlign:"right"}}>
-                        <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
-                    </div></Row>:<div></div>}
-
+                            <div style={{textAlign:"right"}}>
+                                <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
+                            </div>
+                        </Row>:<div></div>}
                     <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
                                         milestoneData = {milestoneData}
                                         milestonesDetailPath="/projectSetMilestonesDetail"
@@ -103,7 +99,6 @@ class ProjectSetMilestones extends React.Component {
                                         defaultValue = {defaultDate}
                                         mode = {setMode}/>
                 </div>
-
             </Spin>
         )
     }

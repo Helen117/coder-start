@@ -17,10 +17,17 @@ class projectMilestones extends React.Component {
     render(){
         const getProjectInfo = this.props.getProjectInfo;
         const projectId = getProjectInfo? getProjectInfo.id+'_p':'';
-
-        return (
-            <ProjectSetMilestones projectId={projectId} defaultDate = {moment()}/>
-        )
+        /*if(projectId) {*/
+            return (
+                <ProjectSetMilestones projectId={projectId} defaultDate={moment()}/>
+            )
+        /*}else{
+            return(
+                <div className="null_type_div">
+                    <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
+                </div>
+            )
+        }*/
     }
 }
 

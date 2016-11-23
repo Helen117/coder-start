@@ -91,22 +91,23 @@ export default class MilestonesCalendar extends React.Component{
 
         const revocable = this.isRevocable(milestoneData.state,id);
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
-
         if(revocable){
             return <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
                 <h4 style={{color:type=="error"?"red":""}}>
-                    <Badge status={type}/>{milestoneData.title}   <Icon type="edit" />
+                    <Badge status={type}/>{milestoneData.title} <Icon type="edit" />
                 </h4>
             </a>
         }else{
-            return <div><Badge status={type}/>{milestoneData.title}</div>
+            return <h4 style={{color:type=="error"?"red":""}}>
+                <Badge status={type}/>{milestoneData.title}
+                </h4>
         }
     }
 
     getMilestoneData(milestoneData,calendarTime) {
         const tooltip = this.tooltip(milestoneData);
         return(
-                <div>
+                <div style={{marginLeft:5}}>
                     <Tooltip placement="top" title={tooltip}>
                         <ol className="events">
                              {this.titleDecorate(milestoneData,calendarTime)}
@@ -165,7 +166,7 @@ export default class MilestonesCalendar extends React.Component{
 
 
     getMonthData(milestoneList,calendarTime) {
-        return <ul className="events">
+        return <ul  style={{marginLeft:5}} className="events">
             {
                 milestoneList.map((item, index) => {
                     const type = this.setMilestoneType(item.state, item.due_date, item.unfinished)
@@ -196,7 +197,6 @@ export default class MilestonesCalendar extends React.Component{
 
     onPanelChange(date,mode){
         setMode = mode;
-        console.log('setMode',setMode)
         const calendarTime = new Date(date).getTime();
         const {onPanelChange} = this.props;
         onPanelChange(calendarTime,date,mode);

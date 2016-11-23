@@ -4,10 +4,10 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
+import { Icon} from 'antd';
 import {ProjectSetMilestones} from '../milestones'
-import moment from 'moment'
-
+import moment from 'moment';
+import './index.less';
 
 class projectSetMilestones extends React.Component {
     constructor(props) {
@@ -23,7 +23,11 @@ class projectSetMilestones extends React.Component {
                 <ProjectSetMilestones projectId={projectId} defaultDate={defaultDate}/>
             )
         }else{
-            return ( <div/> )
+            return (
+                <div className="null_type_div">
+                    <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
+                </div>
+            )
         }
     }
 }
