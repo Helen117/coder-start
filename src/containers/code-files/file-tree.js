@@ -118,7 +118,7 @@ class FileTree extends React.Component {
 
             return (
                 <div style={{"paddingLeft":"20px"}}>
-                    <TableView columns={this.getColumns(this,dataSource)} dataSource={dataSource}
+                    <TableView columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
                                loading={this.props.loading}
                                onRowClick={this.clickFileTree.bind(this)}></TableView>
                 </div>
@@ -136,11 +136,9 @@ FileTree.contextTypes = {
 FileTree.prototype.getColumns = (self,dataSource)=>[
     {title:"名称", dataIndex:"name", key:"name",
         render(text,record){
-            console.log('dataSource:',dataSource)
-            console.log('record:',record)
             let type = self.findType(dataSource,record);
-            return (type == "blob"?<div><Icon type="file"/>{text}</div>
-                :<div><Icon type="folder"/>{text}</div>)
+            return (type == "blob"?<div><Icon type="file-text" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>
+                :<div><Icon type="folder" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>)
         }},
     {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
     {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
