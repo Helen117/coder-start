@@ -94,7 +94,6 @@ class _Api {
                         return reject(error);
                     }
                 }).catch(function (error) {
-                    console.info(error);
                     const e = {
                         errorCode: -999,
                         //errorMsg: '连接远程服务器失败，url='+url
