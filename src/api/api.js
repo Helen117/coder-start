@@ -1,6 +1,8 @@
 //import superagent from 'superagent';
 //import 'whatwg-fetch';
 import fetch from 'isomorphic-fetch';//考虑使用fetch
+import * as Cookies from "js-cookie";
+import {notification} from 'antd';
 
 const methods = [
     'get',
@@ -40,7 +42,6 @@ class _Api {
                 if (data){
                     opts.headers['Content-Type'] = 'application/json; charset=utf-8';
                     opts.body = JSON.stringify(data);
-                    opts.headers['Content-Type'] = 'application/json; charset=utf-8';
                 }
                 if (params) {
                     opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -50,31 +51,61 @@ class _Api {
                     }
                     opts.body = queryString;
                 }
+                const profile = Cookies.getJSON('profile');
+                if (profile){
+                    opts.headers['authentication'] = profile.code;
+                }else{
+                    //opts.headers['authentication'] = '';
+                    delete opts.headers['authentication'];
+                }
                 fetch(url, opts).then(function (res) {
                     if(res.ok){
+                        const auth = res.headers.get('authentication');
+                        if (auth){
+                            profile.code = auth;
+                            Cookies.set('profile', profile);
+                        }
                         return res.json().then(function(json) {
                             if (json.success) {
                                 return resolve(json.result);
                             }else{
-                                return reject({
+                                const error = {
                                     errorCode: json.errorCode,
                                     errorMsg: json.errorMsg
+                                };
+                                notification.error({
+                                    message: "出错啦",
+                                    description: error.errorMsg,
+                                    duration: 10
                                 });
+                                return reject(error);
                             }
                         })
-
                     }else {
-                        return {
+                        const error = {
                             errorCode: res.status,
                             errorMsg: res.status + " - " + res.statusText + ", url=" + res.url
                         };
+                        notification.error({
+                            message: "出错啦",
+                            description: error.errorMsg,
+                            duration: 10
+                        });
+                        return reject(error);
                     }
                 }).catch(function (error) {
-                    console.log(error);
-                    return reject({
+                    console.info(error);
+                    const e = {
                         errorCode: -999,
-                        errorMsg: '连接远程服务器失败，url='+url
+                        //errorMsg: '连接远程服务器失败，url='+url
+                        errorMsg: error+',url='+url
+                    };
+                    notification.error({
+                        message: "出错啦",
+                        description: e.errorMsg,
+                        duration: 10
                     });
+                    return reject(e);
                 });
 
 
