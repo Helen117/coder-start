@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
-import {Icon} from 'antd';
+import {Icon,Table} from 'antd';
 import 'pubsub-js';
 import {getCodeFile, getCodeContent} from './actions/code-files-actions';
 
@@ -77,11 +77,11 @@ class FileTree extends React.Component {
         this.setState({
             filePath:filePath
         })
-        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
         this.props.getCodeFile(projectInfo.id,filePath,brand);
         if(type == "blob"){
             this.props.getCodeContent(projectInfo.id,filePath,brand);
         }
+        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
     }
 
     findType(dataSource,record){
@@ -97,17 +97,6 @@ class FileTree extends React.Component {
     render(){
         const { fetchCodeStatus,visible } = this.props;
         if((fetchCodeStatus || false) && (visible == true) ){
-            /*const column =()=>{
-                return [
-                {title:"名称", dataIndex:"name", key:"name",
-                    render(text,record){
-                        return (<div>
-
-                        </div>)
-                    }},
-                {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
-                {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
-            ]}*/
             const dataSource = [];
             for(var i=0; i<this.state.dataSource.length; i++){
                 dataSource.push({
@@ -118,9 +107,8 @@ class FileTree extends React.Component {
 
             return (
                 <div style={{"paddingLeft":"20px"}}>
-                    <TableView columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
-                               loading={this.props.loading}
-                               onRowClick={this.clickFileTree.bind(this)}></TableView>
+                    <Table columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
+                           onRowClick={this.clickFileTree.bind(this)}></Table>
                 </div>
             )
         }else{return null;}
