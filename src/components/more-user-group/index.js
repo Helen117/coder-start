@@ -31,10 +31,11 @@ class MoreUserGroup extends React.Component{
     }
 
     handleOk(){
-        const {handleOk} = this.props;
+        const {handleOk,form} = this.props;
         if(handleOk){
             handleOk(this.state.selectedNode);
         }
+        form.resetFields();
         this.setState({
             modalVisible:false,
         })

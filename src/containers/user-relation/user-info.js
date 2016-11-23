@@ -112,6 +112,7 @@ class UserInfo extends React.Component {
         if(this.state.moveOutVisible == true){
             //调移除接口
             DeleteGroupUser(data);
+            form.resetFields();
         }else if(this.state.moreGroupVisible == true){
             //调移动接口
             data.dest_group_id = node.id;

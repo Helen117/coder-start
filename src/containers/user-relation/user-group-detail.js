@@ -89,11 +89,19 @@ class UserGroupDetail extends React.Component {
         });
     }
 
+    findLeaderName(leaderId){
+        const {leaderInfo} = this.props;
+        for(let i=0;i<leaderInfo.length; i++){
+            if(leaderId == leaderInfo[i].leader_id){
+                return leaderInfo[i].leader_name;
+            }
+        }
+    }
+
     componentWillMount() {
         const {selectedUserGroup, userTreeData,actions} = this.props;
         const {editType} = this.props.location.state;
         const {setFieldsValue} = this.props.form;
-        actions.getLeader();
         if(selectedUserGroup){
             this.setState({
                 selectedUserGroup:selectedUserGroup.id,
@@ -107,6 +115,7 @@ class UserGroupDetail extends React.Component {
                 }
                 setFieldsValue({name:selectedUserGroup.name});
                 setFieldsValue({description:selectedUserGroup.description});
+                setFieldsValue({leader_id:this.findLeaderName(selectedUserGroup.leader_id)});
             }
         }else{
             this.setState({
@@ -156,8 +165,8 @@ class UserGroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldDecorator} = this.props.form;
-        const {userTreeData, loadingTree} = this.props;
+        const {getFieldDecorator,setFieldsValue} = this.props.form;
+        const {userTreeData, loadingTree,selectedUserGroup} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
