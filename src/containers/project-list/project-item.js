@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Tooltip, Row,notification} from 'antd';
+import { Select,Input, Button, message, Tooltip, Row,notification,Table} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -14,7 +14,7 @@ import * as starActions from './actions/consern-project-actions';
 import * as fork from '../project-list/actions/fork-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import styles from './index.css';
-import {searchNormalGroupByProjectId, findMyConsernProject, isConserned, findProjectIdByProjectName} from './util';
+import {searchNormalGroupByProjectId, findMyConsernProject, isConserned, findProjectIdByTreedata} from './util';
 
 const Option = Select.Option;
 
@@ -132,7 +132,7 @@ class ProjectItem extends Component {
         }
         let p_index = consernedProject.project_name.indexOf("/");
         if(p_index >= 0){
-            projectId = findProjectIdByProjectName(project_name,treeData);
+            projectId = findProjectIdByTreedata(project_name,treeData);
         }
 
         var starInfo={
@@ -177,58 +177,73 @@ class ProjectItem extends Component {
         if((projectMembers.fetchPMStatus || false) && (fetchProjectStatus || false) && treeData.length!=0){
             var projectId = this.state.itemNode;
             var {projectInfo,groupInfo} = searchNormalGroupByProjectId(projectId,treeData);
-            let starList = findMyConsernProject(treeData);
-            const columns = (self)=>[
-                {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
-                {title: "项目名称", dataIndex: "project_name", key: "project_name"},
-                {title: "项目描述", dataIndex: "description", key: "description"},
-                {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
-                    render(text,record){
-                        return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
-                    }
-                },
-                {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
-                {title: "是否关注", dataIndex: "consern", key: "consern",
-                    render(text,record){
-                        let consern_desc = isConserned(loginInfo,projectMembers,starList,projectInfo);
-                        if(consern_desc == '关注'){
-                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)}>{text}</a>
-                        }else if(consern_desc == '取消关注'){
-                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)}>{text}</a>
-                        }else if(consern_desc == '项目成员禁止取关'){
-                            return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)} disabled>{text}</a>
+            if(projectInfo != ''){
+                let starList = findMyConsernProject(treeData);
+                const columns = (self)=>[
+                    {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+                    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "项目描述", dataIndex: "description", key: "description"},
+                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
+                        render(text,record){
+                            return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
                         }
-                    }},
-                {title: "项目状态", dataIndex: "state", key: "state"},
-                {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
-                {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
-            ];
-            const dataSource = this.getDataSource(starList,groupInfo,projectInfo);
-            const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:'';
+                    },
+                    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern",
+                        render(text,record){
+                            let consern_desc = isConserned(loginInfo,projectMembers,starList,projectInfo);
+                            if(consern_desc == '关注'){
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)}>{text}</a>
+                            }else if(consern_desc == '取消关注'){
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)}>{text}</a>
+                            }else if(consern_desc == '项目成员禁止取关'){
+                                return <a onClick={self.concernedChange.bind(self,record,groupInfo,consern_desc)} disabled>{text}</a>
+                            }
+                        }},
+                    {title: "项目状态", dataIndex: "state", key: "state"},
+                    {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+                    {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+                ];
+                const dataSource = this.getDataSource(starList,groupInfo,projectInfo);
+                const forkFrom =this.props.getProjectInfo.forksFrom?<strong> Forked from {this.props.getProjectInfo.forksFrom}</strong>:'';
 
-            return (
-                <div>
-                    <Row>
-                        <div className={styles.project_list_div}>
-                            <Tooltip placement="top" title={forkFrom}>
-                                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
-                            </Tooltip>
-                            <span className={styles.arrow}></span>
-                            <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
-                            <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onSelect={this.handleChange.bind(this)}>
-                                <Option value="ssh">SSH</Option>
-                            </Select>
-                            <Input style={{ width: 300 }}  value={this.state.url} type="text" readOnly/>
-                            <TableView columns={columns(this)}
-                                       dataSource={dataSource}
-                            ></TableView>
-                        </div>
-                    </Row>
-                    <Row>
-                        {this.props.children}
-                    </Row>
-                </div>
-            )
+                return (
+                    <div>
+                        <Row>
+                            <div className={styles.project_list_div}>
+                                <Tooltip placement="top" title={forkFrom}>
+                                    <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                                </Tooltip>
+                                <span className={styles.arrow}></span>
+                                <a className={styles.count} onClick={this.getForks.bind(this)}>{this.props.getProjectInfo.forksCount}</a>
+                                <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onSelect={this.handleChange.bind(this)}>
+                                    <Option value="ssh">SSH</Option>
+                                </Select>
+                                <Input style={{ width: 300 }}  value={this.state.url} type="text" readOnly/>
+                                <TableView columns={columns(this)}
+                                           dataSource={dataSource}
+                                ></TableView>
+                            </div>
+                        </Row>
+                        <Row>
+                            {this.props.children}
+                        </Row>
+                    </div>
+                )
+            }else{
+                const columns = (self)=>[
+                    {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
+                    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+                    {title: "项目描述", dataIndex: "description", key: "description"},
+                    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum"},
+                    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+                    {title: "是否关注", dataIndex: "consern", key: "consern"},
+                    {title: "项目状态", dataIndex: "state", key: "state"},
+                    {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
+                    {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
+                ];
+                return(<Table style={{padding:'10px 0px 0px 50px'}} columns={columns(this)}></Table>)
+            }
         }else{
             return null;
         }

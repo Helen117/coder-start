@@ -57,10 +57,14 @@ class ProjectMgr extends React.Component{
         }
     }
     editProject(type, selectedRow) {
-        this.context.router.push({
-            pathname: '/project-detail',
-            state: {editType: type, selectedRow,}
-        });
+        if(selectedRow){
+            this.context.router.push({
+                pathname: '/project-detail',
+                state: {editType: type, selectedRow,}
+            });
+        }else{
+            message.error('请选择项目所在组!',3);
+        }
     }
 
     searchGroupByGroupId(groupId,list){
@@ -169,7 +173,6 @@ class ProjectMgr extends React.Component{
     handleOk(groupInfo) {
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        //console.log("formData:",formData)
         const {setGroupDelete, loginInfo} = this.props;
         //调删除项目组的接口
         setGroupDelete(loginInfo.username, groupInfo.id)
@@ -218,9 +221,9 @@ class ProjectMgr extends React.Component{
                 <a style={{paddingLeft:10}}
                    onClick={this.editGroup.bind(this, null, groupInfo)}>修改项目组</a>
                 <a style={{paddingLeft:10}}
-                   onClick={this.editProject.bind(this, 'add', null)}>新建项目</a>
-                <a style={{paddingLeft:10}}
                    onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</a>
+                <a style={{paddingLeft:10}}
+                   onClick={this.editProject.bind(this, 'add', groupInfo)}>新建项目</a>
             </div>
         );
         /*const deleteResultProps = getFieldProps('delete_result',
