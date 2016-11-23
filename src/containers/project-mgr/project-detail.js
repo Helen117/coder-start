@@ -63,7 +63,6 @@ class ProjectDetail extends React.Component {
                     let projectId = findProjectIdByProjectName(selectedRow.projectName,groupInfo);
                     projectId = projectId.substr(0,projectId.length-2);
                     data.id = projectId;
-                    console.log("data:",data)
                     actions.UpdateProject(data);
                     this.state.resetGroupInfo = data;
                 }
@@ -116,14 +115,14 @@ class ProjectDetail extends React.Component {
         //创建返回信息
         if (this.props.result != result && result){
             this.insertCallback("创建成功");
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback("创建失败",errMessage);
+        /*}else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback("创建失败",errMessage);*/
         }
         //更新返回信息
         if (this.props.updateResult != updateResult && updateResult){
             this.insertCallback("修改成功");
-        }else if(this.props.updateErrors != updateErrors && updateErrors){
-            this.errCallback("修改失败",updateErrors);
+        /*}else if(this.props.updateErrors != updateErrors && updateErrors){
+            this.errCallback("修改失败",updateErrors);*/
         }
         //修改项目后，更新选中组的信息
     }

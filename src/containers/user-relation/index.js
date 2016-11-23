@@ -116,8 +116,8 @@ class UserRelation extends React.Component{
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('删除失败!',deleteErrors);*/
         }
     }
 

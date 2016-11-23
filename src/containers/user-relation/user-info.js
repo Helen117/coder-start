@@ -73,8 +73,8 @@ class UserInfo extends React.Component {
                 moveOutVisible: false,
             });
             this.insertCallback('移除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('移除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('移除失败!',deleteErrors);*/
         }
 
         //移动返回信息
@@ -83,8 +83,8 @@ class UserInfo extends React.Component {
                 moreGroupVisible: false,
             });
             this.insertCallback('移动成功!');
-        }else if(this.props.moveErrors != moveErrors && moveErrors){
-            this.errCallback('移动失败!',moveErrors);
+        /*}else if(this.props.moveErrors != moveErrors && moveErrors){
+            this.errCallback('移动失败!',moveErrors);*/
         }
     }
 

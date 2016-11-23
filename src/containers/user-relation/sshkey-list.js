@@ -52,8 +52,8 @@ class SshKeyList extends React.Component {
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult) {
             this.insertCallback("删除成功");
-        } else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
-            this.errCallback("删除失败",deleteErrors);
+        /*} else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
+            this.errCallback("删除失败",deleteErrors);*/
         }
     }
 
