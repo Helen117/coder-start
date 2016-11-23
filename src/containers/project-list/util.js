@@ -34,7 +34,7 @@ export function searchUserGroupByProjectId(projectId,treeData) {
 }
 
 export function searchNormalGroupByProjectId(projectId,treeData){
-    var projectInfo,groupInfo;
+    var projectInfo='',groupInfo='';
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){
             var project_cat = treeData[i].children[j];
@@ -52,9 +52,20 @@ export function searchNormalGroupByProjectId(projectId,treeData){
             }
         }
     }
+    return {projectInfo,groupInfo}
 }
 
-export function findProjectIdByProjectName(projectName,treeData) {
+export function findProjectIdByProjectName(projectName,groupInfo) {
+    var projectId;
+    for(var i=0;i<groupInfo.children.length;i++){
+        if(projectName == groupInfo.children[i].name){
+            projectId = groupInfo.children[i].id;
+            return projectId;
+        }
+    }
+}
+
+export function findProjectIdByTreedata(projectName,treeData) {
     var projectId;
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){

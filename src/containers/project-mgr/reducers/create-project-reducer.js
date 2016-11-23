@@ -46,13 +46,12 @@ export default function createProject(state = initialState, action = {}) {
                 updateDisabled:false,
             };
         case DELETE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {deleteResult: "false"});
+            return Object.assign({}, initialState, {});
         case DELETE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {deleteResult: "success"});
+            return Object.assign({}, initialState, {deleteResult: action.payload});
         case DELETE_PROJECT_ERROR:
             return {
                 ...state,
-                deleteResult: "false",
                 deleteErrors: action.payload.errorMsg,
             };
         default:
