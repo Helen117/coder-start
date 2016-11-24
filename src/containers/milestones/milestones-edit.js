@@ -30,15 +30,11 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage,updateErrorMsg ,updateMsg} = nextProps;
+        const { inserted, updateMsg} = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback('创建成功');
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'创建失败');
         }
-        if(this.props.updateErrorMsg != updateErrorMsg && updateErrorMsg){
-            this.errCallback(updateErrorMsg,'修改失败');
-        }else if(this.props.updateMsg !=updateMsg && updateMsg){
+        if(this.props.updateMsg !=updateMsg && updateMsg){
             this.insertCallback('修改成功');
         }
     }
@@ -50,15 +46,6 @@ class projectSetMilestonesEdit extends React.Component {
         this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
             pathname: "/projectSetTree/projectSetMilestones",
-        });
-    }
-
-    errCallback(errMessage,type){
-        //message.error(type+'失败',errMessage);
-        notification.error({
-            message: type,
-            description: errMessage,
-            duration: 2
         });
     }
 
@@ -114,6 +101,7 @@ class projectSetMilestonesEdit extends React.Component {
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
         const errStr = '计划完成时间超出允许设定范围';
+        console.log(path,params,callback,errStr)
         fetchData(path,params,callback,errStr);
 
     }
@@ -203,14 +191,12 @@ function mapStateToProps(state) {
         getProjectInfo: state.getProjectInfo.projectInfo,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
-        errMessage: state.createMilestones.errors,
         loading:state.createMilestones.loading,
         disabled:state.createMilestones.disabled,
-        updateErrorMsg:state.updateMilestones.errorMsg,
         updateLoading: state.updateMilestones.loading,
         updateMsg: state.updateMilestones.result,
         checkDateResult: state.checkDueDate.result,
-        checkDateloading: state.checkDueDate.loading,
+        checkDateLoading: state.checkDueDate.loading,
     }
 }
 

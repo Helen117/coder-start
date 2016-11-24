@@ -25,18 +25,14 @@ class SelectedSetInfo extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { delErrorMsg,delResult} = nextProps;
+        const {delResult} = nextProps;
         const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
         const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
         if(thisId != nextId && nextId){
 
         }
-
-        if(this.props.delErrorMsg != delErrorMsg && delErrorMsg){
-            this.errCallback(delErrorMsg,'删除失败')
-        }else if(this.props.delResult != delResult && delResult){
+        if(this.props.delResult != delResult && delResult){
             this.successCallback('删除成功')
-
         }
     }
 
@@ -130,7 +126,6 @@ function mapStateToProps(state) {
         projectSetTree: state.fetchProjectSetTree.projectSetTree,
         loginInfo: state.login.profile,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
-        delErrorMsg: state.deleteProjectSet.errorMsg,
         delResult: state.deleteProjectSet.result,
         delLoading: state.deleteProjectSet.loading,
 
