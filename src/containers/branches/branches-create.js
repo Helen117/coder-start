@@ -23,6 +23,7 @@ class createBranches extends Component {
 
     componentDidMount() {
         if(this.props.getProjectInfo) {
+            console.log('create didmount')
             this.props.fetchBranchesData(this.props.getProjectInfo.id);
         }else{
             const {router} = this.context;
@@ -33,26 +34,17 @@ class createBranches extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result, errMessage } = nextProps;
+        const { result } = nextProps;
         if (this.props.result != result && result){
             this.insertCallback('创建成功');
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback('创建失败',errMessage);
         }
     }
 
     insertCallback(type){
+        console.log('创建成功')
         message.success(type);
-        this.props.fetchBranchesData(this.props.getProjectInfo.id);
         this.context.router.goBack();
-    }
-
-    errCallback(type,errMessage){
-        notification.error({
-            message: '创建失败',
-            description:errMessage,
-            duration: 2
-        });
+        this.props.fetchBranchesData(this.props.getProjectInfo.id);
     }
     
     titleExists(rule, value, callback){
@@ -167,7 +159,6 @@ function mapStateToProps(state) {
         loading:state.createBranch.loading,
         disabled:state.createBranch.disabled,
         result: state.createBranch.result,
-        errMessage:state.createBranch.errors,
     };
 }
 
