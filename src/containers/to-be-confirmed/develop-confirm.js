@@ -5,7 +5,7 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Input,Table,message,Spin,Upload,Icon  } from 'antd';
+import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon  } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -32,14 +32,14 @@ const FormItem = Form.Item;
 
 
     approve(){
-        const {actions,form,loginInfo} = this.props;
+        const {form} = this.props;
+        console.log(form.getFieldsValue());
         const {record} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.username = loginInfo.username;
 
             }
         })
@@ -80,10 +80,10 @@ const FormItem = Form.Item;
                     <div style={{marginTop: 16}}>
                         <Form horizontal>
                             <FormItem {...formItemLayout} label="设计工时" >
-                                {getFieldDecorator('time',{rules:[{required:true,type: 'number',message:'不能为空'}]})(<Input />)}
+                                {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'不能为空'}]})(<InputNumber min={1} max={100}/>)}
                             </FormItem>
                             <FormItem   {...formItemLayout} label="涉及项目">
-                                    {getFieldDecorator('project')(<TransferFilter dataSource = {projectInfo}
+                                    {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})(<TransferFilter dataSource = {projectInfo}
 
                                                                                       onChange={this.handleChange.bind(this)}
                                                                                       loadingProMsg={false }
