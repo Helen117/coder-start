@@ -54,8 +54,7 @@ class ProjectMember extends Component {
             addProjectMember: false
         });
         //调项目成员接口
-        const {actions} = this.props;
-        let projectInfo = this.props.location.state.projectInfo;
+        const {actions,projectInfo} = this.props;
         actions.getProjectMembers(projectInfo.id.substr(0,projectInfo.id.length-2));
     }
 
@@ -106,9 +105,8 @@ class ProjectMember extends Component {
 
     handleOk(){
         //调添加成员接口
-        const {actions} = this.props;
+        const {actions,projectInfo} = this.props;
         let data = [];
-        let projectInfo = this.props.location.state.projectInfo;
         let projectId = projectInfo.id.substr(0,projectInfo.id.length-2);
         for(let i=0; i<this.state.selectedUsers.length; i++){
             data.push({
@@ -139,9 +137,7 @@ class ProjectMember extends Component {
     }
 
     render(){
-        const {projectMembers} = this.props;
-        var groupInfo = this.props.location.state.groupInfo;
-        var projectInfo = this.props.location.state.projectInfo;
+        const {projectMembers,groupInfo,projectInfo} = this.props;
 
         const columns = [
             {title: "项目人员", dataIndex: "name", key: "name"},

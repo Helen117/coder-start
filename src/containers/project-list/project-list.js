@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Switch,Icon, Row, Button, Modal, notification, Input, Form} from 'antd';
+import {Icon, Row, Button, Modal, notification, Form} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -18,40 +18,12 @@ import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
 import {setProjectDelete} from '../project-mgr/actions/create-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 
-const confirm = Modal.confirm;
-const FormItem = Form.Item;
-
 class ProjectList extends Component {
     constructor(props) {
         super(props);
-        this.showProjectList = this.showProjectList.bind(this);
         this.state = {
-            listType:false,
-            nullType:false,
-            listNode:null,
             modalVisible:false
         };
-    }
-
-    componentDidMount() {
-        const {node} = this.props.location.state;
-        if(node){
-            this.showProjectList(node);
-        }
-    }
-
-    showProjectList(data){
-        if(data.isLeaf==false && ((data.id.indexOf("_")<0 && data.id>0) || (data.id.indexOf("_g")>0))){
-            this.setState({//项目组节点下有项目
-                listType:true,
-                listNode:data.id,
-            });
-        }else if(data.isLeaf==true && ((data.id.indexOf("_")<0 && data.id>0) || (data.id.indexOf("_g")>0))){
-            this.setState({//项目组节点下没有项目
-                listType:false,
-                nullType:true,
-            });
-        }
     }
 
     insertCallback(message){
@@ -64,29 +36,14 @@ class ProjectList extends Component {
         this.props.getGroupTree(loginInfo.userId);
     }
 
-    errCallback(message,errMessage){
-        notification.error({
-            message: message,
-            description:errMessage,
-            duration: 4
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-        const { deleteResult, deleteErrors } = nextProps;
+        const { deleteResult } = nextProps;
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);*/
-        }
-
-        const {node} = nextProps.location.state;
-        if(node){
-            this.showProjectList(node);
         }
     }
 
@@ -98,9 +55,7 @@ class ProjectList extends Component {
     }
 
     handleOk() {
-        const {loginInfo,setProjectDelete, treeData,getGroupInfo} = this.props;
-        const { form } = this.props;
-        const formData = form.getFieldsValue();
+        const {loginInfo,setProjectDelete,getGroupInfo} = this.props;
         let projectId = findProjectIdByProjectName(this.state.selectProjectName, getGroupInfo);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
@@ -147,13 +102,22 @@ class ProjectList extends Component {
     }
 
     render() {
-        if(this.state.listType == true){//展示项目组信息
+        const {node,visible} = this.props;
+        let listType = false,nullType = false;
+        if(visible == true){
+            if(node.isLeaf==false && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
+                //项目组节点下有项目
+                listType = true;nullType = false;
+            }else if(node.isLeaf==true && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
+                //项目组节点下没有项目
+                listType = false;nullType = true;
+            }
+        }
+
+        if(listType == true){//展示项目组信息
             const {treeData,getGroupInfo, deleteLoading} = this.props;
-            const {getFieldProps} = this.props.form;
-            /*const deleteResultProps = getFieldProps('delete_result',
-                {});*/
             if(getGroupInfo && treeData.length>0){
-                var groupId = this.state.listNode;
+                var groupId = node.id;
                 var groupInfo = searchGroupByGroupId(groupId,treeData);
                 const dataSource = this.getDataSource(groupInfo);
                 return (
@@ -172,17 +136,12 @@ class ProjectList extends Component {
                                    onOk={this.handleOk.bind(this)}
                                    confirmLoading={deleteLoading?true:false}
                                    onCancel={this.handleCancel.bind(this)}
-                            >
-                                {/*<p>如果确认此操作，请在下框输入原因：</p>
-                                <FormItem>
-                                    <Input type="textarea" {...deleteResultProps} rows={4} />
-                                </FormItem>*/}
-                            </Modal>
+                            >   </Modal>
                         </Row>
                     </div>
                 )
             }else{return null}
-        } else if(this.state.nullType == true){
+        } else if(nullType == true){
             return(
                 <div className={styles.null_type_div}>
                     <span><Icon type="frown-circle" />&nbsp;&nbsp;&nbsp;当前项目组下没有项目！</span>

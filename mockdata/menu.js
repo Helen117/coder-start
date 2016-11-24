@@ -39,7 +39,7 @@ module.exports.menu ={
                             "parentId": 3,
                             "cLevel": 3,
                             "name": "项目",
-                            "link": "/project-mgr",
+                            "link": "/project-mgr/project-mgr-sub",
                             "description": "",
                             "icon": null,
                             "subMenu": []

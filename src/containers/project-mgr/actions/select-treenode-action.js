@@ -5,17 +5,18 @@ import api from '../../../api';
 import {GET_GROUP_INFO_SUCCESS,
         GET_PROJECT_INFO} from '../constants/select-treenode-types';
 
-export function getGroupInfoSuss(groupInfo, selectedNode) {
+export function getGroupInfoSuss(groupInfo, selectedNode,node) {
     return {
         type:GET_GROUP_INFO_SUCCESS,
         data:groupInfo,
-        selectNodeData: selectedNode
+        selectNodeData: selectedNode,
+        node:node
     }
 }
 
-export function getGroupInfo(groupInfo, selectedNode) {
+export function getGroupInfo(groupInfo, selectedNode,node) {
         if (groupInfo) {
-            return getGroupInfoSuss(groupInfo, selectedNode);
+            return getGroupInfoSuss(groupInfo, selectedNode,node);
         }
 }
 

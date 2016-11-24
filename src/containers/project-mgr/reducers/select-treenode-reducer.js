@@ -15,7 +15,8 @@ const initialState = {
 export function getGroupInfo(state = initialState, action = {}) {
     switch (action.type) {
         case GET_GROUP_INFO_SUCCESS:
-            return Object.assign({}, initialState, {groupInfo: action.data, selectedNode: action.selectNodeData});
+            return Object.assign({}, initialState, {groupInfo: action.data, selectedNode: action.selectNodeData,
+                node:action.node});
         case GET_GROUP_INFO_ERROR:
             return {
                 ...state,
