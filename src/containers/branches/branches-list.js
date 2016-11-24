@@ -26,19 +26,13 @@ class branchesList extends React.Component {
 
     componentWillMount() {
         if(this.props.getProjectInfo) {
-            if(!this.props.branchesData) {
+            if(!this.props.branchesData && !this.props.loading) {
                 this.props.fetchBranchesData(this.props.getProjectInfo.id);
             }
-        }/*else{
-            const {router} = this.context;
-            router.goBack();
-            this.errChosePro();
-        }*/
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const fetchErrors = nextProps.fetchErrors;
-        const delErrMessage = nextProps.delErrMessage;
         const delResult = nextProps.delResult;
         const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
@@ -46,18 +40,12 @@ class branchesList extends React.Component {
         if(thisProId != nextProId && nextProId!=''){
             this.props.fetchBranchesData(nextProId);
         }
-        //数据加载错误提示
-        if(this.props.fetchErrors != fetchErrors && fetchErrors){
-            this.errCallback('获取数据失败',fetchErrors);
-        }
-        if(this.props.delErrMessage != delErrMessage && delErrMessage){
-            this.errCallback('删除数据失败',delErrMessage);
-        }else if(this.props.delResult != delResult && delResult){
+
+        if(this.props.delResult != delResult && delResult){
             this.setState({
                 modalVisible: false,
             });
             this.sucCallback('删除成功');
-            this.props.fetchBranchesData(thisProId);
         }
     }
 
@@ -65,14 +53,6 @@ class branchesList extends React.Component {
         message.success(type);
         const project_id = this.props.getProjectInfo.id;
         this.props.fetchBranchesData(project_id);
-    }
-
-    errCallback(type,fetchErrors){
-        notification.error({
-            message: type,
-            description: fetchErrors,
-            duration: 2
-        });
     }
 
     createBranches(type){
@@ -125,11 +105,8 @@ class branchesList extends React.Component {
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
         const {getFieldDecorator} = this.props.form;
-/*        const deleteResultProps = getFieldProps('result',
-            {rules:[ {required:true, message:'请输入删除原因！'}]});*/
         return(
-
-            <div style={{margin:15}}>
+            <div style={{margin:10}}>
                 <Spin spinning={this.props.delLoading} tip="正在删除数据">
                     <Row >
                         <Button className="pull-right" type="primary"
@@ -141,7 +118,7 @@ class branchesList extends React.Component {
                                onChange={this.onChange.bind(this)}
                                columns={columns(this)}
                                dataSource={data}
-                                />
+                        />
                     </div>
                     <div>
                         <Modal title="确认删除此分支吗?"
@@ -160,7 +137,9 @@ class branchesList extends React.Component {
                     </div>
                 </Spin>
             </div>
-            )
+        )
+
+
     }
 }
 //
@@ -195,9 +174,7 @@ function mapStateToProps(state) {
         getProjectInfo:state.getProjectInfo.projectInfo,
         branchesData: state.fetchBranches.branchesData,
         loading: state.fetchBranches.loading,
-        fetchErrors: state.fetchBranches.fetchErrors,
         delLoading: state.deleteBranch.loading,
-        delErrMessage: state.deleteBranch.errorMsg,
         delResult: state.deleteBranch.result,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
     };

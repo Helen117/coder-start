@@ -33,9 +33,7 @@ import {createProjectSet,updateProjectSet,deleteProjectSet} from '../containers/
 import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
-
 import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/milestones/reducers/edit-milestones-reducer'
-
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
 import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
@@ -44,6 +42,7 @@ import createUserGroup from '../containers/user-relation/reducers/user-group-det
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
+import {acqPerformanceMsg} from '../containers/home/reducers/home-reducer';
 
 
 const reducer = combineReducers({
@@ -103,7 +102,8 @@ const reducer = combineReducers({
     stageDetail,
     AddSshKey,
     addProjectMember,
-    GetSshKeys
+    GetSshKeys,
+    acqPerformanceMsg,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

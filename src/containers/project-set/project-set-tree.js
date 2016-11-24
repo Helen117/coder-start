@@ -27,20 +27,8 @@ class projectSetTree extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {  errMessage } = nextProps;
-        if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'项目集数据加载失败');
-        }
-
     }
 
-    errCallback(errMessage,type){
-        notification.error({
-            message: type,
-            description: errMessage,
-            duration: 2
-        });
-    }
 
     isEmptyObject(obj){
         for(var key in obj){
