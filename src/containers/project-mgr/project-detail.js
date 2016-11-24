@@ -13,7 +13,7 @@ import {Form, Input, Button, Modal, notification,Menu, Icon, Radio, Select} from
 import Box from '../../components/box';
 import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
-import {findProjectIdByProjectName, resetGroupInfoState} from '../project-list/util';
+import {findProjectIdByProjectName, resetGroupInfoState,searchGroupByGroupId} from '../project-list/util';
 import {getGroupInfo} from '../project-mgr/actions/select-treenode-action';
 
 const confirm = Modal.confirm;
@@ -86,45 +86,38 @@ class ProjectDetail extends React.Component {
     }
 
     insertCallback(message){
-        const {groupInfo} = this.props;
-        const {editType} = this.props.location.state;
         notification.success({
             message: message,
             description: '',
             duration: 2
         });
         PubSub.publish("evtRefreshGroupTree",{});
-        if(editType != 'add'){
-            let groupId = groupInfo.id;
-            let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
-            this.props.getGroupInfo(resetGroupInfo, groupId);
-        }
-        this.context.router.goBack();
-    }
-
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration: 4
-        });
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result, errMessage, updateResult, updateErrors } = nextProps;
+        const { result, updateResult,list } = nextProps;
+        const {groupInfo,node} = this.props;
+        const {editType} = this.props.location.state;
         //创建返回信息
         if (this.props.result != result && result){
             this.insertCallback("创建成功");
-        /*}else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback("创建失败",errMessage);*/
         }
         //更新返回信息
         if (this.props.updateResult != updateResult && updateResult){
             this.insertCallback("修改成功");
-        /*}else if(this.props.updateErrors != updateErrors && updateErrors){
-            this.errCallback("修改失败",updateErrors);*/
         }
-        //修改项目后，更新选中组的信息
+        //更新选择项目组信息
+        if (this.props.list != list && list.length>0){
+            let groupId = groupInfo.id;
+            if(editType != 'add'){
+                let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
+                this.props.getGroupInfo(resetGroupInfo, groupId,node);
+            }else{
+                let resetGroupInfo = searchGroupByGroupId(groupId,list);
+                this.props.getGroupInfo(resetGroupInfo, groupId,node);
+            }
+            this.context.router.goBack();
+        }
     }
 
     isEmptyObject(obj){
@@ -289,6 +282,7 @@ function mapStateToProps(state) {
         updateErrors:state.createProject.updateErrors,
         updateLoading:state.createProject.updateLoading,
         updateDisabled:state.createProject.updateDisabled,
+        node:state.getGroupInfo.node,
     }
 }
 
