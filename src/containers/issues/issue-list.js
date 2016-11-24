@@ -63,19 +63,19 @@ class ProjectIssueList extends Component {
             actions.fetchDataSource(nextProps.projectInfo.id);
         }
 
-        if(errorMsg&&errorMsg!=this.props.errors){
-            // message.error('获取数据失败'+errorMsg,3);
-            this.errorMessage('获取数据失败!',errorMsg);
-        }
+        // if(errorMsg&&errorMsg!=this.props.errors){
+        //     // message.error('获取数据失败'+errorMsg,3);
+        //     this.errorMessage('获取数据失败!',errorMsg);
+        // }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     handleReset(e) {
         this.props.form.resetFields();

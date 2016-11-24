@@ -17,34 +17,21 @@ class mergeRequestList extends React.Component {
 
     componentWillMount() {
         if(this.props.getProjectInfo) {
-            if(!this.props.mrList) {
-                console.log('componentWillMount')
+            console.log('componentWillMount',this.props.getProjectInfo.id)
+            if(!this.props.mrList && !this.props.loading) {
+
                 this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const errMessage = nextProps.errMessage;
         const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
-            console.log('componentWillReceiveProps')
             this.props.fetchMrListData(nextProId);
         }
-        //数据加载错误提示
-        if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback('数据加载失败',errMessage);
-        }
-    }
-
-    errCallback(type,errMessage){
-        notification.error({
-            message: type,
-            description: errMessage,
-            duration: 2
-        });
     }
 
     createMergeRequest(type){
@@ -99,13 +86,13 @@ class mergeRequestList extends React.Component {
         const mrList = this.props.mrList;
         const data = this.mapMrList(mrList);
         return(
-            <div style={{marginTop:15,marginLeft:30}}>
+            <div style={{margin: 10}}>
                 <Row>
                 <Button className="pull-right" type="primary"
                         disabled={this.props.getProjectInfo?false:true}
                         onClick={this.createMergeRequest.bind(this,'add')}>创建合并请求</Button>
                 </Row>
-                    <div style={{marginTop:5}}>
+                    <div style={{marginTop:10}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
                            columns={this.columns(this)}

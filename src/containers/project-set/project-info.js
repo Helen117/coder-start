@@ -24,36 +24,28 @@ class SelectedProInfo extends Component {
     componentDidMount() {
         const {getProjectInfo,selectedItemInfo} = this.props
         if(!getProjectInfo && selectedItemInfo) {
-            this.props.getProjectInfoAction(this.props.selectedItemInfo.selectedItemId);
-            this.props.getProjectMembersAction(this.props.selectedItemInfo.selectedItemId);
+            console.log('componentDidMount');
+            const itemId = this.props.selectedItemInfo.id;
+            this.callAction(itemId);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {selectedItemInfo,getProjectInfoErrors} = nextProps
         const thisProId = this.props.selectedItemInfo ? this.props.selectedItemInfo.id : '';
         const nextProId = nextProps.selectedItemInfo ? nextProps.selectedItemInfo.id : '';
         //点击不同项目，重新加载数据
         if (thisProId != nextProId && nextProId) {
-            if(nextProId.indexOf("_p")>0) {
-                this.props.getProjectInfoAction(nextProId.substring(0,nextProId.length-2));
-                this.props.getProjectMembersAction(nextProId.substring(0,nextProId.length-2));
-            }
+            this.callAction(nextProId);
         }
-        if(this.props.getProjectInfoErrors != getProjectInfoErrors && getProjectInfoErrors){
-            this.errCallback(getProjectInfoErrors,"数据加载失败");
-        }
-
     }
 
-    errCallback(errMessage,type){
-        notification.error({
-            message: type,
-            description: errMessage,
-            duration: 2
-        });
+    callAction(itemId){
+        if(itemId.indexOf("_p")>0) {
+            const projectId = itemId.substring(0,itemId.length-2)
+            this.props.getProjectInfoAction(projectId);
+            this.props.getProjectMembersAction(projectId);
+        }
     }
-
 
     getDataSource(projectMembers,getProjectInfo) {
         const data = [];
@@ -110,7 +102,6 @@ function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
         getProjectInfoLoading: state.getProjectInfo.loading,
-        getProjectInfoErrors: state.getProjectInfo.errors,
         projectMembers:state.getProjectMembers.projectMembers,
         projectMembersLoading:state.getProjectMembers.loading,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,

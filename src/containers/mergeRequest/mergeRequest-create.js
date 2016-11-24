@@ -35,8 +35,6 @@ class createMergeRequest extends Component {
         }
         if (this.props.inserted != inserted && inserted){
             this.insertCallback("创建成功");
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback('创建失败',errMessage);
         }
     }
 
@@ -282,7 +280,6 @@ function mapStateToProps(state) {
         loading:state.createMr.loading,
         disabled:state.createMr.disabled,
         inserted: state.createMr.result,
-        errMessage:state.createMr.errors,
         issues: state.fetchIssuesData.Issues,
     };
 }

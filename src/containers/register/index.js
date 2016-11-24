@@ -43,14 +43,14 @@ class Register extends Component{
         //     }
         // }
 
-        if(error&& error != this.props.registerState.errors){
-            // message.error('注册失败！'+error,3);
-            this.errorMessage('注册失败！',error);
-        }
+        // if(error&& error != this.props.registerState.errors){
+        //     // message.error('注册失败！'+error,3);
+        //     this.errorMessage('注册失败！',error);
+        // }
 
-        if(errorInfo&&errorInfo!=this.props.errorMsg){
-            this.errorMessage('获取上级领导信息失败！',errorInfo);
-        }
+        // if(errorInfo&&errorInfo!=this.props.errorMsg){
+        //     this.errorMessage('获取上级领导信息失败！',errorInfo);
+        // }
 
         if (!registering && !error && result && result!=this.props.registerState.registerResult) {
             message.success('提交成功，等待审批！');
@@ -58,13 +58,13 @@ class Register extends Component{
         }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     userExists(rule, value, callback) {
 

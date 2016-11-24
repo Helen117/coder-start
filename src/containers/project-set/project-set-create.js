@@ -47,16 +47,12 @@ class projectSetCreate extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage,updateResult ,updateErr} = nextProps;
+        const { inserted,updateResult } = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback('创建');
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback(errMessage,'创建');
         }
         if(this.props.updateResult != updateResult && updateResult){
             this.insertCallback('修改');
-        }else if(this.props.updateErr != updateErr && updateErr){
-            this.errCallback(updateErr,'修改');
         }
 
     }
@@ -65,14 +61,6 @@ class projectSetCreate extends React.Component {
         message.success(type+'成功');
         this.props.fetchProjectSetTree(this.props.logInfo.userId);
         this.context.router.goBack();
-    }
-
-    errCallback(errMessage,type){
-        notification.error({
-            message: type+'失败',
-            description: errMessage,
-            duration: 2
-        });
     }
 
     handleChange(targetKeys){
@@ -208,13 +196,11 @@ function mapStateToProps(state) {
         loadingProMsg: state.fetchProMsg.loading,
         fetchProMsgErr: state.fetchProMsg.errMessage,
         inserted: state.createProjectSet.items,
-        errMessage: state.createProjectSet.errors,
         loading: state.createProjectSet.loading,
         projectSetTree: state.fetchProjectSetTree.projectSetTree,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         updateLoading: state.updateProjectSet.loading,
         updateResult: state.updateProjectSet.items,
-        updateErr: state.updateProjectSet.errors,
 
     }
 }

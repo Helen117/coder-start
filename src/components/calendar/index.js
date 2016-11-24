@@ -208,6 +208,7 @@ export default class MilestonesCalendar extends React.Component{
         //console.log('this.props.defaultValue',this.props.defaultValue)
         const milestoneData = this.props.milestoneData;
         return (
+
             <Calendar
                       dateCellRender={this.dateCellRender.bind(this,milestoneData)}
                       monthCellRender={this.monthCellRender.bind(this,milestoneData)}

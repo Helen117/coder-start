@@ -28,27 +28,27 @@ class RegistrationApproval  extends Component {
         const commit = nextProps.commitLoading;
         const getDetailError = nextProps.getDetailError;
 
-        if(getDetailError&& getDetailError != this.props.getDetailError){
-            // message.error('获取待审批详情失败！'+getDetailError,3);
-            this.errorMessage('获取待审批详情失败！',getDetailError);
-        }
-        if(nextError&& nextError != this.props.error){
-            // message.error('审批失败！'+nextError,3);
-            this.errorMessage('审批失败！',nextError);
-        }
+        // if(getDetailError&& getDetailError != this.props.getDetailError){
+        //     // message.error('获取待审批详情失败！'+getDetailError,3);
+        //     this.errorMessage('获取待审批详情失败！',getDetailError);
+        // }
+        // if(nextError&& nextError != this.props.error){
+        //     // message.error('审批失败！'+nextError,3);
+        //     this.errorMessage('审批失败！',nextError);
+        // }
         if (!commit && !nextError && nextResult && nextResult!=this.props.result) {
             message.success('审批成功！');
             this.context.router.goBack();
         }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
 
     approve(type){
