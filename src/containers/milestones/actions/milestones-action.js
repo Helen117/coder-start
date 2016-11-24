@@ -23,7 +23,6 @@ export function getProjectSetMilestones(set_id, date,mode) {
 }
 
 export function getSetMilestonesIssues(milestonesId,projectId) {
-    console.log(milestonesId,projectId)
     var path ='/project/sets-issues'
     return {
         type: ACQUIRE_MILESTONES_DETAIL,

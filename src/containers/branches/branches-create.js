@@ -23,7 +23,6 @@ class createBranches extends Component {
 
     componentDidMount() {
         if(this.props.getProjectInfo) {
-            console.log('create didmount')
             this.props.fetchBranchesData(this.props.getProjectInfo.id);
         }else{
             const {router} = this.context;

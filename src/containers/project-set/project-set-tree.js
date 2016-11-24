@@ -38,22 +38,19 @@ class projectSetTree extends React.Component{
     }
 
     onSelectNode(node){
-
         const {currentOneInfo, currentTwoInfo} = this.props;
         node.selectedItemId=node.id.substring(0,node.id.length-2);
         this.props.putProjectSetToState(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
-                if(currentTwoInfo.link == '/projectSetTree'){
-                    this.context.router.push({
-                        pathname: currentTwoInfo.link,
-                    });
-                }
-            }
-        }else{
+                this.context.router.push({
+                    pathname: currentTwoInfo.link,
+                });
+            }else{
                 this.context.router.push({
                     pathname: currentOneInfo.link,
                 });
+            }
         }
     }
 

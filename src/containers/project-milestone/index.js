@@ -26,7 +26,6 @@ class projectMilestones extends React.Component {
     }
 
     render(){
-        console.log('render')
         const getProjectInfo = this.props.getProjectInfo;
         const projectId = getProjectInfo? getProjectInfo.id+'_p':'';
         /*if(projectId) {*/

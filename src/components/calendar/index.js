@@ -22,7 +22,6 @@ export default class MilestonesCalendar extends React.Component{
 
     editMilestone(item,date){
         const milestoneEditPath = this.props.milestoneEditPath;
-        console.log('edit   setMode',setMode)
         this.context.router.push({
             pathname: milestoneEditPath,
             state: {editType: "update", item: item, date: this.props.defaultValue,mode: setMode}
@@ -40,23 +39,21 @@ export default class MilestonesCalendar extends React.Component{
         });
     }
 
-    tooltip(milestoneData){
-        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished)
+    milestoneTooltip(milestoneData){
+        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date)
         let milestoneState='';
         if(type == 'success'){
             milestoneState = "已完成"
         }else if(type == 'error'){
             milestoneState = "已超时"
         }else{
-            milestoneState = "正常"
+            milestoneState = "新建"
         }
         return(
             <div>
-                <a>
-                    <h4>里程碑 {milestoneData.title}</h4>
-                </a>
-                {milestoneData.description}
-                <div style={{marginLeft:12}}>
+                <h4>{milestoneData.title}</h4>
+                <div style={{marginLeft:8}}>
+                    {milestoneData.description}
                     <p>状态：{milestoneState}</p>
                     <p>计划发布时间：{this.getTime(milestoneData.due_date)}</p>
                     当前里程碑共有事宜 <a onClick={this.milestonesDetail.bind(this, milestoneData.id)}>{milestoneData.total}</a> 项,还有待办事宜 <span>{milestoneData.unfinished}</span> 项，超时未完成事宜 <span>{milestoneData.expired}</span> 项
@@ -66,6 +63,29 @@ export default class MilestonesCalendar extends React.Component{
         )
     }
 
+
+    issueTooltip(issue){
+        const type = this.setMilestoneType(issue.state,Date.now())
+        let issueState='';
+        if(type == 'success'){
+            issueState = "已完成"
+        }else if(type == 'error'){
+            issueState = "已超时"
+        }else{
+            issueState = "新建"
+        }
+        return(
+            <div>
+                <h4>{issue.title}</h4>
+                <div style={{marginLeft:8}}>
+                    {issue.description}
+                    {/*<p>指派给：{issue.assigne}</p>*/}
+                    <p>状态：{issueState}</p>
+                    <p>计划完成时间：{issue.dueDate? this.getTime(issue.dueDate):"未设置"}</p>
+                </div>
+            </div>
+        )
+    }
     setMilestoneType(state,due_date){
         let type = {};
         if (state == 'closed'){
@@ -90,7 +110,7 @@ export default class MilestonesCalendar extends React.Component{
         const id = this.props.id
 
         const revocable = this.isRevocable(milestoneData.state,id);
-        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
+        const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date);
         if(revocable){
             return <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
                 <h4 style={{color:type=="error"?"red":""}}>
@@ -105,33 +125,33 @@ export default class MilestonesCalendar extends React.Component{
     }
 
     getMilestoneData(milestoneData,calendarTime) {
-        const tooltip = this.tooltip(milestoneData);
+        const tooltip = this.milestoneTooltip(milestoneData);
         return(
-                <div style={{marginLeft:5}}>
-                    <Tooltip placement="top" title={tooltip}>
-                        <ol className="events">
-                             {this.titleDecorate(milestoneData,calendarTime)}
-                            <li>{milestoneData.description}</li>
-                        </ol>
-                    </Tooltip>
-{/*
-                    <div style={{textAlign:"right", marginRight:0}}>
-                        <Tooltip placement="top" title={"点击查看超时任务"}>
-                        <Badge className="pull-right" onClick={this.milestonesDetail.bind(this, milestoneData.id)} count={milestoneData.expired}/>
-                        </Tooltip>
-                    </div>*/}
-                </div>
+            <div style={{marginLeft:5}}>
+                <Tooltip placement="top" title={tooltip}>
+                    <ol className="events">
+                         {this.titleDecorate(milestoneData,calendarTime)}
+                        <li>{milestoneData.description}</li>
+                    </ol>
+                </Tooltip>
+            </div>
          )
     }
 
     getIssuesData(issueList){
         return <ul className="events">
             {
-                issueList.map((item, index) =>
-                    <div style={{paddingTop:5}} key={index} >
-                        <Badge status={this.setMilestoneType(item.state,item.dueDate,0)} />
-                        <div>{item.title}</div>
-                    </div>
+                issueList.map((item, index) =>{
+                    const type =  this.setMilestoneType(item.state,Date.now());
+                    const issueTooltip = this.issueTooltip(item)
+                    return  <Tooltip placement="top" title={issueTooltip} key={index}>
+                        <div key={index} >
+                            <span className={`event-${type}`}>● </span>
+                            {item.title}
+                        </div>
+                    </Tooltip>
+                }
+
                 )
             }
         </ul>
@@ -150,12 +170,16 @@ export default class MilestonesCalendar extends React.Component{
                     if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
                         milestoneMount = this.getMilestoneData(milestoneData[i],calendarTime);
                     }
-                    /*for(let j=0; j<milestoneData[i].issues.length; j++ ){
+                    for(let j=0; j<milestoneData[i].issues.length; j++ ){
                         if(this.getTime(calendarTime) == this.getTime(milestoneData[i].issues[j].dueDate)){
                             issuesList.push(milestoneData[i].issues[j])
+                        }else if(milestoneData[i].issues[j].dueDate == null){
+                            if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
+                                issuesList.push(milestoneData[i].issues[j])
+                            }
                         }
                     }
-                    issuesMount = this.getIssuesData(issuesList);*/
+                    issuesMount = this.getIssuesData(issuesList);
                     const dateCellMount =<div className={`background-${colorId}`} > {milestoneMount}{issuesMount}</div>
                     return dateCellMount
                 }
@@ -169,9 +193,9 @@ export default class MilestonesCalendar extends React.Component{
         return <ul  style={{marginLeft:5}} className="events">
             {
                 milestoneList.map((item, index) => {
-                    const type = this.setMilestoneType(item.state, item.due_date, item.unfinished)
+                    const type = this.setMilestoneType(item.state, item.due_date)
                        return <div style={{paddingTop: 5}} key={index}>
-                            <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                            <Tooltip key={index} placement="top" title={this.milestoneTooltip(item)}>
                                 {this.titleDecorate(item,calendarTime)}
                             </Tooltip>
                         </div>
