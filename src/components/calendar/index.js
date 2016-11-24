@@ -66,11 +66,11 @@ export default class MilestonesCalendar extends React.Component{
         )
     }
 
-    setMilestoneType(state,due_date,unfinished){
+    setMilestoneType(state,due_date){
         let type = {};
         if (state == 'closed'){
             type="success"
-        }else if(state == 'active' && due_date <= Date.now() && unfinished>0 || state=='expired'){
+        }else if(state == 'active' && due_date <= Date.now() || state=='expired'){
             type="error"
         }else{
             type="default"
@@ -86,30 +86,40 @@ export default class MilestonesCalendar extends React.Component{
         return revocable;
     }
 
-    getMilestoneData(milestoneData,calendarTime) {
+    titleDecorate(milestoneData,calendarTime){
         const id = this.props.id
+
+        const revocable = this.isRevocable(milestoneData.state,id);
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date,milestoneData.unfinished);
+        if(revocable){
+            return <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
+                <h4 style={{color:type=="error"?"red":""}}>
+                    <Badge status={type}/>{milestoneData.title} <Icon type="edit" />
+                </h4>
+            </a>
+        }else{
+            return <h4 style={{color:type=="error"?"red":""}}>
+                <Badge status={type}/>{milestoneData.title}
+                </h4>
+        }
+    }
+
+    getMilestoneData(milestoneData,calendarTime) {
         const tooltip = this.tooltip(milestoneData);
-        let revocable = this.isRevocable(milestoneData.state,id);
         return(
-                <div style={{height:'100%'}}>
+                <div style={{marginLeft:5}}>
                     <Tooltip placement="top" title={tooltip}>
-                        <ol style={{height:"70%",}} className="events">
-                             {revocable?
-                                 <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
-                                     <h4 style={{color:type=="error"?"red":""}}>
-                                    <Badge status={type}/>{milestoneData.title}   <Icon type="edit" />
-                                     </h4>
-                                 </a> : <div><Badge status={type}/>{milestoneData.title}</div>}
+                        <ol className="events">
+                             {this.titleDecorate(milestoneData,calendarTime)}
                             <li>{milestoneData.description}</li>
                         </ol>
                     </Tooltip>
-
+{/*
                     <div style={{textAlign:"right", marginRight:0}}>
                         <Tooltip placement="top" title={"点击查看超时任务"}>
                         <Badge className="pull-right" onClick={this.milestonesDetail.bind(this, milestoneData.id)} count={milestoneData.expired}/>
                         </Tooltip>
-                    </div>
+                    </div>*/}
                 </div>
          )
     }
@@ -156,20 +166,16 @@ export default class MilestonesCalendar extends React.Component{
 
 
     getMonthData(milestoneList,calendarTime) {
-        const id = this.props.id
-        return <ul className="events">
+        return <ul  style={{marginLeft:5}} className="events">
             {
-                milestoneList.map((item, index) =>
-                    <div style={{paddingTop:5}} key={index} >
-                        <Tooltip key={index} placement="top" title={this.tooltip(item)}>
-                            <Badge count={item.expired}>
-                                <Badge status={this.setMilestoneType(item.state,item.due_date,item.unfinished)} />
-                                {this.isRevocable(item.state,id)?
-                                    <a onClick = {this.editMilestone.bind(this,item,calendarTime)}>
-                                        {item.title}    <Icon type="edit" /></a>:item.title}
-                            </Badge>
-                        </Tooltip>
-                    </div>
+                milestoneList.map((item, index) => {
+                    const type = this.setMilestoneType(item.state, item.due_date, item.unfinished)
+                       return <div style={{paddingTop: 5}} key={index}>
+                            <Tooltip key={index} placement="top" title={this.tooltip(item)}>
+                                {this.titleDecorate(item,calendarTime)}
+                            </Tooltip>
+                        </div>
+                    }
                 )
             }
         </ul>
@@ -191,7 +197,6 @@ export default class MilestonesCalendar extends React.Component{
 
     onPanelChange(date,mode){
         setMode = mode;
-        console.log('setMode',setMode)
         const calendarTime = new Date(date).getTime();
         const {onPanelChange} = this.props;
         onPanelChange(calendarTime,date,mode);

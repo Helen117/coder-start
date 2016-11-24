@@ -6,7 +6,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import Popover from '../../components/popover-img';
 import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
 import 'pubsub-js';
@@ -72,7 +71,8 @@ class projectSetTree extends React.Component{
 
 
     render(){
-        const {projectSet, loading,errMessage} = this.props;
+        const {projectSet, loading,errMessage,selectedProjectSet} = this.props;
+        const defaultSelectedKeys = selectedProjectSet?selectedProjectSet.id:'';
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -83,6 +83,7 @@ class projectSetTree extends React.Component{
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={projectSet}
+                        defaultSelectedKeys={[defaultSelectedKeys]}
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>

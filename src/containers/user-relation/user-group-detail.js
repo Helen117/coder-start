@@ -89,11 +89,19 @@ class UserGroupDetail extends React.Component {
         });
     }
 
+    findLeaderName(leaderId){
+        const {leaderInfo} = this.props;
+        for(let i=0;i<leaderInfo.length; i++){
+            if(leaderId == leaderInfo[i].leader_id){
+                return leaderInfo[i].leader_name;
+            }
+        }
+    }
+
     componentWillMount() {
         const {selectedUserGroup, userTreeData,actions} = this.props;
         const {editType} = this.props.location.state;
         const {setFieldsValue} = this.props.form;
-        actions.getLeader();
         if(selectedUserGroup){
             this.setState({
                 selectedUserGroup:selectedUserGroup.id,
@@ -107,6 +115,7 @@ class UserGroupDetail extends React.Component {
                 }
                 setFieldsValue({name:selectedUserGroup.name});
                 setFieldsValue({description:selectedUserGroup.description});
+                setFieldsValue({leader_id:this.findLeaderName(selectedUserGroup.leader_id)});
             }
         }else{
             this.setState({
@@ -120,14 +129,14 @@ class UserGroupDetail extends React.Component {
         //创建返回信息
         if (this.props.result != result && result) {
             this.insertCallback("创建成功");
-        } else if (this.props.errMessage != errMessage && errMessage) {
-            this.errCallback("创建失败",errMessage);
+        /*} else if (this.props.errMessage != errMessage && errMessage) {
+            this.errCallback("创建失败",errMessage);*/
         }
         //修改返回信息
         if (this.props.updateResult != updateResult && updateResult) {
             this.insertCallback("修改成功");
-        } else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);
+        /*} else if (this.props.updateErrors != updateErrors && updateErrors) {
+            this.errCallback("修改失败",updateErrors);*/
         }
     }
 
@@ -156,8 +165,8 @@ class UserGroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldDecorator} = this.props.form;
-        const {userTreeData, loadingTree} = this.props;
+        const {getFieldDecorator,setFieldsValue} = this.props.form;
+        const {userTreeData, loadingTree,selectedUserGroup} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},

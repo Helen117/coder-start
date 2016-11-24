@@ -5,6 +5,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
+import {Icon,Table} from 'antd';
 import 'pubsub-js';
 import {getCodeFile, getCodeContent} from './actions/code-files-actions';
 
@@ -76,21 +77,26 @@ class FileTree extends React.Component {
         this.setState({
             filePath:filePath
         })
-        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
         this.props.getCodeFile(projectInfo.id,filePath,brand);
         if(type == "blob"){
             this.props.getCodeContent(projectInfo.id,filePath,brand);
+        }
+        PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
+    }
+
+    findType(dataSource,record){
+        let type;
+        for(let i=0; i<dataSource.length; i++){
+            if(dataSource[i].name == record.name){
+                type = dataSource[i].type;
+                return type;
+            }
         }
     }
 
     render(){
         const { fetchCodeStatus,visible } = this.props;
         if((fetchCodeStatus || false) && (visible == true) ){
-            const column = [
-                {title:"名称", dataIndex:"name", key:"name"},
-                {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
-                {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
-            ];
             const dataSource = [];
             for(var i=0; i<this.state.dataSource.length; i++){
                 dataSource.push({
@@ -101,8 +107,8 @@ class FileTree extends React.Component {
 
             return (
                 <div style={{"paddingLeft":"20px"}}>
-                    <TableView columns={column} dataSource={dataSource}
-                               onRowClick={this.clickFileTree.bind(this)}></TableView>
+                    <Table columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
+                           onRowClick={this.clickFileTree.bind(this)}></Table>
                 </div>
             )
         }else{return null;}
@@ -115,9 +121,21 @@ FileTree.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+FileTree.prototype.getColumns = (self,dataSource)=>[
+    {title:"名称", dataIndex:"name", key:"name",
+        render(text,record){
+            let type = self.findType(dataSource,record);
+            return (type == "blob"?<div><Icon type="file-text" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>
+                :<div><Icon type="folder" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>)
+        }},
+    {title:"最后更新时间", dataIndex:"lastUpdate", key:"lastUpdate"},
+    {title:"最后提交内容", dataIndex:"lastCommit", key:"lastCommit"}
+];
+
 function mapStateToProps(state) {
     return {
         codeFile:state.getCodeFile.codeFile,
+        loading:state.getCodeFile.loading,
         fetchCodeStatus:state.getCodeFile.fetchCodeStatus,
         projectInfo:state.getProjectInfo.projectInfo,
     }

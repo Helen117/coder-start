@@ -13,6 +13,7 @@ import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {setUserGroupDelete} from './actions/user-group-detail-action';
 import UserInfo from './user-info';
+import {getLeader} from '../register/actions/register-action';
 
 const FormItem = Form.Item;
 
@@ -41,8 +42,9 @@ class UserRelation extends React.Component{
     onSelectNode(node){
         //根据node.id找到点击的节点的组织的信息
         const {userTreeData} = this.props;
-        let selectedGroup = findUserGroupById(node.id,userTreeData)
+        let selectedGroup = findUserGroupById(node.id,userTreeData);
         this.props.getSelectNode(node.id,selectedGroup);
+        this.props.getLeader();
         this.setState({
             showUserInfo:true
         })
@@ -114,8 +116,8 @@ class UserRelation extends React.Component{
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('删除失败!',deleteErrors);*/
         }
     }
 
@@ -208,6 +210,7 @@ function mapDispatchToProps(dispatch) {
         getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
         getSelectNode:bindActionCreators(getSelectNode, dispatch),
         setUserGroupDelete:bindActionCreators(setUserGroupDelete, dispatch),
+        getLeader:bindActionCreators(getLeader, dispatch),
     }
 }
 

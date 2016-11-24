@@ -80,8 +80,8 @@ class ProjectList extends Component {
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('删除失败!',deleteErrors);*/
         }
 
         const {node} = nextProps.location.state;
@@ -98,10 +98,10 @@ class ProjectList extends Component {
     }
 
     handleOk() {
-        const {loginInfo,setProjectDelete, treeData} = this.props;
+        const {loginInfo,setProjectDelete, treeData,getGroupInfo} = this.props;
         const { form } = this.props;
         const formData = form.getFieldsValue();
-        let projectId = findProjectIdByProjectName(this.state.selectProjectName, treeData);
+        let projectId = findProjectIdByProjectName(this.state.selectProjectName, getGroupInfo);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
         setProjectDelete(loginInfo.username,projectId);

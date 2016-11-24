@@ -16,6 +16,9 @@ const MenuItemGroup = Menu.ItemGroup;
 export default class Header extends React.Component {
     constructor() {
         super();
+        this.state={
+            selectedKeys:''
+        }
     }
 
     handleClick(item) {
@@ -39,10 +42,18 @@ export default class Header extends React.Component {
         });
     }
 
-    confirmList(){
+    confirmList() {
         this.context.router.push({
             pathname: '/confirmList',
         });
+    }
+
+    componentDidUpdate(){
+        if(window.location.pathname == '/updateUserInfo'){
+            this.state.selectedKeys = 'setting:1';
+        }else{
+            this.state.selectedKeys = '';
+        }
     }
 
     render() {
@@ -64,7 +75,9 @@ export default class Header extends React.Component {
                     </p>
                 </Col>
                 <Col span={2}>
-                    <Menu className="header-menu" onClick={this.handleClick.bind(this)} mode="horizontal">
+                    <Menu className="header-menu" onClick={this.handleClick.bind(this)}
+                          mode="horizontal"
+                          selectedKeys={[this.state.selectedKeys]}>
                         <SubMenu title={<span><Icon type="user"/>{username}</span>}>
                             <Menu.Item key="setting:1">修改信息</Menu.Item>
                             <Menu.Divider />

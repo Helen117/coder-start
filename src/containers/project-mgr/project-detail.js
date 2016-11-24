@@ -32,7 +32,7 @@ class ProjectDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo, list } = this.props;
+        const { actions, form, loginInfo, list,groupInfo } = this.props;
         const {selectedRow } = this.props.location.state;
         const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
@@ -51,13 +51,16 @@ class ProjectDetail extends React.Component {
                 data.name = formData.name;
                 data.description = formData.description;
                 data.groupId = this.state.selectGroupId;
+                if(data.groupId.indexOf('_')>=0){
+                    data.groupId = data.groupId.substr(0,data.groupId.length-2);
+                }
                 data.visibility_level = formData.visibility_level;
                 if(editType == 'add'){
                     //调创建项目的接口
                     actions.createProject(data);
                 }else{
                     //调修改项目的接口
-                    let projectId = findProjectIdByProjectName(selectedRow.projectName,list);
+                    let projectId = findProjectIdByProjectName(selectedRow.projectName,groupInfo);
                     projectId = projectId.substr(0,projectId.length-2);
                     data.id = projectId;
                     actions.UpdateProject(data);
@@ -112,14 +115,14 @@ class ProjectDetail extends React.Component {
         //创建返回信息
         if (this.props.result != result && result){
             this.insertCallback("创建成功");
-        }else if(this.props.errMessage != errMessage && errMessage){
-            this.errCallback("创建失败",errMessage);
+        /*}else if(this.props.errMessage != errMessage && errMessage){
+            this.errCallback("创建失败",errMessage);*/
         }
         //更新返回信息
         if (this.props.updateResult != updateResult && updateResult){
             this.insertCallback("修改成功");
-        }else if(this.props.updateErrors != updateErrors && updateErrors){
-            this.errCallback("修改失败",updateErrors);
+        /*}else if(this.props.updateErrors != updateErrors && updateErrors){
+            this.errCallback("修改失败",updateErrors);*/
         }
         //修改项目后，更新选中组的信息
     }
@@ -201,7 +204,7 @@ class ProjectDetail extends React.Component {
                     //{validator:this.projectNameExists.bind(this)},
                 ]
                 })(<Input type="text" placeholder="请输入项目名称"/>);
-            const descriptionProps = getFieldDecorator('description',)(<Input type="textarea" />);
+            const descriptionProps = getFieldDecorator('description',{rules:[{ required:true}]})(<Input type="textarea" />);
             const groupProps = getFieldDecorator('groupid',{rules:[{ required:true}]})(
                 <Select
                     showSearch
@@ -236,9 +239,11 @@ class ProjectDetail extends React.Component {
                         <FormItem {...formItemLayout} label="描述">
                             {descriptionProps}
                         </FormItem>
-                        <FormItem {...formItemLayout} label="项目所在组">
-                            {groupProps}
-                        </FormItem>
+                        {editType == 'add' ? (
+                            <FormItem {...formItemLayout} label="项目所在组">
+                                {groupProps}
+                            </FormItem>
+                        ) : (<div></div>)}
                         <FormItem {...formItemLayout} label="可见级别">
                             {visibilityProps}
                         </FormItem>

@@ -29,7 +29,17 @@ export function findUserIdByEmail(email,userInfoData) {
 export function findEmailByUserId(userId,allUser) {
     for(let i=0; i<allUser.length; i++){
         if(userId == allUser[i].id){
-            return allUser[i].email;
+            let index = allUser[i].email.indexOf('@');
+            let email = allUser[i].email.substr(0,index);
+            return email;
+        }
+    }
+}
+
+export function findFilterIndex(array,data) {
+    for(let i=0; i<array.length; i++){
+        if(array[i].filterKey == data){
+            return i;
         }
     }
 }

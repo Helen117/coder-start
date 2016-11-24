@@ -64,8 +64,8 @@ class UpdateSshKey extends React.Component {
         //添加返回信息
         if (this.props.addResult != addResult && addResult) {
             this.insertCallback("添加成功");
-        } else if (this.props.addErrors != addErrors && addErrors) {
-            this.errCallback("添加失败",addErrors);
+        /*} else if (this.props.addErrors != addErrors && addErrors) {
+            this.errCallback("添加失败",addErrors);*/
         }
     }
 

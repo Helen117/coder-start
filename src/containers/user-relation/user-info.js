@@ -10,7 +10,7 @@ import {getUserInfo} from './actions/user-info-action';
 import {MoveUser,DeleteGroupUser} from './actions/user-detail-action';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
-import {findUserIdByEmail} from './utils';
+import {findUserIdByEmail,findFilterIndex} from './utils';
 
 const FormItem = Form.Item;
 
@@ -23,6 +23,7 @@ class UserInfo extends React.Component {
             moreGroupVisible:false,
             source_user_id:null,
             dataSource:[],
+            filterKeys:[]
         }
     }
 
@@ -55,17 +56,16 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        //console.log("componentWillReceiveProps")
         const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors,userInfoData} = nextProps;
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.props.getUserInfo(selectedUserGroup.id);
         }
-        if(userInfoData != this.props.userInfoData && userInfoData){
+        if(userInfoData){
+            this.data = this.getDataSource(userInfoData);
             this.setState({
                 dataSource:userInfoData
             })
-            this.data = this.getDataSource(userInfoData);
         }
         //移除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
@@ -73,8 +73,8 @@ class UserInfo extends React.Component {
                 moveOutVisible: false,
             });
             this.insertCallback('移除成功!');
-        }else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('移除失败!',deleteErrors);
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('移除失败!',deleteErrors);*/
         }
 
         //移动返回信息
@@ -83,8 +83,8 @@ class UserInfo extends React.Component {
                 moreGroupVisible: false,
             });
             this.insertCallback('移动成功!');
-        }else if(this.props.moveErrors != moveErrors && moveErrors){
-            this.errCallback('移动失败!',moveErrors);
+        /*}else if(this.props.moveErrors != moveErrors && moveErrors){
+            this.errCallback('移动失败!',moveErrors);*/
         }
     }
 
@@ -112,6 +112,7 @@ class UserInfo extends React.Component {
         if(this.state.moveOutVisible == true){
             //调移除接口
             DeleteGroupUser(data);
+            form.resetFields();
         }else if(this.state.moreGroupVisible == true){
             //调移动接口
             data.dest_group_id = node.id;
@@ -144,21 +145,17 @@ class UserInfo extends React.Component {
         });
     }
 
-    comfirmFilter(formData,filterKey){
-        let newData=[];
-        for(let i=0; i<this.state.dataSource.length; i++){
-            if(this.state.dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
-                newData.push(this.state.dataSource[i]);
-            }
-        }
+    comfirmFilter(filterData,filterKeys){
+        this.state.filterKeys.push(filterKeys[0]);
         this.setState({
-            dataSource:newData,
+            dataSource:filterData
         })
     }
 
-    cancleFilter(){
+    cancleFilter(filterData,filterKeys){
         this.setState({
-            dataSource:this.data,
+            dataSource:filterData,
+            filterKeys:filterKeys
         })
     }
 
@@ -179,8 +176,7 @@ class UserInfo extends React.Component {
             },
             onSelectAll(selected, selectedRows, changeRows) {},
         };
-        //let dataSource = this.getDataSource(this.state.dataSource);
-        let dataSource = this.getDataSource(userInfoData);
+        let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
         let showOpt = true;
@@ -191,7 +187,8 @@ class UserInfo extends React.Component {
                 <div style={{"paddingLeft":10}}>
                     <Row>
                         <Table style={{"paddingTop":10}}
-                               columns={this.groupColumns(this,showOpt,this.state)}
+                               columns={this.groupColumns(this,showOpt,this.data,
+                                   this.state.dataSource,this.state.filterKeys)}
                                dataSource={dataSource}
                                rowSelection={rowSelection}
                                loading={loading?true:false}></Table>
@@ -225,15 +222,21 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self,showOpt)=>{
+UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKeys)=>{
     if(showOpt==true){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
                                        filterKey="name"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        comfirmFilter={self.comfirmFilter.bind(self)}
                                        cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},

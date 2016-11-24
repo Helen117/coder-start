@@ -33,14 +33,14 @@ class ProjectMember extends Component {
         //添加返回信息
         if (this.props.addResult != addResult && addResult) {
             this.insertCallback("添加成功");
-        } else if (this.props.addErrors != addErrors && addErrors) {
-            this.errCallback("添加失败",addErrors);
+        /*} else if (this.props.addErrors != addErrors && addErrors) {
+            this.errCallback("添加失败",addErrors);*/
         }
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult) {
             this.insertCallback("删除成功");
-        } else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
-            this.errCallback("删除失败",deleteErrors);
+        /*} else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
+            this.errCallback("删除失败",deleteErrors);*/
         }
     }
 

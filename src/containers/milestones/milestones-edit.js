@@ -20,17 +20,12 @@ class projectSetMilestonesEdit extends React.Component {
 
     componentDidMount() {
         const item = this.props.location.state.item;
-        const form = this.props;
         if (item){
             item.description = item.description? item.description:"";
             let due_date = item.due_date;
             item.due_date = moment(item.due_date);
             this.props.form.setFieldsValue(item);
             item.due_date = due_date;
-        }else{
-            if (this.props.selectedProjectSet) {
-                this.props.getProjectSetMilestones(this.groupId,Date.now(), 'month');
-            }
         }
     }
 
@@ -133,7 +128,7 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     disabledDate(current) {
-    return current && current < moment();;
+    return current && current < moment();
     }
 
     render(){
@@ -206,7 +201,6 @@ function mapStateToProps(state) {
     return {
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         getProjectInfo: state.getProjectInfo.projectInfo,
-        milestones: state.milestones.timeLineData,
         logInfo: state.login.profile,
         inserted: state.createMilestones.items,
         errMessage: state.createMilestones.errors,

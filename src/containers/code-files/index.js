@@ -23,7 +23,8 @@ class CodeFiles extends React.Component {
             showFileTree:true,
             showCodeView:false,
             filePath:'',
-            pathName:''
+            pathName:'',
+            selectDisabled:true
         }
     }
 
@@ -33,7 +34,8 @@ class CodeFiles extends React.Component {
             const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
             this.setState({
                 pathData:pathData,
-                activeKey:pathData[0].pathKey
+                activeKey:pathData[0].pathKey,
+                selectDisabled:false
             })
         }
     }
@@ -61,6 +63,7 @@ class CodeFiles extends React.Component {
                     activeKey:pathData[0].pathKey,
                     showFileTree:true,
                     showCodeView:false,
+                    selectDisabled:false
                 })
             }
         }
@@ -173,6 +176,7 @@ class CodeFiles extends React.Component {
                 <Row gutter={16}>
                     <Col span={3}>
                         <Select id="branch" defaultValue="master" className={styles.select}
+                                disabled={this.state.selectDisabled}
                                 onChange={this.changeSelect.bind(this)}>
                             <Option value="master">master</Option>
                             <Option value="dev">dev</Option>
