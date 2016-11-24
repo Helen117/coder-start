@@ -32,6 +32,7 @@ class NewRequest extends Component{
         const {actions, form, loginInfo, selectedProjectSet} = this.props;
         if(!selectedProjectSet){
             message.error("请选择一个项目集",3);
+            return ;
         }
 
         form.validateFields((errors, values) => {
@@ -52,7 +53,7 @@ class NewRequest extends Component{
         };
         return (
                 <Box title="新增需求">
-                    <Form horizontal onSubmit={this.handleSubmit}>
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <FormItem {...formItemLayout}  label="需求名称" >
                             {getFieldDecorator('title',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
                         </FormItem>
