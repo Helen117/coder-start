@@ -22,10 +22,10 @@ export class JenkinsView extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const errorMsg = nextProps.error;
-        if(errorMsg&& errorMsg != this.props.errorMsg){
-            this.errorMessage('获取信息失败！',error);
-        }
+        // const errorMsg = nextProps.error;
+        // if(errorMsg&& errorMsg != this.props.errorMsg){
+        //     this.errorMessage('获取信息失败！',error);
+        // }
     }
 
     render(){

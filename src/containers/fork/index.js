@@ -21,19 +21,19 @@ class ForkList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const errorMsg = nextProps.error;
-        if(errorMsg&& errorMsg != this.props.errorMsg){
-            this.errorMessage('获取Fork列表信息失败！',error);
-        }
+        // const errorMsg = nextProps.error;
+        // if(errorMsg&& errorMsg != this.props.errorMsg){
+        //     this.errorMessage('获取Fork列表信息失败！',error);
+        // }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     render() {
         const { forkList,loading } = this.props;

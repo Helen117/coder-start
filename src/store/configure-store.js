@@ -14,6 +14,7 @@ import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reduc
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
 import {stageView,stageDetail,codeChange} from '../containers/compile-stage/reducers/jenkins-build-reducer';
+import {request} from '../containers/request/reducers/request-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -103,7 +104,8 @@ const reducer = combineReducers({
     stageDetail,
     AddSshKey,
     addProjectMember,
-    GetSshKeys
+    GetSshKeys,
+    request
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

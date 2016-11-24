@@ -84,26 +84,26 @@ class AddIssue extends Component{
         const dataSourceErrors = nextProps.fetchErrors;
         const demandError = nextProps.errors;
 
-        if(dataSourceErrors && dataSourceErrors!= this.props.fetchErrors){
-            this.errorMessage('获取数据失败!',dataSourceErrors);
-        }
-        if(demandError && demandError!= this.props.errors){
-            this.errorMessage('获取需求信息失败!',demandError);
-        }
-
-        if(error && error!= this.props.issue.addIssueError){
-            // message.error('新增失败!'+error);
-            this.errorMessage('新增失败!',error);
-        }
+        // if(dataSourceErrors && dataSourceErrors!= this.props.fetchErrors){
+        //     this.errorMessage('获取数据失败!',dataSourceErrors);
+        // }
+        // if(demandError && demandError!= this.props.errors){
+        //     this.errorMessage('获取需求信息失败!',demandError);
+        // }
+        //
+        // if(error && error!= this.props.issue.addIssueError){
+        //     // message.error('新增失败!'+error);
+        //     this.errorMessage('新增失败!',error);
+        // }
         if (!error && result) {
             message.success('新增成功');
             this.context.router.goBack();
         }
 
-        if(updateIssueError && updateIssueError!= this.props.issue.updateIssueError){
-            // message.error('操作失败!'+updateIssueError);
-            this.errorMessage('操作失败!',updateIssueError);
-        }
+        // if(updateIssueError && updateIssueError!= this.props.issue.updateIssueError){
+        //     // message.error('操作失败!'+updateIssueError);
+        //     this.errorMessage('操作失败!',updateIssueError);
+        // }
         if (!updateIssueError && updateIssue) {
             message.success('操作成功');
             this.context.router.goBack();
@@ -119,13 +119,13 @@ class AddIssue extends Component{
 
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     getMilestoneDueDate(id){
         const {milestones} = this.props;
