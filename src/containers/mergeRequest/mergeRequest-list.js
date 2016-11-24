@@ -17,9 +17,7 @@ class mergeRequestList extends React.Component {
 
     componentWillMount() {
         if(this.props.getProjectInfo) {
-            console.log('componentWillMount',this.props.getProjectInfo.id)
             if(!this.props.mrList && !this.props.loading) {
-
                 this.props.fetchMrListData(this.props.getProjectInfo.id);
             }
         }

@@ -33,7 +33,7 @@ class Home extends React.Component {
     }
 
     componentWillMount() {
-        console.log('this.props.loginInfo.userId',this.props.loginInfo.userId);
+        //console.log('this.props.loginInfo.userId',this.props.loginInfo.userId);
         //this.props.acqPerformanceMsgAction(this.props.logInfo.userId);
     }
     componentDidMount(){

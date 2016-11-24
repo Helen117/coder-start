@@ -24,7 +24,6 @@ class SelectedProInfo extends Component {
     componentDidMount() {
         const {getProjectInfo,selectedItemInfo} = this.props
         if(!getProjectInfo && selectedItemInfo) {
-            console.log('componentDidMount');
             const itemId = this.props.selectedItemInfo.id;
             this.callAction(itemId);
         }

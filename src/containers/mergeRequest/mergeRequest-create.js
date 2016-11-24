@@ -38,9 +38,20 @@ class createMergeRequest extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        let isRender = false;
+        const mergeBranch = nextProps.mergeBranch;
+        if(mergeBranch){
+            if(mergeBranch.length>1) {
+                isRender = true;
+            }
+        }
+        console.log('shouldComponentUpdate',isRender);
+        return isRender;
+    }
+
     insertCallback(type){
         message.success(type);
-        console.log('this.props.mergeBranch[0].id',this.props.mergeBranch[0].id)
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
@@ -163,8 +174,8 @@ class createMergeRequest extends Component {
             wrapperCol: { span: 14 },
         };
 
-        if(mergeBranch){
-            if(mergeBranch.length>1) {
+      /*  if(mergeBranch){
+            if(mergeBranch.length>1) {*/
                 return (
                 <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -255,11 +266,11 @@ class createMergeRequest extends Component {
                         </FormItem>
                     </Form>
                 </Box>);
-            }else{
+            /*}else{
                 return <div></div>
             }}else{
-            return <div></div>
-        }
+            return <div></div>*/
+
 
 
     }

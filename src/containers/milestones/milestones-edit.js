@@ -42,7 +42,6 @@ class projectSetMilestonesEdit extends React.Component {
     insertCallback(type){
         message.success(type);
         const {date,mode} = this.props.location.state;
-        console.log(this.groupId,date,mode);
         this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
             pathname: "/projectSetTree/projectSetMilestones",
@@ -101,7 +100,6 @@ class projectSetMilestonesEdit extends React.Component {
         const path = '/project/milestone-time-check'
         const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
         const errStr = '计划完成时间超出允许设定范围';
-        console.log(path,params,callback,errStr)
         fetchData(path,params,callback,errStr);
 
     }
