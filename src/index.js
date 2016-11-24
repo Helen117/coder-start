@@ -33,8 +33,6 @@ import {StageView,CodeChangesList} from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
-import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
-//import ProjectItem from './containers/project-list';
 import projectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
@@ -45,6 +43,7 @@ import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
 import UpdateUserInfo from './containers/user-relation/user-detail';
 import UpdatePassword from './containers/user-relation/update-password';
+import ProjectMgrSub from './containers/project-list/index';
 
 
 
@@ -84,12 +83,7 @@ ReactDOM.render(
                         </Route>
 
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
-                            <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
-
-                            </Route>
-                            <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
-                                <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
-                            </Route>
+                            <Route name="projectMgrSub" breadcrumbName="项目列表" path="project-mgr-sub" component={ProjectMgrSub}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
