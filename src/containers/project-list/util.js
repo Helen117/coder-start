@@ -56,7 +56,6 @@ export function searchNormalGroupByProjectId(projectId,treeData){
 }
 
 export function findProjectIdByProjectName(projectName,groupInfo) {
-    console.log('projectName,groupInfo:',projectName,groupInfo)
     var projectId;
     for(var i=0;i<groupInfo.children.length;i++){
         if(projectName == groupInfo.children[i].name){

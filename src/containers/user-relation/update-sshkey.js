@@ -44,19 +44,11 @@ class UpdateSshKey extends React.Component {
         notification.success({
             message: message,
             description: '',
-            duration: null
+            duration: 3
         });
         const {form,actions,loginInfo} = this.props;
         form.resetFields();
         actions.GetSshKeys(loginInfo.userId)
-    }
-
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration: null
-        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,8 +56,6 @@ class UpdateSshKey extends React.Component {
         //添加返回信息
         if (this.props.addResult != addResult && addResult) {
             this.insertCallback("添加成功");
-        /*} else if (this.props.addErrors != addErrors && addErrors) {
-            this.errCallback("添加失败",addErrors);*/
         }
     }
 
