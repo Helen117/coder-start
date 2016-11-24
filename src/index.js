@@ -45,6 +45,7 @@ import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
 import UpdateUserInfo from './containers/user-relation/user-detail';
 import UpdatePassword from './containers/user-relation/update-password';
+import ProjectCompile from './containers/project-compile';
 
 
 
@@ -99,6 +100,7 @@ ReactDOM.render(
                                 <Route name="fileTree" breadcrumbName="代码树" path="file-tree" component={FileTree}/>
                                 <Route name="codeView" breadcrumbName="代码查看" path="code-view" component={CodeView}/>
                             </Route>
+                            <Route name="projectCompile" path="project-compile" component={ProjectCompile}/>
                         </Route>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
