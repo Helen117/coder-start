@@ -29,13 +29,12 @@ import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,showInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
 
-import NewRequest from './containers/request';
 import {StageView,CodeChangesList} from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
-import {ConfirmList,DevelopConfirm} from './containers/to-be-confirmed';
-import {TestCase,EditTestCase} from './containers/test-case';
+import {ProjectList, ProjectItem, ProjectMember} from './containers/project-list';
+//import ProjectItem from './containers/project-list';
 import projectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
@@ -46,7 +45,6 @@ import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
 import UpdateUserInfo from './containers/user-relation/user-detail';
 import UpdatePassword from './containers/user-relation/update-password';
-import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 
 
@@ -87,7 +85,12 @@ ReactDOM.render(
                         </Route>
 
                         <Route name="projectMgr" breadcrumbName="项目管理" path="project-mgr" component={ProjectMgr}>
-                            <Route name="projectMgrSub" breadcrumbName="项目列表" path="project-mgr-sub" component={ProjectMgrSub}/>
+                            <Route name="projectList" breadcrumbName="项目列表" path="project-list" component={ProjectList}>
+
+                            </Route>
+                            <Route name="projectItem" breadcrumbName="项目明细" path="project-item" component={ProjectItem}>
+                                <Route name="projectMember" breadcrumbName="项目成员" path="project-member" component={ProjectMember}></Route>
+                            </Route>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={projectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
                             <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
@@ -103,7 +106,6 @@ ReactDOM.render(
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
-                            <Route name="request" breadcrumbName="需求管理" path="request" component={NewRequest}/>
                             <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={showInfo}/>
                             <Route name="projectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>
@@ -116,8 +118,6 @@ ReactDOM.render(
                         <Route name="createBranches" breadcrumbName="创建分支" path="createBranches" component={createBranches}/>
                         <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
                         <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
-                        <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
-                        <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
@@ -129,9 +129,6 @@ ReactDOM.render(
                             <Route name="stageView" breadcrumbName="编译步骤" path="stageView" component={StageView}/>
                             <Route name="codeChange" breadcrumbName="代码变更" path="codeChange" component={CodeChangesList}/>
                         </Route>
-
-                        <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
-                        <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
