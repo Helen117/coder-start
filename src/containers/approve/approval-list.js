@@ -21,20 +21,20 @@ class ApproveList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {errors} = nextProps;
-        if(errors&&errors!=this.props.errors){
-            // message.error('获取待审批列表失败！'+errors,3);
-            this.errorMessage('获取待审批列表失败！',errors);
-        }
+        // const {errors} = nextProps;
+        // if(errors&&errors!=this.props.errors){
+        //     // message.error('获取待审批列表失败！'+errors,3);
+        //     this.errorMessage('获取待审批列表失败！',errors);
+        // }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     approveDetail(record, index){
         // console.log(record);

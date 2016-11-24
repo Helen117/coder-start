@@ -35,9 +35,16 @@ export default class Header extends React.Component {
     showSideBar(){
         this.props.showSideBar();
     }
+
     approveList(){
         this.context.router.push({
             pathname: '/approveList',
+        });
+    }
+
+    confirmList() {
+        this.context.router.push({
+            pathname: '/confirmList',
         });
     }
 
@@ -63,7 +70,8 @@ export default class Header extends React.Component {
                         当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项
                     </p>
                     <p>
-                        当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{6}</a></span> 项待审批事项
+                        当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{6}</a></span> 项待审批事项，
+                        <span><a onClick={this.confirmList.bind(this)} style={{color: 'red'}}>{2}</a></span> 项待确认事项
                     </p>
                 </Col>
                 <Col span={2}>

@@ -48,19 +48,19 @@ class MyIssueList extends Component {
             actions.getMyIssue(nextProps.projectInfo.id,loginInfo.userId);
         }
 
-        if(myIssueError&&myIssueError!=this.props.myIssueError){
-            // message.error('获取数据失败'+myIssueError,3);
-            this.errorMessage('获取数据失败!',myIssueError);
-        }
+        // if(myIssueError&&myIssueError!=this.props.myIssueError){
+        //     // message.error('获取数据失败'+myIssueError,3);
+        //     this.errorMessage('获取数据失败!',myIssueError);
+        // }
     }
 
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
-    }
+    // errorMessage(info,error){
+    //     notification.error({
+    //         message: info,
+    //         description:error,
+    //         duration:null,
+    //     });
+    // }
 
     handleReset(e) {
         this.props.form.resetFields();
