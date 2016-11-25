@@ -8,7 +8,7 @@ import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetchMrListData from './actions/mergeRequest-list-action'
-import {acceptMr,closeMr} from './actions/mergeRequest-edit-action';
+import {revertMr} from './actions/mergeRequest-edit-action';
 
 class mergeRequestList extends React.Component {
     constructor(props) {
@@ -47,18 +47,11 @@ class mergeRequestList extends React.Component {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    closeMr(record){
+    revertMr(record){
         //console.log('close',record);
         const project_id = this.props.getProjectInfo.id;
         const id = record.key;
-        //this.props.closeMrAction(project_id,id);
-    }
-
-    acceptMr(record){
-        //console.log('merge',record);
-        const project_id = this.props.getProjectInfo.id;
-        const id = record.key;
-        //this.props.acceptMrAction(project_id,id);
+        //this.props.revertMrAction(project_id,id);
     }
 
     mapMrList(mrList){
@@ -132,17 +125,15 @@ mergeRequestList.prototype.columns = (self)=> [{
     dataIndex: 'state',
     key: 'state',
     width:'10%',
-}/*,{
+},{
     title: '操作',
     dataIndex: 'opreation',
     width: '10%',
     render: (text, record, index)=> {
         return (
-        record.state == "opened"?
+        record.state == "closed"?
             <span>
-                <a onClick = {self.closeMr.bind(self,record)}>关闭</a>
-                <span style={{marginLeft:10,marginRight:10}}className="ant-divider" />
-                <a onClick = {self.acceptMr.bind(self,record)}>合并</a>
+                <a onClick = {self.revertMr.bind(self,record)}>回退</a>
             </span>:
                 <span></span>
 
@@ -150,7 +141,7 @@ mergeRequestList.prototype.columns = (self)=> [{
         )
         ;
     }
-}*/]
+}]
 
 mergeRequestList.contextTypes = {
     history: PropTypes.object.isRequired,
@@ -169,8 +160,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
-        acceptMrAction: bindActionCreators(acceptMr,dispatch),
-        closeMrAction: bindActionCreators(closeMr,dispatch),
+        revertMrAction: bindActionCreators(revertMr,dispatch)
     }
 }
 

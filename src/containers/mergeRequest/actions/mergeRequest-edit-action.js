@@ -16,11 +16,11 @@ export function createMr(data) {
 }
 
 
-export function acceptMr(project_id,id) {
+export function revertMr(project_id,id) {
     return {
-        type: 'ACCEPT_MR',
+        type: 'REVERT_MR',
         payload: {
-            promise: api.post('/project/accept-mr', {
+            promise: api.post('/project/revert-mr', {
                 params:{
                     project_id: project_id,
                     id: id,
@@ -32,16 +32,3 @@ export function acceptMr(project_id,id) {
 }
 
 
-export function closeMr(project_id,id) {
-    return {
-        type: 'CLOSE_MR',
-        payload: {
-            promise: api.post('/project/close-mr', {
-                params:{
-                    project_id: project_id,
-                    id: id
-                }
-            })
-        }
-    }
-}

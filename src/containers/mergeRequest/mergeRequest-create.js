@@ -31,7 +31,7 @@ class createMergeRequest extends Component {
     componentWillReceiveProps(nextProps) {
         const { inserted, errMessage ,isMR} = nextProps;
         if(this.props.isMR != isMR && isMR==false){
-            this.errCallback('无需MR','该分支是根节点，无需向其他分支MR');
+            this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
         }
         if (this.props.inserted != inserted && inserted){
             this.insertCallback("创建成功");
@@ -59,7 +59,7 @@ class createMergeRequest extends Component {
         notification.error({
             message: type,
             description:errMessage,
-            duration: 2
+            duration: null
         });
         this.context.router.goBack();
     }
@@ -191,7 +191,7 @@ class createMergeRequest extends Component {
                            </Col>
 
                             <Col span="4">
-                                <FormItem  {...formItemLayout} label="目标分支">
+                                <FormItem  {...formItemLayout} label="靶分支">
                                     {getFieldDecorator('target_project_path', {initialValue: targetPath})
                                     (<Select style={{width: 200}}><Option value={targetPath}>{targetPath}</Option></Select>)}
                                 </FormItem>
