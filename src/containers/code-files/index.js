@@ -194,7 +194,8 @@ class CodeFiles extends React.Component {
                               filePath={this.state.filePath}
                               brand={this.state.brand}/>
                     <CodeView visible={this.state.showCodeView}
-                              pathName={this.state.pathName}/>
+                              pathName={this.state.pathName}
+                              filePath={this.state.filePath}/>
                     {this.props.children}
                 </Row>
             </div>
