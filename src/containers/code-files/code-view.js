@@ -36,8 +36,11 @@ class CodeView extends React.Component {
     }
 
     render(){
-        const {fetchContentStatus,visible,pathName} = this.props;
+        const {fetchContentStatus,visible,pathName,filePath} = this.props;
         if((fetchContentStatus || false) && (visible==true)){
+            let index = pathName.lastIndexOf('.');
+            let categary = pathName.substr(index+1,pathName.length);
+            let imgPath = '/'+filePath;
             return (
                 <div className={styles.code_view}>
                     <Row className={styles.blob_commit_info}>
@@ -45,10 +48,14 @@ class CodeView extends React.Component {
                     </Row>
                     <Row>
                         <div className={styles.blob_commit_info}>
-                            <SyntaxHighlighter style={this.state.style}
-                                               showLineNumbers>
-                                {this.state.code}
-                            </SyntaxHighlighter>
+                            {(categary=='png' || categary=='jpg')?(
+                                <img src={imgPath}></img>
+                            ):(
+                                <SyntaxHighlighter style={this.state.style}
+                                                   showLineNumbers>
+                                    {this.state.code}
+                                </SyntaxHighlighter>
+                            )}
                         </div>
                     </Row>
                 </div>

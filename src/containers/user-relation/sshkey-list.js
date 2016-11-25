@@ -77,7 +77,7 @@ class SshKeyList extends React.Component {
             keyProps = sshkeys.map((item)=>{
                 let panelTitle = (
                     <div style={{fontSize:14}}>
-                        <Col span={1}>{item.title}</Col>
+                        <Col span={21}>{item.title}</Col>
                         <Col span={1}></Col>
                         <Col span={1}>
                             <Icon type="delete" onClick={this.deleteSshKey.bind(this,item.id)}/>
