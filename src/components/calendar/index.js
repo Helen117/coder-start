@@ -170,6 +170,7 @@ export default class MilestonesCalendar extends React.Component{
                     if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
                         milestoneMount = this.getMilestoneData(milestoneData[i],calendarTime);
                     }
+                    console.log()
                     for(let j=0; j<milestoneData[i].issues.length; j++ ){
                         if(this.getTime(calendarTime) == this.getTime(milestoneData[i].issues[j].dueDate)){
                             issuesList.push(milestoneData[i].issues[j])

@@ -28,9 +28,11 @@ class projectMilestones extends React.Component {
     render(){
         const getProjectInfo = this.props.getProjectInfo;
         const projectId = getProjectInfo? getProjectInfo.id+'_p':'';
+        const projectName = getProjectInfo? getProjectInfo.name:''
+
         /*if(projectId) {*/
             return (
-                <ProjectSetMilestones projectId={projectId} defaultDate={moment()}/>
+                <ProjectSetMilestones projectId={projectId} projectName={projectName} defaultDate={moment()}/>
             )
         /*}else{
             return(

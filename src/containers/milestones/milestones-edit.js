@@ -93,15 +93,18 @@ class projectSetMilestonesEdit extends React.Component {
     }
 
     checkDuedate(rule, value, callback){
-        const item = this.props.location.state.item;
-        const milestone_id = item? item.id: '';
-        const sets_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
-        const due_date = new Date(value.valueOf()).toLocaleDateString();
-        const path = '/project/milestone-time-check'
-        const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
-        const errStr = '计划完成时间超出允许设定范围';
-        fetchData(path,params,callback,errStr);
-
+        if(value){
+            const item = this.props.location.state.item;
+            const milestone_id = item? item.id: '';
+            const sets_id = item? item.set_id: this.props.selectedProjectSet.selectedItemId;
+            const due_date = new Date(value.valueOf()).toLocaleDateString();
+            const path = '/project/milestone-time-check'
+            const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
+            const errStr = '计划完成时间超出允许设定范围';
+            fetchData(path,params,callback,errStr);
+        }else{
+            callback();
+        }
     }
 
     checkTitle(rule, value, callback){

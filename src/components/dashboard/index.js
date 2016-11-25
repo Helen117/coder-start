@@ -18,7 +18,15 @@ export class MyIssueList extends React.Component {
         super(props);
     }
 
+    mapTimeLineData(timeLineData){
+        return timeLineData.map((item,index)=>{
+            <span>{item.dueDate}--{item.title}</span>
+            }
+        )
+    }
+
     render() {
+        const timeLineData = this.props.timeLineData;
         return (
             <Box title="分配给我的待处理问题列表">
                 <Timeline pending={<a href="#">查看更多</a>}>

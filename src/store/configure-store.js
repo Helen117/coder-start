@@ -43,7 +43,7 @@ import createUserGroup from '../containers/user-relation/reducers/user-group-det
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
-import {acqPerformanceMsg} from '../containers/home/reducers/home-reducer';
+import {acqPerformanceMsg,acqMyIssueList} from '../containers/home/reducers/home-reducer';
 
 
 const reducer = combineReducers({
@@ -106,6 +106,7 @@ const reducer = combineReducers({
     GetSshKeys,
     request,
     acqPerformanceMsg,
+    acqMyIssueList,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(
