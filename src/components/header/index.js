@@ -48,6 +48,12 @@ export default class Header extends React.Component {
         });
     }
 
+    todoList(){
+        this.context.router.push({
+            pathname: '/project-mgr/myIssue',
+        });
+    }
+
     componentDidUpdate(){
         if(window.location.pathname == '/updateUserInfo'){
             this.state.selectedKeys = 'setting:1';
@@ -66,8 +72,8 @@ export default class Header extends React.Component {
                 </Col>
                 <Col span={15} className="pending-item">
                     <p>
-                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span>{5}</span> 项，
-                        当前里程碑还有待办事宜 <span>{3}</span> 项，共有待办事宜 <span>{8}</span> 项
+                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{2}</a></span> 项，
+                        当前里程碑还有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{3}</a></span> 项，共有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{5}</a></span> 项
                     </p>
                     <p>
                         当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{6}</a></span> 项待审批事项，
