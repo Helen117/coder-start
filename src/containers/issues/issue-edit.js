@@ -141,7 +141,7 @@ class AddIssue extends Component{
         const { actions,form ,loginInfo,projectInfo} = this.props;
         const {editType,selectedRow} = this.props.location.state;
 
-        form.validateFields(['title','description','type'],(errors, values) => {
+        form.validateFields(['title','description','type','due_date'],(errors, values) => {
             if (!!errors) {
                 //message.error(errors,2);
                 return;
@@ -191,13 +191,17 @@ class AddIssue extends Component{
         })
     }
 
-    checkDueDay(rule, value, callback) {
-        // console.log(new Date(value) <= Date.now());
-        if (value && value.valueOf() < Date.now()) {
-            callback(new Error('时间不能小于现在!'));
-        } else {
-            callback();
-        }
+    // checkDueDay(rule, value, callback) {
+    //     // console.log(new Date(value) <= Date.now());
+    //     if (value && value.valueOf() < Date.now()) {
+    //         callback(new Error('时间不能小于现在!'));
+    //     } else {
+    //         callback();
+    //     }
+    // }
+
+    disabledDate(current) {
+        return current && current < moment();
     }
 
     handleCancel() {
@@ -360,7 +364,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        {getFieldDecorator('due_date',{rules:[{validator:this.checkDueDay}]})(<DatePicker style={{ width: 300 }}  />)}
+                        {getFieldDecorator('due_date',{rules: [{required: true, type: 'object', message: '请选择计划完成时间'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
