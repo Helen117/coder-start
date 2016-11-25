@@ -28,22 +28,22 @@ class Login extends React.Component {
         const isLoggingIn = nextProps.loggingIn;
         const uid = nextProps.uid;
 
-        if (error != this.props.loginErrors && error) {
-
-            notification.error({
-                message: '登录失败',
-                description: error,
-                duration: 5
-            });
-        }
-
-        if (!isLoggingIn && !error && uid) {
-            notification.success({
-                message: '登录成功',
-                description: '',
-                duration: 1
-            });
-        }
+        // if (error != this.props.loginErrors && error) {
+        //
+        //     notification.error({
+        //         message: '登录失败',
+        //         description: error,
+        //         duration: 5
+        //     });
+        // }
+        //
+        // if (!isLoggingIn && !error && uid) {
+        //     notification.success({
+        //         message: '登录成功',
+        //         description: '',
+        //         duration: 1
+        //     });
+        // }
         if (uid) {
             this.context.router.replace('/home');
             Cookies.set('uid', uid);
