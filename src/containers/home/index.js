@@ -17,7 +17,7 @@ import {
     NewIssueList
 } from '../../components/dashboard';
 import {connect} from 'react-redux';
-import {acqPerformanceMsg} from './actions/home-action'
+import {acqPerformanceMsg,acqMyIssueList} from './actions/home-action'
 //const Panel = Collapse.Panel;
 
 //import PanelBox from '../../components/panel-box';
@@ -33,6 +33,7 @@ class Home extends React.Component {
     }
 
     componentWillMount() {
+        console.log('首页componentWillMount')
         //console.log('this.props.loginInfo.userId',this.props.loginInfo.userId);
         //this.props.acqPerformanceMsgAction(this.props.logInfo.userId);
     }
@@ -84,7 +85,7 @@ class Home extends React.Component {
                     </Row>
                     <Row>
                         <Col span={12} style={{paddingRight: 5}}>
-                            <MyIssueList />
+                            <MyIssueList timeLineData={this.props.timeLineData} />
                         </Col>
                         <Col span={12} style={{paddingLeft: 5}}>
                             <NewIssueList/>
@@ -101,13 +102,15 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         performanceMsg:  state.acqPerformanceMsg.performanceMsg,
         performanceMsgLoading: state.acqPerformanceMsg.loading,
-        performanceMsgLoadingErrors: state.acqPerformanceMsg.errors
+        myIssueList: state.acqMyIssueList.myIssueList,
+        myIssueListLoading: state.acqMyIssueList.loading,
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         acqPerformanceMsgAction: bindActionCreators(acqPerformanceMsg, dispatch),
+        acqMyIssueListAction: bindActionCreators(acqMyIssueList, dispatch),
     }
 }
 
