@@ -49,7 +49,7 @@ module.exports.menu ={
                             "parentId": 3,
                             "cLevel": 3,
                             "name": "项目代码",
-                            "link": "/project-mgr/code-file",
+                            "link": "/project-mgr/cron-expression",
                             "description": "",
                             "icon": null,
                             "subMenu": []
