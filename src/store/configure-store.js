@@ -123,6 +123,8 @@ const reducer = combineReducers({
     getTesterInfo,
 })
 
+    projectCompile
+});
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,
