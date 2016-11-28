@@ -82,6 +82,7 @@ class ProjectMgr extends React.Component{
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
+            this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
             var node_temp = node.id;
             const {groupInfo} = this.searchGroupByProjectId(node.id, treeData);
@@ -89,8 +90,10 @@ class ProjectMgr extends React.Component{
             this.props.getGroupInfo(groupInfo, node.id,node);
             this.props.getProjectMembers(node_temp.substr(0,node_temp.length-2));
             PubSub.publish("onSelectProjectNode",{node:node, isProject:true});
+            this.props.setSelectNode({node:node, isProject:true});
         }else{
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
+            this.props.setSelectNode({node:node, isProject:false});
         }
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
@@ -152,7 +155,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
-        //setSelectNode: bindActionCreators(setSelectNode, dispatch),
+        setSelectNode: bindActionCreators(setSelectNode, dispatch),
         getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),

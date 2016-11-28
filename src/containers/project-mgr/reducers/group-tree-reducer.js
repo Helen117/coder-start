@@ -10,6 +10,7 @@ import {
     GET_GROUP_TREE_PENDING,
     GET_GROUP_TREE_SUCCESS,
     GET_GROUP_TREE_ERROR,
+    SET_SELECT_NODE
 } from '../constants/group-tree-types';
 import {LOGOUT} from '../../login/constants/login-action-types';
 
@@ -27,6 +28,11 @@ export default function getGroupTree(state = initialState, action = {}) {
             return {
                 ...state,
                 errors: action.payload.message, loading: false
+            };
+        case SET_SELECT_NODE:
+            return {
+                ...state,
+                selectNode: action.meta
             };
         case LOGOUT:
             return initialState;
