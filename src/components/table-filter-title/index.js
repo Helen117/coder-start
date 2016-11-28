@@ -74,7 +74,7 @@ class TableFilterTitle extends React.Component {
     }
 
     render(){
-        const { getFieldDecorator,getFieldsValue } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const menu = (
             <Menu style={{width:"110px"}}>
                 <Menu.Item key="0">
