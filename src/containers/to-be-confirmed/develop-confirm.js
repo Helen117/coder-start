@@ -55,6 +55,39 @@ const FormItem = Form.Item;
             wrapperCol: { span: 12 },
         };
 
+        const props = {
+            action: '/upload.do',
+            beforeUpload(file){
+                console.log(file);
+                const isWord = file.type === 'application/msword';//'application/vnd.ms-excel'
+                if (!isWord) {
+                    message.error('只能上传word文档',3);
+                }
+                return isWord;
+            },
+            onChange(info) {
+                if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    message.success(`${info.file.name} file uploaded successfully.`);
+                    let fileList = info.fileList;
+
+                    fileList = fileList.map((file) => {
+                        if (file.response) {
+                            file.url = file.response.url;
+                        }
+                        return file;
+                    });
+
+                    this.setState({ fileList });
+
+                } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} file upload failed.`,3);
+                }
+            },
+        };
+
         const dataSource =[
             {"name":"项目优化",
             "description":"新增需求功能",
@@ -94,7 +127,7 @@ const FormItem = Form.Item;
 
                             <FormItem {...formItemLayout}  label="设计文档上传" >
                                 {getFieldDecorator('attachment')(
-                                    <Upload showUploadList={true}>
+                                    <Upload {...props} fileList={this.state.fileList}>
                                         <Button type="ghost">
                                             <Icon type="upload" /> 点击上传
                                         </Button>

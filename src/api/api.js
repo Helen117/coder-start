@@ -3,6 +3,7 @@
 import fetch from 'isomorphic-fetch';//考虑使用fetch
 import * as Cookies from "js-cookie";
 import {notification} from 'antd';
+import { browserHistory } from 'react-router';
 
 const methods = [
     'get',
@@ -73,11 +74,26 @@ class _Api {
                                     errorCode: json.errorCode,
                                     errorMsg: json.errorMsg
                                 };
-                                notification.error({
-                                    message: "出错啦",
-                                    description: error.errorMsg,
-                                    duration: 10
-                                });
+                                if (error.errorCode != '401'){
+                                    notification.error({
+                                        message: "出错啦",
+                                        description: error.errorMsg,
+                                        duration: 10
+                                    });
+                                }else{
+                                    notification.error({
+                                        message: "出错啦",
+                                        description: "会话过期，系统即将跳转到登录界面",
+                                        duration: 5,
+                                        onClose: ()=>{
+                                            Cookies.remove('uid');
+                                            Cookies.remove('profile');
+                                            //browserHistory.replace('/login');
+                                            //location.href = '/login';
+                                            location.replace('/login');
+                                        }
+                                    });
+                                }
                                 return reject(error);
                             }
                         })

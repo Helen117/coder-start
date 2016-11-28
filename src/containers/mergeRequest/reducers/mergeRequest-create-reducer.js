@@ -51,7 +51,7 @@ export  function createMr(state = initialState, action = {}) {
     }
 }
 
-export  function acceptMr(state = initialState, action = {}) {
+export  function revertMr(state = initialState, action = {}) {
 
     switch (action.type) {
 
