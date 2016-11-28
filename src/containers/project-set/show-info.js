@@ -13,7 +13,7 @@ import SelectedProInfo from './project-info'
 
 let showProjectInfo = false;
 let showSetInfo = true;
-class showInfo extends Component {
+class ShowInfo extends Component {
     constructor(props) {
         super(props);
     }
@@ -49,4 +49,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(showInfo);
+export default connect(mapStateToProps)(ShowInfo);

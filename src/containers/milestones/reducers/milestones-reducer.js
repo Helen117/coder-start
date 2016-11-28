@@ -6,6 +6,7 @@ import {
     ACQUIRE_MILESTONES_SUCCESS,
     ACQUIRE_MILESTONES_PENDING,
     ACQUIRE_MILESTONES_ERROR,
+
     PUT_MILESTONES_PROID,
    PUT_MILESTONES_PROID_ERROR,
 } from '../constants/milestones-action-types';

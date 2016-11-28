@@ -131,7 +131,7 @@ module.exports.menu ={
                     "parentId": 2,
                     "cLevel": 2,
                     "name": "项目集合",
-                    "link": "/projectSetTree",
+                    "link": "/ProjectSetTree",
                     "description": "",
                     "icon": null,
                     "subMenu": [
@@ -140,7 +140,7 @@ module.exports.menu ={
                             "parentId": 13,
                             "cLevel": 3,
                             "name": "项目集合信息",
-                            "link": "/projectSetTree",
+                            "link": "/ProjectSetTree",
                             "description": "",
                             "icon": null,
                             "subMenu": []
@@ -150,7 +150,7 @@ module.exports.menu ={
                             "parentId": 13,
                             "cLevel": 3,
                             "name": "项目集合里程碑",
-                            "link": "/projectSetTree/projectSetMilestones",
+                            "link": "/ProjectSetTree/Milestones",
                             "description": "",
                             "icon": null,
                             "subMenu": []

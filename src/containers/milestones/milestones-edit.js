@@ -12,7 +12,7 @@ const createForm = Form.create;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 
-class projectSetMilestonesEdit extends React.Component {
+class ProjectSetMilestonesEdit extends React.Component {
     constructor(props) {
         super(props);
         this.groupId = this.props.selectedProjectSet?this.props.selectedProjectSet.id:'';
@@ -44,7 +44,7 @@ class projectSetMilestonesEdit extends React.Component {
         const {date,mode} = this.props.location.state;
         this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
-            pathname: "/projectSetTree/projectSetMilestones",
+            pathname: "/ProjectSetTree/Milestones",
         });
     }
 
@@ -178,7 +178,7 @@ class projectSetMilestonesEdit extends React.Component {
     }
 }
 
-projectSetMilestonesEdit.contextTypes = {
+ProjectSetMilestonesEdit.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -211,4 +211,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(createForm()(projectSetMilestonesEdit));
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(ProjectSetMilestonesEdit));

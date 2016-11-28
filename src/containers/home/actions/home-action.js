@@ -5,7 +5,7 @@ import api from '../../../api';
 import {ACQUIRE_PERFORMANCE_MSG,ACQUIRE_MY_ISSUE_LIST} from '../constants/home-action-types';
 
 export function acqPerformanceMsg(userId) {
-    var path = '/project/create-milestone';
+    var path = '/user/performance';
     return {
         type: ACQUIRE_PERFORMANCE_MSG,
         payload: {
@@ -19,7 +19,7 @@ export function acqPerformanceMsg(userId) {
 }
 
 export function acqMyIssueList(userId) {
-    var path = '/project/create-milestone';
+    var path = '/user/performance';
     return {
         type: ACQUIRE_MY_ISSUE_LIST,
         payload: {

@@ -156,7 +156,7 @@ app.post('/gitlab/project', function (req, res) {
     res.json(project);
 });
 
-app.post('/gitlab/projectSetTree', function (req, res) {
+app.post('/gitlab/ProjectSetTree', function (req, res) {
     res.json(virtual_project);
 });
 

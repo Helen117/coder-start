@@ -2,6 +2,6 @@
  * Created by zhaojp on 2016/9/14.
  */
 
-export ProjectSetMilestones from './milestones-timeline';
-export projectSetMilestonesDetail from './milestones-table';
-export projectSetMilestonesEdit from './milestones-edit';
+export Milestones from './milestones-timeline';
+export ProjectSetMilestonesDetail from './milestones-table';
+export ProjectSetMilestonesEdit from './milestones-edit';

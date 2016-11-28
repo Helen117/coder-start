@@ -127,12 +127,12 @@ export default class MilestonesCalendar extends React.Component{
     getMilestoneData(milestoneData,calendarTime) {
         const tooltip = this.milestoneTooltip(milestoneData);
         return(
-            <div style={{marginLeft:5}}>
+            <div style={{marginLeft:3}}>
                 <Tooltip placement="top" title={tooltip}>
-                    <ol className="events">
+                    <ul className="events">
                          {this.titleDecorate(milestoneData,calendarTime)}
-                        <li>{milestoneData.description}</li>
-                    </ol>
+                         {milestoneData.description}
+                    </ul>
                 </Tooltip>
             </div>
          )
@@ -145,10 +145,10 @@ export default class MilestonesCalendar extends React.Component{
                     const type =  this.setMilestoneType(item.state,Date.now());
                     const issueTooltip = this.issueTooltip(item)
                     return  <Tooltip placement="top" title={issueTooltip} key={index}>
-                        <div key={index} >
+                        <li key={index} >
                             <span className={`event-${type}`}>● </span>
                             {item.title}
-                        </div>
+                        </li>
                     </Tooltip>
                 }
 
@@ -191,15 +191,15 @@ export default class MilestonesCalendar extends React.Component{
 
 
     getMonthData(milestoneList,calendarTime) {
-        return <ul  style={{marginLeft:5}} className="events">
+        return <ul  style={{marginLeft:3}} className="events">
             {
                 milestoneList.map((item, index) => {
                     const type = this.setMilestoneType(item.state, item.due_date)
-                       return <div style={{paddingTop: 5}} key={index}>
+                       return <li style={{paddingTop: 5}} key={index}>
                             <Tooltip key={index} placement="top" title={this.milestoneTooltip(item)}>
                                 {this.titleDecorate(item,calendarTime)}
                             </Tooltip>
-                        </div>
+                        </li>
                     }
                 )
             }
