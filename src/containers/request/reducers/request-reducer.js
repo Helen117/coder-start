@@ -24,3 +24,45 @@ export  function request(state = initialState, action = {}) {
             return state;
     }
 }
+
+export  function getBusinessInfo(state = initialState, action = {}) {
+    switch (action.type) {
+        case 'FETCH_BUSINESS_INFO_PENDING':
+            return Object.assign({}, initialState, {pending: true});
+        case 'FETCH_BUSINESS_INFO_SUCCESS':
+            return Object.assign({}, initialState, {business: action.payload, pending: false, error: null});
+        case 'FETCH_BUSINESS_INFO_ERROR':
+            return Object.assign({}, initialState, {business: action.payload, pending: false, error: action.payload.errorMsg});
+
+        default:
+            return state;
+    }
+}
+
+export  function getDeveloperInfo(state = initialState, action = {}) {
+    switch (action.type) {
+        case 'FETCH_DEVELOPER_INFO_PENDING':
+            return Object.assign({}, initialState, {pending: true});
+        case 'FETCH_DEVELOPER_INFO_SUCCESS':
+            return Object.assign({}, initialState, {developer: action.payload, pending: false, error: null});
+        case 'FETCH_DEVELOPER_INFO_ERROR':
+            return Object.assign({}, initialState, {developer: action.payload, pending: false, error: action.payload.errorMsg});
+
+        default:
+            return state;
+    }
+}
+
+export  function getTesterInfo(state = initialState, action = {}) {
+    switch (action.type) {
+        case 'FETCH_TESTER_INFO_PENDING':
+            return Object.assign({}, initialState, {pending: true});
+        case 'FETCH_TESTER_INFO_SUCCESS':
+            return Object.assign({}, initialState, {tester: action.payload, pending: false, error: null});
+        case 'FETCH_TESTER_INFO_ERROR':
+            return Object.assign({}, initialState, {tester: action.payload, pending: false, error: action.payload.errorMsg});
+
+        default:
+            return state;
+    }
+}

@@ -31,3 +31,16 @@ export function acqMyIssueList(userId) {
         }
     }
 }
+
+export function getNotifyItems(userId) {
+    return {
+        type: 'NOTIFY_ITEM',
+        payload: {
+            promise: api.post('/user/notify-num', {
+                params: {
+                    userId: userId
+                }
+            })
+        }
+    }
+}

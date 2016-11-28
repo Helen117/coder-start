@@ -32,7 +32,7 @@ import projectSetMilestones from './containers/project-set-milestone';
 import {RequirementInfo,EditDemand} from './containers/request';
 import {StageView,CodeChangesList} from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
-import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
+import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case';
@@ -111,6 +111,7 @@ ReactDOM.render(
 
                         <Route name="projectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={projectSetCreate}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
+                        <Route name="bugEdit" breadcrumbName="Bug管理" path="bug-edit" component={EditBug}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
                         <Route name="projectSetMilestonesEdit" breadcrumbName="创建里程碑" path="projectSetMilestonesEdit" component={projectSetMilestonesEdit}/>
                         <Route name="projectMilestonesDetail" breadcrumbName="里程碑详细内容" path="projectSetMilestonesDetail" component={projectSetMilestonesDetail}/>

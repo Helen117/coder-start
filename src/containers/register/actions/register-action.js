@@ -32,3 +32,22 @@ export function getLeader() {
         }
     }
 }
+
+export function getRole() {
+    return {
+        type: 'GET_ROLE',
+        payload: {
+            promise: api.post('/user/role-list')
+        }
+    }
+}
+
+
+export function getOrganization() {
+    return {
+        type: 'GET_ORGANIZATION',
+        payload: {
+            promise: api.post('/user/organization-list')
+        }
+    }
+}
