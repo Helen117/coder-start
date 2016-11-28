@@ -5,7 +5,7 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Input,Table,message,Spin,Upload,Icon  } from 'antd';
+import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon  } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -32,14 +32,14 @@ const FormItem = Form.Item;
 
 
     approve(){
-        const {actions,form,loginInfo} = this.props;
+        const {form} = this.props;
+        console.log(form.getFieldsValue());
         const {record} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.username = loginInfo.username;
 
             }
         })
@@ -53,6 +53,39 @@ const FormItem = Form.Item;
         const formItemLayout = {
             labelCol: { span: 2 },
             wrapperCol: { span: 12 },
+        };
+
+        const props = {
+            action: '/upload.do',
+            beforeUpload(file){
+                console.log(file);
+                const isWord = file.type === 'application/msword';//'application/vnd.ms-excel'
+                if (!isWord) {
+                    message.error('只能上传word文档',3);
+                }
+                return isWord;
+            },
+            onChange(info) {
+                if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    message.success(`${info.file.name} file uploaded successfully.`);
+                    let fileList = info.fileList;
+
+                    fileList = fileList.map((file) => {
+                        if (file.response) {
+                            file.url = file.response.url;
+                        }
+                        return file;
+                    });
+
+                    this.setState({ fileList });
+
+                } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} file upload failed.`,3);
+                }
+            },
         };
 
         const dataSource =[
@@ -80,10 +113,10 @@ const FormItem = Form.Item;
                     <div style={{marginTop: 16}}>
                         <Form horizontal>
                             <FormItem {...formItemLayout} label="设计工时" >
-                                {getFieldDecorator('time',{rules:[{required:true,type: 'number',message:'不能为空'}]})(<Input />)}
+                                {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'不能为空'}]})(<InputNumber min={1} max={100}/>)}
                             </FormItem>
                             <FormItem   {...formItemLayout} label="涉及项目">
-                                    {getFieldDecorator('project')(<TransferFilter dataSource = {projectInfo}
+                                    {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})(<TransferFilter dataSource = {projectInfo}
 
                                                                                       onChange={this.handleChange.bind(this)}
                                                                                       loadingProMsg={false }
@@ -94,7 +127,7 @@ const FormItem = Form.Item;
 
                             <FormItem {...formItemLayout}  label="设计文档上传" >
                                 {getFieldDecorator('attachment')(
-                                    <Upload showUploadList={true}>
+                                    <Upload {...props} fileList={this.state.fileList}>
                                         <Button type="ghost">
                                             <Icon type="upload" /> 点击上传
                                         </Button>

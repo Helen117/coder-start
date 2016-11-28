@@ -38,6 +38,7 @@ export default function auth(state = initialState, action = {}) {
             Cookies.remove('uid');
             Cookies.remove('profile');
             //authUtils.logout();
+            location.replace('/login');
             return {
                 ...state,
                 loggingOut: false,

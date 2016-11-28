@@ -29,7 +29,7 @@ import ForkList from './containers/fork';
 import {projectSetCreate,projectSetTree,showInfo} from './containers/project-set';
 import projectSetMilestones from './containers/project-set-milestone';
 
-import NewRequest from './containers/request';
+import {RequirementInfo,EditDemand} from './containers/request';
 import {StageView,CodeChangesList} from './containers/compile-stage';
 import {projectSetMilestonesEdit,projectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList} from './containers/issues';
@@ -103,10 +103,12 @@ ReactDOM.render(
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="projectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={projectSetTree}>
-                            <Route name="request" breadcrumbName="需求管理" path="request" component={NewRequest}/>
+                            <Route name="request" breadcrumbName="需求管理" path="request" component={RequirementInfo}/>
                             <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={showInfo}/>
                             <Route name="projectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={projectSetMilestones}/>
                         </Route>
+                        <Route name="demandEdit" breadcrumbName="需求编辑" path="demandEdit" component={EditDemand}/>
+
                         <Route name="projectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={projectSetCreate}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
                         <Route name="issueNotes" breadcrumbName="问题历史讨论" path="issueNotes" component={IssueNotes}/>
