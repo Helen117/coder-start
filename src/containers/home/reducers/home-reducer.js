@@ -59,3 +59,16 @@ export function acqMyIssueList(state = initialState, action = {}) {
             return state;
     }
 }
+
+export function getNotifyItems(state = {}, action = {}) {
+    switch (action.type) {
+        case 'NOTIFY_ITEM_PENDING':
+            return Object.assign({}, {pending:true});
+        case 'NOTIFY_ITEM_SUCCESS':
+            return Object.assign({}, {notifyItems: action.payload,errors: null});
+        case 'NOTIFY_ITEM_ERROR':
+            return Object.assign({},{notifyItems:null,errors: action.payload.errorMsg});
+        default:
+            return state;
+    }
+}

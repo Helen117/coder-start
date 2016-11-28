@@ -9,12 +9,12 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
 import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
-import {register,getLeaderInfo} from '../containers/register/reducers/register-reducer';
+import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
 import {stageView,stageDetail,codeChange} from '../containers/compile-stage/reducers/jenkins-build-reducer';
-import {request} from '../containers/request/reducers/request-reducer';
+import {request,getBusinessInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -43,7 +43,7 @@ import createUserGroup from '../containers/user-relation/reducers/user-group-det
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
-import {acqPerformanceMsg,acqMyIssueList} from '../containers/home/reducers/home-reducer';
+import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 
 
 const reducer = combineReducers({
@@ -106,6 +106,12 @@ const reducer = combineReducers({
     request,
     acqPerformanceMsg,
     acqMyIssueList,
+    getNotifyItems,
+    getOrganizationInfo,
+    getRoleInfo,
+    getBusinessInfo,
+    getDeveloperInfo,
+    getTesterInfo,
 });
 
 // const createStoreWithMiddleware = applyMiddleware(

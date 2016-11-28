@@ -28,6 +28,8 @@ class Register extends Component{
     componentWillMount(){
         const { actions } = this.props;
         actions.getLeader();
+        actions.getRole();
+        actions.getOrganization();
         // actions.getAllUser();
     }
 
@@ -151,7 +153,7 @@ class Register extends Component{
     render() {
         const { getFieldDecorator } = this.props.form;
 
-        const pending = this.props.pending?true:false;
+        const pending = this.props.pending||this.props.loading||this.props.getRolePending?true:false;
 
         const formItemLayout = {
             labelCol: { span: 8 },
@@ -164,6 +166,10 @@ class Register extends Component{
                 </Select>);
 
         const leader = this.props.leaderInfo?this.props.leaderInfo.map(data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
+
+        const role = this.props.role?this.props.role.map(data => <Option key={data.id}>{data.description}</Option>):[];
+
+        const organization = this.props.organization?this.props.organization.map(data => <Option key={data.organization_id}>{data.organization_name}</Option>):[];
 
         return (
             <Spin spinning={pending}>
@@ -193,12 +199,24 @@ class Register extends Component{
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="申请角色" >
-                            {getFieldDecorator('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})(<Select id="role_id"  >
-                                <Option value="5">需求</Option>
-                                <Option value="4">测试人员</Option>
-                                <Option value="3">开发人员</Option>
-                                <Option value="2" >BM</Option>
-                                <Option value="1">项目经理</Option>
+                            {getFieldDecorator('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})
+                                (<Select showSearch
+                                    showArrow={false}
+                                    placeholder="role"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到">
+                                    {role}
+                                </Select>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="申请厂商" >
+                            {getFieldDecorator('organization_id',{initialValue:'4',rules:[{required:true,message:'请选择申请的厂商'}]})
+                            (<Select showSearch
+                                     showArrow={false}
+                                     placeholder="organization"
+                                     optionFilterProp="children"
+                                     notFoundContent="无法找到">
+                                {organization}
                             </Select>)}
                         </FormItem>
 
@@ -239,6 +257,10 @@ function mapStateToProps(state) {
         leaderInfo:state.getLeaderInfo.leader,
         errorMsg:state.getLeaderInfo.errorMsg,
         pending:state.getLeaderInfo.pending,
+        loading:state.getOrganizationInfo.pending,
+        organization:state.getOrganizationInfo.organization,
+        getRolePending:state.getRoleInfo.pending,
+        role:state.getRoleInfo.role,
     };
 }
 
