@@ -30,8 +30,15 @@ class CronExpression extends React.Component{
         const {expression} = nextProps;
         let reg_minute = /^[0-9][0-9,]*$/;
         let reg_hour = /^[0-9][0-9,]*$/;
+        let reg_minute_1 = /^([0-5]?\d)(,([0-5]?\d))*$/;
+        let reg_hour_1 = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))$/;
+        console.log('expression:',expression)
+        console.log('this.props.expression:',this.props.expression)
         if(expression != this.props.expression && expression){
+            console.log('kkkk')
             let expression_array = expression.split(' ');
+            /*console.log('reg_minute_1:',reg_minute_1.test(expression_array[1]))
+            console.log('reg_hour_1:',reg_hour_1.test(expression_array[2]))*/
             if(expression_array[0]!=0 || expression_array[3]!='*' || expression_array[4]!='*'
                 || expression_array[5]!='?'){
                 this.setState({
