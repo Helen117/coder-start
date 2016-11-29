@@ -49,6 +49,7 @@ import projectCompile from '../containers/project-compile/reducer';
 import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
 import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/develop-confirm-reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
+import projectCompile from '../containers/project-compile/reducer';
 
 const reducer = combineReducers({
     login,
@@ -121,8 +122,6 @@ const reducer = combineReducers({
     getBusinessInfo,
     getDeveloperInfo,
     getTesterInfo,
-})
-
     projectCompile
 });
 
