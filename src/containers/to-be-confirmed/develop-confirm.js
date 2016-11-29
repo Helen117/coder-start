@@ -5,12 +5,13 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon  } from 'antd';
+import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon,Modal } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 
+const confirm = Modal.confirm;
 const FormItem = Form.Item;
  class DevelopConfirm  extends Component {
 
@@ -44,6 +45,22 @@ const FormItem = Form.Item;
             }
         })
     }
+
+     handleCancel() {
+         const {form} = this.props;
+         const {router} = this.context;
+
+         confirm({
+             title: '您是否确定要取消表单的编辑',
+             content: '取消之后表单内未提交的修改将会被丢弃',
+             onOk() {
+                 router.goBack();
+                 form.resetFields();
+             },
+             onCancel() {
+             }
+         })
+     }
 
 
     render() {
@@ -136,6 +153,7 @@ const FormItem = Form.Item;
 
                             <FormItem wrapperCol={{ span: 16, offset: 6 }}>
                                 <Button type="primary" onClick={this.approve.bind(this)}>提交</Button>
+                                <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                             </FormItem>
                         </Form>
                     </div>

@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import fetchMrListData from './actions/mergeRequest-list-action'
 import {revertMr} from './actions/mergeRequest-edit-action';
 
-class mergeRequestList extends React.Component {
+class MergeRequestList extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -34,7 +34,7 @@ class mergeRequestList extends React.Component {
 
     createMergeRequest(type){
         this.context.router.push({
-            pathname: '/createMergeRequest',
+            pathname: '/CreateMergeRequest',
             state: {editType: type}
         });
     }
@@ -95,7 +95,7 @@ class mergeRequestList extends React.Component {
     }
 }
 
-mergeRequestList.prototype.columns = (self)=> [{
+MergeRequestList.prototype.columns = (self)=> [{
     title: 'MR名称',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
@@ -143,7 +143,7 @@ mergeRequestList.prototype.columns = (self)=> [{
     }
 }]
 
-mergeRequestList.contextTypes = {
+MergeRequestList.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -164,4 +164,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(mergeRequestList);
+export default connect(mapStateToProps,mapDispatchToProps)(MergeRequestList);

@@ -10,7 +10,7 @@ import putProjectSetToState from './actions/put-project-set-into-state-action';
 import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
 import 'pubsub-js';
 
-class projectSetTree extends React.Component{
+class ProjectSetTree extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -82,7 +82,7 @@ class projectSetTree extends React.Component{
 
 }
 
-projectSetTree.contextTypes = {
+ProjectSetTree.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -108,4 +108,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(projectSetTree);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectSetTree);

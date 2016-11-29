@@ -9,7 +9,7 @@ import api from '../../../api';
 export default function fetchProjectSetTree(userId) {
 
     var path ='/project/sets';
-    //path = '/projectSetTree'
+    //path = '/ProjectSetTree'
     return {
         type: FETCH_PROJECT_SET_TREE,
         payload: {

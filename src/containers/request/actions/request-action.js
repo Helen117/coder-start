@@ -25,3 +25,44 @@ export function getDemandInfo(projectSetId) {
         }
     }
 }
+
+export function getBusinessInfo(projectSetId) {
+    return {
+        type: 'FETCH_BUSINESS_INFO',
+        payload: {
+            promise: api.post('/request/add', {
+                params: {
+                    projectSetId: projectSetId
+                }
+            })
+        }
+    }
+}
+
+
+export function getDeveloperInfo(projectSetId) {
+    return {
+        type: 'FETCH_DEVELOPER_INFO',
+        payload: {
+            promise: api.post('/request/add', {
+                params: {
+                    projectSetId: projectSetId
+                }
+            })
+        }
+    }
+}
+
+
+export function getTesterInfo(projectSetId) {
+    return {
+        type: 'FETCH_TESTER_INFO',
+        payload: {
+            promise: api.post('/request/add', {
+                params: {
+                    projectSetId: projectSetId
+                }
+            })
+        }
+    }
+}

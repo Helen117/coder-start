@@ -27,6 +27,11 @@ class EditDemand extends Component{
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
         }
+
+        // this.props.actions.getBusinessInfo();
+        // this.props.actions.getDeveloperInfo();
+        // this.props.actions.getTesterInfo();
+
     }
 
     componentDidMount() {
@@ -34,6 +39,13 @@ class EditDemand extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
+
+        const {loading,result,error} = nextProps;
+
+        if (!loading && !error && result && result!=this.props.result) {
+            message.success('提交成功！');
+            this.context.router.goBack();
+        }
 
     }
 
@@ -51,6 +63,8 @@ class EditDemand extends Component{
             } else {
                 const data = form.getFieldsValue();
                 data.username = loginInfo.username;
+                data.set_id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+                // actions.editDemand(data);
             }
         })
     }
@@ -77,6 +91,10 @@ class EditDemand extends Component{
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const {businessInfo,developerInfo,testerInfo} = this.props;
+        // const pending = businessInfo.pending||developerInfo.pending||testerInfo.pending?true:false;
+        const pending =false;
+
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
@@ -87,8 +105,16 @@ class EditDemand extends Component{
             {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
 
+        // const business = businessInfo?businessInfo.business.map(data => <Option key={data.id}>{data.name}</Option>):[];
+
+        // const developer = developerInfo?developerInfo.developer.map(data => <Option key={data.id}>{data.description}</Option>):[];
+
+        // const tester = testerInfo?testerInfo.tester.map(data => <Option key={data.id}>{data.name}</Option>):[];
+
+
         return (
-            <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
+            <Spin spinning={pending}>
+                <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout}  label="需求名称" >
                         {getFieldDecorator('demand_name',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
@@ -140,11 +166,12 @@ class EditDemand extends Component{
                     {modifyReason}
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit">提交</Button>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading}>提交</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
             </Box>
+            </Spin>
         );
     }
 
@@ -164,6 +191,12 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        loading:state.request.pending,
+        result:state.request.editDemandResult,
+        error:state.request.error,
+        businessInfo:state.getBusinessInfo.pending,
+        developerInfo:state.getDeveloperInfo,
+        testerInfo:state.getTesterInfo,
     };
 }
 

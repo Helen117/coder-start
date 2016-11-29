@@ -35,3 +35,36 @@ export  function getLeaderInfo(state = initialState, action = {}) {
             return state;
     }
 }
+
+export  function getOrganizationInfo(state = initialState, action = {}) {
+
+    switch (action.type) {
+
+        case 'GET_ORGANIZATION_PENDING':
+            return Object.assign({}, initialState, {pending: true});
+        case 'GET_ORGANIZATION_SUCCESS':
+            return Object.assign({}, initialState, {organization: action.payload});
+        case 'GET_ORGANIZATION_ERROR':
+            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
+
+        default:
+            return state;
+    }
+}
+
+
+export  function getRoleInfo(state = initialState, action = {}) {
+
+    switch (action.type) {
+
+        case 'GET_ROLE_PENDING':
+            return Object.assign({}, initialState, {pending: true});
+        case 'GET_ROLE_SUCCESS':
+            return Object.assign({}, initialState, {role: action.payload});
+        case 'GET_ROLE_ERROR':
+            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
+
+        default:
+            return state;
+    }
+}

@@ -17,7 +17,7 @@ import './index.less';
 
 let defaultDate=moment();
 let setMode = 'month'
-class ProjectSetMilestones extends React.Component {
+class Milestones extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -52,7 +52,7 @@ class ProjectSetMilestones extends React.Component {
 
     createMilestones(type){
         this.context.router.push({
-            pathname: '/projectSetMilestonesEdit',
+            pathname: '/ProjectSetMilestonesEdit',
             state: {editType: type, mode:setMode, date:defaultDate}
         });
     }
@@ -103,7 +103,7 @@ class ProjectSetMilestones extends React.Component {
     }
 }
 
-ProjectSetMilestones.contextTypes = {
+Milestones.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -127,4 +127,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectSetMilestones);
+export default connect(mapStateToProps, mapDispatchToProps)(Milestones);

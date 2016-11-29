@@ -15,7 +15,7 @@ import deleteBranch from './actions/branches-delete-action'
 const createForm = Form.create;
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
-class branchesList extends React.Component {
+class BranchesList extends React.Component {
     constructor(props) {
         super(props);
         this.state={
@@ -57,7 +57,7 @@ class branchesList extends React.Component {
 
     createBranches(type){
         this.context.router.push({
-            pathname: '/createBranches',
+            pathname: '/CreateBranches',
             state: {editType: type}
         });
     }
@@ -163,7 +163,7 @@ const columns = (self)=>[{
 }]
 
 
-branchesList.contextTypes = {
+BranchesList.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -187,4 +187,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(createForm()(branchesList))
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(BranchesList))

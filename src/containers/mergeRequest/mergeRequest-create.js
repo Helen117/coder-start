@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const Option = Select.Option;
 
-class createMergeRequest extends Component {
+class CreateMergeRequest extends Component {
     constructor(props) {
         super(props);
     }
@@ -25,6 +25,7 @@ class createMergeRequest extends Component {
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
+            //this.props.fetchMessage.fetchIssuesData(this.props.getProjectInfo.id);
         }
     }
 
@@ -117,15 +118,6 @@ class createMergeRequest extends Component {
         }
     }
 
-
-    loadIssues(value){
-
-        const projectId = this.props.mergeBranch[0].id;
-        const milestonesId = value;
-        if (milestonesId && projectId){
-            this.props.fetchMessage.fetchIssuesData(milestonesId,projectId);
-        }
-    }
     //修改源分支内容，目标分支跟着改变
     changeTargetBranch(value){
         const targetBranches = this.props.mergeBranch?this.props.mergeBranch[1].branches:[]
@@ -191,7 +183,7 @@ class createMergeRequest extends Component {
                            </Col>
 
                             <Col span="4">
-                                <FormItem  {...formItemLayout} label="靶分支">
+                                <FormItem  {...formItemLayout} label="目标分支">
                                     {getFieldDecorator('target_project_path', {initialValue: targetPath})
                                     (<Select style={{width: 200}}><Option value={targetPath}>{targetPath}</Option></Select>)}
                                 </FormItem>
@@ -215,11 +207,6 @@ class createMergeRequest extends Component {
                         <FormItem {...formItemLayout} label="MR描述">
                             {getFieldDecorator('description', {rules: [{required: true, message: '请填写MR描述'}]})
                             (<Input type="textarea" placeholder="请输入MR描述" rows="5"/>)}
-                        </FormItem>
-
-                        <FormItem {...formItemLayout} label="里程碑">
-                            {getFieldDecorator('milestone.id')
-                            (<Select size="large" allowClear={true}onSelect={this.loadIssues.bind(this)}>{mileStoneOptions}</Select>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
@@ -246,7 +233,7 @@ class createMergeRequest extends Component {
     }
 }
 
-createMergeRequest.contextTypes = {
+CreateMergeRequest.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
@@ -273,4 +260,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(createForm()(createMergeRequest));
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(CreateMergeRequest));

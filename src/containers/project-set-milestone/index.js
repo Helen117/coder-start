@@ -5,11 +5,11 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Icon} from 'antd';
-import {ProjectSetMilestones} from '../milestones'
+import {Milestones} from '../milestones'
 import moment from 'moment';
 import './index.less';
 
-class projectSetMilestones extends React.Component {
+class ProjectSetMilestones extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -21,7 +21,7 @@ class projectSetMilestones extends React.Component {
         const projectName = selectedProjectSet? selectedProjectSet.name:''
        /* if(projectId) {*/
             return (
-                <ProjectSetMilestones projectId={projectId} projectName={projectName} defaultDate={defaultDate}/>
+                <Milestones projectId={projectId} projectName={projectName} defaultDate={defaultDate}/>
             )
        /* }else{
             return (
@@ -44,4 +44,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(projectSetMilestones);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectSetMilestones);

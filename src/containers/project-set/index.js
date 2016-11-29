@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/24.
  */
 
- export projectSetCreate from './project-set-create';
- export projectSetTree from './project-set-tree';
- export showInfo from './show-info';
+ export ProjectSetCreate from './project-set-create';
+ export ProjectSetTree from './project-set-tree';
+ export ShowInfo from './show-info';
 
