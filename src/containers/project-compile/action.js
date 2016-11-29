@@ -39,9 +39,8 @@ export function saveJob(jobInfo) {
         type: PROJECT_COMPILE_SAVE_JOB,
         payload: {
             promise: api.post(path, {
-                data: {
-                    jobInfo: jobInfo
-                }
+                data: jobInfo,
+                urlType:'ci'
             })
         }
     }

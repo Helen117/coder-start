@@ -171,10 +171,10 @@ class CronExpression extends React.Component{
         const { getFieldDecorator } = this.props.form;
         const hour = [],minute = [];
         for (let i = 0; i < 24; i++) {
-            hour.push(<Option key={i}>{i}</Option>);
+            hour.push(<Option key={i}>{i}点</Option>);
         }
         for (let i = 0; i < 60; i++) {
-            minute.push(<Option key={i}>{i}</Option>);
+            minute.push(<Option key={i}>{i}分</Option>);
         }
         const radioStyle = {
             display: 'block',
@@ -187,8 +187,8 @@ class CronExpression extends React.Component{
 
         return(
             <div>
-                <Button type="ghost" onClick={this.showModal.bind(this)}>编译周期</Button>
-                <Modal title="设置编译时间"
+                <Button type="ghost" onClick={this.showModal.bind(this)}>设置调度</Button>
+                <Modal title="设置调度"
                        visible={this.state.visible}
                        onOk={this.handleOk.bind(this)}
                        onCancel={this.handleCancle.bind(this)}
@@ -197,12 +197,12 @@ class CronExpression extends React.Component{
                         <RadioGroup onChange={this.onChange.bind(this)}
                                     value={this.state.radioValue}>
                             <Radio value={1} style={radioStyle} >
-                                <span style={{paddingRight:'5px'}}>每天在</span>
+                                <span style={{paddingRight:'5px'}}>每天</span>
                                 {getFieldDecorator('hour')(
                                     <Select
                                         multiple
                                         style={{ width: '50%' }}
-                                        placeholder="Please select"
+                                        placeholder="请选择小时"
                                         onChange={this.handleChange.bind(this)}
                                     >
                                         {hour}
@@ -213,16 +213,16 @@ class CronExpression extends React.Component{
                                     <Select
                                         multiple
                                         style={{ width: '50%' }}
-                                        placeholder="Please select"
+                                        placeholder="请选择分钟"
                                         onChange={this.handleChange.bind(this)}
                                     >
                                         {minute}
                                     </Select>
                                 )}
-                                <span style={{paddingLeft:'5px'}}>执行编译</span>
+                                <span style={{paddingLeft:'5px'}}>执行</span>
                             </Radio>
                             <Radio value={2} style={radioStyle} >
-                                <span>cron表达式：</span>
+                                <span>自定义Cron表达式：</span>
                                 {getFieldDecorator('expression')(
                                     <Input onClick={this.changeInput.bind(this)}/>
                                 )}
