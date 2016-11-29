@@ -14,9 +14,6 @@ class CronExpression extends React.Component{
         this.state = {
             radioValue:1,
             visible:false,
-            defaultHour:[],
-            defaultMinute:[],
-            defaultCron:''
         }
     }
 
@@ -28,59 +25,41 @@ class CronExpression extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {expression} = nextProps;
-        let reg_minute = /^[0-9][0-9,]*$/;
-        let reg_hour = /^[0-9][0-9,]*$/;
+        const {setFieldsValue} = this.props.form;
+        let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
+        let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
         if(expression != this.props.expression && expression){
             let expression_array = expression.split(' ');
             if(expression_array[0]!=0 || expression_array[3]!='*' || expression_array[4]!='*'
                 || expression_array[5]!='?'){
                 this.setState({
                     radioValue:2,
-                    defaultCron:expression,
-                    defaultMinute:[],
-                    defaultHour:[]
                 })
+                setFieldsValue({
+                    expression:expression,
+                    minute:[],
+                    hour:[]
+                });
             }else if(!reg_minute.test(expression_array[1]) || !reg_hour.test(expression_array[2])){
                 this.setState({
                     radioValue:2,
-                    defaultCron:expression,
-                    defaultMinute:[],
-                    defaultHour:[]
                 })
+                setFieldsValue({
+                    expression:expression,
+                    minute:[],
+                    hour:[]
+                });
             }else{
                 let minute = expression_array[1].split(',');
                 let hour = expression_array[2].split(',');
-                let count_minute = 0,count_hour = 0;
-                for(let i=0; i<minute.length; i++){
-                    if(minute[i]<0 || minute[i]>60){
-                        count_minute++;
-                        this.setState({
-                            radioValue:2,
-                            defaultCron:expression,
-                            defaultMinute:[],
-                            defaultHour:[]
-                        })
-                    }
-                }
-                for(let i=0; i<hour.length; i++){
-                    if(hour[i]<0 || hour[i]>60){
-                        count_hour++;
-                        this.setState({
-                            radioValue:2,
-                            defaultCron:expression,
-                            defaultMinute:[],
-                            defaultHour:[]
-                        })
-                    }
-                }
-                if(count_minute==0 && count_hour==0){
-                    this.setState({
-                        radioValue:1,
-                        defaultMinute:minute,
-                        defaultCron:'',
-                        defaultHour:hour
-                    })
-                }
+                this.setState({
+                    radioValue:1,
+                })
+                setFieldsValue({
+                    expression:'',
+                    minute:minute,
+                    hour:hour
+                });
             }
         }
     }
@@ -165,7 +144,7 @@ class CronExpression extends React.Component{
                                     value={this.state.radioValue}>
                             <Radio value={1} style={radioStyle} >
                                 <span style={{paddingRight:'5px'}}>每天在</span>
-                                {getFieldDecorator('hour',{initialValue:this.state.defaultHour})(
+                                {getFieldDecorator('hour')(
                                     <Select
                                         multiple
                                         style={{ width: '50%' }}
@@ -176,7 +155,7 @@ class CronExpression extends React.Component{
                                     </Select>
                                 )}
                                 <span>：</span>
-                                {getFieldDecorator('minute',{initialValue:this.state.defaultMinute})(
+                                {getFieldDecorator('minute')(
                                     <Select
                                         multiple
                                         style={{ width: '50%' }}
@@ -190,7 +169,7 @@ class CronExpression extends React.Component{
                             </Radio>
                             <Radio value={2} style={radioStyle} >
                                 <span>cron表达式：</span>
-                                {getFieldDecorator('expression',{initialValue:this.state.defaultCron})(
+                                {getFieldDecorator('expression')(
                                     <Input onClick={this.changeInput.bind(this)}/>
                                 )}
                             </Radio>
