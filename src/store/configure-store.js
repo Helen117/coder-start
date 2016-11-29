@@ -44,7 +44,7 @@ import createUser from '../containers/user-relation/reducers/user-detail-reducer
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
 import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
-import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/develop-confirm-reducer'
+import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/confirm-reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 
 const reducer = combineReducers({

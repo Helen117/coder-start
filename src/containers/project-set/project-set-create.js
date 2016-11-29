@@ -158,7 +158,6 @@ class ProjectSetCreate extends React.Component {
                         <FormItem   {...formItemLayout} label="项目">
                                 <Spin spinning={spinning}>
                                     {getFieldDecorator('project_set')(<TransferFilter dataSource = {this.props.projectInfo}
-
                                                                                       onChange={this.handleChange.bind(this)}
                                                                                       loadingProMsg={this.props.loadingProMsg }
                                                                                       fetchProMsgErr ={this.props.fetchProMsgErr}

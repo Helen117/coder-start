@@ -45,9 +45,22 @@ class ConfirmList extends Component {
 
     }
 
+    getDataSource(confirmList){
+        const data = [];
+        if(confirmList){
+            for(let i=0; i<confirmList.length; i++){
+                data.push({
+                    name: confirmList[i].name
+                })
+            }
+        }
+        return data;
+    }
+
     render() {
-console.log('this.props.loading',this.props.loading);
+        const confirmList = this.props.confirmList;
         const loading = this.props.loading?this.props.loading:false;
+        //const data = this.getDataSource(confirmList);
         const pagination = {
             pageSize:20,
             // total: data.length,
@@ -118,7 +131,7 @@ function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
         loading: state.getConfirmList.loading,
-        dataSource: state.getConfirmList.item,
+        confirmList: state.getConfirmList.item,
     };
 }
 

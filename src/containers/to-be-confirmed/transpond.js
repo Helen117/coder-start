@@ -7,6 +7,7 @@ import { Select ,Form ,Input, Button, Modal} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
+import {getTranspondMember,developTranspond} from './actions/transpond-action'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -18,7 +19,8 @@ class DevelopTransPond extends Component {
     }
 
     componentWillMount() {
-
+        const id = this.props.location.state.id
+        //this.props.getTranspondMemberAction(id)
     }
 
     handleCancel(){
@@ -93,4 +95,18 @@ DevelopTransPond.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-export default DevelopTransPond = Form.create()(DevelopTransPond);
+function mapStateToProps(state) {
+    return {
+        loginInfo: state.login.profile,
+        loading: state.getConfirmList.loading,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getTranspondMemberAction: bindActionCreators(getTranspondMember, dispatch),
+        developTranspondAction: bindActionCreators(developTranspond, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(DevelopTransPond));
