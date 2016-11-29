@@ -30,8 +30,8 @@ class CronExpression extends React.Component{
         let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
         if(expression != this.props.expression && expression){
             let expression_array = expression.split(' ');
-            if(expression_array[0]!=0 || expression_array[3]!='*' || expression_array[4]!='*'
-                || expression_array[5]!='?'){
+            if(expression_array[2]!='*' || expression_array[3]!='*'
+                || expression_array[4]!='?'){
                 this.setState({
                     radioValue:2,
                 })
@@ -40,7 +40,7 @@ class CronExpression extends React.Component{
                     minute:[],
                     hour:[]
                 });
-            }else if(!reg_minute.test(expression_array[1]) || !reg_hour.test(expression_array[2])){
+            }else if(!reg_minute.test(expression_array[0]) || !reg_hour.test(expression_array[1])){
                 this.setState({
                     radioValue:2,
                 })
@@ -50,8 +50,8 @@ class CronExpression extends React.Component{
                     hour:[]
                 });
             }else{
-                let minute = expression_array[1].split(',');
-                let hour = expression_array[2].split(',');
+                let minute = expression_array[0].split(',');
+                let hour = expression_array[1].split(',');
                 this.setState({
                     radioValue:1,
                 })
@@ -97,8 +97,8 @@ class CronExpression extends React.Component{
                 hour = formData.hour.join();
                 minute = formData.minute.join();
                 let cronExpression = [];
-                cronExpression[0] = '0'; cronExpression[1] = minute; cronExpression[2] = hour;
-                cronExpression[3] = '*'; cronExpression[4] = '*'; cronExpression[5] = '?';
+                cronExpression[0] = minute; cronExpression[1] = hour;
+                cronExpression[2] = '*'; cronExpression[3] = '*'; cronExpression[4] = '?';
                 final_expression = cronExpression.join(' ');
             }
         }else if(this.state.radioValue == 2){
