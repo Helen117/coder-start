@@ -31,7 +31,7 @@ class CronExpression extends React.Component{
         if(expression != this.props.expression && expression){
             let expression_array = expression.split(' ');
             if(expression_array[2]!='*' || expression_array[3]!='*'
-                || expression_array[4]!='?'){
+                || expression_array[4]!='*'){
                 this.setState({
                     radioValue:2,
                 })
@@ -98,7 +98,7 @@ class CronExpression extends React.Component{
                 minute = formData.minute.join();
                 let cronExpression = [];
                 cronExpression[0] = minute; cronExpression[1] = hour;
-                cronExpression[2] = '*'; cronExpression[3] = '*'; cronExpression[4] = '?';
+                cronExpression[2] = '*'; cronExpression[3] = '*'; cronExpression[4] = '*';
                 final_expression = cronExpression.join(' ');
             }
         }else if(this.state.radioValue == 2){

@@ -22,55 +22,60 @@ class TableFilterTitle extends React.Component {
     filterData(dataSource,filterKey,formData){
         let newData=[];
         for(let i=0; i<dataSource.length; i++){
-            if(dataSource[i][filterKey].indexOf(formData.searchContext) >=0 ){
+            if(dataSource[i][filterKey].indexOf(formData) >=0 ){
                 newData.push(dataSource[i]);
             }
         }
         return newData;
     }
 
-    handleSubmit(e){
-        const {comfirmFilter,form,filterKey,currentData} = this.props;
-        const formData = form.getFieldsValue();
-        if(formData.searchContext){
-            this.state.filterKeys.push({filterKey:filterKey,formData:formData});
-            let newData = this.filterData(currentData,filterKey,formData);
-            this.setState({
-                visible:false,
-                ifFiled:!formData.searchContext?false:true
-            })
-            if(comfirmFilter){
-                comfirmFilter(newData,this.state.filterKeys);
-            }
-        }else {
-            this.setState({
-                visible:false
-            })
-        }
-    }
-
-    handleReset(){
-        const {form,cancleFilter,filterKey,dataSource,filterKeys} = this.props;
-        form.resetFields();
-        let index = findFilterIndex(filterKeys,filterKey);
-        filterKeys.splice(index,1);
-        let newdata = dataSource;
-        for(let i=0; i<filterKeys.length; i++){
-            newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);
-        }
-        this.setState({
-            visible:false,
-            ifFiled:false
-        })
-        if(cancleFilter){
-            cancleFilter(newdata,filterKeys)
-        }
-    }
-
     clickFilterImg(e){
         this.setState({
-            visible:true
+            visible:!this.state.visible
         })
+    }
+
+    searchData(e){
+        const {filterChange,filterKey,currentData,dataSource,filterKeys} = this.props;
+        let ifFiled;
+        let newdata = dataSource;
+        if(e.target.value){
+            let countKey = 0;
+            for(let i=0; i<this.state.filterKeys.length; i++){
+                if(filterKey == this.state.filterKeys[i].filterKey){
+                    countKey++;
+                    this.state.filterKeys[i].formData = e.target.value;
+                }
+            }
+            if(countKey == 0){
+                this.state.filterKeys.push({filterKey:filterKey,formData:e.target.value});
+            }
+            for(let i=0; i< this.state.filterKeys.length; i++){
+                newdata = this.filterData(newdata,this.state.filterKeys[i].filterKey,this.state.filterKeys[i].formData);
+            }
+            this.setState({
+                ifFiled:true,
+                visible:!this.state.visible
+            })
+            ifFiled = true;
+            if(filterChange){
+                filterChange(newdata,this.state.filterKeys,ifFiled);
+            }
+        }else {
+            let index = findFilterIndex(filterKeys,filterKey);
+            filterKeys.splice(index,1);
+            for(let i=0; i<filterKeys.length; i++){
+                newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);
+            }
+            this.setState({
+                ifFiled:false,
+                visible:!this.state.visible
+            })
+            ifFiled = false;
+            if(filterChange){
+                filterChange(newdata,filterKeys,ifFiled)
+            }
+        }
     }
 
     render(){
@@ -79,19 +84,8 @@ class TableFilterTitle extends React.Component {
             <Menu style={{width:"110px"}}>
                 <Menu.Item key="0">
                     {getFieldDecorator('searchContext')(
-                        <Input size="small" />
+                        <Input size="small" onBlur={this.searchData.bind(this)} />
                     )}
-                </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item key="1">
-                    <Row>
-                        <Col span={12}>
-                            <a  onClick={this.handleSubmit.bind(this)}>确定</a>
-                        </Col>
-                        <Col span={12}>
-                            <a onClick={this.handleReset.bind(this)}>取消</a>
-                        </Col>
-                    </Row>
                 </Menu.Item>
             </Menu>
         );
