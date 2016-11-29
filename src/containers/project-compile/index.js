@@ -13,6 +13,7 @@ import 'pubsub-js';
 import {Form, Input, Button, Alert} from 'antd';
 import Box from '../../components/box';
 import './index.less';
+import CronExpression from '../../components/cron-expression';
 
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/groovy/groovy';
@@ -99,6 +100,11 @@ class ProjectCompile extends React.Component{
         }
     }
 
+    setCron(cron){
+        const {setFieldsValue} = this.props.form;
+        setFieldsValue({trigger:cron});
+    }
+
     render(){
         const {selectNode, jobInfo} = this.props;
         console.log('render', this.props);
@@ -111,7 +117,7 @@ class ProjectCompile extends React.Component{
                 title = '新增编译发布配置';
             }
         }
-        const {getFieldDecorator, getFieldError} = this.props.form;
+        const {getFieldDecorator, getFieldError, getFieldValue} = this.props.form;
         var options = {
             lineNumbers: true,
             readOnly: false,
@@ -130,6 +136,7 @@ class ProjectCompile extends React.Component{
                                 {rules:[
                                     {required:true, message:'请输入调度配置！'}
                                 ]})(<Input type="text" placeholder="请输入调度配置"/>)}
+                            <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="编译发布脚本" extra="注：脚本中需要传递的projectId=123">
                             <CodeMirror ref="editor" value={defaults.code}
