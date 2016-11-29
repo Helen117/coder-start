@@ -5,11 +5,12 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon,Modal } from 'antd';
+import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon,Modal,Input } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
+import {getProjectInfo,developConfirm} from './actions/confirm-action'
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -23,9 +24,18 @@ const FormItem = Form.Item;
     componentWillMount() {
     }
 
-    componentWillReceiveProps(nextProps) {
+     componentWillReceiveProps(nextProps) {
+         const { developConfirmResult} = nextProps;
+         if (this.props.developConfirmResult != developConfirmResult && developConfirmResult){
+             this.insertCallback('需求已确认');
+         }
+     }
 
-    }
+     insertCallback(type){
+         message.success(type);
+         this.props.getConfirmListAction(this.props.loginInfo.userId);
+         this.context.router.goBack();
+     }
 
     handleChange(targetKeys){
         this.targetKeys = targetKeys;
@@ -64,12 +74,13 @@ const FormItem = Form.Item;
 
 
     render() {
-
+        const toBeConfirmedItem = this.props.location.state.record;
+        console.log('toBeConfirmedItem',toBeConfirmedItem);
         const { getFieldDecorator } = this.props.form;
-
+        const getMyProjectLoading = this.props.getMyProjectLoading? this.props.getMyProjectLoading: false;
         const formItemLayout = {
-            labelCol: { span: 2 },
-            wrapperCol: { span: 12 },
+            labelCol: { span: 6 },
+            wrapperCol: { span: 14 },
         };
 
         const props = {
@@ -121,24 +132,31 @@ const FormItem = Form.Item;
 
         return(
             <Box title="代办事项确认操作">
-                    <Table columns={this.columns(this)} dataSource={dataSource}
+                    {/*<Table columns={this.columns(this)} dataSource={dataSource}
                            bordered
                            size="middle"
                            pagination={false}
                            //loading={this.props.getDetailLoading}
-                    />
+                    />*/}
                     <div style={{marginTop: 16}}>
                         <Form horizontal>
+                            <FormItem {...formItemLayout} label="工单名称" >
+                                <Input defaultValue={toBeConfirmedItem.name} disabled={true}/>
+                            </FormItem>
+                            <FormItem {...formItemLayout} label="描述" >
+                                <Input type="textarea" autosize={true} defaultValue="autosize 属性适用于 textarea 节点，并且只有高度会自动变化。另外 autosize 可以设定为一个对象，指定最小行数和最大行数。结合 Tooltip 组件，实现一个数值输入框，方便内容超长时的全量展现。
+" disabled={true}/>
+                            </FormItem>
                             <FormItem {...formItemLayout} label="设计工时" >
-                                {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'不能为空'}]})(<InputNumber min={1} max={100}/>)}
+                                {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
                             </FormItem>
                             <FormItem   {...formItemLayout} label="涉及项目">
-                                    {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})(<TransferFilter dataSource = {projectInfo}
-
-                                                                                      onChange={this.handleChange.bind(this)}
-                                                                                      loadingProMsg={false }
-                                                                                      //fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                                                      //targetKeys = {targetKeys}
+                                    {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
+                                    (<TransferFilter dataSource = {projectInfo}
+                                                     onChange={this.handleChange.bind(this)}
+                                                     loadingProMsg={getMyProjectLoading}
+                                                    //fetchProMsgErr ={this.props.fetchProMsgErr}
+                                                    //targetKeys = {targetKeys}
                                     />)}
                             </FormItem>
 
@@ -187,5 +205,21 @@ DevelopConfirm.prototype.columns = (self)=>[{
 }];
 
 
+function mapStateToProps(state) {
+    return {
+        loginInfo: state.login.profile,
+        getMyProjectLoading: state.getMyProjectInfo.loading,
+        getMyProjectInfo: state.getMyProjectInfo.items,
+        developConfirmLoading: state.developConfirm.loading,
+        developConfirmResult: state.developConfirm.result
+    };
+}
 
-export default DevelopConfirm = Form.create()(DevelopConfirm);
+function mapDispatchToProps(dispatch) {
+    return {
+        getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
+        developConfirmAction: bindActionCreators(developConfirm, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(DevelopConfirm));
