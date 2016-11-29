@@ -17,7 +17,8 @@ import {
 } from './action';
 
 const initialState = {
-    loading:false
+    getLoading:false,
+    saveLoading:false
 };
 
 export default function projectCompile(state = initialState, action = {}) {
@@ -25,26 +26,26 @@ export default function projectCompile(state = initialState, action = {}) {
     switch (action.type) {
         //get job
         case PROJECT_COMPILE_GET_JOB_PENDING:
-            return Object.assign({}, initialState, {loading:true});
+            return {...state, getLoading:true};
         case PROJECT_COMPILE_GET_JOB_SUCCESS:
-            return Object.assign({}, initialState, {jobInfo: action.payload,loading:false});
+            return {...state, jobInfo: action.payload, getLoading:false};
         case PROJECT_COMPILE_GET_JOB_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,
-                loading:false
+                getLoading:false
             };
 
         //save job
         case PROJECT_COMPILE_SAVE_JOB_PENDING:
-            return Object.assign({}, initialState, {loading:true});
+            return {...state, saveLoading:true};
         case PROJECT_COMPILE_SAVE_JOB_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload,loading:false});
+            return {...state, saveJobResult: true, jobInfo: action.payload, saveLoading:false};
         case PROJECT_COMPILE_SAVE_JOB_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,
-                loading:false
+                saveLoading:false
             };
 
         default:
