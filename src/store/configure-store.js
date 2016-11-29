@@ -118,7 +118,8 @@ const reducer = combineReducers({
     getDeveloperInfo,
     getTesterInfo,
     projectCompile
-});
+})
+
 
 // const createStoreWithMiddleware = applyMiddleware(
 //   thunkMiddleware,
