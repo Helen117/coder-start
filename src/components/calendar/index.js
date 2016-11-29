@@ -29,13 +29,13 @@ export default class MilestonesCalendar extends React.Component{
 
     }
 
-    milestonesDetail(milestonesId){
+    milestonesDetail(milestonesId, state){
         const projectId = this.props.projectId;
-        const id = this.props.id;
         const milestonesDetailPath = this.props.milestonesDetailPath;
+
         this.context.router.push({
             pathname: milestonesDetailPath,
-            state: {milestonesId,projectId,id}
+            state: {milestonesId,projectId,state}
         });
     }
 
@@ -56,7 +56,9 @@ export default class MilestonesCalendar extends React.Component{
                     {milestoneData.description}
                     <p>状态：{milestoneState}</p>
                     <p>计划发布时间：{this.getTime(milestoneData.due_date)}</p>
-                    当前里程碑共有事宜 <a onClick={this.milestonesDetail.bind(this, milestoneData.id)}>{milestoneData.total}</a> 项,还有待办事宜 <span>{milestoneData.unfinished}</span> 项，超时未完成事宜 <span>{milestoneData.expired}</span> 项
+                    当前里程碑共有事宜 <a onClick={this.milestonesDetail.bind(this, milestoneData.id,null)}>{milestoneData.total}</a> 项,
+                    还有待办事宜 <a onClick={this.milestonesDetail.bind(this, milestoneData.id,'opened')}>{milestoneData.unfinished}</a> 项，
+                    超时未完成事宜 <a onClick={this.milestonesDetail.bind(this, milestoneData.id,'expired')}>{milestoneData.expired}</a> 项
                     <Progress percent={milestoneData.rate}  />
                 </div>
             </div>

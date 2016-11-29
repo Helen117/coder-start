@@ -1,9 +1,6 @@
 /**
  * Created by zhaojp on 2016/11/28.
  */
-/**
- * Created by zhaojp on 2016/11/28.
- */
 import { GET_PROJECT_INFO_PENDING ,
     GET_PROJECT_INFO_SUCCESS ,
     GET_PROJECT_INFO_ERROR,

@@ -68,16 +68,17 @@ class DevelopTransPond extends Component {
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="转派给">
                         {getFieldDecorator('assigne', {rules: [{required: true, message: '请选择要转派的人'}]})
-                        (<Select showSearch optionFilterProp="children" >
+                        (<Select showSearch optionFilterProp="children"  placeholder="请选择要转派的人" >
                             <Option key="1">dfer</Option>
                             <Option key="2">222</Option>
                         </Select>)}
-
                     </FormItem>
+
                     <FormItem {...formItemLayout} label="说明">
                         {getFieldDecorator('description', {rules: [{required: true, message: '请填写转派说明'}]})
                         (<Input type="textarea" placeholder="请输入转派说明" rows="5"/>)}
                     </FormItem>
+
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
