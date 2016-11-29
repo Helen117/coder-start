@@ -73,8 +73,8 @@ class UserInfo extends React.Component {
                 moveOutVisible: false,
             });
             this.insertCallback('移除成功!');
-            /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-             this.errCallback('移除失败!',deleteErrors);*/
+        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
+            this.errCallback('移除失败!',deleteErrors);*/
         }
 
         //移动返回信息
@@ -83,8 +83,8 @@ class UserInfo extends React.Component {
                 moreGroupVisible: false,
             });
             this.insertCallback('移动成功!');
-            /*}else if(this.props.moveErrors != moveErrors && moveErrors){
-             this.errCallback('移动失败!',moveErrors);*/
+        /*}else if(this.props.moveErrors != moveErrors && moveErrors){
+            this.errCallback('移动失败!',moveErrors);*/
         }
     }
 
@@ -145,27 +145,18 @@ class UserInfo extends React.Component {
         });
     }
 
-    filterChange(filterData,filterKeys,ifFiled){
-        if(ifFiled == true){
-            let countKey = 0;
-            for(let i=0; i<this.state.filterKeys.length; i++){
-                if(filterKeys[0].filterKey == this.state.filterKeys[i].filterKey){
-                    countKey++;
-                    this.state.filterKeys[i].formData = filterKeys[0].formData;
-                }
-            }
-            if(countKey == 0){
-                this.state.filterKeys.push(filterKeys[0]);
-            }
-            this.setState({
-                dataSource:filterData,
-            })
-        }else{
-            this.setState({
-                dataSource:filterData,
-                filterKeys:filterKeys
-            })
-        }
+    comfirmFilter(filterData,filterKeys){
+        this.state.filterKeys.push(filterKeys[0]);
+        this.setState({
+            dataSource:filterData
+        })
+    }
+
+    cancleFilter(filterData,filterKeys){
+        this.setState({
+            dataSource:filterData,
+            filterKeys:filterKeys
+        })
     }
 
     render(){
@@ -239,13 +230,15 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKey
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
                                        currentData={currentData}
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
                                        currentData={currentData}
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
             {title:"操作",dataIndex:"operate",key:"operate",
                 render(text,record){
@@ -261,9 +254,11 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKey
     }else{
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
+                                       comfirmFilter={self.comfirmFilter.bind(self)}
+                                       cancleFilter={self.cancleFilter.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
         ]
     }

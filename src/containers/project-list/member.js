@@ -190,6 +190,7 @@ class ProjectMember extends Component {
                                 onChange={this.changeSelect.bind(this)}>
                             <Option value="40">管理员</Option>
                             <Option value="30">开发者</Option>
+                            <Option value="10">测试</Option>
                         </Select>
                     </div>
                     <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
