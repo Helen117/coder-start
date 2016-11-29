@@ -43,9 +43,6 @@ import createUserGroup from '../containers/user-relation/reducers/user-group-det
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
-import {acqPerformanceMsg,acqMyIssueList} from '../containers/home/reducers/home-reducer';
-import projectCompile from '../containers/project-compile/reducer';
-
 import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
 import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/develop-confirm-reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
@@ -111,8 +108,6 @@ const reducer = combineReducers({
     request,
     acqPerformanceMsg,
     acqMyIssueList,
-    projectCompile
-});
     getConfirmList,
     getMyProjectInfo,
     developConfirm,
