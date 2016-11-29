@@ -54,7 +54,7 @@ class MergeRequestList extends React.Component {
         //this.props.revertMrAction(project_id,id);
     }
 
-    mapMrList(mrList){
+    getDataSource(mrList){
         const data = [];
         if(mrList != [] && mrList){
             for (let i = 0; i < mrList.length; i++) {
@@ -75,7 +75,7 @@ class MergeRequestList extends React.Component {
 
     render(){
         const mrList = this.props.mrList;
-        const data = this.mapMrList(mrList);
+        const data = this.getDataSource(mrList);
         return(
             <div style={{margin: 10}}>
                 <Row>

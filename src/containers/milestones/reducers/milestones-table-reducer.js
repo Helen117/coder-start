@@ -3,9 +3,9 @@
  */
 import _ from 'lodash';
 import {
-    ACQUIRE_MILESTONES_DETAIL_PENDING,
-    ACQUIRE_MILESTONES_DETAIL_SUCCESS,
-    ACQUIRE_MILESTONES_DETAIL_ERROR
+    ACQUIRE_MILESTONES_ISSUES_PENDING,
+    ACQUIRE_MILESTONES_ISSUES_SUCCESS,
+    ACQUIRE_MILESTONES_ISSUES_ERROR
 } from '../constants/milestones-action-types';
 
 const initialState = {
@@ -17,13 +17,13 @@ const initialState = {
 export default function getMilestonesIssues(state = initialState, action = {}) {
     switch (action.type) {
         //获取里程碑详细信息
-        case ACQUIRE_MILESTONES_DETAIL_PENDING:
+        case ACQUIRE_MILESTONES_ISSUES_PENDING:
             return Object.assign({}, initialState, {loading: true});
 
-        case ACQUIRE_MILESTONES_DETAIL_SUCCESS:
+        case ACQUIRE_MILESTONES_ISSUES_SUCCESS:
             return Object.assign({}, initialState, {milestoneIssues: action.payload});
 
-        case ACQUIRE_MILESTONES_DETAIL_ERROR:
+        case ACQUIRE_MILESTONES_ISSUES_ERROR:
             return {state, errMessage: action.payload.errorMsg};
 
         default:

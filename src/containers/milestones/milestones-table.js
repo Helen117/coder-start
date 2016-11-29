@@ -18,13 +18,9 @@ class ProjectSetMilestonesDetail extends React.Component {
     }
 
     componentDidMount() {
-        const {milestonesId,projectId,id} = this.props.location.state;
-        if (milestonesId && projectId && id){
-            if(id.indexOf('_g')>0){
-                this.props.getSetMilestonesIssues(milestonesId,projectId);
-            }else{
-                this.props.getMilestonesDetail(milestonesId,projectId);
-            }
+        const {milestonesId,projectId,state} = this.props.location.state;
+        if (milestonesId && projectId ){
+            this.props.getMilestonesIssuesAction(milestonesId,projectId,state);
         }
     }
 
@@ -61,8 +57,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMilestonesDetail: bindActionCreators(getMilestonesIssues, dispatch),
-        getSetMilestonesIssues: bindActionCreators(getSetMilestonesIssues, dispatch),
+        getMilestonesIssuesAction: bindActionCreators(getMilestonesIssues, dispatch),
     }
 }
 

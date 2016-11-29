@@ -19,17 +19,17 @@ class ProjectSetMilestones extends React.Component {
         const selectedProjectSet = this.props.selectedProjectSet;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
         const projectName = selectedProjectSet? selectedProjectSet.name:''
-       /* if(projectId) {*/
+        if(projectId) {
             return (
                 <Milestones projectId={projectId} projectName={projectName} defaultDate={defaultDate}/>
             )
-       /* }else{
+        }else{
             return (
                 <div className="null_type_div">
                     <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
                 </div>
             )
-        }*/
+        }
     }
 }
 

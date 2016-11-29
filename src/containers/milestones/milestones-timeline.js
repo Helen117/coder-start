@@ -39,16 +39,6 @@ class Milestones extends React.Component {
             this.props.putProIdToStateAction(projectId);
         }
     }
-        /*if(this.props.closeSetMsResult != closeSetMsResult && closeSetMsResult){
-            this.sucCallback('里程碑关闭成功');
-        }
-    }
-
-    /*sucCallback(type){
-        message.success(type);
-        this.props.getProjectSetMilestonesAction(this.props.projectId,Date.now(),'year');
-
-    }*/
 
     createMilestones(type){
         this.context.router.push({
