@@ -38,7 +38,7 @@ export default function projectCompile(state = initialState, action = {}) {
 
         //save job
         case PROJECT_COMPILE_SAVE_JOB_PENDING:
-            return {...state, saveLoading:true};
+            return {...state, saveJobResult: false, saveLoading:true};
         case PROJECT_COMPILE_SAVE_JOB_SUCCESS:
             return {...state, saveJobResult: true, jobInfo: action.payload, saveLoading:false};
         case PROJECT_COMPILE_SAVE_JOB_ERROR:
