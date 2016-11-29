@@ -5,11 +5,11 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
-import {ProjectSetMilestones} from '../milestones'
+import {Milestones} from '../milestones'
 import moment from 'moment'
 
 
-class projectMilestones extends React.Component {
+class ProjectMilestones extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -32,8 +32,8 @@ class projectMilestones extends React.Component {
 
         /*if(projectId) {*/
             return (
-                <ProjectSetMilestones projectId={projectId} projectName={projectName} defaultDate={moment()}/>
-            )
+                <Milestones projectId={projectId} projectName={projectName} defaultDate={moment()}/>
+    )
         /*}else{
             return(
                 <div className="null_type_div">
@@ -55,4 +55,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(projectMilestones);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectMilestones);

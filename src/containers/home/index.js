@@ -34,8 +34,8 @@ class Home extends React.Component {
 
     componentWillMount() {
         console.log('首页componentWillMount')
-        //console.log('this.props.loginInfo.userId',this.props.loginInfo.userId);
-        //this.props.acqPerformanceMsgAction(this.props.logInfo.userId);
+        this.props.acqPerformanceMsgAction(this.props.loginInfo.userId);
+        this.props.acqMyIssueListAction(this.props.loginInfo.userId);
     }
     componentDidMount(){
     }
@@ -59,6 +59,11 @@ class Home extends React.Component {
 
     render() {
         const performanceMsg = this.props.performanceMsg;
+        let finished=0,unfinished=0;
+        if(performanceMsg){
+            finished = performanceMsg.finish;
+            unfinished = performanceMsg.unfinish
+        }
         const loading = this.props.performanceMsgLoading? true: false;
         return (
             <Spin spinning={loading} tip="正在加载数据,请稍候..." >
@@ -76,10 +81,10 @@ class Home extends React.Component {
                         </Row>
                         <Row style={{padding: 10}}>
                             <Col span={12}>
-                                <MyProjectProgress label="我今日在该项目中需完成工作的百分比" percent={0}/>
+                                <MyProjectProgress label="我在本里程碑未完成工作的百分比" percent={unfinished}/>
                             </Col>
                             <Col span={12}>
-                                <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={75}/>
+                                <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={finished}/>
                             </Col>
                         </Row>
                     </Row>

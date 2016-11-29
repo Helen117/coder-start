@@ -14,7 +14,7 @@ import {connect} from 'react-redux';
 const createForm = Form.create;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
-class projectSetCreate extends React.Component {
+class ProjectSetCreate extends React.Component {
     constructor(props) {
         super(props);
         this.targetKeys=[];
@@ -105,14 +105,14 @@ class projectSetCreate extends React.Component {
     }
 
 /*    checkGroupNameExit(rule, value, callback){
-        const projectSetTree = this.props.projectSetTree;
+        const ProjectSetTree = this.props.ProjectSetTree;
         if (!value) {
             callback();
         } else {
             let isExit  = false;
             setTimeout(() => {
-                for( let i=0; i<projectSetTree.length; i++){
-                    if (value === projectSetTree[i].name) {
+                for( let i=0; i<ProjectSetTree.length; i++){
+                    if (value === ProjectSetTree[i].name) {
                         isExit = true;
                         break;
                     }
@@ -183,7 +183,7 @@ class projectSetCreate extends React.Component {
     }
 }
 
-projectSetCreate.contextTypes = {
+ProjectSetCreate.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -213,4 +213,4 @@ function mapDispatchToProps(dispatch) {
         updateProjectSetAction: bindActionCreators(updateProjectSet, dispatch),
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(createForm()(projectSetCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(ProjectSetCreate));

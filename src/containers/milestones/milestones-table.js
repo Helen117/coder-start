@@ -11,7 +11,7 @@ import {getMilestonesIssues,getSetMilestonesIssues} from './actions/milestones-a
 
 import './index.less';
 
-class projectSetMilestonesDetail extends React.Component {
+class ProjectSetMilestonesDetail extends React.Component {
 
     constructor(props) {
         super(props);
@@ -45,7 +45,7 @@ class projectSetMilestonesDetail extends React.Component {
 }
 
 
-projectSetMilestonesDetail.contextTypes = {
+ProjectSetMilestonesDetail.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -66,4 +66,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(projectSetMilestonesDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectSetMilestonesDetail);
