@@ -129,14 +129,10 @@ class UserGroupDetail extends React.Component {
         //创建返回信息
         if (this.props.result != result && result) {
             this.insertCallback("创建成功");
-        /*} else if (this.props.errMessage != errMessage && errMessage) {
-            this.errCallback("创建失败",errMessage);*/
         }
         //修改返回信息
         if (this.props.updateResult != updateResult && updateResult) {
             this.insertCallback("修改成功");
-        /*} else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);*/
         }
     }
 
@@ -165,8 +161,7 @@ class UserGroupDetail extends React.Component {
 
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldDecorator,setFieldsValue} = this.props.form;
-        const {userTreeData, loadingTree,selectedUserGroup} = this.props;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},

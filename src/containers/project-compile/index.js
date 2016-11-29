@@ -1,12 +1,11 @@
 /*
-/!*
  * Copyright 2016 Asiainfo Technologies(China),Inc. All rights reserved.
  *
- *!/
+ */
 
-/!**
+/**
  * Created by william.xu on 2016/11/24
- *!/
+ */
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -97,4 +96,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectCompile);
-*/

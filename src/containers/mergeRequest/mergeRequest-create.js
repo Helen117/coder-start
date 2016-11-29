@@ -25,7 +25,7 @@ class CreateMergeRequest extends Component {
         if(this.props.getProjectInfo) {
             this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
             this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
-            this.props.fetchMessage.fetchIssuesData(this.props.getProjectInfo.id);
+            //this.props.fetchMessage.fetchIssuesData(this.props.getProjectInfo.id);
         }
     }
 

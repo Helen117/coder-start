@@ -12,6 +12,7 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/login-action';
 import { updateNavPath} from '../sidebar/actions/menu-action';
+import * as home from '../home/actions/home-action';
 import MenuBar from '../../containers/menubar';
 import * as Cookies from "js-cookie";
 
@@ -31,12 +32,14 @@ class App extends React.Component {
     }
 
     componentWillMount() {
-        const {actions, uid} = this.props;
+        const {actions, uid,home} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         //actions.fetchProfile(realUid);
         //actions.fetchProfile(uid);
         if (uid == null){
             actions.cookiesToReduxLoginState();
+        }else{
+            home.getNotifyItems(uid);
         }
     }
 
@@ -137,6 +140,8 @@ class App extends React.Component {
     }
 
     render() {
+        const items = this.props.notifyItems&&this.props.notifyItems.item.length>0?this.props.notifyItems.item:[0,0,0,0,0];
+
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         if (uid == null){
@@ -149,7 +154,7 @@ class App extends React.Component {
                          sideMenuClick={this.sideMenuClick.bind(this)}
                 />
                 <Affix>
-                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)}/>
+                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)} items={items}/>
                     <NavPath />
                     <MenuBar menuData={this.props.menuData}
                              navpath={this.props.navpath}
@@ -191,13 +196,15 @@ function mapStateToProps(state) {
         is_menuclick:state.menu.is_menuclick,
         selectedNode:state.getGroupInfo.selectedNode,
         getMenuBarInfo:state.getMenuBarInfo,
+        notifyItems:state.getNotifyItems.notifyItems,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({logout, fetchProfile, cookiesToReduxLoginState}, dispatch),
-        updateNavPath: bindActionCreators(updateNavPath, dispatch)
+        updateNavPath: bindActionCreators(updateNavPath, dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 
