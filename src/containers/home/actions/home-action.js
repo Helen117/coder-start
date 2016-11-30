@@ -18,14 +18,16 @@ export function acqPerformanceMsg(userId) {
     }
 }
 
-export function acqMyIssueList(userId) {
-    var path = '/user/performance';
+export function acqMyIssueList(userId,state) {
+    console.log(userId,state)
+    var path = '/project/issue-backlog';
     return {
         type: ACQUIRE_MY_ISSUE_LIST,
         payload: {
             promise: api.post(path, {
-                params: {
-                    userId: userId
+                data: {
+                    assigned_id: userId,
+                    state: state
                 }
             })
         }

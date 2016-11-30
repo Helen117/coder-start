@@ -5,14 +5,16 @@ import {GET_TRANSPOND_MEMBER,
     DEVELOP_TRANSPOND} from '../constants/to-be-confirmed-action-types';
 import api from '../../../api';
 
-export function getTranspondMember(id) {
-    var path ='/aaa';
+export function getTranspondMember(id,type) {
+    var path ='/project/assign-list';
     return {
         type: GET_TRANSPOND_MEMBER,
         payload: {
             promise: api.post(path, {
                 params: {
-                    id: id
+                    id: id,
+                    type: type,
+                    //role: role
                 }
             })
         }

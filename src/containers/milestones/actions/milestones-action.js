@@ -23,8 +23,8 @@ export function getProjectSetMilestones(set_id, date,mode) {
 }
 
 
-export function getMilestonesIssues(milestonesId,setId,projectId,state) {
-    console.log('查看问题',milestonesId,setId,projectId,state)
+export function getMilestonesIssues(milestonesId,setId,projectId,state,due_end) {
+    //console.log('查看问题',milestonesId,setId,projectId,state,due_end)
     var path ='/project/issues'
     return {
         type: ACQUIRE_MILESTONES_ISSUES,
@@ -34,9 +34,9 @@ export function getMilestonesIssues(milestonesId,setId,projectId,state) {
                     set_id : setId,
                     project_id: projectId,
                     milestone_id: milestonesId,
-                    state: state
+                    state: state,
+                    due_end: due_end
                 }
-
             })
         }
     }

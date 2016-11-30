@@ -33,9 +33,8 @@ class Home extends React.Component {
     }
 
     componentWillMount() {
-        console.log('首页componentWillMount')
         this.props.acqPerformanceMsgAction(this.props.loginInfo.userId);
-        this.props.acqMyIssueListAction(this.props.loginInfo.userId);
+        this.props.acqMyIssueListAction(this.props.loginInfo.userId,'opened');
     }
     componentDidMount(){
     }
@@ -58,46 +57,50 @@ class Home extends React.Component {
     }
 
     render() {
-        const performanceMsg = this.props.performanceMsg;
+
+        const {performanceMsg,myIssueListLoading,performanceMsgLoading} = this.props;
+        const params = {
+            assigned_id: this.props.loginInfo.userId,
+            state: 'opened'
+        }
         let finished=0,unfinished=0;
         if(performanceMsg){
             finished = performanceMsg.finish;
             unfinished = performanceMsg.unfinish
         }
-        const loading = this.props.performanceMsgLoading? true: false;
+        const loading = (performanceMsgLoading|| myIssueListLoading)? true: false;
         return (
-            <Spin spinning={loading} tip="正在加载数据,请稍候..." >
-                <div>
-                    <Row className="ant-layout-content home-row">
-                        <Row style={{padding: 10}}>
-                            <Col span={24}>
-                                <MyProjectStatus state={1}/>
-                            </Col>
-                        </Row>
-                        <Row style={{padding: 10}}>
-                            <Col span={24}>
-                                <MyProjectRank rank={1}/>
-                            </Col>
-                        </Row>
-                        <Row style={{padding: 10}}>
-                            <Col span={12}>
-                                <MyProjectProgress label="我在本里程碑未完成工作的百分比" percent={unfinished}/>
-                            </Col>
-                            <Col span={12}>
-                                <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={finished}/>
-                            </Col>
-                        </Row>
-                    </Row>
-                    <Row>
-                        <Col span={12} style={{paddingRight: 5}}>
-                            <MyIssueList timeLineData={this.props.timeLineData} />
-                        </Col>
-                        <Col span={12} style={{paddingLeft: 5}}>
-                            <NewIssueList/>
+             <Spin spinning={loading} tip="正在加载数据，请稍候...">
+                <Row className="ant-layout-content home-row">
+                    <Row style={{padding: 10}}>
+                        <Col span={24}>
+                            <MyProjectStatus state={1}/>
                         </Col>
                     </Row>
-                </div>
-            </Spin>
+                    <Row style={{padding: 10}}>
+                        <Col span={24}>
+                            <MyProjectRank rank={1}/>
+                        </Col>
+                    </Row>
+                    <Row style={{padding: 10}}>
+                        <Col span={12}>
+                            <MyProjectProgress label="我在本里程碑未完成工作的百分比" percent={unfinished}/>
+                        </Col>
+                        <Col span={12}>
+                            <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={finished}/>
+                        </Col>
+                    </Row>
+                </Row>
+                <Row>
+                    <Col span={12} style={{paddingRight: 5}}>
+                        <MyIssueList timeLineData={this.props.myIssueList}
+                                     viewDetailParams={params} viewDetailPath = '' />
+                    </Col>
+                    <Col span={12} style={{paddingLeft: 5}}>
+                        <NewIssueList/>
+                    </Col>
+                </Row>
+                </Spin>
         );
     }
 }
