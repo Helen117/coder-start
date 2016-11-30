@@ -15,9 +15,9 @@ export function getGroupInfoSuss(groupInfo, selectedNode,node) {
 }
 
 export function getGroupInfo(groupInfo, selectedNode,node) {
-        if (groupInfo) {
-            return getGroupInfoSuss(groupInfo, selectedNode,node);
-        }
+    if (groupInfo) {
+        return getGroupInfoSuss(groupInfo, selectedNode,node);
+    }
 }
 
 export function getProjectInfo(projectId) {
