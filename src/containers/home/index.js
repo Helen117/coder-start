@@ -94,7 +94,7 @@ class Home extends React.Component {
                 <Row>
                     <Col span={12} style={{paddingRight: 5}}>
                         <MyIssueList timeLineData={this.props.myIssueList}
-                                     viewDetailParams={params} viewDetailPath = '' />
+                                     viewDetailParams={params} viewDetailPath = '/project-mgr/myIssue' />
                     </Col>
                     <Col span={12} style={{paddingLeft: 5}}>
                         <NewIssueList/>
