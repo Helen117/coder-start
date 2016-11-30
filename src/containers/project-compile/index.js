@@ -18,20 +18,15 @@ import CronExpression from '../../components/cron-expression';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/groovy/groovy';
 
-import {getJob, saveJob} from './action';
+import {getJob, saveJob, buildJob} from './action';
 
 const FormItem = Form.Item;
 
-
-var defaults = {
-    code: 'var component = {\n\tname: "react-codemirror",\n\tauthor: "Jed Watson",\n\trepo: "https://github.com/JedWatson/react-codemirror"\n};'
-};
 
 class ProjectCompile extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            a:1
         };
     }
 
@@ -40,7 +35,7 @@ class ProjectCompile extends React.Component{
     componentDidMount(){
         const {selectNode, getJob} = this.props;
         if (selectNode && selectNode.isProject){
-            getJob(selectNode.node.name + '(' + selectNode.node.id.substr(0,selectNode.node.id.length-2) + ')');
+            getJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
         }
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
@@ -50,7 +45,7 @@ class ProjectCompile extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {jobInfo, saveJobResult} = nextProps;
+        const {jobInfo, saveJobResult, buildJobResult} = nextProps;
         if (jobInfo && jobInfo != this.props.jobInfo){
             setFieldsValue({trigger:jobInfo.trigger});
             if (jobInfo.pipelineScript){
@@ -63,6 +58,13 @@ class ProjectCompile extends React.Component{
             notification.success({
                 message: '操作成功',
                 description: "成功保存编译发布脚本！",
+                duration: 5
+            });
+        }
+        if (buildJobResult && buildJobResult != this.props.buildJobResult){
+            notification.success({
+                message: '操作成功',
+                description: "成功发起执行任务！",
                 duration: 5
             });
         }
@@ -123,13 +125,25 @@ class ProjectCompile extends React.Component{
         }
     }
 
+    execBuild(){
+        const {buildJob, selectNode} = this.props;
+        buildJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
+    }
+
+    viewBuildHis(){
+        this.context.router.push({
+            pathname: '/project-mgr/project-build-history',
+            state: {}
+        });
+    }
+
     setCron(cron){
         const {setFieldsValue} = this.props.form;
         setFieldsValue({trigger:cron});
     }
 
     render(){
-        const {selectNode, jobInfo, getLoading, saveLoading} = this.props;
+        const {selectNode, jobInfo, getLoading, saveLoading, buildLoading} = this.props;
         var title = '正在加载编译发布配置...';
         if (saveLoading){
             title = '正在保存编译发布配置...';
@@ -158,6 +172,21 @@ class ProjectCompile extends React.Component{
         };
         return (
             <Box title={title}>
+                {(selectNode && selectNode.isProject && jobInfo && jobInfo.jobName)?(
+                    <Alert
+                        message={
+                            <Row>
+                                <span>该项目已经配置了编译发布脚本，您可以</span>
+                                <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.execBuild.bind(this)} loading={buildLoading}>发起执行任务</Button>或者
+                                <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.viewBuildHis.bind(this)}>查看执行状态和历史</Button>
+                            </Row>}
+                        description=""
+                        type="info"
+                        showIcon
+                    />
+                ):(
+                    <div></div>
+                )}
                 {(selectNode && selectNode.isProject)?(
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <FormItem {...formItemLayout} label="配置调度表达式">
@@ -199,6 +228,9 @@ class ProjectCompile extends React.Component{
 }
 
 ProjectCompile.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
 };
 
 ProjectCompile = Form.create()(ProjectCompile);
@@ -210,14 +242,17 @@ function mapStateToProps(state) {
         jobInfo: state.projectCompile.jobInfo,
         saveJobResult: state.projectCompile.saveJobResult,
         getLoading: state.projectCompile.getLoading,
-        saveLoading: state.projectCompile.saveLoading
+        saveLoading: state.projectCompile.saveLoading,
+        buildLoading: state.projectCompile.buildLoading,
+        buildJobResult: state.projectCompile.buildJobResult
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getJob: bindActionCreators(getJob, dispatch),
-        saveJob: bindActionCreators(saveJob, dispatch)
+        saveJob: bindActionCreators(saveJob, dispatch),
+        buildJob: bindActionCreators(buildJob, dispatch)
     }
 }
 
