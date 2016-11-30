@@ -30,12 +30,18 @@ export default class MilestonesCalendar extends React.Component{
     }
 
     milestonesDetail(milestonesId, state){
-        const projectId = this.props.projectId;
+        const id = this.props.id;
+        let setId=null,projectId=null;
+        if(id.indexOf('_g')>0){
+            setId = this.props.projectId;
+        }else{
+            projectId = this.props.projectId;
+        }
         const milestonesDetailPath = this.props.milestonesDetailPath;
 
         this.context.router.push({
             pathname: milestonesDetailPath,
-            state: {milestonesId,projectId,state}
+            state: {milestonesId,setId,projectId,state}
         });
     }
 

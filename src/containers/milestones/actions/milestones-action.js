@@ -23,18 +23,20 @@ export function getProjectSetMilestones(set_id, date,mode) {
 }
 
 
-export function getMilestonesIssues(milestonesId,projectId, state) {
-    console.log('查看问题',milestonesId,projectId, state)
-    var path ='/project/project-issues'
+export function getMilestonesIssues(milestonesId,setId,projectId,state) {
+    console.log('查看问题',milestonesId,setId,projectId,state)
+    var path ='/project/issues'
     return {
         type: ACQUIRE_MILESTONES_ISSUES,
         payload: {
             promise: api.post(path, {
-                params: {
-                    milestoneId: milestonesId,
-                    projectId: projectId,
+                data:{
+                    set_id : setId,
+                    project_id: projectId,
+                    milestone_id: milestonesId,
                     state: state
                 }
+
             })
         }
     }

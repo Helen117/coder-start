@@ -18,9 +18,10 @@ class ProjectSetMilestonesDetail extends React.Component {
     }
 
     componentDidMount() {
-        const {milestonesId,projectId,state} = this.props.location.state;
-        if (milestonesId && projectId ){
-            this.props.getMilestonesIssuesAction(milestonesId,projectId,state);
+        const {milestonesId,projectId,setId,state} = this.props.location.state;
+        console.log('milestonesId,projectId,setId,state',milestonesId,projectId,setId,state)
+        if (setId || projectId ){
+            this.props.getMilestonesIssuesAction(milestonesId,setId,projectId,state);
         }
     }
 
