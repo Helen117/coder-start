@@ -25,12 +25,16 @@ class MyIssueList extends Component {
 
     componentWillMount() {
         const {actions,projectInfo,loginInfo,getUserAction} = this.props;
+        const {data} = this.props.location.state?this.props.location.state:'';
+        var dataList ={};
         getUserAction.getAllUser();
-        if(projectInfo){
-            actions.getMyIssue(projectInfo.id,loginInfo.userId);
+        if(data){
+            dataList = data;
         }else{
-            actions.getMyIssue(0,loginInfo.userId);
+            dataList.project_id=projectInfo?projectInfo.id:'';
+            dataList.assigned_id=loginInfo.userId;
         }
+        actions.getMyIssue(dataList);
     }
 
     componentDidMount() {
@@ -39,13 +43,20 @@ class MyIssueList extends Component {
 
 
     componentWillReceiveProps(nextProps) {
+        // console.log('nextProps:',nextProps);
         const {actions,projectInfo,loginInfo,myIssueError} = this.props;
-
+        if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
+            actions.getMyIssue(nextProps.location.state.data);
+        }
         const thisProId = projectInfo?projectInfo.id:'';
         const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
-            actions.getMyIssue(nextProps.projectInfo.id,loginInfo.userId);
+            var data ={
+                project_id:nextProps.projectInfo.id,
+                assigned_id:loginInfo.userId,
+            };
+            actions.getMyIssue(data);
         }
 
         // if(myIssueError&&myIssueError!=this.props.myIssueError){
@@ -68,9 +79,21 @@ class MyIssueList extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,projectInfo,form} = this.props;
+        const {actions,projectInfo,form,loginInfo} = this.props;
         const data = form.getFieldsValue();
-        console.log("查询条件：",data);
+        // console.log("查询条件：",data);
+
+        var dataList ={
+            project_id:projectInfo?projectInfo.id:'',
+            assigned_id:loginInfo.userId,
+            author_id:data.author_name,
+            state:data.state,
+            start:data.created_at&&data.created_at.length>0?data.created_at[0]:'',
+            end:data.created_at&&data.created_at.length>0?data.created_at[1]:'',
+            due_start:data.due_date&&data.due_date.length>0?data.due_date[0]:'',
+            due_end:data.due_date&&data.due_date.length>0?data.due_date[1]:'',
+        };
+        actions.getMyIssue(dataList);
     }
 
     editIssue(type, selectedRow) {
@@ -95,7 +118,7 @@ class MyIssueList extends Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        const userInfo = this.props.user?this.props.user.map(data => <Option key={data.username}>{data.name}</Option>):[];
+        const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
             <div>

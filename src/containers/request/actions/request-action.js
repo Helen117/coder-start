@@ -40,13 +40,15 @@ export function getBusinessInfo(projectSetId) {
 }
 
 
-export function getDeveloperInfo(projectSetId) {
+export function getDeveloperInfo(id,type,role) {
     return {
         type: 'FETCH_DEVELOPER_INFO',
         payload: {
-            promise: api.post('/request/add', {
+            promise: api.post('/project/assign-list', {
                 params: {
-                    projectSetId: projectSetId
+                    id: id,
+                    type:type,
+                    role:role
                 }
             })
         }
@@ -54,13 +56,15 @@ export function getDeveloperInfo(projectSetId) {
 }
 
 
-export function getTesterInfo(projectSetId) {
+export function getTesterInfo(id,type,role) {
     return {
         type: 'FETCH_TESTER_INFO',
         payload: {
-            promise: api.post('/request/add', {
+            promise: api.post('/project/assign-list', {
                 params: {
-                    projectSetId: projectSetId
+                    id: id,
+                    type:type,
+                    role:role
                 }
             })
         }
