@@ -30,7 +30,6 @@ import {ProjectSetCreate,ProjectSetTree,ShowInfo} from './containers/project-set
 import ProjectSetMilestones from './containers/project-set-milestone';
 
 import {RequirementInfo,EditDemand} from './containers/request';
-import {StageView,CodeChangesList} from './containers/compile-stage';
 
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug} from './containers/issues';
@@ -130,10 +129,6 @@ ReactDOM.render(
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}>
                             <Route name="updatePassword" breadcrumbName="修改密码" path="updatePassword" component={UpdatePassword}/>
-                        </Route>
-                        <Route name="jenkins" breadcrumbName="Jenkins" path="jenkins">
-                            <Route name="stageView" breadcrumbName="编译步骤" path="stageView" component={StageView}/>
-                            <Route name="codeChange" breadcrumbName="代码变更" path="codeChange" component={CodeChangesList}/>
                         </Route>
 
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
