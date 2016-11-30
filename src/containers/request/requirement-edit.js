@@ -22,16 +22,23 @@ class EditDemand extends Component{
     }
 
     componentWillMount(){
+        const {actions,selectedProjectSet} = this.props;
         const {selectedRow} = this.props.location.state;
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
         }
-
-        // this.props.actions.getBusinessInfo();
-        // this.props.actions.getDeveloperInfo();
-        // this.props.actions.getTesterInfo();
-
+        if(!selectedProjectSet){
+            notification.error({
+                message: '未选择项目集',
+                description:'请先先选择一个项目集！',
+                duration: 2
+            });
+        }else{
+            // actions.getBusinessInfo();
+            // actions.getDeveloperInfo(selectedProjectSet.id,'set',30);
+            // actions.getTesterInfo(selectedProjectSet.id,'set',20);
+        }
     }
 
     componentDidMount() {
@@ -52,10 +59,6 @@ class EditDemand extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const {actions, form, loginInfo, selectedProjectSet} = this.props;
-        if(!selectedProjectSet){
-            message.error("请选择一个项目集",3);
-            return ;
-        }
 
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -107,7 +110,7 @@ class EditDemand extends Component{
 
         // const business = businessInfo?businessInfo.business.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
-        // const developer = developerInfo?developerInfo.developer.map(data => <Option key={data.id}>{data.description}</Option>):[];
+        // const developer = developerInfo?developerInfo.developer.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         // const tester = testerInfo?testerInfo.tester.map(data => <Option key={data.id}>{data.name}</Option>):[];
 

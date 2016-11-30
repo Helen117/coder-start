@@ -28,7 +28,8 @@ class ProjectIssueList extends Component {
         if(projectInfo) {
             actions.fetchDataSource(projectInfo.id);
             getUserAction.getAllUser();
-            actions.getIssueList(projectInfo.id,0);
+            var data ={project_id:projectInfo.id};
+            actions.getIssueList(data);
         }else{
             const {router} = this.context;
             router.goBack();
@@ -85,7 +86,21 @@ class ProjectIssueList extends Component {
         e.preventDefault();
         const {actions,projectInfo,form} = this.props;
         const data = form.getFieldsValue();
-        console.log("查询条件：",data);
+        // console.log("查询条件：",data);
+
+        var dataList ={
+            project_id:projectInfo.id,
+            milestone_id:data.milestone,
+            assigned_id:data.assignee,
+            author_id:data.author_name,
+            state:data.state,
+            labeles:data.label,
+            start:data.created_at&&data.created_at.length>0?data.created_at[0]:'',
+            end:data.created_at&&data.created_at.length>0?data.created_at[1]:'',
+            due_start:data.due_date&&data.due_date.length>0?data.due_date[0]:'',
+            due_end:data.due_date&&data.due_date.length>0?data.due_date[1]:'',
+        };
+        actions.getIssueList(dataList);
     }
 
     // onToggle(){
@@ -107,7 +122,7 @@ class ProjectIssueList extends Component {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 8 },
-            wrapperCol: { span: 14 },
+            wrapperCol: { span: 16 },
         };
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
@@ -115,7 +130,7 @@ class ProjectIssueList extends Component {
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
-        const userInfo = this.props.user?this.props.user.map(data => <Option key={data.username}>{data.name}</Option>):[];
+        const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
             <div>
@@ -123,7 +138,7 @@ class ProjectIssueList extends Component {
                     <Panel header="查询条件" key="1">
                         <Form horizontal className={styles.ant_search_form} >
                             <Row gutter={16}>
-                                <Col sm={8}>
+                                <Col sm={7}>
                                     <FormItem label="里程碑" {...formItemLayout} >
                                         {getFieldDecorator('milestone')(
                                             <Select showSearch
@@ -152,7 +167,7 @@ class ProjectIssueList extends Component {
                                         </Select>)}
                                     </FormItem>
                                 </Col>
-                                <Col sm={8}>
+                                <Col sm={10}>
                                     <FormItem label="问题标签" {...formItemLayout}>
                                         {getFieldDecorator('label')(
                                             <Select showSearch
@@ -170,7 +185,7 @@ class ProjectIssueList extends Component {
                                         {getFieldDecorator('due_date')(<RangePicker size="default" />)}
                                     </FormItem>
                                 </Col>
-                                <Col sm={8}>
+                                <Col sm={7}>
                                     <FormItem label="创建人"{...formItemLayout}>
                                         {getFieldDecorator('author_name')(
                                             <Select showSearch

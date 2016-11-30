@@ -32,14 +32,12 @@ class App extends React.Component {
     }
 
     componentWillMount() {
-        const {actions, uid,home} = this.props;
+        const {actions, uid} = this.props;
         //let realUid = uid?uid:authUtils.getUid();
         //actions.fetchProfile(realUid);
         //actions.fetchProfile(uid);
         if (uid == null){
             actions.cookiesToReduxLoginState();
-        }else{
-            home.getNotifyItems(uid);
         }
     }
 
@@ -79,6 +77,8 @@ class App extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
+        const {uid,home} = this.props;
+        // console.log('nextProps:',nextProps);
         const {menuData, navpath} = nextProps;
         //根据url找到面包屑的key
         var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, window.location.pathname);
@@ -105,6 +105,7 @@ class App extends React.Component {
         }
 
         if(nextProps.navpath.length == 0 && key_return){//登录，刷新时更新面包屑
+            home.getNotifyItems(uid);
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){

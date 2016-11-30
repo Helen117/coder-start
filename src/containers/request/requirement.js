@@ -24,6 +24,14 @@ class RequirementInfo extends Component {
 
     componentWillReceiveProps(nextProps) {
 
+        const {actions,selectedProjectSet} = this.props;
+        const thisSetId = selectedProjectSet?selectedProjectSet.id:'';
+        const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
+        //点击不同项目集，重新加载数据
+        if(nextSetId&&thisSetId != nextSetId){
+            // actions.getDemandInfo(nextSetId);
+        }
+
     }
 
 
