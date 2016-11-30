@@ -14,7 +14,7 @@ export const PROJECT_COMPILE_GET_JOB_SUCCESS = 'PROJECT_COMPILE_GET_JOB_SUCCESS'
 export const PROJECT_COMPILE_GET_JOB_ERROR = 'PROJECT_COMPILE_GET_JOB_ERROR';
 
 export function getJob(jobName) {
-    var path = '/jenkins/getJob';
+    var path = '/getJob';
     return {
         type: PROJECT_COMPILE_GET_JOB,
         payload: {
@@ -34,12 +34,33 @@ export const PROJECT_COMPILE_SAVE_JOB_SUCCESS = 'PROJECT_COMPILE_SAVE_JOB_SUCCES
 export const PROJECT_COMPILE_SAVE_JOB_ERROR = 'PROJECT_COMPILE_SAVE_JOB_ERROR';
 
 export function saveJob(jobInfo) {
-    var path = '/jenkins/saveJob';
+    var path = '/saveJob';
     return {
         type: PROJECT_COMPILE_SAVE_JOB,
         payload: {
             promise: api.post(path, {
                 data: jobInfo,
+                urlType:'ci'
+            })
+        }
+    }
+}
+
+
+export const PROJECT_COMPILE_BUILD_JOB = 'PROJECT_COMPILE_BUILD_JOB';
+export const PROJECT_COMPILE_BUILD_JOB_PENDING = 'PROJECT_COMPILE_BUILD_JOB_PENDING';
+export const PROJECT_COMPILE_BUILD_JOB_SUCCESS = 'PROJECT_COMPILE_BUILD_JOB_SUCCESS';
+export const PROJECT_COMPILE_BUILD_JOB_ERROR = 'PROJECT_COMPILE_BUILD_JOB_ERROR';
+
+export function buildJob(jobName) {
+    var path = '/buildJob';
+    return {
+        type: PROJECT_COMPILE_BUILD_JOB,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    jobName: jobName
+                },
                 urlType:'ci'
             })
         }

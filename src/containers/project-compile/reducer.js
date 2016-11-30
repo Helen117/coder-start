@@ -13,7 +13,10 @@ import {
     PROJECT_COMPILE_GET_JOB_ERROR,
     PROJECT_COMPILE_SAVE_JOB_PENDING,
     PROJECT_COMPILE_SAVE_JOB_SUCCESS,
-    PROJECT_COMPILE_SAVE_JOB_ERROR
+    PROJECT_COMPILE_SAVE_JOB_ERROR,
+    PROJECT_COMPILE_BUILD_JOB_PENDING,
+    PROJECT_COMPILE_BUILD_JOB_SUCCESS,
+    PROJECT_COMPILE_BUILD_JOB_ERROR
 } from './action';
 
 const initialState = {
@@ -26,19 +29,19 @@ export default function projectCompile(state = initialState, action = {}) {
     switch (action.type) {
         //get job
         case PROJECT_COMPILE_GET_JOB_PENDING:
-            return {...state, getLoading:true};
+            return {...state, jobInfo:{getLoading:true}};
         case PROJECT_COMPILE_GET_JOB_SUCCESS:
-            return {...state, jobInfo: action.payload, getLoading:false};
+            return {...state, jobInfo: {...action.payload, getLoading:false}};
         case PROJECT_COMPILE_GET_JOB_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,
-                getLoading:false
+                jobInfo:{getLoading:false}
             };
 
         //save job
         case PROJECT_COMPILE_SAVE_JOB_PENDING:
-            return {...state, saveJobResult: false, saveLoading:true};
+            return {...state, saveJobResult: false, jobInfo: null, saveLoading:true};
         case PROJECT_COMPILE_SAVE_JOB_SUCCESS:
             return {...state, saveJobResult: true, jobInfo: action.payload, saveLoading:false};
         case PROJECT_COMPILE_SAVE_JOB_ERROR:
@@ -47,6 +50,19 @@ export default function projectCompile(state = initialState, action = {}) {
                 errors: action.payload.errorMsg,
                 saveLoading:false
             };
+
+        //build job
+        case PROJECT_COMPILE_BUILD_JOB_PENDING:
+            return {...state, buildJobResult: false, buildLoading:true};
+        case PROJECT_COMPILE_BUILD_JOB_SUCCESS:
+            return {...state, buildJobResult: true, buildLoading:false};
+        case PROJECT_COMPILE_BUILD_JOB_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                buildLoading:false
+            };
+
 
         default:
             return state;
