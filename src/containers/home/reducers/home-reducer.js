@@ -46,7 +46,7 @@ export function acqMyIssueList(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading:true});
 
         case ACQUIRE_MY_ISSUE_LIST_SUCCESS:
-            return Object.assign({}, initialState, {acqMyIssueList: action.payload, loading:false});
+            return Object.assign({}, initialState, {myIssueList: action.payload, loading:false});
 
         case ACQUIRE_MY_ISSUE_LIST_ERROR:
             return {

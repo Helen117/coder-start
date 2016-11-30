@@ -23,9 +23,12 @@ class CreateMergeRequest extends Component {
     componentWillMount() {
         const {router} = this.context;
         if(this.props.getProjectInfo) {
-            this.props.fetchMessage.fetchMergeBranchData(this.props.getProjectInfo.id);
-            this.props.fetchMessage.fetchSourceProData(this.props.getProjectInfo.id);
-            this.props.fetchMessage.fetchIssuesData(this.props.getProjectInfo.id);
+            const projectId = this.props.getProjectInfo.id;
+            const userId = this.props.loginInfo.userId;
+            this.props.fetchMessage.fetchMergeBranchData(projectId);
+            this.props.fetchMessage.fetchSourceProData(projectId);
+            //获取当前项目本人的待办事项
+            this.props.fetchMessage.fetchIssuesData(projectId,userId,'opened');
         }
     }
 
@@ -183,7 +186,7 @@ class CreateMergeRequest extends Component {
                            </Col>
 
                             <Col span="4">
-                                <FormItem  {...formItemLayout} label="目标分支">
+                                <FormItem  labelCol={{span: 7}} wrapperCol={{span: 14}} label="目标分支">
                                     {getFieldDecorator('target_project_path', {initialValue: targetPath})
                                     (<Select style={{width: 200}}><Option value={targetPath}>{targetPath}</Option></Select>)}
                                 </FormItem>
