@@ -10,7 +10,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import 'pubsub-js';
-import {Form, Input, Button, Alert, notification, Row, Col} from 'antd';
+import {Form, Input, Button, Alert, notification, Row, Col, Spin} from 'antd';
 import Box from '../../components/box';
 import './index.less';
 import CronExpression from '../../components/cron-expression';
@@ -27,6 +27,7 @@ class ProjectCompile extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            isProject: true
         };
     }
 
@@ -45,7 +46,13 @@ class ProjectCompile extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {jobInfo, saveJobResult, buildJobResult} = nextProps;
+        const {jobInfo, saveJobResult, buildJobResult, selectNode} = nextProps;
+        if (selectNode && selectNode.isProject == false){
+            if (this.props.jobInfo){
+                this.props.jobInfo.jobName = null;
+                this.props.jobInfo.getLoading = true;
+            }
+        }
         if (jobInfo && jobInfo != this.props.jobInfo){
             setFieldsValue({trigger:jobInfo.trigger});
             if (jobInfo.pipelineScript){
@@ -121,7 +128,10 @@ class ProjectCompile extends React.Component{
 
     selectProject(msg, data){
         if (data.isProject){
+            //this.setState({isProject: true});
             this.props.getJob(data.node.name + '_' + data.node.id.substr(0,data.node.id.length-2));
+        }else{
+            //this.setState({isProject: false});
         }
     }
 
@@ -143,20 +153,21 @@ class ProjectCompile extends React.Component{
     }
 
     render(){
-        const {selectNode, jobInfo, getLoading, saveLoading, buildLoading} = this.props;
-        var title = '正在加载编译发布配置...';
-        if (saveLoading){
-            title = '正在保存编译发布配置...';
-        }else{
-            if (!getLoading){
-                if (selectNode&&selectNode.isProject){
+        const {selectNode, jobInfo, saveLoading, buildLoading} = this.props;
+        //console.log('jobinfo=', jobInfo);
+        var title = '编译发布配置';
+        if (selectNode&&selectNode.isProject){
+            if (saveLoading){
+                title = '正在保存编译发布配置...';
+            }else{
+                if (jobInfo && jobInfo.getLoading){
+                    title = '正在加载编译发布配置...';
+                }else{
                     if (jobInfo && jobInfo.jobName){
                         title = '修改编译发布配置';
                     }else{
                         title = '新增编译发布配置';
                     }
-                }else{
-                    title = '编译发布配置';
                 }
             }
         }
@@ -188,35 +199,35 @@ class ProjectCompile extends React.Component{
                     <div></div>
                 )}
                 {(selectNode && selectNode.isProject)?(
-                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                        <FormItem {...formItemLayout} label="配置调度表达式">
-                            <Row gutter={0}>
-                                <Col span={21}>
-                                    {getFieldDecorator('trigger',
-                                        {rules:[
-                                            {required:true, message:'请输入调度配置！'}
-                                        ]})(<Input type="text" placeholder="请输入调度配置"/>)}
-                                </Col>
-                                <Col span={3}>
-                                    <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
-                                </Col>
-                            </Row>
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="+selectNode.node.id.substr(0,selectNode.node.id.length-2)}>
-                            <CodeMirror ref="editor"
-                                        onChange={this.updateCode.bind(this)}
-                                        options={options}
-                                        interact={this.interact} />
-                        </FormItem>
-                        <FormItem wrapperCol={{span: 16, offset: 4}} style={{marginTop: 0}}>
-                            <Button type="primary" htmlType="submit"
-                                    loading={saveLoading}>
-                                保存</Button>
-                        </FormItem>
-                    </Form>
+                    <Spin spinning={saveLoading} tip="正在保存编译发布配置...">
+                        <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                            <FormItem {...formItemLayout} label="配置调度表达式">
+                                <Row gutter={0}>
+                                    <Col span={21}>
+                                        {getFieldDecorator('trigger',
+                                            {rules:[
+                                                {required:true, message:'请输入调度配置！'}
+                                            ]})(<Input type="text" placeholder="请输入调度配置"/>)}
+                                    </Col>
+                                    <Col span={3}>
+                                        <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="+selectNode.node.id.substr(0,selectNode.node.id.length-2)}>
+                                <CodeMirror ref="editor"
+                                            onChange={this.updateCode.bind(this)}
+                                            options={options}
+                                            interact={this.interact} />
+                            </FormItem>
+                            <FormItem wrapperCol={{span: 16, offset: 4}} style={{marginTop: 0}}>
+                                <Button type="primary" htmlType="submit">保存</Button>
+                            </FormItem>
+                        </Form>
+                    </Spin>
                 ):(
                     <Alert
-                        message="请选择一个具体的项目进行配置！"
+                        message="请从左边的项目树中选择一个具体的项目进行配置！"
                         description=""
                         type="warning"
                         showIcon
