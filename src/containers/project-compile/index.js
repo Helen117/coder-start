@@ -10,7 +10,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import 'pubsub-js';
-import {Form, Input, Button, Alert, notification, Row, Col} from 'antd';
+import {Form, Input, Button, Alert, notification, Row, Col, Spin} from 'antd';
 import Box from '../../components/box';
 import './index.less';
 import CronExpression from '../../components/cron-expression';
@@ -18,20 +18,16 @@ import CronExpression from '../../components/cron-expression';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/groovy/groovy';
 
-import {getJob, saveJob} from './action';
+import {getJob, saveJob, buildJob} from './action';
 
 const FormItem = Form.Item;
 
-
-var defaults = {
-    code: 'var component = {\n\tname: "react-codemirror",\n\tauthor: "Jed Watson",\n\trepo: "https://github.com/JedWatson/react-codemirror"\n};'
-};
 
 class ProjectCompile extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            a:1
+            isProject: true
         };
     }
 
@@ -40,7 +36,7 @@ class ProjectCompile extends React.Component{
     componentDidMount(){
         const {selectNode, getJob} = this.props;
         if (selectNode && selectNode.isProject){
-            getJob(selectNode.node.name + '(' + selectNode.node.id.substr(0,selectNode.node.id.length-2) + ')');
+            getJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
         }
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
@@ -50,7 +46,13 @@ class ProjectCompile extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {jobInfo, saveJobResult} = nextProps;
+        const {jobInfo, saveJobResult, buildJobResult, selectNode} = nextProps;
+        if (selectNode && selectNode.isProject == false){
+            if (this.props.jobInfo){
+                this.props.jobInfo.jobName = null;
+                this.props.jobInfo.getLoading = true;
+            }
+        }
         if (jobInfo && jobInfo != this.props.jobInfo){
             setFieldsValue({trigger:jobInfo.trigger});
             if (jobInfo.pipelineScript){
@@ -63,6 +65,13 @@ class ProjectCompile extends React.Component{
             notification.success({
                 message: '操作成功',
                 description: "成功保存编译发布脚本！",
+                duration: 5
+            });
+        }
+        if (buildJobResult && buildJobResult != this.props.buildJobResult){
+            notification.success({
+                message: '操作成功',
+                description: "成功发起执行任务！",
                 duration: 5
             });
         }
@@ -119,8 +128,23 @@ class ProjectCompile extends React.Component{
 
     selectProject(msg, data){
         if (data.isProject){
+            //this.setState({isProject: true});
             this.props.getJob(data.node.name + '_' + data.node.id.substr(0,data.node.id.length-2));
+        }else{
+            //this.setState({isProject: false});
         }
+    }
+
+    execBuild(){
+        const {buildJob, selectNode} = this.props;
+        buildJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
+    }
+
+    viewBuildHis(){
+        this.context.router.push({
+            pathname: '/project-mgr/project-build-history',
+            state: {}
+        });
     }
 
     setCron(cron){
@@ -129,20 +153,21 @@ class ProjectCompile extends React.Component{
     }
 
     render(){
-        const {selectNode, jobInfo, getLoading, saveLoading} = this.props;
-        var title = '正在加载编译发布配置...';
-        if (saveLoading){
-            title = '正在保存编译发布配置...';
-        }else{
-            if (!getLoading){
-                if (selectNode&&selectNode.isProject){
+        const {selectNode, jobInfo, saveLoading, buildLoading} = this.props;
+        //console.log('jobinfo=', jobInfo);
+        var title = '编译发布配置';
+        if (selectNode&&selectNode.isProject){
+            if (saveLoading){
+                title = '正在保存编译发布配置...';
+            }else{
+                if (jobInfo && jobInfo.getLoading){
+                    title = '正在加载编译发布配置...';
+                }else{
                     if (jobInfo && jobInfo.jobName){
                         title = '修改编译发布配置';
                     }else{
                         title = '新增编译发布配置';
                     }
-                }else{
-                    title = '编译发布配置';
                 }
             }
         }
@@ -158,36 +183,51 @@ class ProjectCompile extends React.Component{
         };
         return (
             <Box title={title}>
+                {(selectNode && selectNode.isProject && jobInfo && jobInfo.jobName)?(
+                    <Alert
+                        message={
+                            <Row>
+                                <span>该项目已经配置了编译发布脚本，您可以</span>
+                                <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.execBuild.bind(this)} loading={buildLoading}>发起执行任务</Button>或者
+                                <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.viewBuildHis.bind(this)}>查看执行状态和历史</Button>
+                            </Row>}
+                        description=""
+                        type="info"
+                        showIcon
+                    />
+                ):(
+                    <div></div>
+                )}
                 {(selectNode && selectNode.isProject)?(
-                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                        <FormItem {...formItemLayout} label="配置调度表达式">
-                            <Row gutter={0}>
-                                <Col span={21}>
-                                    {getFieldDecorator('trigger',
-                                        {rules:[
-                                            {required:true, message:'请输入调度配置！'}
-                                        ]})(<Input type="text" placeholder="请输入调度配置"/>)}
-                                </Col>
-                                <Col span={3}>
-                                    <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
-                                </Col>
-                            </Row>
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="+selectNode.node.id.substr(0,selectNode.node.id.length-2)}>
-                            <CodeMirror ref="editor"
-                                        onChange={this.updateCode.bind(this)}
-                                        options={options}
-                                        interact={this.interact} />
-                        </FormItem>
-                        <FormItem wrapperCol={{span: 16, offset: 4}} style={{marginTop: 0}}>
-                            <Button type="primary" htmlType="submit"
-                                    loading={saveLoading}>
-                                保存</Button>
-                        </FormItem>
-                    </Form>
+                    <Spin spinning={saveLoading} tip="正在保存编译发布配置...">
+                        <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                            <FormItem {...formItemLayout} label="配置调度表达式">
+                                <Row gutter={0}>
+                                    <Col span={21}>
+                                        {getFieldDecorator('trigger',
+                                            {rules:[
+                                                {required:true, message:'请输入调度配置！'}
+                                            ]})(<Input type="text" placeholder="请输入调度配置"/>)}
+                                    </Col>
+                                    <Col span={3}>
+                                        <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="+selectNode.node.id.substr(0,selectNode.node.id.length-2)}>
+                                <CodeMirror ref="editor"
+                                            onChange={this.updateCode.bind(this)}
+                                            options={options}
+                                            interact={this.interact} />
+                            </FormItem>
+                            <FormItem wrapperCol={{span: 16, offset: 4}} style={{marginTop: 0}}>
+                                <Button type="primary" htmlType="submit">保存</Button>
+                            </FormItem>
+                        </Form>
+                    </Spin>
                 ):(
                     <Alert
-                        message="请选择一个具体的项目进行配置！"
+                        message="请从左边的项目树中选择一个具体的项目进行配置！"
                         description=""
                         type="warning"
                         showIcon
@@ -199,6 +239,9 @@ class ProjectCompile extends React.Component{
 }
 
 ProjectCompile.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
 };
 
 ProjectCompile = Form.create()(ProjectCompile);
@@ -210,14 +253,17 @@ function mapStateToProps(state) {
         jobInfo: state.projectCompile.jobInfo,
         saveJobResult: state.projectCompile.saveJobResult,
         getLoading: state.projectCompile.getLoading,
-        saveLoading: state.projectCompile.saveLoading
+        saveLoading: state.projectCompile.saveLoading,
+        buildLoading: state.projectCompile.buildLoading,
+        buildJobResult: state.projectCompile.buildJobResult
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getJob: bindActionCreators(getJob, dispatch),
-        saveJob: bindActionCreators(saveJob, dispatch)
+        saveJob: bindActionCreators(saveJob, dispatch),
+        buildJob: bindActionCreators(buildJob, dispatch)
     }
 }
 

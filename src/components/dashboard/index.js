@@ -18,29 +18,60 @@ export class MyIssueList extends React.Component {
         super(props);
     }
 
+    setTimeLineColor(dueDate){
+        let color = 'blue';
+        if(new Date(dueDate) < new Date()){
+            color = 'red'
+        }
+        return color;
+    }
+
     mapTimeLineData(timeLineData){
-        return timeLineData.map((item,index)=>{
-            <span>{item.dueDate}--{item.title}</span>
-            }
-        )
+        let data = [];
+        if(timeLineData) {
+            data.push(
+                timeLineData.map((item, index)=> {
+                    const color = this.setTimeLineColor(item.dueDate);
+                    return(
+                        <Timeline.Item color={color}>
+                            <span>{new Date(parseInt(item.dueDate)).toLocaleDateString()}--{item.title}</span>
+                        </Timeline.Item>
+                    )
+                })
+            )
+        }
+        return data;
+    }
+
+    myIssueDetail(){
+        this.context.router.push({
+            pathname: this.props.viewDetailPath,
+            state: this.props.viewDetailParams
+        });
     }
 
     render() {
-        const timeLineData = this.props.timeLineData;
-        return (
-            <Box title="分配给我的待处理问题列表">
-                <Timeline pending={<a href="#">查看更多</a>}>
-                    <Timeline.Item>待处理问题1待处理问题1待处理问题1 2016-09-06</Timeline.Item>
-                    <Timeline.Item>待处理问题2待处理问题2待处理问题2 2016-09-06</Timeline.Item>
-                    <Timeline.Item>待处理问题3待处理问题3待处理问题3 2016-09-06</Timeline.Item>
-                    <Timeline.Item>待处理问题4待处理问题4待处理问题4 2016-09-06</Timeline.Item>
-                    <Timeline.Item>待处理问题5待处理问题5待处理问题5 2016-09-06</Timeline.Item>
-                </Timeline>
-            </Box>
-        );
+        const timeLineData = this.mapTimeLineData(this.props.timeLineData);
+        const isPending = this.props.timeLineData && this.props.timeLineData.length > 0 ? true : false;
+
+            return (
+                <Box title="分配给我的待处理问题列表">
+                    <div style={{height:250}}>
+                        {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看详情</a>}>{timeLineData}</Timeline>:
+                        <div>
+                            <span><Icon type="exclamation-circle-o" />   您当前无待办事项</span>
+                        </div>}
+                    </div>
+                </Box>
+            );
     }
 
 }
+MyIssueList.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 
 export class MyProjectProgress extends React.Component {
@@ -131,28 +162,30 @@ export class NewIssueList extends React.Component {
     render() {
         return (
             <Box title="所关注项目的最新问题">
-                <Row>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题一" content="我是内容我是内容111我是内容我是内容111我是内容我是内容111"/>
-                    </Col>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题二" content="我是内容我是内容222我是内容我是内容222我是内容我是内容222"/>
-                    </Col>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题三" content="我是内容我是内容333我是内容我是内容333"/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题四" content="我是内容我是内容444我是内容我是内容444"/>
-                    </Col>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题五" content="我是内容我是内容555我是内容我是内容555"/>
-                    </Col>
-                    <Col span={8}>
-                        <ThumbnailView caption="问题六" content="我是内容我是内容666我是内容我是内容666"/>
-                    </Col>
-                </Row>
+                <div style={{height:250}}>
+                    <Row>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题一" content="我是内容我是内容111我是内容我是内容111我是内容我是内容111"/>
+                        </Col>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题二" content="我是内容我是内容222我是内容我是内容222我是内容我是内容222"/>
+                        </Col>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题三" content="我是内容我是内容333我是内容我是内容333"/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题四" content="我是内容我是内容444我是内容我是内容444"/>
+                        </Col>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题五" content="我是内容我是内容555我是内容我是内容555"/>
+                        </Col>
+                        <Col span={8}>
+                            <ThumbnailView caption="问题六" content="我是内容我是内容666我是内容我是内容666"/>
+                        </Col>
+                    </Row>
+                </div>
             </Box>
         );
     }
