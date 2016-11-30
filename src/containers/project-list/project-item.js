@@ -30,6 +30,7 @@ class ProjectItem extends Component {
     }
 
     componentDidMount() {
+        console.log('componentDidMount')
         if(this.props.getProjectInfo){
             this.setState({
                 url: this.props.getProjectInfo.sshUrl,
@@ -38,6 +39,9 @@ class ProjectItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps')
+        //调tabledata接口
+
         const {node} = nextProps;
         if(this.props.node != node && node){
             this.setState({
@@ -134,6 +138,8 @@ class ProjectItem extends Component {
     }
 
     memberCountClick(record,groupInfo,projectInfo){
+        //调memberData接口
+
         this.setState({
             showProjectMember:true,
             groupInfo_member:groupInfo,

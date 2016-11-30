@@ -33,14 +33,10 @@ class ProjectMember extends Component {
         //添加返回信息
         if (this.props.addResult != addResult && addResult) {
             this.insertCallback("添加成功");
-        /*} else if (this.props.addErrors != addErrors && addErrors) {
-            this.errCallback("添加失败",addErrors);*/
         }
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult) {
             this.insertCallback("删除成功");
-        /*} else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
-            this.errCallback("删除失败",deleteErrors);*/
         }
     }
 
@@ -58,14 +54,6 @@ class ProjectMember extends Component {
         actions.getProjectMembers(projectInfo.id.substr(0,projectInfo.id.length-2));
     }
 
-    errCallback(messageInfo,errmessage){
-        notification.error({
-            message: messageInfo,
-            description:errmessage,
-            duration: null
-        });
-    }
-
     transformDate(timestamp){
         var newDate = new Date();
         newDate.setTime(timestamp);
@@ -79,21 +67,23 @@ class ProjectMember extends Component {
     }
 
     deleteMember(projectId,user_ids){
-        const {actions} = this.props;
+        const {actions,loginInfo} = this.props;
         if(user_ids.length > 0){
             confirm({
                 title: '您是否确定要删除这些成员？',
                 content: '',
                 onOk() {
                     //调删除成员接口
-                    let data = [];
+                    let data = [],final_data={};
                     for(let i=0;i<user_ids.length;i++){
                         data.push({
                             projectId:projectId.substr(0,projectId.length-2),
                             userId:user_ids[i]
                         })
                     }
-                    actions.deleteProjectMember(data)
+                    final_data.users = data;
+                    final_data.id = loginInfo.userId;
+                    actions.deleteProjectMember(final_data)
                 },
                 onCancel() {
                 }
@@ -105,17 +95,19 @@ class ProjectMember extends Component {
 
     handleOk(){
         //调添加成员接口
-        const {actions,projectInfo} = this.props;
-        let data = [];
+        const {actions,projectInfo,loginInfo} = this.props;
+        let data = [],final_data={};
         let projectId = projectInfo.id.substr(0,projectInfo.id.length-2);
         for(let i=0; i<this.state.selectedUsers.length; i++){
             data.push({
                 projectId:parseInt(projectId),
                 gitlabAccessLevel:this.state.accessLevel,
-                userId:this.state.selectedUsers[i]
+                userId:this.state.selectedUsers[i],
             })
         }
-        actions.addProjectMember(data);
+        final_data.users = data;
+        final_data.id = loginInfo.userId;
+        actions.addProjectMember(final_data);
     }
 
     handleCancel(){
@@ -211,6 +203,7 @@ ProjectMember.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        loginInfo:state.login.profile,
         projectMembers:state.getProjectMembers,
         addResult:state.addProjectMember.addResult,
         addLoading:state.addProjectMember.addLoading,

@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Icon, Row, Button, Modal, notification, Form} from 'antd';
+import {Icon, Row,Col, Button, Modal, notification, Form} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -116,17 +116,20 @@ class ProjectList extends Component {
 
         if(listType == true){//展示项目组信息
             const {treeData,getGroupInfo, deleteLoading} = this.props;
-            if(getGroupInfo && treeData.length>0){
-                var groupId = node.id;
-                var groupInfo = searchGroupByGroupId(groupId,treeData);
-                const dataSource = this.getDataSource(groupInfo);
+            if(treeData.length>0){
+                const dataSource = getGroupInfo?this.getDataSource(getGroupInfo):[];
+                const groupDesc = getGroupInfo?(
+                    <Row>
+                        <Col span={4}>项目组名称:{getGroupInfo.name}</Col>
+                        <Col span={4}>项目组创建人：{getGroupInfo.owner}</Col>
+                        <Col span={4}>项目组创建目的:{getGroupInfo.description}</Col>
+                    </Row>
+                ):(<div></div>);
                 return (
                     <div>
                         <Row>
                             <div className ={styles.project_list_div}>
-                                <div>
-                                    <p>项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建人：{groupInfo.owner}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
-                                </div>
+                                {groupDesc}
                                 <TableView columns={this.groupColumns(this)}
                                            dataSource={dataSource}
                                 ></TableView>

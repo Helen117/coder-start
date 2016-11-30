@@ -4,14 +4,14 @@
 import api from '../../../api';
 import {GET_USER_RELATION_TREE,} from '../constants/user-relation-tree-types';
 
-export function getUserRelationTree() {
+export function getUserRelationTree(userId) {
     var path = '/service-groups/list';
     return {
         type: GET_USER_RELATION_TREE,
         payload: {
             promise: api.post(path, {
                 params: {
-
+                    userId:userId
                 }
             })
         }
