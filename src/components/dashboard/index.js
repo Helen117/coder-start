@@ -20,7 +20,6 @@ export class MyIssueList extends React.Component {
 
     setTimeLineColor(dueDate){
         let color = 'blue';
-        console.log(new Date(dueDate), new Date(),new Date(dueDate) > new Date())
         if(new Date(dueDate) < new Date()){
             color = 'red'
         }
@@ -58,7 +57,7 @@ export class MyIssueList extends React.Component {
             return (
                 <Box title="分配给我的待处理问题列表">
                     <div style={{height:250}}>
-                        {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看更多</a>}>{timeLineData}</Timeline>:
+                        {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看详情</a>}>{timeLineData}</Timeline>:
                         <div>
                             <span><Icon type="exclamation-circle-o" />   您当前无待办事项</span>
                         </div>}

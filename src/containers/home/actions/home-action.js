@@ -19,7 +19,6 @@ export function acqPerformanceMsg(userId) {
 }
 
 export function acqMyIssueList(userId,state) {
-    console.log(userId,state)
     var path = '/project/issue-backlog';
     return {
         type: ACQUIRE_MY_ISSUE_LIST,
