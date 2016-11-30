@@ -27,10 +27,10 @@ class UserRelation extends React.Component{
     }
 
     componentDidMount(){
-        const {userTreeData, selectedNode} = this.props;
-        PubSub.subscribe("evtRefreshUserGroupTree",()=>this.props.getUserRelationTree());
+        const {userTreeData, selectedNode,loginInfo} = this.props;
+        PubSub.subscribe("evtRefreshUserGroupTree",()=>this.props.getUserRelationTree(loginInfo.userId));
         if(userTreeData.length == 0){
-            this.props.getUserRelationTree();
+            this.props.getUserRelationTree(loginInfo.userId);
         }
         if(selectedNode){
             this.setState({
@@ -92,20 +92,13 @@ class UserRelation extends React.Component{
     }
 
     insertCallback(messageInfo){
+        const {loginInfo} = this.props;
         notification.success({
             message: messageInfo,
             description: '',
             duration: 1
         });
-        this.props.getUserRelationTree();
-    }
-
-    errCallback(messageInfo,errMessage){
-        notification.error({
-            message: messageInfo,
-            description:errMessage,
-            duration: 4
-        });
+        this.props.getUserRelationTree(loginInfo.userId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -116,8 +109,6 @@ class UserRelation extends React.Component{
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
-        /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-            this.errCallback('删除失败!',deleteErrors);*/
         }
     }
 
@@ -130,7 +121,6 @@ class UserRelation extends React.Component{
 
     render(){
         const {userTreeData, loading, selectedNode, selectedUserGroup,visible} = this.props;
-        const {getFieldDecorator} = this.props.form;
         const content = (
             <div>
                 <a style={{paddingLeft:10}}
