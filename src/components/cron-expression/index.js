@@ -82,6 +82,23 @@ class CronExpression extends React.Component{
         })
     }
 
+    formatCronexpression(cron){
+        let cron_array = cron.split(' ');
+        let hour_temp = cron_array[1];
+        let minute_temp = cron_array[2];
+        let hour = hour_temp.split(',');
+        let minute = minute_temp.split(',');
+        let expression_desc_temp=[],expression_desc='';
+        for(let i=0; i<hour.length; i++){
+            for(let j=0; j<minute.length; j++){
+                expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
+            }
+        }
+        expression_desc = expression_desc_temp.join(' ');
+        expression_desc = '每天： '+expression_desc+' 执行';
+        return expression_desc;
+    }
+
     handleOk(){
         this.setState({
             visible:false
