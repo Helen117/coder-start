@@ -97,10 +97,9 @@ class ProjectMember extends Component {
         //调添加成员接口
         const {actions,projectInfo,loginInfo} = this.props;
         let data = [],final_data={};
-        let projectId = projectInfo.id.substr(0,projectInfo.id.length-2);
         for(let i=0; i<this.state.selectedUsers.length; i++){
             data.push({
-                projectId:parseInt(projectId),
+                projectId:projectInfo.id,
                 gitlabAccessLevel:this.state.accessLevel,
                 userId:this.state.selectedUsers[i],
             })
@@ -156,7 +155,7 @@ class ProjectMember extends Component {
                     name:projectMembers[i].name,
                     role:role,
                     email:projectMembers[i].email,
-                    join_time:this.transformDate(projectMembers[i].created_at),
+                    join_time:this.transformDate(projectMembers[i].created_date),
                     state:projectMembers[i].state
                 });
             }
