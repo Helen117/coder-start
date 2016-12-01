@@ -27,7 +27,8 @@ class AddIssue extends Component{
 
         if(selectedRow){
             actions.fetchDataSource(selectedRow.project_id);
-            actions.getIssueDemand(selectedRow.project_id,0);
+            var milestoneId = selectedRow.milestone_id?selectedRow.milestone_id:0;
+            actions.getIssueDemand(selectedRow.project_id,milestoneId);
         }else if(projectInfo){
             actions.fetchDataSource(projectInfo.id);
             actions.getIssueDemand(projectInfo.id,0);
@@ -50,6 +51,10 @@ class AddIssue extends Component{
                 }
             if(selectedRow.author_id==this.props.loginInfo.userId){
                 this.setState({delable:true});
+            }
+
+            if(selectedRow.type!='demand'){
+                this.setState({able:false});
             }
         }
     }
@@ -98,6 +103,12 @@ class AddIssue extends Component{
 
     }
 
+    shouldComponentUpdate(nextprops,nextState){
+        // console.log('nextprops:',nextprops);
+        // console.log('nextState:',nextState);
+        return true;
+    }
+
     // errorMessage(info,error){
     //     notification.error({
     //         message: info,
@@ -141,7 +152,7 @@ class AddIssue extends Component{
                     message.error('请选择对应的需求！',2);
                     return;
                 }else if(data.type!='demand'&&data.parent_id){
-                    const due_date = this.getDueDate(data.milestone.id,demandList);
+                    const due_date = this.getDueDate(data.parent_id,demandList);
                     if(data.due_date<=new Date(parseInt(due_date))){
 
                     }else{
@@ -283,7 +294,6 @@ class AddIssue extends Component{
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
-        console.log(this.props.demandList);
         const demands =this.props.demandList?this.props.demandList.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const delButton = this.state.delable?<Button type="primary" onClick={this.deleteIssue.bind(this)} loading={this.props.issue.delLoading}>删除</Button>:'';

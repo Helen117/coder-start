@@ -35,8 +35,10 @@ class Labels extends Component {
 
     delLabel(record){
         console.log(record);
+        var label = record;
         this.setState({
             visible: true,
+            delRow:label,
         });
     }
 

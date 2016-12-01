@@ -68,7 +68,7 @@ class EditDemand extends Component{
                 const data = form.getFieldsValue();
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
-                data.set_id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+                data.sid = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
                 actions.editDemand(data);
             }
         })
@@ -128,7 +128,7 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="业务范畴" >
-                        {getFieldDecorator('lables',{rules:[{ required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('lables',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
                             <Select multiple
                                     style={{ width: 300 }} >
                                 {labels}
@@ -137,7 +137,7 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="开发人员" >
-                        {getFieldDecorator('assignee_develop_id',{rules:[{ required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_develop_id',{rules:[{required:true, message:'不能为空'}]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择开发人员"
@@ -149,7 +149,7 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="测试人员" >
-                        {getFieldDecorator('assignee_test_id',{rules:[{ required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_test_id',{rules:[{required:true,message:'不能为空'}]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择对应的测试人员"
