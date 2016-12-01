@@ -53,15 +53,12 @@ export function issueNotes(projectId,issueId) {
     }
 }
 
-export function getIssueList(projectId,milestoneId) {
+export function getIssueList(data) {
     return {
         type: 'GET_ISSUE_LIST',
         payload: {
-            promise: api.post('/project/project-issues',{
-                params: {
-                    projectId: projectId,
-                    milestoneId: milestoneId
-                }
+            promise: api.post('/project/issues',{
+                data:data
             })
         }
     }
@@ -93,15 +90,12 @@ export function getIssueDemand(projectId,milestoneId) {
     }
 }
 
-export function getMyIssue(project_id,user_id) {
+export function getMyIssue(data) {
     return {
         type: 'GET_MY_ISSUE',
         payload: {
             promise: api.post('/project/my-issues',{
-                params: {
-                    project_id: project_id,
-                    user_id:user_id
-                }
+                data:data
             })
         }
     }

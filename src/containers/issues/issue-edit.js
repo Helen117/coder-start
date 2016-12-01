@@ -8,8 +8,6 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as issue from './actions/issue-action';
-// import 'moment/locale/zh-cn';
-// moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,20 +20,7 @@ class AddIssue extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
-    // componentWillMount(){
-    //     const {actions,projectInfo} = this.props;
-    //     const {selectedRow} = this.props.location.state;
-    //     console.log('selectedRow:',selectedRow.projecct_id);
-    //     console.log('projectInfo:',selectedRow);
-    //     if(projectInfo){
-    //         actions.fetchDataSource(projectInfo.id);
-    //         actions.getIssueDemand(projectInfo.id,0);
-    //     }else if(selectedRow){
-    //         actions.fetchDataSource(selectedRow.projecct_id);
-    //         actions.getIssueDemand(selectedRow.project_id,0);
-    //     }
-    //
-    // }
+
     componentDidMount() {
         const {actions,projectInfo} = this.props;
         const {selectedRow} = this.props.location.state;
@@ -51,10 +36,7 @@ class AddIssue extends Component{
         // console.log('selectedRow:',selectedRow);
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
-            //时间类型转换
-            //labels substr(0,selectedRow.labels.length-1)
             selectedRow.labels = selectedRow.labels?selectedRow.labels.split(','):[];
-
             setFieldsValue(selectedRow);
             //this.setState({assign:selectedRow.assignee_name,milestone:selectedRow.milestone_id});
             if(selectedRow.assignee_id){
@@ -64,15 +46,12 @@ class AddIssue extends Component{
                 setFieldsValue({'milestone.id':selectedRow.milestone_id.toString()});
             }
             if(selectedRow.due_date){
-                setFieldsValue({'due_date': moment(selectedRow.due_date,"YYYY-MM-DD")});
+                setFieldsValue({'due_date': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
                 }
-
             if(selectedRow.author_id==this.props.loginInfo.userId){
                 this.setState({delable:true});
             }
-
         }
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -297,7 +276,6 @@ class AddIssue extends Component{
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
         //console.log(this.props.demandList);
-
         const demands =this.props.demandList?this.props.demandList.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const delButton = this.state.delable?<Button type="primary" onClick={this.deleteIssue.bind(this)} loading={this.props.issue.delLoading}>删除</Button>:'';

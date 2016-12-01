@@ -13,7 +13,6 @@ import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../contain
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
-import {stageView,stageDetail,codeChange} from '../containers/compile-stage/reducers/jenkins-build-reducer';
 import {request,getBusinessInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
@@ -98,9 +97,6 @@ const reducer = combineReducers({
     createUserGroup,
     createUser,
     getAllUserInfo,
-    codeChange,
-    stageView,
-    stageDetail,
     AddSshKey,
     addProjectMember,
     GetSshKeys,

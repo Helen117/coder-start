@@ -9,6 +9,7 @@
 import React,{ PropTypes, Component } from 'react';
 import {Row, Col, Icon, Menu, Dropdown, Button} from 'antd';
 import './index.less';
+import moment from 'moment';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -48,9 +49,21 @@ export default class Header extends React.Component {
         });
     }
 
-    todoList(){
+    todoList(type){
+        var data={
+            assigned_id:this.props.profile.userId,
+            state:'opened',
+        };
+        if(type=='today'){
+            data.due_start=moment(new Date(parseInt(Date.now())).toLocaleDateString()+' 00:00:00','YYYY-MM-DD HH:mm:ss');
+            data.due_end=moment(new Date(parseInt(Date.now())).toLocaleDateString()+' 23:59:59','YYYY-MM-DD HH:mm:ss');
+        }else if(type=='milestone'){
+
+        }
+        console.log('data:',data);
         this.context.router.push({
             pathname: '/project-mgr/myIssue',
+            state: {data}
         });
     }
 
@@ -72,8 +85,8 @@ export default class Header extends React.Component {
                 </Col>
                 <Col span={15} className="pending-item">
                     <p>
-                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{this.props.items[0]}</a></span> 项，
-                        当前里程碑还有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{this.props.items[1]}</a></span> 项，共有待办事宜 <span><a onClick={this.todoList.bind(this)} style={{color: 'red'}}>{this.props.items[2]}</a></span> 项
+                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span><a onClick={this.todoList.bind(this,'today')} style={{color: 'red'}}>{this.props.items[0]}</a></span> 项，
+                        当前里程碑还有待办事宜 <span><a onClick={this.todoList.bind(this,'milestone')} style={{color: 'red'}}>{this.props.items[1]}</a></span> 项，共有待办事宜 <span><a onClick={this.todoList.bind(this,'')} style={{color: 'red'}}>{this.props.items[2]}</a></span> 项
                     </p>
                     <p>
                         当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{this.props.items[3]}</a></span> 项待审批事项，
