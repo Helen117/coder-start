@@ -7,21 +7,29 @@
  * Created by william.xu on 2016/11/30
  */
 import React, {PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col} from 'antd';
 import Box from '../../components/box';
 import './build-history.less';
+import {getBuildList} from './action';
 
 class ProjectBuildHistory extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            pagination: {
+                current: 1,
+                pageSize: 10
+            }
         };
     }
 
     componentWillMount(){
     }
     componentDidMount(){
+        const {getBuildList} = this.props;
+        getBuildList(1);
     }
     componentWillUnmount(){
     }
@@ -37,18 +45,7 @@ class ProjectBuildHistory extends React.Component{
     componentDidUpdate(prevProps, prevState){
     }
 
-    codeChange(text,record){
-        alert(text);
-        // console.log("text:",text);
-        // console.log("record:",record);
-        //
-        // this.context.router.push({
-        //     pathname: '/jenkins/codeChange',
-        //     state: {record: record}
-        // });
-    }
-
-    getBuildList(list){
+    getDataSource(list){
         const data =[];
         if(list){
             if(list.rows&&list.rows.length>0){
@@ -57,10 +54,11 @@ class ProjectBuildHistory extends React.Component{
                     dataSources.projectId=list.rows[i].projectId;
                     dataSources.jobName = list.rows[i].jobName;
                     dataSources.key = list.rows[i].buildNumber;
+                    dataSources.gitCommitId=list.rows[i].gitCommitId;
+                    dataSources.lastTimeGitCommitId=list.rows.length-i>1?list.rows[i+1].gitCommitId:'';
                     if(list.rows[i].buildDetails&&list.rows[i].buildDetails.length>0){
                         dataSources.startTime=list.rows[i].buildDetails[0].startTime;
                         dataSources.gitCommitId=list.rows[i].buildDetails[0].gitCommitId;
-                        dataSources.lastTimeGitCommitId=list.rows.length-i>1?list.rows[i+1].buildDetails[0].gitCommitId:'';
                         dataSources.commit = "changes";
                         for(let j=0;j<list.rows[i].buildDetails.length;j++){
                             let stageId = "stageId_"+list.rows[i].buildDetails[j].stageId;
@@ -97,13 +95,12 @@ class ProjectBuildHistory extends React.Component{
 
 
     render(){
+        const {selectNode, buildList} = this.props;
         return (
             <Box title="编译发布历史">
                 <div id="mytable">
-                    <Table columns={this.columns(this)} dataSource={this.getBuildList(this.data)}
-                           bordered
-                           size="middle"
-                           loading={this.props.loading}
+                    <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
+                           loading={buildList && buildList.isLoading}
                            pagination={false}
                     >
                     </Table>
@@ -119,7 +116,7 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         title: '',
         colSpan: 1,
         dataIndex: 'startTime',
-        width: '80',
+        width: 80,
     // },{
     //     colSpan: 0,
     //     dataIndex: 'commit',
@@ -248,129 +245,6 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         }
     }];
 
-
-ProjectBuildHistory.prototype.data = {
-    "rows": [
-        {
-            "id": 25,
-            "projectId": 186,
-            "jobName": "devops-wfm-pipeline",
-            "buildNumber": 41,
-            "buildDetails": [
-                {
-                    "id": 62,
-                    "buildId": 25,
-                    "stageId": 1,
-                    "stageName": "checkout from git",
-                    "status": 1,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 14:58:55",
-                    "endTime": "2016-11-17 14:58:57",
-                    "duration": 2000,
-                    "durationDesc": "2秒"
-                },
-                {
-                    "id": 63,
-                    "buildId": 25,
-                    "stageId": 100,
-                    "stageName": "build and package",
-                    "status": 0,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 14:58:57",
-                    "endTime": "2016-11-17 14:59:03",
-                    "duration": 6000,
-                    "durationDesc": ""
-                },
-                {
-                    "id": 64,
-                    "buildId": 25,
-                    "stageId": 200,
-                    "stageName": "deploy",
-                    "status": 1,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 14:59:03",
-                    "endTime": "2016-11-17 14:59:04",
-                    "duration": 1000,
-                    "durationDesc": "1秒"
-                }
-            ]
-        },
-        {
-            "id": 24,
-            "projectId": 186,
-            "jobName": "devops-wfm-pipeline",
-            "buildNumber": 40,
-            "buildDetails": [
-                {
-                    "id": 60,
-                    "buildId": 24,
-                    "stageId": 1,
-                    "stageName": "build and package",
-                    "status": 2,
-                    "errorMsg": "连接超时",
-                    "gitCommitId": null,
-                    "startTime": "2016-11-17 14:58:39",
-                    "endTime": null,
-                    "duration": null,
-                    "durationDesc": "30s"
-                }
-            ]
-        },
-        {
-            "id": 19,
-            "projectId": 186,
-            "jobName": "devops-wfm-pipeline",
-            "buildNumber": 39,
-            "buildDetails": [
-                {
-                    "id": 45,
-                    "buildId": 19,
-                    "stageId": 1,
-                    "stageName": "checkout from git",
-                    "status": 1,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 12:25:11",
-                    "endTime": "2016-11-17 12:25:13",
-                    "duration": 2000,
-                    "durationDesc": "2秒"
-                },
-                {
-                    "id": 46,
-                    "buildId": 19,
-                    "stageId": 100,
-                    "stageName": "build and package",
-                    "status": 1,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 12:25:13",
-                    "endTime": "2016-11-17 12:25:19",
-                    "duration": 6000,
-                    "durationDesc": "6秒"
-                },
-                {
-                    "id": 47,
-                    "buildId": 19,
-                    "stageId": 200,
-                    "stageName": "deploy",
-                    "status": 1,
-                    "errorMsg": null,
-                    "gitCommitId": "2587d1002bc2139b46c96b9978ab5f3dfa9f3c17",
-                    "startTime": "2016-11-17 12:25:19",
-                    "endTime": "2016-11-17 12:25:21",
-                    "duration": 2000,
-                    "durationDesc": "2秒"
-                }
-            ]
-        }
-    ],
-    "total": 30
-};
-
-
 ProjectBuildHistory.contextTypes = {
 };
 
@@ -378,11 +252,14 @@ ProjectBuildHistory = Form.create()(ProjectBuildHistory);
 
 function mapStateToProps(state) {
     return {
+        // selectNode: state.getGroupTree.selectNode,
+        buildList: state.projectCompile.buildList
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
+        getBuildList: bindActionCreators(getBuildList, dispatch)
     }
 }
 
