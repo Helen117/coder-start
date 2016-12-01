@@ -51,7 +51,7 @@ class ProjectMember extends Component {
         });
         //调项目成员接口
         const {actions,projectInfo} = this.props;
-        actions.getProjectMembers(projectInfo.id.substr(0,projectInfo.id.length-2));
+        actions.getProjectMembers(projectInfo.id);
     }
 
     transformDate(timestamp){
@@ -77,7 +77,7 @@ class ProjectMember extends Component {
                     let data = [],final_data={};
                     for(let i=0;i<user_ids.length;i++){
                         data.push({
-                            projectId:projectId.substr(0,projectId.length-2),
+                            projectId:projectId,
                             userId:user_ids[i]
                         })
                     }
@@ -231,6 +231,8 @@ function mapStateToProps(state) {
         deleteLoading:state.addProjectMember.deleteLoading,
         deleteDisabled:state.addProjectMember.deleteDisabled,
         deleteErrors:state.addProjectMember.deleteErrors,
+        projectInfo:state.getProjectInfo.projectInfo,
+        groupInfo:state.getGroupInfo.groupInfo,
     }
 }
 
