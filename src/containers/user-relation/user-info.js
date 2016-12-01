@@ -47,16 +47,8 @@ class UserInfo extends React.Component {
         getUserInfo(selectedUserGroup.id);
     }
 
-    errCallback(messageInfo,errMessage){
-        notification.error({
-            message: messageInfo,
-            description:errMessage,
-            duration: 4
-        });
-    }
-
     componentWillReceiveProps(nextProps){
-        const {selectedUserGroup, moveResult,moveErrors,deleteResult,deleteErrors,userInfoData} = nextProps;
+        const {selectedUserGroup, moveResult,deleteResult,userInfoData} = nextProps;
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.props.getUserInfo(selectedUserGroup.id);
@@ -73,8 +65,6 @@ class UserInfo extends React.Component {
                 moveOutVisible: false,
             });
             this.insertCallback('移除成功!');
-            /*}else if(this.props.deleteErrors != deleteErrors && deleteErrors){
-             this.errCallback('移除失败!',deleteErrors);*/
         }
 
         //移动返回信息
@@ -83,8 +73,6 @@ class UserInfo extends React.Component {
                 moreGroupVisible: false,
             });
             this.insertCallback('移动成功!');
-            /*}else if(this.props.moveErrors != moveErrors && moveErrors){
-             this.errCallback('移动失败!',moveErrors);*/
         }
     }
 
