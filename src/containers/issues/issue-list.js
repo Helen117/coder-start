@@ -60,7 +60,10 @@ class ProjectIssueList extends Component {
         const errorMsg = nextProps.errors;
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
-            actions.getIssueList(nextProps.projectInfo.id,0);
+            var data ={
+                project_id:nextProps.projectInfo.id,
+            };
+            actions.getIssueList(data);
             actions.fetchDataSource(nextProps.projectInfo.id);
         }
 
@@ -149,11 +152,11 @@ class ProjectIssueList extends Component {
                                             {mileStoneOptions}
                                         </Select>)}
                                     </FormItem>
-                                    <FormItem label="修复人" {...formItemLayout} >
+                                    <FormItem label="实施人" {...formItemLayout} >
                                         {getFieldDecorator('assignee')(
                                             <Select showSearch
                                                     showArrow={false}
-                                                    placeholder="请选择人员"
+                                                    placeholder="请选择实施人"
                                                     optionFilterProp="children"
                                                     notFoundContent="无法找到">
                                             {assignee}
@@ -190,7 +193,7 @@ class ProjectIssueList extends Component {
                                         {getFieldDecorator('author_name')(
                                             <Select showSearch
                                                     showArrow={false}
-                                                    placeholder="请选择人员"
+                                                    placeholder="请选择创建人"
                                                     optionFilterProp="children"
                                                     notFoundContent="无法找到">
                                             {userInfo}

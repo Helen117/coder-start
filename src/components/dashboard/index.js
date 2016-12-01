@@ -46,7 +46,7 @@ export class MyIssueList extends React.Component {
     myIssueDetail(){
         this.context.router.push({
             pathname: this.props.viewDetailPath,
-            state: this.props.viewDetailParams
+            state: {data:this.props.viewDetailParams}
         });
     }
 

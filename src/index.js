@@ -35,7 +35,8 @@ import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
-import {TestCase,EditTestCase} from './containers/test-case';
+import {TestCase,EditTestCase} from './containers/test-case'
+import {LabelEdit,Labels} from './containers/label';
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
@@ -108,6 +109,8 @@ ReactDOM.render(
                             <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={ShowInfo}/>
                             <Route name="ProjectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={ProjectSetMilestones}/>
                         </Route>
+                        <Route name="label" breadcrumbName="Label列表" path="label" component={Labels}/>
+                        <Route name="labelEdit" breadcrumbName="Label编辑" path="labelEdit" component={LabelEdit}/>
                         <Route name="demandEdit" breadcrumbName="需求编辑" path="demandEdit" component={EditDemand}/>
 
                         <Route name="ProjectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={ProjectSetCreate}/>
