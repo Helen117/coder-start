@@ -176,21 +176,21 @@ class Register extends Component{
                 <Box title='新用户注册'>
                     <Form horizontal onSubmit={this.handleSubmit}>
                         <FormItem {...formItemLayout}  label="用户名" >
-                            {getFieldDecorator('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})(<Input placeholder="userName" />)}
+                            {getFieldDecorator('username',{rules:[{ required:true,message:'不能为空'},{validator:this.userExists}]})(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout}  label="中文名" >
-                            {getFieldDecorator('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})(<Input placeholder="Name" />)}
+                            {getFieldDecorator('name',{rules:[{required:true,message:'不能为空'},{validator:checkName}]})(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout}  label="邮箱" >
-                            {getFieldDecorator('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})(<Input placeholder="email" addonAfter={selectAfter}/> )}
+                            {getFieldDecorator('email',{rules:[{required:true,message:'不能为空'},{validator:this.checkEmail}]})(<Input addonAfter={selectAfter}/> )}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="密码" >
-                            {getFieldDecorator('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})(<Input type="password"  placeholder="password" />)}
+                            {getFieldDecorator('password',{rules:[{required:true,min:8,max:18,message:'密码为8-18个字符'}]})(<Input type="password"  />)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="ssh key" >
-                            {getFieldDecorator('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})(<Input style={{ width: '80%', marginRight: 8 }} type="textarea" placeholder="ssh key" rows="4" />)}
+                            {getFieldDecorator('sshKey',{rules:[{required:true,message:'ssh key不能为空'}]})(<Input style={{ width: '80%', marginRight: 8 }} type="textarea" rows="4" />)}
                             <Tooltip placement="right" title="1、下载Git-Bash,运行git-bash.exe;
                             2、生成密钥对：ssh-keygen -t rsa -C “你的邮箱”;
                             3、打开文件:notepad ~/.ssh/id_rsa.pub">
@@ -199,10 +199,9 @@ class Register extends Component{
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="申请角色" >
-                            {getFieldDecorator('role_id',{initialValue:'3',rules:[{required:true,message:'请选择申请的角色'}]})
+                            {getFieldDecorator('role_id',{rules:[{required:true,message:'请选择申请的角色'}]})
                                 (<Select showSearch
                                     showArrow={false}
-                                    placeholder="role"
                                     optionFilterProp="children"
                                     notFoundContent="无法找到">
                                     {role}
@@ -210,10 +209,9 @@ class Register extends Component{
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="申请厂商" >
-                            {getFieldDecorator('organization_id',{initialValue:'4',rules:[{required:true,message:'请选择申请的厂商'}]})
+                            {getFieldDecorator('organization_id',{rules:[{required:true,message:'请选择申请的厂商'}]})
                             (<Select showSearch
                                      showArrow={false}
-                                     placeholder="organization"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到">
                                 {organization}
@@ -224,7 +222,6 @@ class Register extends Component{
                                 {getFieldDecorator('leader_id',{rules:[{required:true,message:'请选择需审批的上级领导'}]})(
                                     <Select showSearch
                                             showArrow={false}
-                                            placeholder="leader"
                                             optionFilterProp="children"
                                             notFoundContent="无法找到">
                                         {leader}

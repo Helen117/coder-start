@@ -6,7 +6,7 @@ export function editDemand(message) {
     return {
         type: 'EDIT_DEMAND',
         payload: {
-            promise: api.post('/request/edit', {
+            promise: api.post('/project/add-demand', {
                 data: message
             })
         }
@@ -17,7 +17,7 @@ export function getDemandInfo(projectSetId) {
     return {
         type: 'FETCH_REQUIREMENT_INFO',
         payload: {
-            promise: api.post('/request/add', {
+            promise: api.post('/project/demand', {
                 params: {
                     projectSetId: projectSetId
                 }
@@ -26,15 +26,11 @@ export function getDemandInfo(projectSetId) {
     }
 }
 
-export function getBusinessInfo(projectSetId) {
+export function getLabelInfo() {
     return {
-        type: 'FETCH_BUSINESS_INFO',
+        type: 'FETCH_LABEL_INFO',
         payload: {
-            promise: api.post('/request/add', {
-                params: {
-                    projectSetId: projectSetId
-                }
-            })
+            promise: api.post('/project/lables')
         }
     }
 }

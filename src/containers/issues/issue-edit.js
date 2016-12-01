@@ -27,7 +27,8 @@ class AddIssue extends Component{
 
         if(selectedRow){
             actions.fetchDataSource(selectedRow.project_id);
-            actions.getIssueDemand(selectedRow.project_id,0);
+            var milestoneId = selectedRow.milestone_id?selectedRow.milestone_id:0;
+            actions.getIssueDemand(selectedRow.project_id,milestoneId);
         }else if(projectInfo){
             actions.fetchDataSource(projectInfo.id);
             actions.getIssueDemand(projectInfo.id,0);
@@ -50,6 +51,10 @@ class AddIssue extends Component{
                 }
             if(selectedRow.author_id==this.props.loginInfo.userId){
                 this.setState({delable:true});
+            }
+
+            if(selectedRow.type!='demand'){
+                this.setState({able:false});
             }
         }
     }
@@ -98,6 +103,12 @@ class AddIssue extends Component{
 
     }
 
+    shouldComponentUpdate(nextprops,nextState){
+        // console.log('nextprops:',nextprops);
+        // console.log('nextState:',nextState);
+        return true;
+    }
+
     // errorMessage(info,error){
     //     notification.error({
     //         message: info,
@@ -106,18 +117,17 @@ class AddIssue extends Component{
     //     });
     // }
 
-    getMilestoneDueDate(id){
-        const {milestones} = this.props;
-        for(let i=0; i<milestones.length;i++){
-            if(id==milestones[i].id){
-                return milestones[i].due_date;
+    getDueDate(id,dataList){
+        for(let i=0; i<dataList.length;i++){
+            if(id==dataList[i].id){
+                return dataList[i].due_date;
             }
         }
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions,form ,loginInfo,projectInfo} = this.props;
+        const { actions,form ,loginInfo,projectInfo,milestones,demandList} = this.props;
         const {editType,selectedRow} = this.props.location.state;
 
         form.validateFields(['title','description','type','due_date'],(errors, values) => {
@@ -129,7 +139,8 @@ class AddIssue extends Component{
                 data.username=loginInfo.username;
                 // console.log('收到表单值：', data);
                 if(data.milestone.id&&data.due_date){
-                    const due_date = this.getMilestoneDueDate(data.milestone.id);
+                    const due_date = this.getDueDate(data.milestone.id,milestones);
+                    // console.log(moment(new Date(parseInt(due_date)),'YYYY-MM-DD HH:mm:ss'));
                     if(data.due_date<=new Date(parseInt(due_date))){
 
                     }else{
@@ -140,6 +151,14 @@ class AddIssue extends Component{
                 if(data.type!='demand'&&!data.parent_id){
                     message.error('请选择对应的需求！',2);
                     return;
+                }else if(data.type!='demand'&&data.parent_id){
+                    const due_date = this.getDueDate(data.parent_id,demandList);
+                    if(data.due_date<=new Date(parseInt(due_date))){
+
+                    }else{
+                        message.error('bug计划完成时间不能大于对应的需求时间:'+new Date(parseInt(due_date)).toLocaleDateString(),3);
+                        return;
+                    }
                 }
                 if(editType=='add'){
                     data.project_id = projectInfo.id;
@@ -275,7 +294,6 @@ class AddIssue extends Component{
 
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
-        //console.log(this.props.demandList);
         const demands =this.props.demandList?this.props.demandList.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const delButton = this.state.delable?<Button type="primary" onClick={this.deleteIssue.bind(this)} loading={this.props.issue.delLoading}>删除</Button>:'';
@@ -314,8 +332,6 @@ class AddIssue extends Component{
                                      style={{ width: 300 }}>
                             {mileStoneOptions}
                         </Select>)}
-                        <br/>
-                        <a href="/project-mgr/createMilestones">Create new mileStone</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="需求" >
@@ -337,8 +353,6 @@ class AddIssue extends Component{
                                     style={{ width: 300 }} >
                             {label}
                         </Select>)}
-                        <br/>
-                        <a href="label">Create new label</a>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >

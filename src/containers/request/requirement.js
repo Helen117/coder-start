@@ -51,10 +51,10 @@ class RequirementInfo extends Component {
         };
 
         const data = [{
-            "demand_name":"项目优化",
-            "business_type":"H5",
+            "title":"项目优化",
+            "label":"H5",
             "status":"进行中",
-            "last_operation_time":"2016/11/23"
+            "last_operation_time":"2016/12/23"
         }];
 
         const selectedProjectSet = this.props.selectedProjectSet;
@@ -94,13 +94,13 @@ RequirementInfo.prototype.columns = (self)=>[{
     dataIndex: 'milestone',
 },{
     title: '需求名称',
-    dataIndex: 'demand_name',
+    dataIndex: 'title',
 }, {
     title: '当前状态',
     dataIndex: 'status',
 },{
     title: '业务范畴',
-    dataIndex: 'business_type',
+    dataIndex: 'label',
 },{
     title: '创建人',
     dataIndex: 'author',
