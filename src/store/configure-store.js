@@ -13,7 +13,8 @@ import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../contain
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
-import {request,getBusinessInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
+import {request,getLabelInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
+import label from '../containers/label/reducers/label-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
@@ -111,10 +112,11 @@ const reducer = combineReducers({
     getNotifyItems,
     getOrganizationInfo,
     getRoleInfo,
-    getBusinessInfo,
+    getLabelInfo,
     getDeveloperInfo,
     getTesterInfo,
-    projectCompile
+    projectCompile,
+    label,
 })
 
 

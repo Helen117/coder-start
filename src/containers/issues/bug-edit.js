@@ -16,7 +16,7 @@ const confirm = Modal.confirm;
 class EditBug extends Component{
     constructor(props){
         super(props);
-        this.state = {able:true,delable:false};
+        this.state = {};
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
@@ -36,9 +36,8 @@ class EditBug extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const {actions, form, loginInfo, projectInfo} = this.props;
-        const {editType, selectedRow} = this.props.location.state;
 
-        form.validateFields(['title', 'description', 'type', 'due_date'], (errors, values) => {
+        form.validateFields((errors, values) => {
             if (!!errors) {
                 //message.error(errors,2);
                 return;
