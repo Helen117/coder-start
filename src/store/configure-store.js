@@ -18,7 +18,6 @@ import label from '../containers/label/reducers/label-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
-import getGroupMembers from '../containers/project-mgr/reducers/group_members_reducer';
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
@@ -57,7 +56,6 @@ const reducer = combineReducers({
     getGroupTree,
     createGroup,
     createProject,
-    getGroupMembers,
     register,
     issue,
     GetIssueDependent,
