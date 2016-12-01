@@ -155,7 +155,7 @@ class ProjectMember extends Component {
                     name:projectMembers[i].name,
                     role:role,
                     email:projectMembers[i].email,
-                    join_time:this.transformDate(projectMembers[i].created_date),
+                    join_time:this.transformDate(projectMembers[i].created_at),
                     state:projectMembers[i].state
                 });
             }
