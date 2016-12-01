@@ -26,20 +26,34 @@ export class MyIssueList extends React.Component {
         return color;
     }
 
+    setType(issueType){
+        let type = ''
+        if(issueType == 'demand'){
+            type = '需求'
+        }else if(issueType == 'bug'){
+            type = 'bug'
+        }else if(issueType == "defect"){
+            type = '缺陷'
+        }
+        return type;
+    }
+
     mapTimeLineData(timeLineData){
         let data = [];
         if(timeLineData) {
-            data.push(
-                timeLineData.map((item, index)=> {
+            console.log('timeLineData',timeLineData);
+            data=timeLineData.map((item, index)=> {
                     const color = this.setTimeLineColor(item.dueDate);
+                    const type = this.setType(item.type);
                     return(
-                        <Timeline.Item color={color}>
-                            <span>{new Date(parseInt(item.dueDate)).toLocaleDateString()}--{item.title}</span>
+                        <Timeline.Item key={index} color={color}>
+                            <span>{new Date(parseInt(item.dueDate)).toLocaleDateString()} -- {type} -- {item.title}</span>
                         </Timeline.Item>
                     )
-                })
+                }
             )
         }
+
         return data;
     }
 
@@ -56,9 +70,9 @@ export class MyIssueList extends React.Component {
 
             return (
                 <Box title="分配给我的待处理问题列表">
-                    <div style={{height:250}}>
-                        {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看详情</a>}>{timeLineData}</Timeline>:
-                        <div>
+                    <div style={{height: 250}}>
+                        {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看更多</a>}>{timeLineData}</Timeline>:
+                        <div className="null_type_div">
                             <span><Icon type="exclamation-circle-o" />   您当前无待办事项</span>
                         </div>}
                     </div>
