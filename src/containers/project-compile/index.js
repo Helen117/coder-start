@@ -242,6 +242,14 @@ class ProjectCompile extends React.Component{
                                             ]})(<Input type="text" placeholder="请设置调度"/>)}
                                     </Col>
                                 </Row>
+                                <Row style={{display:'none'}}>
+                                    <Col span={21}>
+                                        {getFieldDecorator('trigger',
+                                            {rules:[
+                                                {required:true, message:'请设置调度'}
+                                            ]})(<Input type="text" placeholder="请设置调度"/>)}
+                                    </Col>
+                                </Row>
                             </FormItem>
                             <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="+selectNode.node.id.substr(0,selectNode.node.id.length-2)}>
                                 <CodeMirror ref="editor"
