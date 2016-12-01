@@ -35,9 +35,10 @@ class EditDemand extends Component{
                 duration: 2
             });
         }else{
-            // actions.getBusinessInfo();
-            // actions.getDeveloperInfo(selectedProjectSet.id,'set',30);
-            // actions.getTesterInfo(selectedProjectSet.id,'set',20);
+            var id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+            actions.getLabelInfo();
+            actions.getDeveloperInfo(id,'set',30);
+            actions.getTesterInfo(id,'set',20);
         }
     }
 
@@ -65,9 +66,10 @@ class EditDemand extends Component{
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.username = loginInfo.username;
+                data.author_id = loginInfo.userId;
+                data.type = 'demand';
                 data.set_id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
-                // actions.editDemand(data);
+                actions.editDemand(data);
             }
         })
     }
@@ -94,9 +96,8 @@ class EditDemand extends Component{
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const {businessInfo,developerInfo,testerInfo} = this.props;
-        // const pending = businessInfo.pending||developerInfo.pending||testerInfo.pending?true:false;
-        const pending =false;
+        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo} = this.props;
+        const pending = labelLoading||developerLoading||testerLoading?true:false;
 
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -108,11 +109,11 @@ class EditDemand extends Component{
             {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
 
-        // const business = businessInfo?businessInfo.business.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const labels = labelInfo?labelInfo.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
-        // const developer = developerInfo?developerInfo.developer.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
-        // const tester = testerInfo?testerInfo.tester.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
 
         return (
@@ -120,45 +121,42 @@ class EditDemand extends Component{
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout}  label="需求名称" >
-                        {getFieldDecorator('demand_name',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="需求描述" >
                         {getFieldDecorator('description',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="description" rows="5" />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="业务范畴" >
-                        {getFieldDecorator('business_type',{rules:[{ required:true,message:'不能为空'}]})(
-                            <Select id="business_type"  style={{ width: 300 }}>
-                                <Option value="demand">产品</Option>
-                                <Option value="defect">计费</Option>
-                                <Option value="bug" >接续</Option>
+                        {getFieldDecorator('lables',{rules:[{ required:true,message:'不能为空'}]})(
+                            <Select multiple
+                                    style={{ width: 300 }} >
+                                {labels}
                             </Select>)
                         }
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="开发人员" >
-                        {getFieldDecorator('developer',{rules:[{ required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_develop_id',{rules:[{ required:true,message:'不能为空'}]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择开发人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      style={{ width: 300 }}>
-                                <Option value="1">孙磊</Option>
-                                <Option value="2">张亚军</Option>
+                                {developer}
                             </Select>)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="测试人员" >
-                        {getFieldDecorator('tester',{rules:[{ required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_test_id',{rules:[{ required:true,message:'不能为空'}]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择对应的测试人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      style={{ width: 300 }} >
-                                <Option value="1">孙磊</Option>
-                                <Option value="2">张军</Option>
+                                {tester}
                             </Select>)}
                     </FormItem>
 
@@ -197,9 +195,12 @@ function mapStateToProps(state) {
         loading:state.request.pending,
         result:state.request.editDemandResult,
         error:state.request.error,
-        businessInfo:state.getBusinessInfo.pending,
-        developerInfo:state.getDeveloperInfo,
-        testerInfo:state.getTesterInfo,
+        labelLoading:state.getLabelInfo.pending,
+        labelInfo:state.getLabelInfo.label,
+        developerLoading:state.getDeveloperInfo.pending,
+        developerInfo:state.getDeveloperInfo.developer,
+        testerLoading:state.getTesterInfo.pending,
+        testerInfo:state.getTesterInfo.tester,
     };
 }
 

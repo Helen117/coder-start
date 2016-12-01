@@ -25,14 +25,14 @@ export  function request(state = initialState, action = {}) {
     }
 }
 
-export  function getBusinessInfo(state = initialState, action = {}) {
+export  function getLabelInfo(state = initialState, action = {}) {
     switch (action.type) {
-        case 'FETCH_BUSINESS_INFO_PENDING':
+        case 'FETCH_LABEL_INFO_PENDING':
             return Object.assign({}, initialState, {pending: true});
-        case 'FETCH_BUSINESS_INFO_SUCCESS':
-            return Object.assign({}, initialState, {business: action.payload, pending: false, error: null});
-        case 'FETCH_BUSINESS_INFO_ERROR':
-            return Object.assign({}, initialState, {business: action.payload, pending: false, error: action.payload.errorMsg});
+        case 'FETCH_LABEL_INFO_SUCCESS':
+            return Object.assign({}, initialState, {label: action.payload, pending: false, error: null});
+        case 'FETCH_LABEL_INFO_ERROR':
+            return Object.assign({}, initialState, {label: action.payload, pending: false, error: action.payload.errorMsg});
 
         default:
             return state;
