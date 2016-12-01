@@ -7,7 +7,7 @@ import React,{
 } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Button,Modal,Select,notification,Table,message} from 'antd';
+import {Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
 import styles from './index.css';
 import UserRelation from '../user-relation';
 import {addProjectMember,deleteProjectMember} from './actions/project-member-action';
@@ -57,7 +57,7 @@ class ProjectMember extends Component {
     transformDate(timestamp){
         var newDate = new Date();
         newDate.setTime(timestamp);
-        return newDate.toLocaleString();
+        return newDate.toLocaleDateString();
     }
 
     addMember(projectId){
@@ -129,7 +129,7 @@ class ProjectMember extends Component {
     }
 
     render(){
-        const {projectMembers,groupInfo,projectInfo} = this.props;
+        const {projectMembers,projectInfo} = this.props;
 
         const columns = [
             {title: "项目人员", dataIndex: "name", key: "name"},
@@ -139,15 +139,27 @@ class ProjectMember extends Component {
             {title: "人员状态", dataIndex: "state", key: "state"}
         ];
         const dataSource = [];
-        for(var i=0;i<projectMembers.projectMembers.length;i++){
-            dataSource.push({
-                key:i+1,
-                name:projectMembers.projectMembers[i].name,
-                role:projectMembers.projectMembers[i].is_admin?"admin":"非admin",
-                email:projectMembers.projectMembers[i].email,
-                join_time:this.transformDate(projectMembers.projectMembers[i].created_at),
-                state:projectMembers.projectMembers[i].state
-            });
+        if(projectMembers){
+            for(var i=0;i<projectMembers.length;i++){
+                let role = '';
+                if(projectMembers[i].role == 40){
+                    role = '管理员';
+                }else if(projectMembers[i].role == 30){
+                    role = '开发者';
+                } else if(projectMembers[i].role == 20){
+                    role = '测试';
+                }else if(projectMembers[i].role == 50){
+                    role = '创建者';
+                }
+                dataSource.push({
+                    key:i+1,
+                    name:projectMembers[i].name,
+                    role:role,
+                    email:projectMembers[i].email,
+                    join_time:this.transformDate(projectMembers[i].created_at),
+                    state:projectMembers[i].state
+                });
+            }
         }
         let user_ids = [];
         const rowSelection = {
@@ -155,20 +167,26 @@ class ProjectMember extends Component {
             onSelect(record, selected, selectedRows) {
                 user_ids.splice(0,user_ids.length);
                 for(let i=0; i<selectedRows.length; i++){
-                    let _id = findUserIdByEmail(selectedRows[i].email,projectMembers.projectMembers);
+                    let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
                     user_ids.push(_id);
                 }
             },
             onSelectAll(selected, selectedRows, changeRows) {},
         };
+        const projectDesc = projectInfo?(
+            <Row>
+                <Col span={8}>项目名称:{projectInfo.name}</Col>
+                <Col span={5}>项目创建时间:{this.transformDate(projectInfo.created_at)}</Col>
+                <Col span={11}>项目创建目的:{projectInfo.description}</Col>
+            </Row>
+        ):(<div></div>);
 
         return (
             <div className={styles.project_list_div}>
-                <div>
-                    <p>项目名称:{projectInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目创建时间:{this.transformDate(projectInfo.created_at)}&nbsp;&nbsp;&nbsp;&nbsp;项目组名称:{groupInfo.name}&nbsp;&nbsp;&nbsp;&nbsp;项目组创建目的:{groupInfo.description}</p>
-                </div>
+                {projectDesc}
                 <Table columns={columns} dataSource={dataSource}
-                       rowSelection={rowSelection}></Table>
+                       rowSelection={rowSelection}
+                       loading={this.props.membersLoading}></Table>
                 <Modal title="添加成员"
                        width="80%"
                        visible={this.state.addProjectMember}
@@ -182,7 +200,7 @@ class ProjectMember extends Component {
                                 onChange={this.changeSelect.bind(this)}>
                             <Option value="40">管理员</Option>
                             <Option value="30">开发者</Option>
-                            <Option value="10">测试</Option>
+                            <Option value="20">测试</Option>
                         </Select>
                     </div>
                     <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
@@ -204,7 +222,8 @@ ProjectMember.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        projectMembers:state.getProjectMembers,
+        projectMembers:state.getProjectMembers.projectMembers,
+        membersLoading:state.getProjectMembers.loading,
         addResult:state.addProjectMember.addResult,
         addLoading:state.addProjectMember.addLoading,
         addDisabled:state.addProjectMember.addDisabled,

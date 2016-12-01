@@ -20,14 +20,15 @@ export function getGroupInfo(groupInfo, selectedNode,node) {
     }
 }
 
-export function getProjectInfo(projectId) {
+export function getProjectInfo(project_id,user_id) {
     var path = '/project/info';
     return {
         type: GET_PROJECT_INFO,
         payload: {
             promise: api.post(path, {
                 params: {
-                    projectId: projectId
+                    project_id: project_id,
+                    user_id:user_id
                 }
             })
         }

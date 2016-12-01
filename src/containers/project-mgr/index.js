@@ -12,10 +12,9 @@ import {connect} from 'react-redux';
 import { Row, Col, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
-import {getGroupMembers} from './actions/group_members_action';
 import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
-import {getProjectMembers} from './actions/project-members-action';
 import 'pubsub-js';
+import {searchNormalGroupByProjectId} from '../project-list/util';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -46,26 +45,6 @@ class ProjectMgr extends React.Component{
         }
     }
 
-    searchGroupByProjectId(projectId,list){
-        var projectInfo,groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                var project_cat = list[i].children[j];
-                for(var k=0; k<project_cat.children.length; k++){
-                    if(projectId == project_cat.children[k].id){
-                        if(project_cat.id > 0){
-                            groupInfo = project_cat;
-                        }else{
-                            groupInfo = {};
-                        }
-                        projectInfo = project_cat.children[k];
-                        return {projectInfo,groupInfo}
-                    }
-                }
-            }
-        }
-    }
-
     isEmptyObject(obj){
         for(var key in obj){
             return false;
@@ -74,21 +53,17 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
-        const {treeData, currentOneInfo, currentTwoInfo} = this.props;
+        const {treeData, currentOneInfo, currentTwoInfo,loginInfo} = this.props;
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
-            if(node.id.indexOf("_g") < 0){
-                this.props.getGroupMembers(node.id);
-            }
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
             var node_temp = node.id;
-            const {groupInfo} = this.searchGroupByProjectId(node.id, treeData);
-            this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2));
+            const {groupInfo} = searchNormalGroupByProjectId(node.id, treeData);
+            this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2),loginInfo.userId);
             this.props.getGroupInfo(groupInfo, node.id,node);
-            this.props.getProjectMembers(node_temp.substr(0,node_temp.length-2));
             PubSub.publish("onSelectProjectNode",{node:node, isProject:true});
             this.props.setSelectNode({node:node, isProject:true});
         }else{
@@ -156,10 +131,8 @@ function mapDispatchToProps(dispatch) {
     return {
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
         setSelectNode: bindActionCreators(setSelectNode, dispatch),
-        getGroupMembers:bindActionCreators(getGroupMembers, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
-        getProjectMembers:bindActionCreators(getProjectMembers, dispatch),
     }
 }
 
