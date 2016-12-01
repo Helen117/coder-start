@@ -87,6 +87,7 @@ class CronExpression extends React.Component{
             visible:false
         })
         const {getFieldsValue} = this.props.form;
+        const {setCron} = this.props;
         let formData = getFieldsValue();
         let final_expression='',expression_desc='';
         if(this.state.radioValue == 1){
@@ -102,7 +103,6 @@ class CronExpression extends React.Component{
                 }
                 expression_desc = expression_desc_temp.join(' ');
                 expression_desc = '每天： '+expression_desc+' 执行';
-                console.log('expression_desc:',expression_desc)
                 hour = formData.hour.join();
                 minute = formData.minute.join();
                 let cronExpression = [];
@@ -112,10 +112,10 @@ class CronExpression extends React.Component{
             }
         }else if(this.state.radioValue == 2){
             final_expression = formData.expression;
+            expression_desc = formData.expression;
         }
-        const {setCron} = this.props;
         if(setCron){
-            setCron(final_expression);
+            setCron(final_expression,expression_desc);
         }
     }
 
