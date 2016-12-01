@@ -54,7 +54,7 @@ class ProjectCompile extends React.Component{
             }
         }
         if (jobInfo && jobInfo != this.props.jobInfo){
-            setFieldsValue({trigger:jobInfo.trigger});
+            setFieldsValue({trigger:jobInfo.trigger, triggerDesc: this.formatCronexpression(jobInfo.trigger)});
             if (jobInfo.pipelineScript){
                 this.refs.editor.getCodeMirror().setValue(jobInfo.pipelineScript);
             }else{
@@ -89,6 +89,27 @@ class ProjectCompile extends React.Component{
     }
     componentDidUpdate(prevProps, prevState){
     }
+
+    formatCronexpression(cron){
+        if (cron){
+            let cron_array = cron.split(' ');
+            let hour_temp = cron_array[1];
+            let minute_temp = cron_array[0];
+            let hour = hour_temp.split(',');
+            let minute = minute_temp.split(',');
+            let expression_desc_temp=[],expression_desc='';
+            for(let i=0; i<hour.length; i++){
+                for(let j=0; j<minute.length; j++){
+                    expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
+                }
+            }
+            expression_desc = expression_desc_temp.join(' ');
+            expression_desc = '每天： '+expression_desc+' 执行';
+            return expression_desc;
+        }
+        return '';
+    }
+
 
     updateCode(newCode) {
         // this.setState({
@@ -147,9 +168,9 @@ class ProjectCompile extends React.Component{
         });
     }
 
-    setCron(cron){
+    setCron(cron, cronDesc){
         const {setFieldsValue} = this.props.form;
-        setFieldsValue({trigger:cron});
+        setFieldsValue({trigger:cron, triggerDesc:cronDesc});
     }
 
     render(){
@@ -204,13 +225,29 @@ class ProjectCompile extends React.Component{
                             <FormItem {...formItemLayout} label="配置调度表达式">
                                 <Row gutter={0}>
                                     <Col span={21}>
-                                        {getFieldDecorator('trigger',
+                                        {getFieldDecorator('triggerDesc',
                                             {rules:[
-                                                {required:true, message:'请输入调度配置！'}
-                                            ]})(<Input type="text" placeholder="请输入调度配置"/>)}
+                                                {required:true, message:'请设置调度'}
+                                            ]})(<Input disabled type="text" placeholder="请设置调度"/>)}
                                     </Col>
                                     <Col span={3}>
-                                        <CronExpression expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
+                                        <CronExpression ref="cron" expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
+                                    </Col>
+                                </Row>
+                                <Row style={{display:'none'}}>
+                                    <Col span={21}>
+                                        {getFieldDecorator('trigger',
+                                            {rules:[
+                                                {required:true, message:'请设置调度'}
+                                            ]})(<Input type="text" placeholder="请设置调度"/>)}
+                                    </Col>
+                                </Row>
+                                <Row style={{display:'none'}}>
+                                    <Col span={21}>
+                                        {getFieldDecorator('trigger',
+                                            {rules:[
+                                                {required:true, message:'请设置调度'}
+                                            ]})(<Input type="text" placeholder="请设置调度"/>)}
                                     </Col>
                                 </Row>
                             </FormItem>
@@ -252,7 +289,6 @@ function mapStateToProps(state) {
         selectNode: state.getGroupTree.selectNode,
         jobInfo: state.projectCompile.jobInfo,
         saveJobResult: state.projectCompile.saveJobResult,
-        getLoading: state.projectCompile.getLoading,
         saveLoading: state.projectCompile.saveLoading,
         buildLoading: state.projectCompile.buildLoading,
         buildJobResult: state.projectCompile.buildJobResult

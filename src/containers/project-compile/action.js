@@ -66,3 +66,23 @@ export function buildJob(jobName) {
         }
     }
 }
+
+export const PROJECT_COMPILE_BUILD_LIST = 'PROJECT_COMPILE_BUILD_LIST';
+export const PROJECT_COMPILE_BUILD_LIST_PENDING = 'PROJECT_COMPILE_BUILD_LIST_PENDING';
+export const PROJECT_COMPILE_BUILD_LIST_SUCCESS = 'PROJECT_COMPILE_BUILD_LIST_SUCCESS';
+export const PROJECT_COMPILE_BUILD_LIST_ERROR = 'PROJECT_COMPILE_BUILD_LIST_ERROR';
+
+export function getBuildList(projectId) {
+    var path = '/getBuildList';
+    return {
+        type: PROJECT_COMPILE_BUILD_LIST,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    projectId: projectId
+                },
+                urlType:'ci'
+            })
+        }
+    }
+}
