@@ -13,6 +13,7 @@ import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col} from
 import Box from '../../components/box';
 import './build-history.less';
 import {getBuildList} from './action';
+import 'pubsub-js';
 
 class ProjectBuildHistory extends React.Component{
     constructor(props){
@@ -28,10 +29,14 @@ class ProjectBuildHistory extends React.Component{
     componentWillMount(){
     }
     componentDidMount(){
-        const {getBuildList} = this.props;
-        getBuildList(1);
+        const {selectNode, getBuildList} = this.props;
+        if (selectNode && selectNode.isProject){
+            getBuildList(selectNode.node.id.substr(0,selectNode.node.id.length-2));
+        }
+        PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
     componentWillUnmount(){
+        PubSub.unsubscribe("onSelectProjectNode");
     }
 
     componentWillReceiveProps(nextProps){
@@ -43,6 +48,12 @@ class ProjectBuildHistory extends React.Component{
 
     }
     componentDidUpdate(prevProps, prevState){
+    }
+
+    selectProject(msg, data){
+        if (data.isProject){
+            this.props.getBuildList(data.node.id.substr(0,data.node.id.length-2));
+        }
     }
 
     getDataSource(list){
@@ -79,7 +90,7 @@ class ProjectBuildHistory extends React.Component{
     }
 
     bgColor(status){
-        // console.log("status:",status);
+        console.log("status:",status);
         let style={};
         if (status == '2') {
             style ={backgroundColor: "#ffb6c1",color:"red"};
@@ -97,14 +108,23 @@ class ProjectBuildHistory extends React.Component{
     render(){
         const {selectNode, buildList} = this.props;
         return (
-            <Box title="编译发布历史">
-                <div id="mytable">
-                    <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
-                           loading={buildList && buildList.isLoading}
-                           pagination={false}
-                    >
-                    </Table>
-                </div>
+            <Box title="查看编译发布历史">
+                {(selectNode&&selectNode.isProject && buildList)?(
+                    <div id="mytable">
+                        <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
+                               loading={buildList && buildList.isLoading}
+                               pagination={false}
+                        >
+                        </Table>
+                    </div>
+                ):(
+                    <Alert
+                        message="请从左边的项目树中选择一个具体的项目进行查看！"
+                        description=""
+                        type="warning"
+                        showIcon
+                    />
+                )}
             </Box>
         );
     }
@@ -252,7 +272,7 @@ ProjectBuildHistory = Form.create()(ProjectBuildHistory);
 
 function mapStateToProps(state) {
     return {
-        // selectNode: state.getGroupTree.selectNode,
+        selectNode: state.getGroupTree.selectNode,
         buildList: state.projectCompile.buildList
     };
 }
