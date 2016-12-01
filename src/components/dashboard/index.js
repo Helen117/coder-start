@@ -70,7 +70,7 @@ export class MyIssueList extends React.Component {
 
             return (
                 <Box title="分配给我的待处理问题列表">
-                    <div style={{height: 250}}>
+                    <div style={{height: 250,marginLeft:10}}>
                         {isPending? <Timeline pending={<a onClick={this.myIssueDetail.bind(this)}>查看更多</a>}>{timeLineData}</Timeline>:
                         <div className="null_type_div">
                             <span><Icon type="exclamation-circle-o" />   您当前无待办事项</span>

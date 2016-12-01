@@ -12,13 +12,15 @@ import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
 import {getProjectMembers} from '../project-mgr/actions/project-members-action'
-import styles from './index.css';
 
 const Option = Select.Option;
 
 class SelectedProInfo extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showProjectMember:false,
+        };
     }
 
     componentDidMount() {
@@ -40,19 +42,27 @@ class SelectedProInfo extends Component {
 
     callAction(itemId){
         if(itemId.indexOf("_p")>0) {
-            const projectId = itemId.substring(0,itemId.length-2)
-            this.props.getProjectInfoAction(projectId);
-            this.props.getProjectMembersAction(projectId);
+            const projectId = itemId.substring(0,itemId.length-2);
+            const userId = this.props.loginInfo.userId;
+            this.props.getProjectInfoAction(projectId,userId);
         }
     }
 
-    getDataSource(projectMembers,getProjectInfo) {
+    memberCountClick(record,groupInfo,projectInfo){
+        //调memberData接口
+
+        this.setState({
+            showProjectMember:true,
+        })
+    }
+
+    getDataSource(getProjectInfo) {
         const data = [];
-        if (getProjectInfo && projectMembers) {
+        if (getProjectInfo ) {
             data.push({
                 project_name: getProjectInfo.name,
                 description: getProjectInfo.description,
-                memberNum: "共" + projectMembers.length + "人",
+                memberNum: "共" + getProjectInfo.member_count + "人",
             });
         }
         return data;
@@ -60,15 +70,22 @@ class SelectedProInfo extends Component {
 
 
     render(){
-        const {projectMembers,getProjectInfo,visible} = this.props;
-        const dataSource = this.getDataSource(projectMembers,getProjectInfo);
+        const {getProjectInfo,visible} = this.props;
+        const dataSource = this.getDataSource(getProjectInfo);
         if(visible) {
             return (
                 <div style={{margin: 15}}>
+                    <Row>
                     <TableView columns={columns(this)}
                                dataSource={dataSource}
-                               loading={this.props.getProjectInfoLoading || this.props.projectMembersLoading}
-                    ></TableView>
+                               loading={this.props.getProjectInfoLoading}
+                    />
+                    </Row>
+                    <Row>
+                        {this.state.showProjectMember==true?(
+                            <ProjectMember node={node}/>
+                        ):(<div></div>)}
+                    </Row>
                 </div>
             )
         }else{
@@ -82,10 +99,10 @@ const columns = (self)=>[
     {title: "项目描述", dataIndex: "description", key: "description"},
     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
         render(text,record){
-            return <a >{text}</a>
+            return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
         }
     },
-    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+    {title: "当前里程碑结束时间", dataIndex: "next_milestom", key: "next_milestom"},
     {title: "项目状态", dataIndex: "state", key: "state"},
     {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
     {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
@@ -99,10 +116,9 @@ SelectedProInfo.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        loginInfo: state.login.profile,
         getProjectInfo:state.getProjectInfo.projectInfo,
         getProjectInfoLoading: state.getProjectInfo.loading,
-        projectMembers:state.getProjectMembers.projectMembers,
-        projectMembersLoading:state.getProjectMembers.loading,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
     }
 }
