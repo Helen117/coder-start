@@ -72,33 +72,34 @@ class Home extends React.Component {
         return (
              <Spin spinning={loading} tip="正在加载数据，请稍候...">
                 <Row className="ant-layout-content home-row">
-                    <Row style={{padding: 10}}>
+                   {/* <Row style={{padding: 10}}>
                         <Col span={24}>
                             <MyProjectStatus state={1}/>
                         </Col>
-                    </Row>
+                    </Row>*/}
                     <Row style={{padding: 10}}>
                         <Col span={24}>
                             <MyProjectRank rank={1}/>
                         </Col>
                     </Row>
                     <Row style={{padding: 10}}>
-                        <Col span={12}>
+                        <Col span={9} offset={3}>
                             <MyProjectProgress label="我在本里程碑未完成工作的百分比" percent={unfinished}/>
                         </Col>
-                        <Col span={12}>
+                        <Col span={9} offset={3}>
                             <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={finished}/>
                         </Col>
                     </Row>
                 </Row>
                 <Row>
-                    <Col span={12} style={{paddingRight: 5}}>
+                   <Col  style={{paddingRight: 5}}>
                         <MyIssueList timeLineData={this.props.myIssueList}
                                      viewDetailParams={params} viewDetailPath = '/project-mgr/myIssue' />
                     </Col>
+                    {/*
                     <Col span={12} style={{paddingLeft: 5}}>
                         <NewIssueList/>
-                    </Col>
+                    </Col>*/}
                 </Row>
                 </Spin>
         );
