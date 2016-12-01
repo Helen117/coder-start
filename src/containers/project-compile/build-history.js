@@ -90,13 +90,12 @@ class ProjectBuildHistory extends React.Component{
     }
 
     bgColor(status){
-        console.log("status:",status);
         let style={};
-        if (status == '2') {
+        if (status == 2) {
             style ={backgroundColor: "#ffb6c1",color:"red"};
-        }else if(status == '1'){
+        }else if(status == 1){
             style ={backgroundColor: "#f0fff0"};
-        }else if(status == '0'){
+        }else if(status == 0){
             style ={backgroundColor: "#6ADAFF"};
         }else{
             style ={backgroundColor: "#e9e9e9"};
@@ -155,7 +154,7 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         width: '10%',
         render(text,record){
             var  divStyle = self.bgColor(record.stageId_1_status);
-            if (record.stageId_1_status == '2') {
+            if (record.stageId_1_status == 2) {
                 return <div style={divStyle}>
                     <Tooltip placement="top" title={record.stageId_1_errorMsg}>
                         <span>{text}</span>
@@ -174,7 +173,7 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         render(text,record){
             var divStyleFun = self.bgColor.bind(self,record.stageId_100_status);
             var divStyle = divStyleFun();
-            if (record.stageId_100_status == '2') {
+            if (record.stageId_100_status == 2) {
                 return <div style={divStyle}>
                     <Tooltip placement="top" title={record.stageId_100_errorMsg}>
                         <span>{text}</span>
@@ -242,7 +241,7 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         width: '10%',
         render(text,record){
             var  divStyle = self.bgColor(record.stageId_200_status);
-            if (record.stageId_200_status == '2') {
+            if (record.stageId_200_status == 2) {
                 return <div style={divStyle}>
                     <Tooltip placement="top" title={record.stageId_200_errorMsg}>
                         <span>{text}</span>
