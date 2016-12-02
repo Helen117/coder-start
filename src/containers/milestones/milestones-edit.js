@@ -44,7 +44,7 @@ class ProjectSetMilestonesEdit extends React.Component {
         const {date,mode} = this.props.location.state;
         this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
-            pathname: "/ProjectSetTree/Milestones",
+            pathname: "/ProjectSetTree/projectSetMilestones",
         });
     }
 
