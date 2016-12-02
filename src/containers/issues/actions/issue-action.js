@@ -94,7 +94,7 @@ export function getMyIssue(data) {
     return {
         type: 'GET_MY_ISSUE',
         payload: {
-            promise: api.post('/project/my-issues',{
+            promise: api.post('/project/my-issue',{
                 data:data
             })
         }

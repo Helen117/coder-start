@@ -141,7 +141,7 @@ class App extends React.Component {
     }
 
     render() {
-        const items = this.props.notifyItems&&this.props.notifyItems.item.length>0?this.props.notifyItems.item:[0,0,0,0,0];
+        const items = this.props.notifyItems?this.props.notifyItems:{"todo":0,"milestone":0,"total":0,"examination":0};
 
         const {uid, profile} = this.props;
         //let realUid = uid?uid:authUtils.getUid();

@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification  } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification,Table,Input  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
@@ -24,14 +24,13 @@ class MyIssueList extends Component {
     }
 
     componentWillMount() {
-        const {actions,projectInfo,loginInfo,getUserAction} = this.props;
+        const {actions,loginInfo,getUserAction} = this.props;
         const {data} = this.props.location.state?this.props.location.state:'';
         var dataList ={};
         getUserAction.getAllUser();
         if(data){
             dataList = data;
         }else{
-            dataList.project_id=projectInfo?projectInfo.id:'';
             dataList.assigned_id=loginInfo.userId;
         }
         actions.getMyIssue(dataList);
@@ -44,20 +43,20 @@ class MyIssueList extends Component {
 
     componentWillReceiveProps(nextProps) {
         // console.log('nextProps:',nextProps);
-        const {actions,projectInfo,loginInfo,myIssueError} = this.props;
+        const {actions,loginInfo,myIssueError} = this.props;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
         }
-        const thisProId = projectInfo?projectInfo.id:'';
-        const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        // const thisProId = projectInfo?projectInfo.id:'';
+        // const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId!=''){
-            var data ={
-                project_id:nextProps.projectInfo.id,
-                assigned_id:loginInfo.userId,
-            };
-            actions.getMyIssue(data);
-        }
+        // if(thisProId != nextProId && nextProId!=''){
+        //     var data ={
+        //         project_id:nextProps.projectInfo.id,
+        //         assigned_id:loginInfo.userId,
+        //     };
+        //     actions.getMyIssue(data);
+        // }
 
         // if(myIssueError&&myIssueError!=this.props.myIssueError){
         //     // message.error('获取数据失败'+myIssueError,3);
@@ -79,12 +78,10 @@ class MyIssueList extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,projectInfo,form,loginInfo} = this.props;
+        const {actions,form,loginInfo} = this.props;
         const data = form.getFieldsValue();
         // console.log("查询条件：",data);
-
         var dataList ={
-            project_id:projectInfo?projectInfo.id:'',
             assigned_id:loginInfo.userId,
             author_id:data.author_name,
             state:data.state,
@@ -97,18 +94,38 @@ class MyIssueList extends Component {
     }
 
     editIssue(type, selectedRow) {
-        if (!this.props.projectInfo) {
-            notification.error({
-                message: '未选择项目',
-                description: '请先在“代码管理“中选择一个项目！',
-                duration: 2
-            });
-        } else {
-            this.context.router.push({
-                pathname: '/issueEdit',
-                state: {editType: type, selectedRow}
-            });
+        this.context.router.push({
+            pathname: '/issueEdit',
+            state: {editType: type, selectedRow}
+        });
+    }
+
+    issueNotes(records) {
+        records.title = records.issue_name;
+        this.context.router.push({
+            pathname: '/issueNotes',
+            state: {records}
+        });
+    }
+
+    dataSources(list){
+        if(list&&list.length>0){
+            for(var i=0;i<list.length;i++){
+                if(typeof(list[i].due_date)=="number") {
+                    list[i].due_date = new Date(parseInt(list[i].due_date)).toLocaleDateString();
+                    list[i].created_at = new Date(parseInt(list[i].created_at)).toLocaleDateString();
+
+                    if(list[i].type=='demand'){
+                        list[i].issueType ='需求';
+                    }else if(list[i].type=='defect'){
+                        list[i].issueType ='缺陷';
+                    }else{
+                        list[i].issueType ='bug';
+                    }
+                }
+            }
         }
+        return list;
     }
 
 
@@ -126,8 +143,17 @@ class MyIssueList extends Component {
                     <Panel header="查询条件" key="1">
                         <Form horizontal className={styles.ant_search_form} >
                             <Row gutter={16}>
-                                <Col sm={12}>
+                                <Col sm={9}>
 
+                                    <FormItem label="问题名称" {...formItemLayout}>
+                                        {getFieldDecorator('title')(<Input />)}
+                                    </FormItem>
+
+                                    <FormItem label="创建时间" {...formItemLayout}>
+                                        {getFieldDecorator('created_at')(<RangePicker size="default" />)}
+                                    </FormItem>
+                                </Col>
+                                <Col sm={9}>
                                     <FormItem label="状态" {...formItemLayout}>
                                         {getFieldDecorator('state')(<Select >
                                             <Option value="opened">打开</Option>
@@ -135,24 +161,23 @@ class MyIssueList extends Component {
                                             <Option value="reopened" >重开</Option>
                                         </Select>)}
                                     </FormItem>
-                                    <FormItem label="创建人"{...formItemLayout}>
-                                            {getFieldDecorator('author_name')(
-                                                <Select showSearch
-                                                        showArrow={false}
-                                                        placeholder="请选择创建人"
-                                                        optionFilterProp="children"
-                                                            notFoundContent="无法找到">
-                                                    {userInfo}
-                                                </Select>)
-                                            }
-                                    </FormItem>
-                                </Col>
-                                <Col sm={12}>
-                                    <FormItem label="创建时间" {...formItemLayout}>
-                                        {getFieldDecorator('created_at')(<RangePicker size="default" />)}
-                                    </FormItem>
+
                                     <FormItem label="计划完成时间" {...formItemLayout}>
                                         {getFieldDecorator('due_date')(<RangePicker size="default" />)}
+                                    </FormItem>
+                                </Col>
+
+                                <Col sm={6}>
+                                    <FormItem label="创建人"{...formItemLayout}>
+                                        {getFieldDecorator('author_name')(
+                                            <Select showSearch
+                                                    showArrow={false}
+                                                    placeholder="请选择创建人"
+                                                    optionFilterProp="children"
+                                                    notFoundContent="无法找到">
+                                                {userInfo}
+                                            </Select>)
+                                        }
                                     </FormItem>
                                 </Col>
                             </Row>
@@ -166,12 +191,11 @@ class MyIssueList extends Component {
                     </Panel>
                 </Collapse>
                 <Box title="我的问题列表信息" >
-                    <Button type="primary" onClick={this.editIssue.bind(this,'add',null)}>新增问题</Button>
-                    <IssueList  dataSource={this.props.issueList}
-                                loading={this.props.loading}
-                                loginInfo={this.props.loginInfo}
+                    <Table  columns={this.issueListColumns(this)} dataSource={this.dataSources(this.props.issueList)}
+                            bordered
+                            loading={this.props.loading}
                     >
-                    </IssueList>
+                    </Table>
                 </Box>
             </div>
         )
@@ -186,6 +210,75 @@ MyIssueList.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
+MyIssueList.prototype.issueListColumns = (self)=>[
+    {
+        title: '里程碑',
+        dataIndex: 'milestone_name',
+        width: '9%',
+    },{
+        title: '问题类型',
+        dataIndex: 'issueType',
+        width: '9%',
+        className:'columnClass',
+    },{
+        title: '问题名称',
+        dataIndex: 'issue_name',
+        width: '9%',
+        className:'columnClass',
+    },{
+        title: '问题标签',
+        dataIndex: 'labels',
+        width: '9%',
+        className:'columnClass',
+    }, {
+        title: '创建人',
+        dataIndex: 'author_name',
+        width: '9%',
+        className:'columnClass',
+    },{
+        title: '修复人',
+        dataIndex: 'assignee_name',
+        width: '9%',
+        className:'columnClass',
+    }, {
+        title: '问题创建时间',
+        dataIndex: 'created_at',
+        width: '9%',
+        className:'columnClass',
+    }, {
+        title: '计划完成时间',
+        dataIndex: 'due_date',
+        width: '9%',
+        className:'columnClass',
+    },{
+        title: '状态',
+        dataIndex: 'state',
+        width: '9%',
+        className:'columnClass',
+    },{
+        title: '项目',
+        dataIndex: 'project_name',
+        width: '9%',
+    },{
+        title: '项目集',
+        dataIndex: 'sets_name',
+        width: '9%',
+    }, {
+        title: '操作',
+        dataIndex: 'key',
+        width: '8%',
+        render: (text, record, index)=> {
+            let modifyStyle={'display':'none'};
+            if(record.author_id==self.props.loginInfo.userId){
+                modifyStyle={'display':''}
+            }
+            return <div>
+                <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+                <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+            </div>;
+        }
+    }];
+
 MyIssueList = Form.create()(MyIssueList);
 
 function mapStateToProps(state) {
@@ -193,7 +286,6 @@ function mapStateToProps(state) {
         issueList: state.issue.myIssueList,
         loading:state.issue.myIssueLoading,
         myIssueError:state.issue.myIssueError,
-        projectInfo:state.getProjectInfo.projectInfo,
         loginInfo:state.login.profile,
         user:state.register.users,
     };
