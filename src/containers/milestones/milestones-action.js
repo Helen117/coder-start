@@ -1,10 +1,37 @@
 /**
- * Created by zhaojp on 2016/9/14.
+ * Created by zhaojp on 2016/9/21.
  */
-import {ACQUIRE_MILESTONES,
+import api from '../../api';
+import {CREATE_MILESTONES,
+    UPDATE_MILESTONES,
+    ACQUIRE_MILESTONES,
     ACQUIRE_MILESTONES_ISSUES,
-    PUT_MILESTONES_PROID} from '../constants/milestones-action-types';
-import api from '../../../api';
+    PUT_MILESTONES_PROID} from './milestones-action-types'
+
+export function createMilestone(milestoneData) {
+    var path = '/project/create-milestone';
+    return {
+        type: CREATE_MILESTONES,
+        payload: {
+            promise: api.post(path, {
+                data: milestoneData
+            })
+        }
+    }
+}
+
+export function updateMilestone(milestoneData) {
+    var path = '/project/update-milestone';
+    return {
+        type: UPDATE_MILESTONES,
+        payload: {
+            promise: api.post(path, {
+                data: milestoneData,
+
+            })
+        }
+    }
+}
 
 export function getProjectSetMilestones(set_id, date,mode) {
     var path ='/project/milestones';

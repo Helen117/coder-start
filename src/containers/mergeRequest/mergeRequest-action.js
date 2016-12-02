@@ -1,14 +1,17 @@
 /**
- * Created by zhaojp on 2016/10/8.
+ * Created by zhaojp on 2016/10/21.
  */
-import api from '../../../api';
-import {FETCH_DATA,FETCH_TARGET_PROJECT,FETCH_ISSUES_DATA} from '../constants/action-types';
+import api from '../../api';
+import {FETCH_MR_LIST,
+    FETCH_MERGE_PATH,
+    FETCH_ISSUES_DATA,
+    CREATE_MR} from './action-types';
 
-export function fetchSourceProData(projectId) {
+export function fetchMrListData(projectId) {
     return {
-        type: 'FETCH_DATA',
+        type: 'FETCH_MR_LIST',
         payload: {
-            promise: api.post('/project/assign', {
+            promise: api.post('/project/list-mr', {
                 params: {
                     projectId: projectId
                 }
@@ -17,9 +20,10 @@ export function fetchSourceProData(projectId) {
     }
 }
 
+
 export function fetchMergeBranchData(projectId) {
     return {
-        type: 'FETCH_TARGET_PROJECT',
+        type: 'FETCH_MERGE_PATH',
         payload: {
             promise: api.post('/project/fork-info', {
                 params: {
@@ -43,6 +47,17 @@ export function fetchIssuesData(projectId,userId,state) {
                     assigned_id: userId,
                     state: state
                 }
+            })
+        }
+    }
+}
+
+export function createMr(data) {
+    return {
+        type: 'CREATE_MR',
+        payload: {
+            promise: api.post('/project/create-mr', {
+                data: data
             })
         }
     }

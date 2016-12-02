@@ -6,9 +6,7 @@ import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,mess
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as fetchMessageAction from './actions/fetch-datasource-action';
-import fetchMrListData from './actions/mergeRequest-list-action'
-import {createMr} from './actions/mergeRequest-edit-action';
+import {fetchMrListData,fetchMergeBranchData,fetchIssuesData,createMr} from './mergeRequest-action'
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -25,10 +23,9 @@ class CreateMergeRequest extends Component {
         if(this.props.getProjectInfo) {
             const projectId = this.props.getProjectInfo.id;
             const userId = this.props.loginInfo.userId;
-            this.props.fetchMessage.fetchMergeBranchData(projectId);
-            this.props.fetchMessage.fetchSourceProData(projectId);
+            this.props.fetchMergeBranchData(projectId);
             //获取当前项目本人的待办事项
-            this.props.fetchMessage.fetchIssuesData(projectId,userId,'opened');
+            this.props.fetchIssuesData(projectId,userId,'opened');
         }
     }
 
@@ -155,9 +152,7 @@ class CreateMergeRequest extends Component {
         }
 
         const initialTargetBranch = this.initialTargetBranch(initialSourceBranch,initialTargetBranchAll);
-        const mileStoneOptions =this.props.milestones? this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const issuesOptions = this.props.issues?this.props.issues.map(data => <Option key={data.id}>{data.title}</Option>):[];
-        const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
@@ -217,14 +212,8 @@ class CreateMergeRequest extends Component {
                             (<Select size="large" allowClear={true}>{issuesOptions}</Select>)}
                         </FormItem>
 
-                        <FormItem {...formItemLayout} label="MR标签" >
-                            {getFieldDecorator('labels')
-                            (<Select multiple size="large" >{label}</Select>)}
-                        </FormItem>
-
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading}
-                                    disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -242,23 +231,22 @@ CreateMergeRequest.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        milestones:state.fetchMergeData.milestones,
-        labels:state.fetchMergeData.labels,
-        isMR: state.fetchMergeBranchData.isMR,
-        mergeBranch : state.fetchMergeBranchData.mergeBranch,
+
+        mergeBranch : state.mergeRequest.mergeBranch,
         loginInfo:state.login.profile,
         getProjectInfo:state.getProjectInfo.projectInfo,
-        loading:state.createMr.loading,
-        disabled:state.createMr.disabled,
-        inserted: state.createMr.result,
-        issues: state.fetchIssuesData.Issues,
+        isMR: state.mergeRequest.isMR,
+        loading:state.mergeRequest.createLoading,
+        inserted: state.mergeRequest.createResult,
+        issues: state.mergeRequest.Issues,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
+        fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
+        fetchIssuesData : bindActionCreators(fetchIssuesData,dispatch),
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
-        fetchMessage : bindActionCreators(fetchMessageAction,dispatch),
         createMr: bindActionCreators(createMr,dispatch),
     }
 }
