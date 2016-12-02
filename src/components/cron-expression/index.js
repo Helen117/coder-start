@@ -86,20 +86,33 @@ class CronExpression extends React.Component{
         if (!cron){
             return '';
         }
+        let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
+        let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
         let cron_array = cron.split(' ');
-        let hour_temp = cron_array[1];
-        let minute_temp = cron_array[0];
-        let hour = hour_temp.split(',');
-        let minute = minute_temp.split(',');
-        let expression_desc_temp=[],expression_desc='';
-        for(let i=0; i<hour.length; i++){
-            for(let j=0; j<minute.length; j++){
-                expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
-            }
+        if(cron_array.length!=5){
+            return cron
         }
-        expression_desc = expression_desc_temp.join(' ');
-        expression_desc = '每天： '+expression_desc+' 执行';
-        return expression_desc;
+        if(cron_array[2]!='*' || cron_array[3]!='*'
+            || cron_array[4]!='*'){
+            return cron
+        }else if(!reg_minute.test(cron_array[0]) || !reg_hour.test(cron_array[1])){
+            return cron
+        }else{
+            let expression_desc=''
+            let hour_temp = cron_array[1];
+            let minute_temp = cron_array[0];
+            let hour = hour_temp.split(',');
+            let minute = minute_temp.split(',');
+            let expression_desc_temp=[];
+            for(let i=0; i<hour.length; i++){
+                for(let j=0; j<minute.length; j++){
+                    expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
+                }
+            }
+            expression_desc = expression_desc_temp.join(' ');
+            expression_desc = '每天： '+expression_desc+' 执行';
+            return expression_desc;
+        }
     }
 
     handleOk(){
