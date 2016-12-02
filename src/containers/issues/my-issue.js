@@ -83,6 +83,7 @@ class MyIssueList extends Component {
         // console.log("查询条件：",data);
         var dataList ={
             assigned_id:loginInfo.userId,
+            title:data.title,
             author_id:data.author_name,
             state:data.state,
             start:data.created_at&&data.created_at.length>0?data.created_at[0]:'',
@@ -100,11 +101,11 @@ class MyIssueList extends Component {
         });
     }
 
-    issueNotes(records) {
-        records.title = records.issue_name;
+    issueNotes(record) {
+        record.title = record.issue_name;
         this.context.router.push({
             pathname: '/issueNotes',
-            state: {records}
+            state: {record}
         });
     }
 
@@ -113,15 +114,16 @@ class MyIssueList extends Component {
             for(var i=0;i<list.length;i++){
                 if(typeof(list[i].due_date)=="number") {
                     list[i].due_date = new Date(parseInt(list[i].due_date)).toLocaleDateString();
+                }
+                if(typeof(list[i].created_at)=="number") {
                     list[i].created_at = new Date(parseInt(list[i].created_at)).toLocaleDateString();
-
-                    if(list[i].type=='demand'){
-                        list[i].issueType ='需求';
-                    }else if(list[i].type=='defect'){
-                        list[i].issueType ='缺陷';
-                    }else{
-                        list[i].issueType ='bug';
-                    }
+                }
+                if(list[i].type=='demand'){
+                    list[i].issueType ='需求';
+                }else if(list[i].type=='defect'){
+                    list[i].issueType ='缺陷';
+                }else{
+                    list[i].issueType ='bug';
                 }
             }
         }
@@ -268,13 +270,12 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         dataIndex: 'key',
         width: '8%',
         render: (text, record, index)=> {
-            let modifyStyle={'display':'none'};
-            if(record.author_id==self.props.loginInfo.userId){
-                modifyStyle={'display':''}
+            let style={'display':'none'};
+            if(record.project_id){
+                style={'display':''}
             }
             return <div>
-                <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
-                <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+                <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
             </div>;
         }
     }];
