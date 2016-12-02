@@ -36,17 +36,17 @@ import getProjectMembers from '../containers/project-mgr/reducers/project-member
 import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/milestones/reducers/edit-milestones-reducer'
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
-import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
+import {getUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
 import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
-import createUser from '../containers/user-relation/reducers/user-detail-reducer';
-import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
+import editUserRelation from '../containers/user-relation/reducers/user-detail-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
 import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
 import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/confirm-reducer';
 import {developTranspond,getTranspondMember} from '../containers/to-be-confirmed/reducers/transpond-reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
+import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
 
 const reducer = combineReducers({
     login,
@@ -96,11 +96,8 @@ const reducer = combineReducers({
     getUserInfo,
     getSelectNode,
     createUserGroup,
-    createUser,
-    getAllUserInfo,
-    AddSshKey,
+    editUserRelation,
     addProjectMember,
-    GetSshKeys,
     request,
     acqPerformanceMsg,
     acqMyIssueList,
@@ -117,6 +114,7 @@ const reducer = combineReducers({
     getTesterInfo,
     projectCompile,
     label,
+    UpdateUserInfo
 })
 
 

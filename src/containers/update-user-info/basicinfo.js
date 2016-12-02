@@ -6,12 +6,10 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, notification,Modal,Select} from 'antd';
 import 'pubsub-js';
-import {UpdateUser} from './actions/user-detail-action';
-import {getAllUserInfo} from './actions/user-info-action';
+import {UpdateUser,getAllUserInfo} from './actions/update-user-info-action';
 import {findEmailByUserId} from './utils';
 
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 const Option = Select.Option;
 
 class UpdateBasicInfo extends React.Component {
@@ -47,21 +45,19 @@ class UpdateBasicInfo extends React.Component {
     }
 
     insertCallback(message){
-        const {form} = this.props;
         notification.success({
             message: message,
             description: '',
             duration: null
         });
-//        form.resetFields();
     }
 
     componentWillReceiveProps(nextProps) {
-        const {updateResult} = nextProps;
+        const {UserInfo} = nextProps;
         const {visible} = this.props;
         //修改返回信息
-        if(visible == true){
-            if (this.props.updateResult != updateResult && updateResult) {
+        if(visible == true && this.props.UserInfo && UserInfo){
+            if (this.props.UserInfo.updateResult != UserInfo.updateResult && UserInfo.updateResult) {
                 this.insertCallback("修改成功");
             }
         }
@@ -81,7 +77,7 @@ class UpdateBasicInfo extends React.Component {
     }
 
     render() {
-        const {visible,loginInfo,allUserInfo} = this.props;
+        const {visible,loginInfo,AllUserInfo} = this.props;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
@@ -100,8 +96,10 @@ class UpdateBasicInfo extends React.Component {
 
         if(visible == true){
             let initEmail = '';
-            if(allUserInfo){
-                initEmail = findEmailByUserId(loginInfo.userId,allUserInfo);
+            if(AllUserInfo){
+                if(AllUserInfo.allUserInfo){
+                    initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
+                }
             }
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -142,11 +140,8 @@ UpdateBasicInfo = Form.create()(UpdateBasicInfo);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        updateResult:state.createUser.updateResult,
-        updateErrors:state.createUser.updateErrors,
-        updateLoading:state.createUser.updateLoading,
-        updateDisabled:state.createUser.updateDisabled,
-        allUserInfo:state.getAllUserInfo.allUserInfo,
+        UserInfo:state.UpdateUserInfo.UserInfo,
+        AllUserInfo:state.UpdateUserInfo.AllUserInfo,
     }
 }
 

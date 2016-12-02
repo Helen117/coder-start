@@ -4,22 +4,16 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, notification,Modal,Row,Col,Icon,Collapse} from 'antd';
+import {Form, Input, notification,Modal,Row,Col,Icon,Collapse} from 'antd';
 import 'pubsub-js';
-import {AddSshKey,GetSshKeys,DeleteSshKeys} from './actions/ssh-key-action';
-import styles from './index.css';
+import {GetSshKeys,DeleteSshKeys} from './actions/update-user-info-action';
 
-const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const Panel = Collapse.Panel;
 
 class SshKeyList extends React.Component {
     constructor(props) {
         super(props);
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
     }
 
     insertCallback(message){
@@ -33,14 +27,6 @@ class SshKeyList extends React.Component {
         actions.GetSshKeys(loginInfo.userId)
     }
 
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration: null
-        });
-    }
-
     componentWillMount(){
         const {loginInfo,actions} = this.props;
         //调展示sshkey接口
@@ -48,12 +34,12 @@ class SshKeyList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteResult, deleteErrors} = nextProps;
+        const {DeleteSshkey} = nextProps;
         //删除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult) {
-            this.insertCallback("删除成功");
-        /*} else if (this.props.deleteErrors != deleteErrors && deleteErrors) {
-            this.errCallback("删除失败",deleteErrors);*/
+        if(this.props.DeleteSshkey && DeleteSshkey){
+            if (this.props.DeleteSshkey.deleteResult != DeleteSshkey.deleteResult && DeleteSshkey.deleteResult) {
+                this.insertCallback("删除成功");
+            }
         }
     }
 
@@ -71,23 +57,25 @@ class SshKeyList extends React.Component {
     }
 
     render() {
-        const {sshkeys} = this.props;
+        const {GetSshkey} = this.props;
         let keyProps = (<Panel></Panel>);
-        if(sshkeys){
-            keyProps = sshkeys.map((item)=>{
-                let panelTitle = (
-                    <div style={{fontSize:14}}>
-                        <Col span={21}>{item.title}</Col>
-                        <Col span={1}></Col>
-                        <Col span={1}>
-                            <Icon type="delete" onClick={this.deleteSshKey.bind(this,item.id)}/>
-                        </Col>
-                    </div>
-                );
-                return (<Panel header={panelTitle} key={item.id} >
-                    <Input type="textarea" value={item.key} rows="4" readOnly />
-                </Panel>)
-            })
+        if(GetSshkey){
+            if(GetSshkey.getResult){
+                keyProps = GetSshkey.getResult.map((item)=>{
+                    let panelTitle = (
+                        <div style={{fontSize:14}}>
+                            <Col span={21}>{item.title}</Col>
+                            <Col span={1}></Col>
+                            <Col span={1}>
+                                <Icon type="delete" onClick={this.deleteSshKey.bind(this,item.id)}/>
+                            </Col>
+                        </div>
+                    );
+                    return (<Panel header={panelTitle} key={item.id} >
+                        <Input type="textarea" value={item.key} rows="4" readOnly />
+                    </Panel>)
+                })
+            }
         }
 
         return(
@@ -115,20 +103,14 @@ SshKeyList = Form.create()(SshKeyList);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        sshkeys:state.GetSshKeys.Result,
-        Errors:state.GetSshKeys.Errors,
-        Loading:state.GetSshKeys.Loading,
-        Disabled:state.GetSshKeys.Disabled,
-        deleteResult:state.AddSshKey.deleteResult,
-        deleteErrors:state.AddSshKey.deleteErrors,
-        deleteLoading:state.AddSshKey.deleteLoading,
-        deleteDisabled:state.AddSshKey.deleteDisabled,
+        GetSshkey:state.UpdateUserInfo.GetSshkey,
+        DeleteSshkey:state.UpdateUserInfo.DeleteSshkey,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({AddSshKey,GetSshKeys,DeleteSshKeys}, dispatch)
+        actions: bindActionCreators({GetSshKeys,DeleteSshKeys}, dispatch)
     }
 }
 

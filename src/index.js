@@ -45,8 +45,7 @@ import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
-import UpdateUserInfo from './containers/user-relation/user-detail';
-import UpdatePassword from './containers/user-relation/update-password';
+import UpdateUserInfo from './containers/update-user-info';
 import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
@@ -131,9 +130,7 @@ ReactDOM.render(
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
-                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}>
-                            <Route name="updatePassword" breadcrumbName="修改密码" path="updatePassword" component={UpdatePassword}/>
-                        </Route>
+                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
 
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>

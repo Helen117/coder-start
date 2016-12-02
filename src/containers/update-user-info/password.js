@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, Input, Button, notification,Modal} from 'antd';
 import 'pubsub-js';
-import {UpdateUser} from './actions/user-detail-action';
+import {UpdateUser} from './actions/update-user-info-action';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -52,20 +52,12 @@ class UpdatePassword extends React.Component {
         form.resetFields();
     }
 
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration:null,
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-        const {updateResult} = nextProps;
+        const {UserInfo} = nextProps;
         const {visible} = this.props;
         //修改返回信息
-        if(visible == true){
-            if (this.props.updateResult != updateResult && updateResult) {
+        if(visible == true && this.props.UserInfo && UserInfo){
+            if (this.props.UserInfo.updateResult != UserInfo.updateResult && UserInfo.updateResult) {
                 this.insertCallback("修改成功");
             }
         }
@@ -143,10 +135,7 @@ UpdatePassword = Form.create()(UpdatePassword);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        updateResult:state.createUser.updateResult,
-        updateErrors:state.createUser.updateErrors,
-        updateLoading:state.createUser.updateLoading,
-        updateDisabled:state.createUser.updateDisabled,
+        UserInfo:state.UpdateUserInfo.UserInfo,
     }
 }
 
