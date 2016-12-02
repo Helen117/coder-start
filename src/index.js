@@ -90,7 +90,6 @@ ReactDOM.render(
                             <Route name="projectMgrSub" breadcrumbName="项目列表" path="project-mgr-sub" component={ProjectMgrSub}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={ProjectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
-                            <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={BranchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={MergeRequestList}/>
                             <Route name="codeFile" breadcrumbName="项目代码" path="code-file" component={CodeFiles}>
@@ -101,6 +100,8 @@ ReactDOM.render(
                             <Route name="projectBuildHistory" path="project-build-history" component={ProjectBuildHistory}/>
 
                         </Route>
+                        <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
+
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
