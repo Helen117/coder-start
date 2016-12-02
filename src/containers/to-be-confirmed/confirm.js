@@ -38,6 +38,7 @@ const FormItem = Form.Item;
      }
 
     handleChange(targetKeys){
+        console.log('handleChange',targetKeys)
         this.targetKeys = targetKeys;
     }
 
