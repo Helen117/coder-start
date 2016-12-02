@@ -76,25 +76,11 @@ class ProjectList extends Component {
     }
 
     getDataSource(groupInfo){
-        const {fetchGroupMembers, groupMembers} = this.props;
         let dataSource = [];
         for(var i=0;i<groupInfo.children.length;i++){
-            var manager = "";
-            if(fetchGroupMembers || false){
-                if(groupInfo.id.indexOf("_g")<0){
-                    for(var j=0;j<groupMembers.length;j++){
-                        if(groupInfo.children[i].creatorId == groupMembers[j].id){
-                            manager = groupMembers[j].name;
-                        }
-                    }
-                }else{
-                    manager = "";
-                }
-            }
             dataSource.push({
                 key:i+1,
                 projectName:groupInfo.children[i].name,
-                manager:manager,
                 owner:groupInfo.children[i].owner,
             });
         }
@@ -122,7 +108,7 @@ class ProjectList extends Component {
                     <Row>
                         <Col span={4}>项目组名称:{getGroupInfo.name}</Col>
                         <Col span={4}>项目组创建人：{getGroupInfo.owner}</Col>
-                        <Col span={4}>项目组创建目的:{getGroupInfo.description}</Col>
+                        <Col span={16}>项目组创建目的:{getGroupInfo.description}</Col>
                     </Row>
                 ):(<div></div>);
                 return (
@@ -164,8 +150,7 @@ ProjectList.contextTypes = {
 
 ProjectList.prototype.groupColumns = (self)=>[
     {title: "项目名称", dataIndex: "projectName", key: "projectName"},
-    {title: "当前项目经理", dataIndex: "manager", key: "manager"},
-    {title: "owner", dataIndex: "owner", key: "owner"},
+    {title: "项目创建人", dataIndex: "owner", key: "owner"},
     {title:"操作",dataIndex:"operate",key:"operate",
         render(text,record){
             return (
@@ -183,8 +168,6 @@ ProjectList = Form.create()(ProjectList);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        groupMembers:state.getGroupMembers.groupMembers,
-        fetchGroupMembers:state.getGroupMembers.fetchStatus,
         treeData: state.getGroupTree.treeData,
         getGroupInfo:state.getGroupInfo.groupInfo,
         deleteResult:state.createProject.deleteResult,

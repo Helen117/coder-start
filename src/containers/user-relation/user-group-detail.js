@@ -41,7 +41,7 @@ class UserGroupDetail extends React.Component {
                 data.owner_id = loginInfo.userId;
                 data.reason = formData.reason;
                 data.parent_id = this.state.selectedUserGroup;
-                data.leaderId = formData.leader_id;
+                data.leader_id = formData.leader_id;
                 if(editType == 'add'){
                     //调创建组织的接口
                     actions.createUserGroup(data);
