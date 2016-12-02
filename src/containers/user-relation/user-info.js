@@ -171,7 +171,16 @@ class UserInfo extends React.Component {
                     onSelected(user_ids);
                 }
             },
-            onSelectAll(selected, selectedRows, changeRows) {},
+            onSelectAll(selected, selectedRows, changeRows) {
+                if(onSelected){
+                    let user_ids = [];
+                    for(let i=0; i<selectedRows.length; i++){
+                        let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
+                        user_ids.push(_id);
+                    }
+                    onSelected(user_ids);
+                }
+            },
         };
         let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
