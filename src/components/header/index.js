@@ -62,7 +62,7 @@ export default class Header extends React.Component {
         }
         console.log('data:',data);
         this.context.router.push({
-            pathname: '/project-mgr/myIssue',
+            pathname: '/myIssue',
             state: {data}
         });
     }
@@ -85,12 +85,11 @@ export default class Header extends React.Component {
                 </Col>
                 <Col span={15} className="pending-item">
                     <p>
-                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span><a onClick={this.todoList.bind(this,'today')} style={{color: 'red'}}>{this.props.items[0]}</a></span> 项，
-                        当前里程碑还有待办事宜 <span><a onClick={this.todoList.bind(this,'milestone')} style={{color: 'red'}}>{this.props.items[1]}</a></span> 项，共有待办事宜 <span><a onClick={this.todoList.bind(this,'')} style={{color: 'red'}}>{this.props.items[2]}</a></span> 项
+                        你好：<span>{username}</span> &nbsp;&nbsp;您今日有待办事宜 <span><a onClick={this.todoList.bind(this,'today')} style={{color: 'red'}}>{this.props.items.todo}</a></span> 项，
+                        当前里程碑还有待办事宜 <span><a onClick={this.todoList.bind(this,'milestone')} style={{color: 'red'}}>{this.props.items.milestone}</a></span> 项，共有待办事宜 <span><a onClick={this.todoList.bind(this,'')} style={{color: 'red'}}>{this.props.items.total}</a></span> 项，
                     </p>
                     <p>
-                        当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{this.props.items[3]}</a></span> 项待审批事项，
-                        <span><a onClick={this.confirmList.bind(this)} style={{color: 'red'}}>{this.props.items[4]}</a></span> 项待确认事项
+                        当前您有 <span><a onClick={this.approveList.bind(this)} style={{color: 'red'}}>{this.props.items.examination}</a></span> 项待确认事项
                     </p>
                 </Col>
                 <Col span={2}>
