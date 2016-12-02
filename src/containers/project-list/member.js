@@ -181,7 +181,7 @@ class ProjectMember extends Component {
         const projectDesc = projectInfo?(
             <Row>
                 <Col span={8}>项目名称:{projectInfo.name}</Col>
-                <Col span={5}>项目创建时间:{this.transformDate(projectInfo.created_at)}</Col>
+                <Col span={5}>项目创建时间:{this.transformDate(projectInfo.create_date)}</Col>
                 <Col span={11}>项目创建目的:{projectInfo.description}</Col>
             </Row>
         ):(<div></div>);
