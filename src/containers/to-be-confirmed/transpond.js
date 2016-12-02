@@ -19,7 +19,7 @@ class DevelopTransPond extends Component {
     }
 
     componentWillMount() {
-        const id = this.props.location.state.id
+        const id = this.props.id
         //this.props.getTranspondMemberAction(id)
     }
 
@@ -30,7 +30,6 @@ class DevelopTransPond extends Component {
     handleSubmit(e){
         e.preventDefault();
         const {form,logInfo } = this.props;
-        const {editType,item} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -56,19 +55,19 @@ class DevelopTransPond extends Component {
     }
 
     render(){
-
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
 
-        return(
-            <Box title="需求转派">
+        if(this.props.showTranspod) {
+            return (
+                /*   <Box title="需求转派">*/
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="转派给">
                         {getFieldDecorator('assigne', {rules: [{required: true, message: '请选择要转派的人'}]})
-                        (<Select showSearch optionFilterProp="children"  placeholder="请选择要转派的人" >
+                        (<Select showSearch optionFilterProp="children" placeholder="请选择要转派的人">
                             <Option key="1">dfer</Option>
                             <Option key="2">222</Option>
                         </Select>)}
@@ -80,12 +79,16 @@ class DevelopTransPond extends Component {
                     </FormItem>
 
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                        <Button type="primary" htmlType="submit" loading={this.props.loading}
+                                disabled={this.props.disabled}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
-            </Box>
-        )
+                /*</Box>*/
+            )
+        }else{
+            return null;
+        }
     }
 }
 

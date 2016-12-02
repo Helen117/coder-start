@@ -37,9 +37,12 @@ class ApproveList extends Component {
     // }
 
     approveDetail(record, index){
-        // console.log(record);
+        let pathName = '';
+        if(record.type=='领导审批'){
+            pathName = '/approveRegister';
+        }
         this.context.router.push({
-            pathname: '/approveRegister',
+            pathname: pathName,
             state: {record}
         });
 

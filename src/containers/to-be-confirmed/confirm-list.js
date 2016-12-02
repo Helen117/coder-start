@@ -6,16 +6,23 @@ import { Table,message,notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import {getConfirmList} from './actions/confirm-list-action'
+import {getConfirmList} from './actions/confirm-list-action';
+import DevelopTransPond from './transpond';
+import DevelopConfirm from './confirm';
+
 
 class ConfirmList extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            showTranspod:false,
+            showConfirm:true
+        };
     }
 
     componentWillMount() {
-        this.props.getConfirmListAction(this.props.loginInfo.userId);
+        //this.props.getConfirmListAction(this.props.loginInfo.userId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -23,18 +30,18 @@ class ConfirmList extends Component {
     }
 
     accept(record){
-        console.log('record',record)
-        this.context.router.push({
-            pathname: '/confirmOperate',
-            state: {record}
-        });
+        this.setState({
+            showTranspod:false,
+            showConfirm:true
+        })
     }
 
+
     transpond(record){
-        this.context.router.push({
-            pathname: '/transpondOperate',
-            state: {record}
-        });
+        this.setState({
+            showTranspod:true,
+            showConfirm:false
+        })
     }
 
     handleOk(){
@@ -58,9 +65,9 @@ class ConfirmList extends Component {
     }
 
     render() {
+        //console.log('this.state.showTranspod',this.state.showTranspod,this.state.showConfirm)
         const confirmList = this.props.confirmList;
         const loading = this.props.loading?this.props.loading:false;
-        //const data = this.getDataSource(confirmList);
         const pagination = {
             pageSize:20,
             // total: data.length,
@@ -83,6 +90,8 @@ class ConfirmList extends Component {
                        pagination={pagination}
                        loading={this.props.loading}
                 />
+                <DevelopTransPond showTranspod={this.state.showTranspod} />
+                <DevelopConfirm showConfirm={this.state.showConfirm}/>
             </Box>
         );
     }

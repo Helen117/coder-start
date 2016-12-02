@@ -83,6 +83,9 @@ class CronExpression extends React.Component{
     }
 
     formatCronexpression(cron){
+        if (!cron){
+            return '';
+        }
         let cron_array = cron.split(' ');
         let hour_temp = cron_array[1];
         let minute_temp = cron_array[0];
@@ -207,4 +210,5 @@ class CronExpression extends React.Component{
     }
 }
 
-export default CronExpression = Form.create()(CronExpression);
+
+export default CronExpression = Form.create({withRef:true})(CronExpression);
