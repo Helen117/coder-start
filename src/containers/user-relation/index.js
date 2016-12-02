@@ -28,7 +28,6 @@ class UserRelation extends React.Component{
 
     componentDidMount(){
         const {userTreeData, selectedNode,loginInfo} = this.props;
-        console.log('userId:',loginInfo.userId)
         PubSub.subscribe("evtRefreshUserGroupTree",()=>this.props.getUserRelationTree(loginInfo.userId));
         if(userTreeData.length == 0){
             this.props.getUserRelationTree(loginInfo.userId);

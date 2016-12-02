@@ -82,11 +82,29 @@ class CronExpression extends React.Component{
         })
     }
 
+    formatCronexpression(cron){
+        let cron_array = cron.split(' ');
+        let hour_temp = cron_array[1];
+        let minute_temp = cron_array[2];
+        let hour = hour_temp.split(',');
+        let minute = minute_temp.split(',');
+        let expression_desc_temp=[],expression_desc='';
+        for(let i=0; i<hour.length; i++){
+            for(let j=0; j<minute.length; j++){
+                expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
+            }
+        }
+        expression_desc = expression_desc_temp.join(' ');
+        expression_desc = '每天： '+expression_desc+' 执行';
+        return expression_desc;
+    }
+
     handleOk(){
         this.setState({
             visible:false
         })
         const {getFieldsValue} = this.props.form;
+        const {setCron} = this.props;
         let formData = getFieldsValue();
         let final_expression='',expression_desc='';
         if(this.state.radioValue == 1){
@@ -102,7 +120,6 @@ class CronExpression extends React.Component{
                 }
                 expression_desc = expression_desc_temp.join(' ');
                 expression_desc = '每天： '+expression_desc+' 执行';
-                console.log('expression_desc:',expression_desc)
                 hour = formData.hour.join();
                 minute = formData.minute.join();
                 let cronExpression = [];
@@ -112,10 +129,10 @@ class CronExpression extends React.Component{
             }
         }else if(this.state.radioValue == 2){
             final_expression = formData.expression;
+            expression_desc = formData.expression;
         }
-        const {setCron} = this.props;
         if(setCron){
-            setCron(final_expression);
+            setCron(final_expression,expression_desc);
         }
     }
 
@@ -189,5 +206,6 @@ class CronExpression extends React.Component{
         )
     }
 }
+
 
 export default CronExpression = Form.create()(CronExpression);

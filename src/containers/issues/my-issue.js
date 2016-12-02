@@ -139,7 +139,7 @@ class MyIssueList extends Component {
                                             {getFieldDecorator('author_name')(
                                                 <Select showSearch
                                                         showArrow={false}
-                                                        placeholder="请选择人员"
+                                                        placeholder="请选择创建人"
                                                         optionFilterProp="children"
                                                             notFoundContent="无法找到">
                                                     {userInfo}

@@ -26,8 +26,6 @@ class ProjectItem extends Component {
         super(props);
         this.state = {
             showProjectMember:false,
-            groupInfo_member:null,
-            projectInfo_member:null
         };
     }
 
@@ -139,12 +137,10 @@ class ProjectItem extends Component {
 
     memberCountClick(record){
         //调member接口
-        const { getProjectInfo,getGroupInfo } = this.props;
+        const { getProjectInfo } = this.props;
         this.props.getProjectMembers(getProjectInfo.id);
         this.setState({
             showProjectMember:true,
-            groupInfo_member:getGroupInfo,
-            projectInfo_member:getProjectInfo
         })
     }
 
@@ -218,9 +214,7 @@ class ProjectItem extends Component {
                     </Row>
                     <Row>
                         {this.state.showProjectMember==true?(
-                            <ProjectMember groupInfo={this.state.groupInfo_member}
-                                           projectInfo={this.state.projectInfo_member}
-                                           node={node}/>
+                            <ProjectMember />
                         ):(<div></div>)}
                     </Row>
                 </div>

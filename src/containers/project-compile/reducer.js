@@ -16,7 +16,10 @@ import {
     PROJECT_COMPILE_SAVE_JOB_ERROR,
     PROJECT_COMPILE_BUILD_JOB_PENDING,
     PROJECT_COMPILE_BUILD_JOB_SUCCESS,
-    PROJECT_COMPILE_BUILD_JOB_ERROR
+    PROJECT_COMPILE_BUILD_JOB_ERROR,
+    PROJECT_COMPILE_BUILD_LIST_PENDING,
+    PROJECT_COMPILE_BUILD_LIST_SUCCESS,
+    PROJECT_COMPILE_BUILD_LIST_ERROR
 } from './action';
 
 const initialState = {
@@ -63,6 +66,17 @@ export default function projectCompile(state = initialState, action = {}) {
                 buildLoading:false
             };
 
+        //get build list
+        case PROJECT_COMPILE_BUILD_LIST_PENDING:
+            return {...state, buildList:{isLoading:true}};
+        case PROJECT_COMPILE_BUILD_LIST_SUCCESS:
+            return {...state, buildList: {...action.payload, isLoading:false}};
+        case PROJECT_COMPILE_BUILD_LIST_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                buildList:{isLoading:false}
+            };
 
         default:
             return state;
