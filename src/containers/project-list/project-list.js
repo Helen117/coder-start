@@ -17,6 +17,7 @@ import styles from './index.css';
 import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
 import {setProjectDelete} from '../project-mgr/actions/create-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
+import {getGroupInfo} from '../project-mgr/actions/select-treenode-action';
 
 class ProjectList extends Component {
     constructor(props) {
@@ -37,13 +38,18 @@ class ProjectList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { deleteResult } = nextProps;
+        const { deleteResult, treeData } = nextProps;
         //删除返回信息
         if (this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
             });
             this.insertCallback('删除成功!');
+        }
+        //删除更新项目组信息
+        if (this.props.treeData != treeData && treeData.length>0){
+            let resetGroupInfo = searchGroupByGroupId(this.props.getGroupInfo.id,treeData);
+            this.props.setGroupInfo(resetGroupInfo, this.props.selectedNode,this.props.node);
         }
     }
 
@@ -173,6 +179,8 @@ function mapStateToProps(state) {
         deleteResult:state.createProject.deleteResult,
         deleteErrors:state.createProject.deleteErrors,
         deleteLoading:state.createProject.deleteLoading,
+        selectedNode:state.getGroupInfo.selectedNode,
+        node:state.getGroupInfo.node,
     }
 }
 
@@ -180,6 +188,7 @@ function mapDispatchToProps(dispatch) {
     return {
         setProjectDelete:bindActionCreators(setProjectDelete, dispatch),
         getGroupTree: bindActionCreators(getGroupTree, dispatch),
+        setGroupInfo:bindActionCreators(getGroupInfo, dispatch),
     }
 }
 
