@@ -88,12 +88,21 @@ class CronExpression extends React.Component{
         })
         const {getFieldsValue} = this.props.form;
         let formData = getFieldsValue();
-        let final_expression=''
+        let final_expression='',expression_desc='';
         if(this.state.radioValue == 1){
             let hour,minute;
             if(formData.hour.length==0 || formData.minute.length==0){
                 final_expression=''
             }else{
+                let expression_desc_temp = [];
+                for(let i=0; i<formData.hour.length; i++){
+                    for(let j=0; j<formData.minute.length; j++){
+                        expression_desc_temp.push(formData.hour[i]+'点'+formData.minute[j]+'分')
+                    }
+                }
+                expression_desc = expression_desc_temp.join(' ');
+                expression_desc = '每天： '+expression_desc+' 执行';
+                console.log('expression_desc:',expression_desc)
                 hour = formData.hour.join();
                 minute = formData.minute.join();
                 let cronExpression = [];

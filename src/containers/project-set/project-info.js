@@ -11,16 +11,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
-import {getProjectMembers} from '../project-mgr/actions/project-members-action'
 
 const Option = Select.Option;
 
 class SelectedProInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            showProjectMember:false,
-        };
     }
 
     componentDidMount() {
@@ -48,14 +44,6 @@ class SelectedProInfo extends Component {
         }
     }
 
-    memberCountClick(record,groupInfo,projectInfo){
-        //调memberData接口
-
-        this.setState({
-            showProjectMember:true,
-        })
-    }
-
     getDataSource(getProjectInfo) {
         const data = [];
         if (getProjectInfo ) {
@@ -75,17 +63,10 @@ class SelectedProInfo extends Component {
         if(visible) {
             return (
                 <div style={{margin: 15}}>
-                    <Row>
                     <TableView columns={columns(this)}
                                dataSource={dataSource}
                                loading={this.props.getProjectInfoLoading}
-                    />
-                    </Row>
-                    <Row>
-                        {this.state.showProjectMember==true?(
-                            <ProjectMember node={node}/>
-                        ):(<div></div>)}
-                    </Row>
+                    ></TableView>
                 </div>
             )
         }else{
@@ -99,10 +80,10 @@ const columns = (self)=>[
     {title: "项目描述", dataIndex: "description", key: "description"},
     {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
         render(text,record){
-            return <a onClick={self.memberCountClick.bind(self,record,groupInfo,projectInfo)}>{text}</a>
+            return <a >{text}</a>
         }
     },
-    {title: "当前里程碑结束时间", dataIndex: "next_milestom", key: "next_milestom"},
+    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
     {title: "项目状态", dataIndex: "state", key: "state"},
     {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
     {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
@@ -126,7 +107,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
-        getProjectMembersAction: bindActionCreators(getProjectMembers, dispatch),
     }
 }
 
