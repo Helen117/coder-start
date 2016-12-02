@@ -54,7 +54,9 @@ class ProjectCompile extends React.Component{
             }
         }
         if (jobInfo && jobInfo != this.props.jobInfo){
-            setFieldsValue({trigger:jobInfo.trigger, triggerDesc: this.formatCronexpression(jobInfo.trigger)});
+            //const triggerDesc = this.refs.cron.formatCronexpression(jobInfo.trigger);
+            const triggerDesc = this.refs.cron.refs.wrappedComponent.refs.formWrappedComponent.formatCronexpression(jobInfo.trigger);
+            setFieldsValue({trigger:jobInfo.trigger, triggerDesc: triggerDesc});
             if (jobInfo.pipelineScript){
                 this.refs.editor.getCodeMirror().setValue(jobInfo.pipelineScript);
             }else{
@@ -89,27 +91,6 @@ class ProjectCompile extends React.Component{
     }
     componentDidUpdate(prevProps, prevState){
     }
-
-    formatCronexpression(cron){
-        if (cron){
-            let cron_array = cron.split(' ');
-            let hour_temp = cron_array[1];
-            let minute_temp = cron_array[0];
-            let hour = hour_temp.split(',');
-            let minute = minute_temp.split(',');
-            let expression_desc_temp=[],expression_desc='';
-            for(let i=0; i<hour.length; i++){
-                for(let j=0; j<minute.length; j++){
-                    expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
-                }
-            }
-            expression_desc = expression_desc_temp.join(' ');
-            expression_desc = '每天： '+expression_desc+' 执行';
-            return expression_desc;
-        }
-        return '';
-    }
-
 
     updateCode(newCode) {
         // this.setState({
