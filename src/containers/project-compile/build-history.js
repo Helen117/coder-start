@@ -9,10 +9,10 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col} from 'antd';
+import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col, Popover} from 'antd';
 import Box from '../../components/box';
 import './build-history.less';
-import {getBuildList} from './action';
+import {getBuildList, getCodeChanges} from './action';
 import 'pubsub-js';
 
 class ProjectBuildHistory extends React.Component{
@@ -69,7 +69,6 @@ class ProjectBuildHistory extends React.Component{
                     dataSources.lastTimeGitCommitId=list.rows.length-i>1?list.rows[i+1].gitCommitId:'';
                     if(list.rows[i].buildDetails&&list.rows[i].buildDetails.length>0){
                         dataSources.startTime=list.rows[i].buildDetails[0].startTime;
-                        dataSources.gitCommitId=list.rows[i].buildDetails[0].gitCommitId;
                         dataSources.commit = "changes";
                         for(let j=0;j<list.rows[i].buildDetails.length;j++){
                             let stageId = "stageId_"+list.rows[i].buildDetails[j].stageId;
@@ -85,7 +84,6 @@ class ProjectBuildHistory extends React.Component{
                 }
             }
         }
-        // console.log('data:',data);
         return data;
     }
 
@@ -153,6 +151,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'stageId_1',
         width: '10%',
         render(text,record){
+            console.log(record);
+            getCodeChanges(record.projectId, record.gitCommitId, record.lastTimeGitCommitId);
             var  divStyle = self.bgColor(record.stageId_1_status);
             if (record.stageId_1_status == 2) {
                 return <div style={divStyle}>
@@ -161,8 +161,11 @@ ProjectBuildHistory.prototype.columns = (self)=>[
                     </Tooltip>
                 </div>
             }
+            const commitDetail = (<div>test</div>);
             return <div style={divStyle}>
-                <span>{text}</span>
+                <Popover content={commitDetail} title="代码变更记录">
+                    <span>{text}</span>
+                </Popover>
             </div>
         }
     },
@@ -278,7 +281,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getBuildList: bindActionCreators(getBuildList, dispatch)
+        getBuildList: bindActionCreators(getBuildList, dispatch),
+        getCodeChanges: bindActionCreators(getCodeChanges, dispatch)
     }
 }
 

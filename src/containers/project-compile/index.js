@@ -36,7 +36,8 @@ class ProjectCompile extends React.Component{
     componentDidMount(){
         const {selectNode, getJob} = this.props;
         if (selectNode && selectNode.isProject){
-            getJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
+            let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
+            getJob(jobName + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
         }
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
@@ -131,7 +132,8 @@ class ProjectCompile extends React.Component{
     selectProject(msg, data){
         if (data.isProject){
             //this.setState({isProject: true});
-            this.props.getJob(data.node.name + '_' + data.node.id.substr(0,data.node.id.length-2));
+            let jobName = data.node.name.substr(data.node.name.lastIndexOf('/')+1);
+            this.props.getJob(jobName + '_' + data.node.id.substr(0,data.node.id.length-2));
         }else{
             //this.setState({isProject: false});
         }
