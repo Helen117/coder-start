@@ -7,7 +7,7 @@ import IssuesList from '../../components/issues-list';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getMilestonesIssues,getSetMilestonesIssues} from './actions/milestones-action';
+import {getMilestonesIssues,getSetMilestonesIssues} from './milestones-action';
 
 import './index.less';
 
@@ -50,8 +50,8 @@ ProjectSetMilestonesDetail.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        milestoneDetail: state.getMilestonesIssues.milestoneIssues,
-        loading:state.getMilestonesIssues.loading,
+        milestoneDetail: state.milestones.milestoneIssues,
+        loading:state.milestones.acqIssuesLoading,
         loginInfo:state.login.profile,
     };
 }

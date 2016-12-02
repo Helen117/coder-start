@@ -7,8 +7,7 @@ import DevTools from '../tools/ReduxDevTools';
 import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
-import {milestones,putMilestonesProId} from '../containers/milestones/reducers/milestones-reducer';
-import getMilestonesIssues from '../containers/milestones/reducers/milestones-table-reducer';
+import {milestones} from '../containers/milestones/milestones-reducer';
 import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
@@ -21,9 +20,7 @@ import createProject from '../containers/project-mgr/reducers/create-project-red
 import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
-import {fetchMergeData,fetchMergeBranchData,fetchIssuesData} from '../containers/mergeRequest/reducers/fetch-datasource-reducer';
-import fetchMrList from  '../containers/mergeRequest/reducers/mergeRequest-list-reducer'
-import {createMr,revertMr} from '../containers/mergeRequest/reducers/mergeRequest-create-reducer';
+import {mergeRequest} from '../containers/mergeRequest/mergeRequest-reducer';
 import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
 import createBranch from '../containers/branches/reducers/branches-create-reducer';
 import deleteBranch from '../containers/branches/reducers/branches-delete-reducer';
@@ -33,8 +30,7 @@ import {createProjectSet,updateProjectSet,deleteProjectSet} from '../containers/
 import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
 import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
-import {createMilestones,updateMilestones,checkDueDate,closeSetMilestone} from '../containers/milestones/reducers/edit-milestones-reducer'
-import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
+ import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
 import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
 import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
@@ -52,7 +48,6 @@ const reducer = combineReducers({
     login,
     menu,
     milestones,
-    putMilestonesProId,
     getGroupTree,
     createGroup,
     createProject,
@@ -66,13 +61,7 @@ const reducer = combineReducers({
     getProjectStar,
     getGroupInfo,
     getProjectInfo,
-    getMilestonesIssues,
-    fetchMergeData,
-    fetchMergeBranchData,
-    fetchIssuesData,
-    fetchMrList,
-    createMr,
-    revertMr,
+    mergeRequest,
     fetchBranches,
     createBranch,
     deleteBranch,
@@ -85,13 +74,9 @@ const reducer = combineReducers({
     projectSetToState,
     fetchProjectSetTree,
     getProjectMembers,
-    createMilestones,
     getLeaderInfo,
-    updateMilestones,
-    checkDueDate,
     approve,
     approveDetail,
-    closeSetMilestone,
     getUserRelationTree,
     getUserInfo,
     getSelectNode,

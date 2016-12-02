@@ -1,8 +1,7 @@
 import React,{ PropTypes } from 'react';
 import { DatePicker, Button, Modal, Form, Input, Col,notification, message,Spin} from 'antd';
 import Box from '../../components/box';
-import {createMilestone,updateMilestone,checkDueDate} from './actions/edit-milestones-actions';
-import {getProjectSetMilestones} from './actions/milestones-action';
+import {createMilestone,updateMilestone,getProjectSetMilestones} from './milestones-action';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -44,7 +43,7 @@ class ProjectSetMilestonesEdit extends React.Component {
         const {date,mode} = this.props.location.state;
         this.props.getProjectSetMilestones(this.groupId,date,mode);
         this.context.router.push({
-            pathname: "/ProjectSetTree/Milestones",
+            pathname: "/ProjectSetTree/projectSetMilestones",
         });
     }
 
@@ -167,7 +166,7 @@ class ProjectSetMilestonesEdit extends React.Component {
                             </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.loading} >确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -191,20 +190,16 @@ function mapStateToProps(state) {
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
         getProjectInfo: state.getProjectInfo.projectInfo,
         logInfo: state.login.profile,
-        inserted: state.createMilestones.items,
-        loading:state.createMilestones.loading,
-        disabled:state.createMilestones.disabled,
-        updateLoading: state.updateMilestones.loading,
-        updateMsg: state.updateMilestones.result,
-        checkDateResult: state.checkDueDate.result,
-        checkDateLoading: state.checkDueDate.loading,
+        inserted: state.milestones.createResult,
+        loading:state.milestones.createLoading,
+        updateLoading: state.milestones.updateLoading,
+        updateMsg: state.milestones.updateResult,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         createMilestone: bindActionCreators(createMilestone, dispatch),
-        checkDueDateAction: bindActionCreators(checkDueDate, dispatch),
         updateMilestoneAction: bindActionCreators(updateMilestone, dispatch),
         getProjectSetMilestones: bindActionCreators(getProjectSetMilestones, dispatch),
 

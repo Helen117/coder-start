@@ -7,8 +7,7 @@ import { Button,Row, Modal, Table,notification,Icon, Tooltip} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import fetchMrListData from './actions/mergeRequest-list-action'
-import {revertMr} from './actions/mergeRequest-edit-action';
+import {fetchMrListData} from './mergeRequest-action'
 
 class MergeRequestList extends React.Component {
     constructor(props) {
@@ -47,12 +46,6 @@ class MergeRequestList extends React.Component {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    revertMr(record){
-        //console.log('close',record);
-        const project_id = this.props.getProjectInfo.id;
-        const id = record.key;
-        //this.props.revertMrAction(project_id,id);
-    }
 
     getDataSource(mrList){
         const data = [];
@@ -125,7 +118,7 @@ MergeRequestList.prototype.columns = (self)=> [{
     dataIndex: 'state',
     key: 'state',
     width:'10%',
-},{
+}/*,{
     title: '操作',
     dataIndex: 'opreation',
     width: '10%',
@@ -141,7 +134,7 @@ MergeRequestList.prototype.columns = (self)=> [{
         )
         ;
     }
-}]
+}*/]
 
 MergeRequestList.contextTypes = {
     history: PropTypes.object.isRequired,
@@ -152,15 +145,14 @@ MergeRequestList.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
-        mrList: state.fetchMrList.mrList,
-        loading: state.fetchMrList.loading
+        mrList: state.mergeRequest.mrList,
+        loading: state.mergeRequest.getMrListLoading
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
-        revertMrAction: bindActionCreators(revertMr,dispatch)
     }
 }
 
