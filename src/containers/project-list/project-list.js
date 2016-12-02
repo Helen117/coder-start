@@ -48,10 +48,8 @@ class ProjectList extends Component {
         }
         //删除项目更新项目组信息
         if (this.props.treeData != treeData && treeData.length>0){
-            console.log('this.props.getGroupInfo:',this.props.getGroupInfo)
             if(this.props.getGroupInfo){
                 let resetGroupInfo = searchGroupByGroupId(this.props.getGroupInfo.id,treeData);
-                console.log('resetGroupInfo:',resetGroupInfo)
                 if(resetGroupInfo){
                     this.props.setGroupInfo(resetGroupInfo, this.props.selectedNode,this.props.node);
                 }
