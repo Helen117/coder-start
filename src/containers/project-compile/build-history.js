@@ -151,8 +151,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'stageId_1',
         width: '10%',
         render(text,record){
-            console.log(record);
-            getCodeChanges(record.projectId, record.gitCommitId, record.lastTimeGitCommitId);
+            //console.log(record);
+            //getCodeChanges(record.projectId, record.gitCommitId, record.lastTimeGitCommitId);
             var  divStyle = self.bgColor(record.stageId_1_status);
             if (record.stageId_1_status == 2) {
                 return <div style={divStyle}>
