@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-11-03.
  */
 export function searchGroupByGroupId(groupId,treeData){
-    var groupInfo;
+    var groupInfo='';
     for(var i=0;i<treeData.length;i++){
         for(var j=0;j<treeData[i].children.length;j++){
             if(groupId == treeData[i].children[j].id){
@@ -11,6 +11,7 @@ export function searchGroupByGroupId(groupId,treeData){
             }
         }
     }
+    return groupInfo;
 }
 
 export function searchUserGroupByProjectId(projectId,treeData) {
