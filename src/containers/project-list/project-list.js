@@ -46,10 +46,16 @@ class ProjectList extends Component {
             });
             this.insertCallback('删除成功!');
         }
-        //删除更新项目组信息
+        //删除项目更新项目组信息
         if (this.props.treeData != treeData && treeData.length>0){
-            let resetGroupInfo = searchGroupByGroupId(this.props.getGroupInfo.id,treeData);
-            this.props.setGroupInfo(resetGroupInfo, this.props.selectedNode,this.props.node);
+            console.log('this.props.getGroupInfo:',this.props.getGroupInfo)
+            if(this.props.getGroupInfo){
+                let resetGroupInfo = searchGroupByGroupId(this.props.getGroupInfo.id,treeData);
+                console.log('resetGroupInfo:',resetGroupInfo)
+                if(resetGroupInfo){
+                    this.props.setGroupInfo(resetGroupInfo, this.props.selectedNode,this.props.node);
+                }
+            }
         }
     }
 
