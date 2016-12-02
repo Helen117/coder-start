@@ -34,6 +34,7 @@ class DevelopTransPond extends Component {
             if (!!errors) {
                 return;
             } else {
+                console.log(form.getFieldsValue());
                 const formData = form.getFieldsValue();
             }
         })
@@ -46,7 +47,7 @@ class DevelopTransPond extends Component {
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.goBack();
+                //router.goBack();
                 form.resetFields();
             },
             onCancel() {
@@ -80,7 +81,7 @@ class DevelopTransPond extends Component {
 
                     <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit" loading={this.props.loading}
-                                disabled={this.props.disabled}>确定</Button>
+                                disabled={this.props.disabled}>转派</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>

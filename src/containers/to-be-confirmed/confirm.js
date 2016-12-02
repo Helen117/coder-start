@@ -38,6 +38,7 @@ const FormItem = Form.Item;
      }
 
     handleChange(targetKeys){
+        console.log('handleChange',targetKeys)
         this.targetKeys = targetKeys;
     }
 
@@ -45,7 +46,6 @@ const FormItem = Form.Item;
     approve(){
         const {form} = this.props;
         console.log(form.getFieldsValue());
-        const {record} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -64,7 +64,7 @@ const FormItem = Form.Item;
              title: '您是否确定要取消表单的编辑',
              content: '取消之后表单内未提交的修改将会被丢弃',
              onOk() {
-                 router.goBack();
+                 //router.goBack();
                  form.resetFields();
              },
              onCancel() {
@@ -149,7 +149,7 @@ const FormItem = Form.Item;
                 </FormItem>
 
                 <FormItem wrapperCol={{ span: 16, offset: 6 }}>
-                    <Button type="primary" onClick={this.approve.bind(this)}>提交</Button>
+                    <Button type="primary" onClick={this.approve.bind(this)}>确认</Button>
                     <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                 </FormItem>
             </Form>
