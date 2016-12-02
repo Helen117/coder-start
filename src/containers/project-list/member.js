@@ -170,7 +170,13 @@ class ProjectMember extends Component {
                     user_ids.push(_id);
                 }
             },
-            onSelectAll(selected, selectedRows, changeRows) {},
+            onSelectAll(selected, selectedRows, changeRows) {
+                user_ids.splice(0,user_ids.length);
+                for(let i=0; i<selectedRows.length; i++){
+                    let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
+                    user_ids.push(_id);
+                }
+            },
         };
         const projectDesc = projectInfo?(
             <Row>
