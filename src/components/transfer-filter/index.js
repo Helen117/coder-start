@@ -68,6 +68,16 @@ export default class TransferFilter extends React.Component {
         onChange(targetKeys);
     }
 
+    renderFooter() {
+        return (
+            <Button type="ghost" size="small" style={{ float: 'right', margin: 5 }}
+                    onClick={this.getMock}
+            >
+                重置
+            </Button>
+        );
+    }
+
 
     render(){
         this.getMock();
@@ -77,15 +87,16 @@ export default class TransferFilter extends React.Component {
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer
                     dataSource={this.mockData}
+                    targetKeys={targetKeys}
                     showSearch
                     listStyle={{
                         width: 250,
                         height: 300,
                     }}
                     operations={['添加', '删除']}
-                    targetKeys={targetKeys}
                     onChange={this.handleChange.bind(this)}
-                    notFoundContent={this.props.fetchProMsgErr?<div>数据加载失败</div>:<div>没有数据</div>}
+                    notFoundContent={this.props.fetchProMsgErr?<div>数据加载失败</div>:<div>列表为空</div>}
+                    footer={this.renderFooter.bind(this)}
                     render={item => `${item.name}`}
                 />
             </Spin>

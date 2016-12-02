@@ -19,7 +19,10 @@ import {
     PROJECT_COMPILE_BUILD_JOB_ERROR,
     PROJECT_COMPILE_BUILD_LIST_PENDING,
     PROJECT_COMPILE_BUILD_LIST_SUCCESS,
-    PROJECT_COMPILE_BUILD_LIST_ERROR
+    PROJECT_COMPILE_BUILD_LIST_ERROR,
+    PROJECT_COMPILE_CODE_CHANGES_PENDING,
+    PROJECT_COMPILE_CODE_CHANGES_SUCCESS,
+    PROJECT_COMPILE_CODE_CHANGES_ERROR
 } from './action';
 
 const initialState = {
@@ -76,6 +79,18 @@ export default function projectCompile(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.errorMsg,
                 buildList:{isLoading:false}
+            };
+
+        //get code changes
+        case PROJECT_COMPILE_CODE_CHANGES_PENDING:
+            return {...state, buildList:{codeChangesLoading:true}};
+        case PROJECT_COMPILE_CODE_CHANGES_SUCCESS:
+            return {...state, buildList: {...action.payload, codeChangesLoading:false}};
+        case PROJECT_COMPILE_CODE_CHANGES_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                buildList:{codeChangesLoading:false}
             };
 
         default:

@@ -86,3 +86,25 @@ export function getBuildList(projectId) {
         }
     }
 }
+
+
+export const PROJECT_COMPILE_CODE_CHANGES = 'PROJECT_COMPILE_CODE_CHANGES';
+export const PROJECT_COMPILE_CODE_CHANGES_PENDING = 'PROJECT_COMPILE_CODE_CHANGES_PENDING';
+export const PROJECT_COMPILE_CODE_CHANGES_SUCCESS = 'PROJECT_COMPILE_CODE_CHANGES_SUCCESS';
+export const PROJECT_COMPILE_CODE_CHANGES_ERROR = 'PROJECT_COMPILE_CODE_CHANGES_ERROR';
+
+export function getCodeChanges(projectId, gitCommitId, lastGitCommitId) {
+    var path = '/repository/compare-commits';
+    return {
+        type: PROJECT_COMPILE_CODE_CHANGES,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    projectId:projectId,
+                    from: lastGitCommitId,
+                    to: gitCommitId
+                }
+            })
+        }
+    }
+}
