@@ -11,8 +11,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
 import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
-import {getProjectMembers} from '../project-mgr/actions/project-members-action'
-import styles from './index.css';
 
 const Option = Select.Option;
 
@@ -40,19 +38,19 @@ class SelectedProInfo extends Component {
 
     callAction(itemId){
         if(itemId.indexOf("_p")>0) {
-            const projectId = itemId.substring(0,itemId.length-2)
-            this.props.getProjectInfoAction(projectId);
-            this.props.getProjectMembersAction(projectId);
+            const projectId = itemId.substring(0,itemId.length-2);
+            const userId = this.props.loginInfo.userId;
+            this.props.getProjectInfoAction(projectId,userId);
         }
     }
 
-    getDataSource(projectMembers,getProjectInfo) {
+    getDataSource(getProjectInfo) {
         const data = [];
-        if (getProjectInfo && projectMembers) {
+        if (getProjectInfo ) {
             data.push({
                 project_name: getProjectInfo.name,
                 description: getProjectInfo.description,
-                memberNum: "共" + projectMembers.length + "人",
+                memberNum: "共" + getProjectInfo.member_count + "人",
             });
         }
         return data;
@@ -60,14 +58,14 @@ class SelectedProInfo extends Component {
 
 
     render(){
-        const {projectMembers,getProjectInfo,visible} = this.props;
-        const dataSource = this.getDataSource(projectMembers,getProjectInfo);
+        const {getProjectInfo,visible} = this.props;
+        const dataSource = this.getDataSource(getProjectInfo);
         if(visible) {
             return (
                 <div style={{margin: 15}}>
                     <TableView columns={columns(this)}
                                dataSource={dataSource}
-                               loading={this.props.getProjectInfoLoading || this.props.projectMembersLoading}
+                               loading={this.props.getProjectInfoLoading}
                     ></TableView>
                 </div>
             )
@@ -99,10 +97,9 @@ SelectedProInfo.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        loginInfo: state.login.profile,
         getProjectInfo:state.getProjectInfo.projectInfo,
         getProjectInfoLoading: state.getProjectInfo.loading,
-        projectMembers:state.getProjectMembers.projectMembers,
-        projectMembersLoading:state.getProjectMembers.loading,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
     }
 }
@@ -110,7 +107,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
-        getProjectMembersAction: bindActionCreators(getProjectMembers, dispatch),
     }
 }
 

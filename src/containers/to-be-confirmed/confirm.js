@@ -33,7 +33,7 @@ const FormItem = Form.Item;
 
      insertCallback(type){
          message.success(type);
-         this.props.getConfirmListAction(this.props.loginInfo.userId);
+         //this.props.getConfirmListAction(this.props.loginInfo.userId);
          this.context.router.goBack();
      }
 
@@ -74,8 +74,7 @@ const FormItem = Form.Item;
 
 
     render() {
-        const toBeConfirmedItem = this.props.location.state.record;
-        console.log('toBeConfirmedItem',toBeConfirmedItem);
+
         const { getFieldDecorator } = this.props.form;
         const getMyProjectLoading = this.props.getMyProjectLoading? this.props.getMyProjectLoading: false;
         const formItemLayout = {
@@ -116,13 +115,6 @@ const FormItem = Form.Item;
             },
         };
 
-        const dataSource =[
-            {"name":"项目优化",
-            "description":"新增需求功能",
-            "due_date":"2016/12/12",
-            "director":"小磊"}
-        ];
-
         const projectInfo =[
             {"id":1,
                 "name":"devops/devops_web"},
@@ -130,53 +122,41 @@ const FormItem = Form.Item;
                 "name":"devops/devops_scm"}
         ];
 
+        if(this.props.showConfirm){
         return(
-            <Box title="代办事项确认操作">
-                    {/*<Table columns={this.columns(this)} dataSource={dataSource}
-                           bordered
-                           size="middle"
-                           pagination={false}
-                           //loading={this.props.getDetailLoading}
-                    />*/}
-                    <div style={{marginTop: 16}}>
-                        <Form horizontal>
-                            <FormItem {...formItemLayout} label="工单名称" >
-                                <Input defaultValue={toBeConfirmedItem.name} disabled={true}/>
-                            </FormItem>
-                            <FormItem {...formItemLayout} label="描述" >
-                                <Input type="textarea" autosize={true} defaultValue="autosize 属性适用于 textarea 节点，并且只有高度会自动变化。另外 autosize 可以设定为一个对象，指定最小行数和最大行数。结合 Tooltip 组件，实现一个数值输入框，方便内容超长时的全量展现。
-" disabled={true}/>
-                            </FormItem>
-                            <FormItem {...formItemLayout} label="设计工时" >
-                                {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                            </FormItem>
-                            <FormItem   {...formItemLayout} label="涉及项目">
-                                    {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
-                                    (<TransferFilter dataSource = {projectInfo}
-                                                     onChange={this.handleChange.bind(this)}
-                                                     loadingProMsg={getMyProjectLoading}
-                                                    //fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                    //targetKeys = {targetKeys}
-                                    />)}
-                            </FormItem>
+            <Form horizontal>
+                <FormItem   {...formItemLayout} label="涉及项目">
+                        {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
+                        (<TransferFilter dataSource = {projectInfo}
+                                         onChange={this.handleChange.bind(this)}
+                                         loadingProMsg={getMyProjectLoading}
+                                        //fetchProMsgErr ={this.props.fetchProMsgErr}
+                                        //targetKeys = {targetKeys}
+                        />)}
+                </FormItem>
 
-                            <FormItem {...formItemLayout}  label="设计文档上传" >
-                                {getFieldDecorator('attachment')(
-                                    <Upload {...props} fileList={this.state.fileList}>
-                                        <Button type="ghost">
-                                            <Icon type="upload" /> 点击上传
-                                        </Button>
-                                    </Upload>)}
-                            </FormItem>
+                <FormItem {...formItemLayout} label="设计工时" >
+                    {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                </FormItem>
 
-                            <FormItem wrapperCol={{ span: 16, offset: 6 }}>
-                                <Button type="primary" onClick={this.approve.bind(this)}>提交</Button>
-                                <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                            </FormItem>
-                        </Form>
-                    </div>
-            </Box>
-        );
+                <FormItem {...formItemLayout}  label="设计文档上传" >
+                    {getFieldDecorator('attachment')(
+                        <Upload {...props} fileList={this.state.fileList}>
+                            <Button type="ghost">
+                                <Icon type="upload" /> 点击上传
+                            </Button>
+                        </Upload>)}
+                </FormItem>
+
+                <FormItem wrapperCol={{ span: 16, offset: 6 }}>
+                    <Button type="primary" onClick={this.approve.bind(this)}>提交</Button>
+                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                </FormItem>
+            </Form>
+
+        )}else{
+            return null;
+        };
     }
 }
 
