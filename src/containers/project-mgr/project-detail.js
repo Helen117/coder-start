@@ -57,6 +57,7 @@ class ProjectDetail extends React.Component {
                 data.visibility_level = formData.visibility_level;
                 if(editType == 'add'){
                     //调创建项目的接口
+                    console.log('createProject')
                     actions.createProject(data);
                 }else{
                     //调修改项目的接口
