@@ -69,6 +69,11 @@ class MenuBar extends React.Component {
                                         break;
                                     }
                                 }
+                            }else{
+                                menuOneKey[0] = "menu"+menuTwo[j].id;
+                                menuTwoKey[0] = "";
+                                find_path++;
+                                break;
                             }
                         }else if(pathName != menuTwo[j].link && menuTwo[j].subMenu.length > 0){
                             let menuTree = menuTwo[j].subMenu;
