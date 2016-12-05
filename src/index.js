@@ -32,7 +32,7 @@ import ProjectSetMilestones from './containers/project-set-milestone';
 import {RequirementInfo,EditDemand} from './containers/request';
 
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
-import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug} from './containers/issues';
+import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddDemand} from './containers/issues';
 import {ApproveList,RegistrationApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
@@ -90,6 +90,7 @@ ReactDOM.render(
                             <Route name="projectMgrSub" breadcrumbName="项目列表" path="project-mgr-sub" component={ProjectMgrSub}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={ProjectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
+                            <Route name="addDemand" breadcrumbName="项目需求管理" path="add-demand" component={AddDemand}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={BranchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={MergeRequestList}/>
                             <Route name="codeFile" breadcrumbName="项目代码" path="code-file" component={CodeFiles}>

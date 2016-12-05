@@ -1,69 +1,44 @@
 /**
  * Created by helen on 2016/9/18.
  */
-const initialState = {
-};
 
-export  function register(state = initialState, action = {}) {
+export default function register(state={}, action = {}) {
+    // console.log('state:',state);
     switch (action.type) {
         case 'REGISTER_PENDING':
-            return Object.assign({}, initialState, {registering: true});
+            return {...state, registering: true};
         case 'REGISTER_SUCCESS':
-            return Object.assign({}, initialState, {registerResult: action.payload, registering: false, errors: null});
+            return {...state, registerResult: action.payload, registering: false, registerErrors: null};
         case 'REGISTER_ERROR':
-            return Object.assign({}, initialState, {registerResult: action.payload, registering: false, errors: action.payload.errorMsg});
-
-        case 'GET_ALL_USER_SUCCESS':
-            return Object.assign({}, initialState, {users: action.payload});
-        default:
-            return state;
-    }
-}
-
-export  function getLeaderInfo(state = initialState, action = {}) {
-
-    switch (action.type) {
+            return {...state, registerResult: null, registering: false, registerErrors: action.payload.errorMsg};
 
         case 'GET_LEADER_PENDING':
-            return Object.assign({}, initialState, {pending: true});
+            return {...state, getLeaderPending: true};
         case 'GET_LEADER_SUCCESS':
-            return Object.assign({}, initialState, {leader: action.payload});
+            return {...state, leader: action.payload,getLeaderPending: false};
         case 'GET_LEADER_ERROR':
-            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
-
-        default:
-            return state;
-    }
-}
-
-export  function getOrganizationInfo(state = initialState, action = {}) {
-
-    switch (action.type) {
+            return {...state, getLeaderErrorMsg: action.payload.errorMsg,getLeaderPending: false};
 
         case 'GET_ORGANIZATION_PENDING':
-            return Object.assign({}, initialState, {pending: true});
+            return {...state, getOrganizePending: true};
         case 'GET_ORGANIZATION_SUCCESS':
-            return Object.assign({}, initialState, {organization: action.payload});
+            return {...state, organization: action.payload,getOrganizePending:false};
         case 'GET_ORGANIZATION_ERROR':
-            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
-
-        default:
-            return state;
-    }
-}
-
-
-export  function getRoleInfo(state = initialState, action = {}) {
-
-    switch (action.type) {
+            return {...state, getOrganizeErrorMsg: action.payload.errorMsg,getOrganizePending:false};
 
         case 'GET_ROLE_PENDING':
-            return Object.assign({}, initialState, {pending: true});
+            return {...state, getRolePending: true};
         case 'GET_ROLE_SUCCESS':
-            return Object.assign({}, initialState, {role: action.payload});
+            return {...state, role: action.payload,getRolePending:false};
         case 'GET_ROLE_ERROR':
-            return Object.assign({}, initialState, {errorMsg: action.payload.errorMsg});
+            return {...state, getRoleErrorMsg: action.payload.errorMsg,getRolePending:false};
 
+        case 'GET_ALL_USER_PENDING':
+            return {...state, getUsersPending:true};
+        case 'GET_ALL_USER_SUCCESS':
+            return {...state, users: action.payload,getUsersPending:false};
+        case 'GET_ALL_USER_ERROR':
+            return {...state, users:null,getUsersPending:false,getUserError:action.payload.errorMsg};
         default:
             return state;
     }

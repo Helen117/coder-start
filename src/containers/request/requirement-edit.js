@@ -192,15 +192,15 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
-        loading:state.request.pending,
+        loading:state.request.editDemandPending,
         result:state.request.editDemandResult,
-        error:state.request.error,
-        labelLoading:state.getLabelInfo.pending,
-        labelInfo:state.getLabelInfo.label,
-        developerLoading:state.getDeveloperInfo.pending,
-        developerInfo:state.getDeveloperInfo.developer,
-        testerLoading:state.getTesterInfo.pending,
-        testerInfo:state.getTesterInfo.tester,
+        error:state.request.editDemandError,
+        labelLoading:state.request.getLabelPending,
+        labelInfo:state.request.label,
+        developerLoading:state.request.getDeveloperPending,
+        developerInfo:state.request.developer,
+        testerLoading:state.request.getTesterPending,
+        testerInfo:state.request.tester,
     };
 }
 
