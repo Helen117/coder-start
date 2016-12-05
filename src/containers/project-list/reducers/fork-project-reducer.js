@@ -7,10 +7,19 @@ const initialState = {
 
 export default function forkProject(state = initialState, action = {}) {
     switch (action.type) {
+
+        case 'GET_NAMESPACE_SUCCESS':
+            return {...state,namespace: action.payload};
+        case 'GET_NAMESPACE_ERROR':
+            return {
+                ...state,
+                getNamespaceError: action.payload.errorMsg
+            };
+
         case 'FORK_PROJECT_PENDING':
-            return Object.assign({}, initialState, {loading: true});
+            return {...state,loading: true};
         case 'FORK_PROJECT_SUCCESS':
-            return Object.assign({}, initialState, {loading: false, forkProject: action.payload});
+            return {...state,loading: false, forkProject: action.payload};
         case 'FORK_PROJECT_ERROR':
             return {
                 ...state,

@@ -139,7 +139,7 @@ class ProjectIssueList extends Component {
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
         if(this.props.projectInfo) {
             return (
-                <div>
+                <div style={{marginLeft:'10px'}}>
                     <Collapse defaultActiveKey={['1']}>
                         <Panel header="查询条件" key="1">
                             <Form horizontal className={styles.ant_search_form}>

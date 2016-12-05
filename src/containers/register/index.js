@@ -34,10 +34,9 @@ class Register extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const result = nextProps.registerState.registerResult;
-        const error = nextProps.registerState.errors;
-        const registering = nextProps.registerState.registering;
-        const errorInfo = nextProps.errorMsg;
+        const result = nextProps.registerResult;
+        const registering = nextProps.registering;
+
         // const user = nextProps.registerState.users;
         // if(userName&&userName.length<=0 && this.props.registerState.users) {
         //     for(var i =0;i<user.length;i++){
@@ -45,28 +44,11 @@ class Register extends Component{
         //     }
         // }
 
-        // if(error&& error != this.props.registerState.errors){
-        //     // message.error('注册失败！'+error,3);
-        //     this.errorMessage('注册失败！',error);
-        // }
-
-        // if(errorInfo&&errorInfo!=this.props.errorMsg){
-        //     this.errorMessage('获取上级领导信息失败！',errorInfo);
-        // }
-
-        if (!registering && !error && result && result!=this.props.registerState.registerResult) {
+        if (!registering && result && result!=this.props.registerResult) {
             message.success('提交成功，等待审批！');
             this.context.router.replace('/login');
         }
     }
-
-    // errorMessage(info,error){
-    //     notification.error({
-    //         message: info,
-    //         description:error,
-    //         duration:null,
-    //     });
-    // }
 
     userExists(rule, value, callback) {
 
@@ -153,7 +135,7 @@ class Register extends Component{
     render() {
         const { getFieldDecorator } = this.props.form;
 
-        const pending = this.props.pending||this.props.loading||this.props.getRolePending?true:false;
+        const pending = this.props.getLeaderPending||this.props.getOrganizePending||this.props.getRolePending?true:false;
 
         const formItemLayout = {
             labelCol: { span: 8 },
@@ -229,7 +211,7 @@ class Register extends Component{
                         </FormItem>
 
                         <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
-                            <Button type="primary" htmlType="submit" loading={this.props.registerState.registering}>提交</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.registering}>提交</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -250,14 +232,14 @@ Register = Form.create()(Register);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        registerState:state.register,
-        leaderInfo:state.getLeaderInfo.leader,
-        errorMsg:state.getLeaderInfo.errorMsg,
-        pending:state.getLeaderInfo.pending,
-        loading:state.getOrganizationInfo.pending,
-        organization:state.getOrganizationInfo.organization,
-        getRolePending:state.getRoleInfo.pending,
-        role:state.getRoleInfo.role,
+        registering:state.register.registering,
+        registerResult:state.register.registerResult,
+        getLeaderPending:state.register.getLeaderPending,
+        leaderInfo:state.register.leader,
+        getOrganizePending:state.register.getOrganizePending,
+        organization:state.register.organization,
+        getRolePending:state.register.getRolePending,
+        role:state.register.role,
     };
 }
 

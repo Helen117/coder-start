@@ -8,11 +8,11 @@ import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones} from '../containers/milestones/milestones-reducer';
-import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../containers/register/reducers/register-reducer';
+import register from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
-import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
-import {request,getLabelInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
+import approve from '../containers/approve/reducers/approve-reducer';
+import request from '../containers/request/reducers/request-reducer';
 import label from '../containers/label/reducers/label-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
@@ -80,11 +80,6 @@ const reducer = combineReducers({
     developTranspond,
     getTranspondMember,
     getNotifyItems,
-    getOrganizationInfo,
-    getRoleInfo,
-    getLabelInfo,
-    getDeveloperInfo,
-    getTesterInfo,
     projectCompile,
     label,
     UpdateUserInfo,
