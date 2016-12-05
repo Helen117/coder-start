@@ -23,7 +23,7 @@ import {
     FETCH_PROJECT_INFO_PENDING,
     FETCH_PROJECT_INFO_ERROR,
 
-} from './constants/project-set-action-types';
+} from './project-set-action-types';
 
 const initialState = {
 };

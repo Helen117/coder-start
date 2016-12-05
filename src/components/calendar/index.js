@@ -128,7 +128,7 @@ export default class MilestonesCalendar extends React.Component{
         }else{
             return <h4 style={{color:type=="error"?"red":""}}>
                 <Badge status={type}/>{milestoneData.title}
-                </h4>
+            </h4>
         }
     }
 
@@ -138,8 +138,8 @@ export default class MilestonesCalendar extends React.Component{
             <div style={{marginLeft:3}}>
                 <Tooltip placement="top" title={tooltip}>
                     <ul className="events">
-                         {this.titleDecorate(milestoneData,calendarTime)}
-                         {milestoneData.description}
+                         <li>{this.titleDecorate(milestoneData,calendarTime)}</li>
+                         <li>{milestoneData.description}</li>
                     </ul>
                 </Tooltip>
             </div>
@@ -154,8 +154,10 @@ export default class MilestonesCalendar extends React.Component{
                     const issueTooltip = this.issueTooltip(item)
                     return  <Tooltip placement="top" title={issueTooltip} key={index}>
                         <li key={index} >
+                            <div>
                             <span className={`event-${type}`}>● </span>
                             {item.title}
+                            </div>
                         </li>
                     </Tooltip>
                 }

@@ -54,6 +54,7 @@ class MergeRequestList extends React.Component {
                 data.push({
                     key: mrList[i].id,
                     mrTitle: mrList[i].title,
+                    description: mrList[i].description,
                     author: mrList[i].author.name,
                     assignee:mrList[i].assignee,
                     mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
@@ -72,11 +73,13 @@ class MergeRequestList extends React.Component {
         return(
             <div style={{margin: 10}}>
                 <Row>
-                <Button className="pull-right" type="primary"
-                        disabled={this.props.getProjectInfo?false:true}
-                        onClick={this.createMergeRequest.bind(this,'add')}>创建合并请求</Button>
+                    <Button className="pull-right" type="primary"
+                            disabled={this.props.getProjectInfo?false:true}
+                            onClick={this.createMergeRequest.bind(this,'add')}>
+                        创建合并请求
+                    </Button>
                 </Row>
-                    <div style={{marginTop:5}}>
+                <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
                            columns={this.columns(this)}
@@ -94,6 +97,11 @@ MergeRequestList.prototype.columns = (self)=> [{
     key: 'mrTitle',
     width:'20%'
 },{
+    title: '描述',
+    dataIndex: 'description',
+    key: 'description',
+    width:'25%'
+},{
     title: '申请人',
     dataIndex: 'author',
     key: 'author',
@@ -107,7 +115,7 @@ MergeRequestList.prototype.columns = (self)=> [{
     title: 'MR路径',
     dataIndex: 'mrPath',
     key: 'mrPath',
-    width:'10%'
+    width:'15%'
 },{
     title: '创建时间',
     dataIndex: 'created_at',

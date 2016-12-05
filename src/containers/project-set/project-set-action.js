@@ -7,7 +7,7 @@ import {CREATE_PROJECT_SET,
     DELETE_PROJECT_SET,
     PUT_PROJECT_SET_TO_STATE,
     FETCH_PROJECT_SET_TREE,
-    FETCH_PROJECT_INFO} from './constants/project-set-action-types';
+    FETCH_PROJECT_INFO} from './project-set-action-types';
 
 export function createProjectSet(projectSetData) {
     var path = '/project/create-set';

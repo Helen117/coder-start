@@ -25,7 +25,7 @@ class CreateMergeRequest extends Component {
             const userId = this.props.loginInfo.userId;
             this.props.fetchMergeBranchData(projectId);
             //获取当前项目本人的待办事项
-            this.props.fetchIssuesData(projectId,userId,'opened');
+            this.props.fetchIssuesData(projectId,userId);
         }
     }
 

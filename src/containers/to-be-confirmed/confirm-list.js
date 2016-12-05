@@ -6,7 +6,7 @@ import { Table,message,notification} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import {getConfirmList} from './actions/confirm-list-action';
+import {getConfirmList} from './action';
 import DevelopTransPond from './transpond';
 import DevelopConfirm from './confirm';
 
@@ -149,8 +149,8 @@ ConfirmList.prototype.columns = (self)=>[{
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        loading: state.getConfirmList.loading,
-        confirmList: state.getConfirmList.item,
+        loading: state.toBeConfirmedItem.loading,
+        confirmList: state.toBeConfirmedItem.item,
     };
 }
 

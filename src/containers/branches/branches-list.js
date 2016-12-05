@@ -81,6 +81,8 @@ class BranchesList extends React.Component {
         this.setState({
             modalVisible: false,
         });
+        this.props.form.resetFields();
+
     }
 
     onChange(pagination, filters, sorter) {

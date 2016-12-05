@@ -34,9 +34,7 @@ import createUserGroup from '../containers/user-relation/reducers/user-group-det
 import createUser from '../containers/user-relation/reducers/user-detail-reducer';
 import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
-import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
-import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/confirm-reducer';
-import {developTranspond,getTranspondMember} from '../containers/to-be-confirmed/reducers/transpond-reducer'
+import {toBeConfirmedItem} from '../containers/to-be-confirmed/reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
 
@@ -79,11 +77,7 @@ const reducer = combineReducers({
     request,
     acqPerformanceMsg,
     acqMyIssueList,
-    getConfirmList,
-    getMyProjectInfo,
-    developConfirm,
-    developTranspond,
-    getTranspondMember,
+    toBeConfirmedItem,
     getNotifyItems,
     getOrganizationInfo,
     getRoleInfo,
