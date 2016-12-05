@@ -72,6 +72,29 @@ const validate = function (next, replace, callback) {
 const root = document.createElement('div');
 document.body.appendChild(root);
 
+// console.log = (function(oriLogFunc){
+//     return function(str) {
+//         if (process.env.NODE_ENV == 'development'){
+//             //oriLogFunc.call(console, str);
+//             oriLogFunc.apply(console, arguments);
+//         }
+//     }
+// })(console.log);
+
+const consoleFun = (oriConsoleFunc)=>function(str){
+    if (process.env.NODE_ENV == 'development'){
+        // for (let i in arguments){
+        //     arguments[i] = '[devops] ' + arguments[i];
+        // }
+        oriConsoleFunc.apply(console, arguments);
+    }
+}
+console.log = consoleFun(console.log);
+console.debug = consoleFun(console.debug);
+console.info = consoleFun(console.info);
+//console.warn = consoleFun(console.warn);
+//console.error = consoleFun(console.error);
+
 ReactDOM.render(
     <div>
         <Provider store={store}>
