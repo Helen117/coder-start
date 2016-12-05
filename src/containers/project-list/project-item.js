@@ -14,7 +14,7 @@ import * as starActions from './actions/consern-project-actions';
 import * as fork from '../project-list/actions/fork-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import styles from './index.css';
-import {searchNormalGroupByProjectId, findMyConsernProject, isConserned, findProjectIdByTreedata} from './util';
+import {findProjectIdByTreedata} from './util';
 import ProjectMember from './member';
 import {getProjectMembers} from '../project-mgr/actions/project-members-action';
 import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
@@ -38,21 +38,27 @@ class ProjectItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {node} = nextProps;
+        const {node,consernedProject} = nextProps;
         if(this.props.node != node && node){
             this.setState({
                 showProjectMember:false
             })
         }
         const {loginInfo,selectNodeKey} = this.props;
-        const { consernedInfo, unconsernedInfo } = nextProps;
-        if (this.props.consernedInfo != consernedInfo && consernedInfo){
-            this.props.getGroupTree(loginInfo.userId);
-            this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
-        }else if(this.props.unconsernedInfo != unconsernedInfo && unconsernedInfo){
-            this.props.getGroupTree(loginInfo.userId);
-            this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+        if(consernedProject.consernedInfo && this.props.consernedProject.consernedInfo){
+            if (this.props.consernedProject.consernedInfo.consernedInfo !== consernedProject.consernedInfo.consernedInfo
+                && consernedProject.consernedInfo.consernedInfo){
+                this.props.getGroupTree(loginInfo.userId);
+                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+            }
+        }else if(consernedProject.unconsernInfo && this.props.consernedProject.unconsernInfo){
+            if(this.props.consernedProject.unconsernInfo.unconsernedInfo !== consernedProject.unconsernInfo.unconsernedInfo
+                && consernedProject.unconsernInfo.unconsernedInfo){
+                this.props.getGroupTree(loginInfo.userId);
+                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+            }
         }
+
 
         const {forkResult,getProjectInfo} = nextProps;
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
@@ -164,7 +170,7 @@ class ProjectItem extends Component {
     }
 
     render() {
-        const {treeData,loginInfo,node,visible,getProjectInfo,getGroupInfo} = this.props;
+        const {treeData,visible,getProjectInfo} = this.props;
         if(visible == true && treeData.length!=0){
             const columns = (self)=>[
                 {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
@@ -236,8 +242,7 @@ function mapStateToProps(state) {
         getProjectInfo:state.getProjectInfo.projectInfo,
         getGroupInfo:state.getGroupInfo.groupInfo,
         forkResult:state.forkProject,
-        consernedInfo:state.consernProject.consernedInfo,
-        unconsernedInfo:state.unconsernProject.unconsernedInfo,
+        consernedProject:state.consernProject,
         projectLoading:state.getProjectInfo.loading,
         selectNodeKey: state.getGroupInfo.selectedNode,
     }

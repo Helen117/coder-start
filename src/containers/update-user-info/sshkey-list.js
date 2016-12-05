@@ -37,7 +37,8 @@ class SshKeyList extends React.Component {
         const {DeleteSshkey} = nextProps;
         //删除返回信息
         if(this.props.DeleteSshkey && DeleteSshkey){
-            if (this.props.DeleteSshkey.deleteResult != DeleteSshkey.deleteResult && DeleteSshkey.deleteResult) {
+            if (this.props.DeleteSshkey.deleteResult != DeleteSshkey.deleteResult
+                && DeleteSshkey.deleteResult) {
                 this.insertCallback("删除成功");
             }
         }
