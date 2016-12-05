@@ -107,7 +107,7 @@ class ProjectBuildHistory extends React.Component{
     render(){
         const {selectNode, buildList} = this.props;
         return (
-            <Box title="最次5次编译发布结果列表">
+            <Box title="最近5次编译发布情况">
                 {(selectNode&&selectNode.isProject && buildList)?(
                     <div id="mytable">
                         <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
