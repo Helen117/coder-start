@@ -35,17 +35,16 @@ export function fetchMergeBranchData(projectId) {
 }
 
 
-export function fetchIssuesData(projectId,userId,state) {
-    console.log(projectId,userId,state)
-    var path = '/project/issue-backlog';
+export function fetchIssuesData(projectId,userId) {
+    console.log(projectId,userId)
+    var path = '/project/list-mr-issue';
     return {
         type: FETCH_ISSUES_DATA,
         payload: {
             promise: api.post(path, {
-                data: {
-                    project_id:projectId,
-                    assigned_id: userId,
-                    state: state
+                params: {
+                    projectId:projectId,
+                    userId: userId,
                 }
             })
         }

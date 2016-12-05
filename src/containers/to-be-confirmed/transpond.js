@@ -6,8 +6,7 @@ import React, {PropTypes,Component} from 'react';
 import { Select ,Form ,Input, Button, Modal} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import Box from '../../components/box';
-import {getTranspondMember,developTranspond} from './actions/transpond-action'
+import {getTranspondMember,developTranspond} from './action'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -103,7 +102,7 @@ DevelopTransPond.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        loading: state.getConfirmList.loading,
+        loading: state.toBeConfirmedItem.loading,
     };
 }
 

@@ -20,21 +20,15 @@ import createProject from '../containers/project-mgr/reducers/create-project-red
 import consernProject from '../containers/project-list/reducers/consern-project-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
 import {mergeRequest} from '../containers/mergeRequest/mergeRequest-reducer';
-import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
-import createBranch from '../containers/branches/reducers/branches-create-reducer';
-import deleteBranch from '../containers/branches/reducers/branches-delete-reducer';
+import branch from '../containers/branches/branches-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
-import fetchProMsg from '../containers/project-set/reducers/fetch-project-msg-reducer';
-import {createProjectSet,updateProjectSet,deleteProjectSet} from '../containers/project-set/reducers/project-set-create-reducers'
-import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
-import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
+import {projectSet} from '../containers/project-set/project-set-reducers'
+import projectSetToState from '../containers/project-set/put-project-set-to-state-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import UserRelation from '../containers/user-relation/reducers/user-relation-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
-import {getConfirmList} from '../containers/to-be-confirmed/reducers/confirm-list-reducer'
-import {getMyProjectInfo,developConfirm} from '../containers/to-be-confirmed/reducers/confirm-reducer';
-import {developTranspond,getTranspondMember} from '../containers/to-be-confirmed/reducers/transpond-reducer'
+import {toBeConfirmedItem} from '../containers/to-be-confirmed/reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
 import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
@@ -54,31 +48,19 @@ const reducer = combineReducers({
     getGroupInfo,
     getProjectInfo,
     mergeRequest,
-    fetchBranches,
-    createBranch,
-    deleteBranch,
+    branch,
     getMenuBarInfo,
     getCodeFile,
-    fetchProMsg,
-    createProjectSet,
-    updateProjectSet,
-    deleteProjectSet,
+    projectSet,
     projectSetToState,
-    fetchProjectSetTree,
     getProjectMembers,
-    getLeaderInfo,
     approve,
-    approveDetail,
     UserRelation,
     addProjectMember,
     request,
     acqPerformanceMsg,
     acqMyIssueList,
-    getConfirmList,
-    getMyProjectInfo,
-    developConfirm,
-    developTranspond,
-    getTranspondMember,
+    toBeConfirmedItem,
     getNotifyItems,
     projectCompile,
     label,

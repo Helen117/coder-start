@@ -10,7 +10,7 @@ import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import {getProjectInfo,developConfirm} from './actions/confirm-action'
+import {getProjectInfo,developConfirm} from './action'
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -188,10 +188,10 @@ DevelopConfirm.prototype.columns = (self)=>[{
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        getMyProjectLoading: state.getMyProjectInfo.loading,
-        getMyProjectInfo: state.getMyProjectInfo.items,
-        developConfirmLoading: state.developConfirm.loading,
-        developConfirmResult: state.developConfirm.result
+        getMyProjectLoading: state.toBeConfirmedItem.loading,
+        getMyProjectInfo: state.toBeConfirmedItem.items,
+        developConfirmLoading: state.toBeConfirmedItem.loading,
+        developConfirmResult: state.toBeConfirmedItem.result
     };
 }
 
