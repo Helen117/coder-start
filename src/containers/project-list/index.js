@@ -25,24 +25,37 @@ class ProjectMgrSub extends React.Component{
         };
     }
 
-    editGroup(type, selectedRow) {
-        if(!type && !selectedRow){
+    editGroup(type, groupInfo) {
+        if(!type && !groupInfo){
             message.error('请选择要修改的项目组!',3);
         }else{
             this.context.router.push({
                 pathname: '/group-detail',
-                state: {editType: type, selectedRow}
+                state: {editType: type, groupInfo}
             });
         }
     }
-    editProject(type, selectedRow) {
-        if(selectedRow){
+    editProject(type, groupInfo) {
+        if(groupInfo){
             this.context.router.push({
                 pathname: '/project-detail',
-                state: {editType: type, selectedRow,}
+                state: {editType: type, groupInfo,}
             });
         }else{
             message.error('请选择项目所在组!',3);
+        }
+    }
+    deleteGroup(groupInfo){
+        if(groupInfo && !this.isEmptyObject(groupInfo)){
+            if(groupInfo.children.length == 0){
+                this.setState({
+                    modalVisible: true,
+                });
+            }else{
+                message.error('项目组不为空，不能删除!',3);
+            }
+        }else{
+            message.error('请选择需要删除的项目组！',3);
         }
     }
 
@@ -105,20 +118,6 @@ class ProjectMgrSub extends React.Component{
         this.setState({
             modalVisible: false,
         });
-    }
-
-    deleteGroup(groupInfo){
-        if(groupInfo && !this.isEmptyObject(groupInfo)){
-            if(groupInfo.children.length == 0){
-                this.setState({
-                    modalVisible: true,
-                });
-            }else{
-                message.error('项目组不为空，不能删除!',3);
-            }
-        }else{
-            message.error('请选择需要删除的项目组！',3);
-        }
     }
 
     componentWillReceiveProps(nextProps) {

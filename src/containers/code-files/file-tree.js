@@ -106,7 +106,7 @@ class FileTree extends React.Component {
             }
 
             return (
-                <div style={{"paddingLeft":"20px"}}>
+                <div style={{"paddingLeft":"10px"}}>
                     <Table columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
                            onRowClick={this.clickFileTree.bind(this)}></Table>
                 </div>

@@ -8,17 +8,16 @@ import login from '../containers/login/reducers/login-reducer';
 import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones} from '../containers/milestones/milestones-reducer';
-import {register,getLeaderInfo,getRoleInfo,getOrganizationInfo} from '../containers/register/reducers/register-reducer';
+import register from '../containers/register/reducers/register-reducer';
 import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
-import {approve,approveDetail} from '../containers/approve/reducers/approve-reducer';
-import {request,getLabelInfo,getDeveloperInfo,getTesterInfo} from '../containers/request/reducers/request-reducer';
+import approve from '../containers/approve/reducers/approve-reducer';
+import request from '../containers/request/reducers/request-reducer';
 import label from '../containers/label/reducers/label-reducer';
 import getGroupTree from '../containers/project-mgr/reducers/group-tree-reducer';
 import createGroup from '../containers/project-mgr/reducers/create-group-reducer';
 import createProject from '../containers/project-mgr/reducers/create-project-reducer';
-import {consernProject, unconsernProject} from '../containers/project-list/reducers/consern-project-reducer';
-import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
+import consernProject from '../containers/project-list/reducers/consern-project-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
 import {mergeRequest} from '../containers/mergeRequest/mergeRequest-reducer';
 import branch from '../containers/branches/branches-reducer';
@@ -26,17 +25,13 @@ import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 import {projectSet} from '../containers/project-set/project-set-reducers'
 import projectSetToState from '../containers/project-set/put-project-set-to-state-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
- import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
-import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
-import {getUserInfo,getAllUserInfo} from '../containers/user-relation/reducers/user-info-reducer';
-import getSelectNode from '../containers/user-relation/reducers/select-node-reducer';
-import createUserGroup from '../containers/user-relation/reducers/user-group-detail-reducer';
-import createUser from '../containers/user-relation/reducers/user-detail-reducer';
-import {AddSshKey,GetSshKeys} from '../containers/user-relation/reducers/ssh-key-reducer';
+import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
+import UserRelation from '../containers/user-relation/reducers/user-relation-reducer';
 import {addProjectMember} from '../containers/project-list/reducers/project-member-reducer';
 import {toBeConfirmedItem} from '../containers/to-be-confirmed/reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
+import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
 
 const reducer = combineReducers({
     login,
@@ -50,9 +45,6 @@ const reducer = combineReducers({
     GetIssueDependent,
     GetIssueDemand,
     forkProject,
-    consernProject,
-    unconsernProject,
-    getProjectStar,
     getGroupInfo,
     getProjectInfo,
     mergeRequest,
@@ -62,30 +54,18 @@ const reducer = combineReducers({
     projectSet,
     projectSetToState,
     getProjectMembers,
-    getLeaderInfo,
     approve,
-    approveDetail,
-    getUserRelationTree,
-    getUserInfo,
-    getSelectNode,
-    createUserGroup,
-    createUser,
-    getAllUserInfo,
-    AddSshKey,
+    UserRelation,
     addProjectMember,
-    GetSshKeys,
     request,
     acqPerformanceMsg,
     acqMyIssueList,
     toBeConfirmedItem,
     getNotifyItems,
-    getOrganizationInfo,
-    getRoleInfo,
-    getLabelInfo,
-    getDeveloperInfo,
-    getTesterInfo,
     projectCompile,
     label,
+    UpdateUserInfo,
+    consernProject
 })
 
 

@@ -1,0 +1,105 @@
+/**
+ * Created by Administrator on 2016-12-04.
+ */
+import {
+    GET_USER_RELATION_TREE_PENDING,
+    GET_USER_RELATION_TREE_SUCCESS,
+    GET_USER_RELATION_TREE_ERROR,
+    SET_SELECT_USER_NODE,
+    GET_USER_INFO_PENDING,
+    GET_USER_INFO_SUCCESS,
+    GET_USER_INFO_ERROR,
+    MOVE_USER_PENDING,
+    MOVE_USER_SUCCESS,
+    MOVE_USER_ERROR,
+    DELETE_GROUP_USER_PENDING,
+    DELETE_GROUP_USER_SUCCESS,
+    DELETE_GROUP_USER_ERROR,
+    CREATE_USER_GROUP_PENDING,
+    CREATE_USER_GROUP_SUCCESS,
+    CREATE_USER_GROUP_ERROR,
+    UPDATE_USER_GROUP_PENDING,
+    UPDATE_USER_GROUP_SUCCESS,
+    UPDATE_USER_GROUP_ERROR,
+    DELETE_USER_GROUP_PENDING,
+    DELETE_USER_GROUP_SUCCESS,
+    DELETE_USER_GROUP_ERROR
+} from '../constants/user-relation-types';
+
+const initialState = {
+    userInfoData:[]
+};
+
+export default function UserRelation(state = initialState, action = {}) {
+    switch (action.type) {
+        //获取组织树数据
+        case GET_USER_RELATION_TREE_PENDING:
+            return {...state, getUserRelationTree:{loading: true}};
+        case GET_USER_RELATION_TREE_SUCCESS:
+            return {...state, getUserRelationTree:{loading: false, userTreeData: action.payload}};
+        case GET_USER_RELATION_TREE_ERROR:
+            return {
+                ...state,getUserRelationTree:{loading: false}
+            };
+        //点击树节点
+        case SET_SELECT_USER_NODE:
+            return {...state, getSelectNode:{selectedNode: action.selectNodeData,
+                selectedUserGroup:action.selectedUserGroup}};
+        //获取人员信息
+        case GET_USER_INFO_PENDING:
+            return {...state, getUserInfo:{loading: true}};
+        case GET_USER_INFO_SUCCESS:
+            return {...state, getUserInfo:{loading: false, userInfoData: action.payload}};
+        case GET_USER_INFO_ERROR:
+            return {
+                ...state,getUserInfo:{loading: false}
+            };
+        //移动人员
+        case MOVE_USER_PENDING:
+            return {...state, moveUserRelation:{moveLoading:true,moveDisabled:true}};
+        case MOVE_USER_SUCCESS:
+            return {...state, moveUserRelation:{moveResult: action.payload,moveLoading:false,
+            moveDisabled:false}};
+        case MOVE_USER_ERROR:
+            return {
+                ...state,moveUserRelation:{moveLoading:false, moveDisabled:false,}
+            };
+        //删除人员组织关系
+        case DELETE_GROUP_USER_PENDING:
+            return {...state, deleteUserRelation:{deleteLoading:true,deleteDisabled:true}};
+        case DELETE_GROUP_USER_SUCCESS:
+            return {...state, deleteUserRelation:{deleteResult: action.payload,deleteLoading:false,
+            deleteDisabled:false}};
+        case DELETE_GROUP_USER_ERROR:
+            return {
+                ...state,deleteUserRelation:{deleteLoading:false, deleteDisabled:false,}
+            };
+        //新建组织
+        case CREATE_USER_GROUP_PENDING:
+            return {...state, createUserGroup:{loading:true,disabled:true}};
+        case CREATE_USER_GROUP_SUCCESS:
+            return {...state, createUserGroup:{result: action.payload,loading:false,disabled:false}};
+        case CREATE_USER_GROUP_ERROR:
+            return {
+                ...state,createUserGroup:{loading:false, disabled:false,}
+            };
+        //修改组织
+        case UPDATE_USER_GROUP_PENDING:
+            return {...state, updateUserGroup:{updateLoading:true,updateDisabled:true}};
+        case UPDATE_USER_GROUP_SUCCESS:
+            return {...state, updateUserGroup:{updateResult: action.payload,updateLoading:false,updateDisabled:false}};
+        case UPDATE_USER_GROUP_ERROR:
+            return {
+                ...state,updateUserGroup:{updateLoading:false, updateDisabled:false,}
+            };
+        //删除组织
+        case DELETE_USER_GROUP_PENDING:
+            return {...state,deleteUserGroup:{deleteLoading:true}};
+        case DELETE_USER_GROUP_SUCCESS:
+            return {...state, deleteUserGroup:{deleteResult: action.payload,deleteLoading:false}};
+        case DELETE_USER_GROUP_ERROR:
+            return {...state,deleteUserGroup:{deleteLoading:false}};
+        default:
+            return state;
+    }
+}

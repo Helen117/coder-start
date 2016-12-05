@@ -12,9 +12,8 @@ import {connect} from 'react-redux';
 import { Row, Col, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
-import {getGroupInfo,getProjectInfo} from './actions/select-treenode-action';
+import {getGroupInfo,getProjectInfo,clearGroupProjectInfo} from './actions/select-treenode-action';
 import 'pubsub-js';
-import {searchNormalGroupByProjectId} from '../project-list/util';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -61,12 +60,13 @@ class ProjectMgr extends React.Component{
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
             var node_temp = node.id;
-            const {groupInfo} = searchNormalGroupByProjectId(node.id, treeData);
+            let groupInfo = {};
             this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2),loginInfo.userId);
             this.props.getGroupInfo(groupInfo, node.id,node);
             PubSub.publish("onSelectProjectNode",{node:node, isProject:true});
             this.props.setSelectNode({node:node, isProject:true});
         }else{
+            this.props.clearGroupProjectInfo();
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
             this.props.setSelectNode({node:node, isProject:false});
         }
@@ -133,6 +133,7 @@ function mapDispatchToProps(dispatch) {
         setSelectNode: bindActionCreators(setSelectNode, dispatch),
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
+        clearGroupProjectInfo:bindActionCreators(clearGroupProjectInfo, dispatch),
     }
 }
 

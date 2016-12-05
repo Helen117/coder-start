@@ -4,14 +4,36 @@
 const initialState = {
 };
 
-export  function request(state = initialState, action = {}) {
+export default function request(state = initialState, action = {}) {
     switch (action.type) {
+
+        case 'FETCH_TESTER_INFO_PENDING':
+            return {...state, getTesterPending: true};
+        case 'FETCH_TESTER_INFO_SUCCESS':
+            return {...state, tester: action.payload, getTesterPending: false, getTestError: null};
+        case 'FETCH_TESTER_INFO_ERROR':
+            return {...state, tester: action.payload, getTesterPending: false, getTesterError: action.payload.errorMsg};
+
+        case 'FETCH_DEVELOPER_INFO_PENDING':
+            return {...state, getDeveloperPending: true};
+        case 'FETCH_DEVELOPER_INFO_SUCCESS':
+            return {...state, developer: action.payload, getDeveloperPending: false, getDeveloperError: null};
+        case 'FETCH_DEVELOPER_INFO_ERROR':
+            return {...state, developer: action.payload, getDeveloperPending: false, getDeveloperError: action.payload.errorMsg};
+
+        case 'FETCH_LABEL_INFO_PENDING':
+            return {...state, getLabelPending: true};
+        case 'FETCH_LABEL_INFO_SUCCESS':
+            return {...state, label: action.payload, getLabelPending: false, getLabelError: null};
+        case 'FETCH_LABEL_INFO_ERROR':
+            return {...state, label: action.payload, getLabelPending: false, getLabelError: action.payload.errorMsg};
+
         case 'EDIT_DEMAND_PENDING':
-            return Object.assign({}, initialState, {pending: true});
+            return {...state, editDemandPending: true};
         case 'EDIT_DEMAND_SUCCESS':
-            return Object.assign({}, initialState, {editDemandResult: action.payload, pending: false, error: null});
+            return {...state, editDemandResult: action.payload, editDemandPending: false,  editDemandError: null};
         case 'EDIT_DEMAND_ERROR':
-            return Object.assign({}, initialState, {editDemandResult: action.payload, pending: false, error: action.payload.errorMsg});
+            return {...state, editDemandResult: action.payload, editDemandPending: false,  editDemandError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
             return Object.assign({}, initialState, {loading: true});
@@ -19,48 +41,6 @@ export  function request(state = initialState, action = {}) {
             return Object.assign({}, initialState, {requirementInfo: action.payload, loading: false, errors: null});
         case 'FETCH_REQUIREMENT_INFO_ERROR':
             return Object.assign({}, initialState, {requirementInfo: action.payload, loading: false, errors: action.payload.errorMsg});
-
-        default:
-            return state;
-    }
-}
-
-export  function getLabelInfo(state = initialState, action = {}) {
-    switch (action.type) {
-        case 'FETCH_LABEL_INFO_PENDING':
-            return Object.assign({}, initialState, {pending: true});
-        case 'FETCH_LABEL_INFO_SUCCESS':
-            return Object.assign({}, initialState, {label: action.payload, pending: false, error: null});
-        case 'FETCH_LABEL_INFO_ERROR':
-            return Object.assign({}, initialState, {label: action.payload, pending: false, error: action.payload.errorMsg});
-
-        default:
-            return state;
-    }
-}
-
-export  function getDeveloperInfo(state = initialState, action = {}) {
-    switch (action.type) {
-        case 'FETCH_DEVELOPER_INFO_PENDING':
-            return Object.assign({}, initialState, {pending: true});
-        case 'FETCH_DEVELOPER_INFO_SUCCESS':
-            return Object.assign({}, initialState, {developer: action.payload, pending: false, error: null});
-        case 'FETCH_DEVELOPER_INFO_ERROR':
-            return Object.assign({}, initialState, {developer: action.payload, pending: false, error: action.payload.errorMsg});
-
-        default:
-            return state;
-    }
-}
-
-export  function getTesterInfo(state = initialState, action = {}) {
-    switch (action.type) {
-        case 'FETCH_TESTER_INFO_PENDING':
-            return Object.assign({}, initialState, {pending: true});
-        case 'FETCH_TESTER_INFO_SUCCESS':
-            return Object.assign({}, initialState, {tester: action.payload, pending: false, error: null});
-        case 'FETCH_TESTER_INFO_ERROR':
-            return Object.assign({}, initialState, {tester: action.payload, pending: false, error: action.payload.errorMsg});
 
         default:
             return state;

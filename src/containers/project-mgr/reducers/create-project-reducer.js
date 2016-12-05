@@ -23,6 +23,7 @@ const initialState = {
 
 export default function createProject(state = initialState, action = {}) {
     switch (action.type) {
+        //创建项目
         case CREATE_PROJECT_PENDING:
             return Object.assign({}, initialState, {loading:true,disabled:true});
         case CREATE_PROJECT_SUCCESS:
@@ -34,6 +35,7 @@ export default function createProject(state = initialState, action = {}) {
                 loading:false,
                 disabled:false,
             };
+        //更新项目
         case UPDATE_PROJECT_PENDING:
             return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
         case UPDATE_PROJECT_SUCCESS:
@@ -45,6 +47,7 @@ export default function createProject(state = initialState, action = {}) {
                 updateLoading:false,
                 updateDisabled:false,
             };
+        //删除项目
         case DELETE_PROJECT_PENDING:
             return Object.assign({}, initialState, {});
         case DELETE_PROJECT_SUCCESS:

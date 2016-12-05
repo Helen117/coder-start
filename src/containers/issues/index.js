@@ -3,3 +3,4 @@ export IssueNotes from './issue-notes';
 export ProjectIssueList from './issue-list';
 export MyIssueList from './my-issue';
 export EditBug from './bug-edit';
+export AddDemand from './project-demand';
