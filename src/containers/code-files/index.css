@@ -1,5 +1,5 @@
 .code_view{
-    padding-left: 20px;
+    padding-left: 10px;
 }
 .blob_commit_info{
     background-color: #FAFAFA;
@@ -12,7 +12,7 @@
 }
 .select{
     width: 120px;
-    padding-left: 20px;
+    padding-left: 10px;
     padding-bottom: 10px;
 }
 .v_middle{
