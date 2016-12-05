@@ -53,6 +53,7 @@ class ProjectMgr extends React.Component{
     }
 
     onSelectNode(node){
+        console.log('node:',node)
         const {treeData, currentOneInfo, currentTwoInfo,loginInfo} = this.props;
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);

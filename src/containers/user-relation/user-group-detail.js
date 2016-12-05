@@ -4,13 +4,11 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Modal, notification, Icon, Row, Col,Select} from 'antd';
+import {Form, Input, Button, Modal, notification,Select} from 'antd';
 import Box from '../../components/box';
-import MoreUserGroup from '../../components/more-user-group';
 import 'pubsub-js';
-import styles from './index.css';
 import {findUserGroupById} from './utils';
-import {createUserGroup, UpdateUserGroup} from './actions/user-group-detail-action';
+import {createUserGroup, UpdateUserGroup} from './actions/user-relation-actions';
 import {getLeader} from '../register/actions/register-action';
 
 const FormItem = Form.Item;
@@ -28,7 +26,8 @@ class UserGroupDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { form, actions, loginInfo,selectedUserGroup } = this.props;
+        const { form, actions, loginInfo,selectNode } = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         const {editType} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -91,15 +90,22 @@ class UserGroupDetail extends React.Component {
 
     findLeaderName(leaderId){
         const {leaderInfo} = this.props;
-        for(let i=0;i<leaderInfo.length; i++){
-            if(leaderId == leaderInfo[i].leader_id){
-                return leaderInfo[i].leader_name;
+        if(leaderInfo){
+            for(let i=0;i<leaderInfo.length; i++){
+                if(leaderId == leaderInfo[i].leader_id){
+                    return leaderInfo[i].leader_name;
+                }
             }
         }
+        return '';
     }
 
     componentWillMount() {
-        const {selectedUserGroup, userTreeData,actions} = this.props;
+        const {userRelationTree,selectNode} = this.props;
+        let userTreeData = userRelationTree?(
+            userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+
         const {editType} = this.props.location.state;
         const {setFieldsValue} = this.props.form;
         if(selectedUserGroup){
@@ -125,14 +131,20 @@ class UserGroupDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {result, errMessage, updateResult, updateErrors} = nextProps;
+        const {createGroupInfo,updateGroupInfo} = nextProps;
         //创建返回信息
-        if (this.props.result != result && result) {
-            this.insertCallback("创建成功");
+        if(this.props.createGroupInfo && createGroupInfo){
+            if (this.props.createGroupInfo.result != createGroupInfo.result
+                && createGroupInfo.result) {
+                this.insertCallback("创建成功");
+            }
         }
         //修改返回信息
-        if (this.props.updateResult != updateResult && updateResult) {
-            this.insertCallback("修改成功");
+        if(this.props.updateGroupInfo && updateGroupInfo){
+            if (this.props.updateGroupInfo.updateResult != updateGroupInfo.updateResult
+                && updateGroupInfo.updateResult) {
+                this.insertCallback("修改成功");
+            }
         }
     }
 
@@ -162,10 +174,12 @@ class UserGroupDetail extends React.Component {
     render() {
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
+        const {createGroupInfo,updateGroupInfo} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
         };
+
         const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入组织名称！'},
@@ -182,8 +196,13 @@ class UserGroupDetail extends React.Component {
             {rules:[
                 {required:true, message:'请输入描述！'}
             ]})(<Input type="textarea" />);
+
         const leader = this.props.leaderInfo?this.props.leaderInfo.map(
             data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
+        let createLoading = createGroupInfo?createGroupInfo.loading:false;
+        let updateLoading = updateGroupInfo?updateGroupInfo.updateLoading:false;
+        let createDisabled = createGroupInfo?createGroupInfo.disabled:false;
+        let updateDisabled = updateGroupInfo?updateGroupInfo.updateDisabled:false;
 
         return(
             <Box title={editType == 'add' ? '新建组织' : '修改组织'}>
@@ -218,8 +237,8 @@ class UserGroupDetail extends React.Component {
                     )}
                     <FormItem wrapperCol={{span: 10, offset: 10}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"
-                                loading={editType == 'add'?this.props.loading:this.props.updateLoading}
-                                disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
+                                loading={editType == 'add'?createLoading:updateLoading}
+                                disabled={editType == 'add'?createDisabled:updateDisabled}>
                             确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
@@ -241,17 +260,10 @@ UserGroupDetail = Form.create()(UserGroupDetail);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        loadingTree : state.getUserRelationTree.loading,
-        userTreeData: state.getUserRelationTree.userTreeData,
-        selectedUserGroup: state.getSelectNode.selectedUserGroup,
-        result: state.createUserGroup.result,
-        errMessage:state.createUserGroup.errors,
-        loading:state.createUserGroup.loading,
-        disabled:state.createUserGroup.disabled,
-        updateResult:state.createUserGroup.updateResult,
-        updateErrors:state.createUserGroup.updateErrors,
-        updateLoading:state.createUserGroup.updateLoading,
-        updateDisabled:state.createUserGroup.updateDisabled,
+        userRelationTree:state.UserRelation.getUserRelationTree,
+        selectNode:state.UserRelation.getSelectNode,
+        createGroupInfo:state.UserRelation.createUserGroup,
+        updateGroupInfo:state.UserRelation.updateUserGroup,
         leaderInfo:state.getLeaderInfo.leader,
     }
 }

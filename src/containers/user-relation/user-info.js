@@ -4,13 +4,12 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import ReactDOM from "react-dom";
-import {Table, Button, Row, Col, message, Modal, notification, Form, Input,Icon} from 'antd';
-import {getUserInfo} from './actions/user-info-action';
-import {MoveUser,DeleteGroupUser} from './actions/user-detail-action';
+import {Table, Button, Row, Modal, notification, Form, Input,Icon} from 'antd';
+import {getUserInfo} from './actions/user-relation-actions';
+import {MoveUser,DeleteGroupUser} from './actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
-import {findUserIdByEmail,findFilterIndex} from './utils';
+import {findUserIdByEmail} from './utils';
 
 const FormItem = Form.Item;
 
@@ -28,30 +27,38 @@ class UserInfo extends React.Component {
     }
 
     componentWillMount(){
-        const {userInfoData,selectedUserGroup} = this.props;
+        const {userInfo,selectNode} = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        let userInfoData = userInfo?(
+            userInfo.userInfoData?userInfo.userInfoData:[]):[];
         if(selectedUserGroup){
             if(userInfoData.length == 0){
-                this.props.getUserInfo(selectedUserGroup.id);
+                this.props.getGroupsUsers(selectedUserGroup.id);
             }
         }
     }
 
     insertCallback(messageInfo){
-        const {loginInfo, selectedUserGroup, getUserInfo} = this.props;
+        const { selectNode, getGroupsUsers} = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         notification.success({
             message: messageInfo,
             description: '',
             duration: 1
         });
         //调成员展示接口
-        getUserInfo(selectedUserGroup.id);
+        getGroupsUsers(selectedUserGroup.id);
     }
 
     componentWillReceiveProps(nextProps){
-        const {selectedUserGroup, moveResult,deleteResult,userInfoData} = nextProps;
+        const {selectNode, moveUserInfo,deleteUserInfo,userInfo} = nextProps;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        let userInfoData = userInfo?(
+            userInfo.userInfoData?userInfo.userInfoData:[]):[];
+
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
-            this.props.getUserInfo(selectedUserGroup.id);
+            this.props.getGroupsUsers(selectedUserGroup.id);
         }
         if(userInfoData){
             this.data = this.getDataSource(userInfoData);
@@ -60,19 +67,24 @@ class UserInfo extends React.Component {
             })
         }
         //移除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult){
-            this.setState({
-                moveOutVisible: false,
-            });
-            this.insertCallback('移除成功!');
+        if(this.props.deleteUserInfo && deleteUserInfo){
+            if (this.props.deleteUserInfo.deleteResult != deleteUserInfo.deleteResult
+                && deleteUserInfo.deleteResult) {
+                this.setState({
+                    moveOutVisible: false,
+                });
+                this.insertCallback('移除成功!');
+            }
         }
-
         //移动返回信息
-        if (this.props.moveResult != moveResult && moveResult){
-            this.setState({
-                moreGroupVisible: false,
-            });
-            this.insertCallback('移动成功!');
+        if(this.props.moveUserInfo && moveUserInfo){
+            if (this.props.moveUserInfo.moveResult != moveUserInfo.moveResult
+                && moveUserInfo.moveResult) {
+                this.setState({
+                    moreGroupVisible: false,
+                });
+                this.insertCallback('移动成功!');
+            }
         }
     }
 
@@ -90,8 +102,9 @@ class UserInfo extends React.Component {
     }
 
     handleOk(node) {
-        const { form,loginInfo,selectedUserGroup,MoveUser,DeleteGroupUser } = this.props;
+        const { form,loginInfo,selectNode,MoveUser,DeleteGroupUser } = this.props;
         const formData = form.getFieldsValue();
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         let data = {};
         data.user_id = loginInfo.userId;
         data.source_user_id = this.state.source_user_id;
@@ -118,7 +131,9 @@ class UserInfo extends React.Component {
     }
 
     moveOutUser(type,record){
-        const {userInfoData} = this.props;
+        const {userInfo} = this.props;
+        let userInfoData = userInfo?(
+            userInfo.userInfoData?userInfo.userInfoData:[]):[];
         this.setState({
             moveOutVisible: true,
             source_user_id:findUserIdByEmail(record.email,userInfoData)
@@ -126,7 +141,9 @@ class UserInfo extends React.Component {
     }
 
     editUser(type,record){
-        const {userInfoData} = this.props;
+        const {userInfo} = this.props;
+        let userInfoData = userInfo?(
+            userInfo.userInfoData?userInfo.userInfoData:[]):[];
         this.setState({
             moreGroupVisible: true,
             source_user_id:findUserIdByEmail(record.email,userInfoData)
@@ -157,7 +174,17 @@ class UserInfo extends React.Component {
     }
 
     render(){
-        const {userInfoData, loading, showUserInfo,visible,onSelected} = this.props;
+        const {userInfo,deleteUserInfo,userRelationTree, showUserInfo,visible,
+            onSelected,moveUserInfo} = this.props;
+        let userInfoData = userInfo?(
+            userInfo.userInfoData?userInfo.userInfoData:[]):[];
+        let getUserLoading = userInfo?userInfo.loading:false;
+        let removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
+        let loadingTree = userRelationTree?userRelationTree.loading:false;
+        let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
+        let userTreeData = userRelationTree?(
+            userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {},
@@ -197,11 +224,11 @@ class UserInfo extends React.Component {
                                    this.state.dataSource,this.state.filterKeys)}
                                dataSource={dataSource}
                                rowSelection={rowSelection}
-                               loading={loading?true:false}></Table>
+                               loading={getUserLoading?true:false}></Table>
                         <Modal title="确认移除此成员吗?"
                                visible={this.state.moveOutVisible}
                                onOk={this.handleOk.bind(this)}
-                               confirmLoading={this.props.deleteLoading?true:false}
+                               confirmLoading={removeUserLoading?true:false}
                                onCancel={this.handleCancel.bind(this)}
                         >
                             <span>移除成员后，该成员再进入系统需要使用新邮箱重新注册！如果确认，请输入原因：</span>
@@ -210,9 +237,9 @@ class UserInfo extends React.Component {
                             </FormItem>
                         </Modal>
                         <MoreUserGroup modalVisible={this.state.moreGroupVisible}
-                                       loading={this.props.loadingTree}
-                                       confirmLoading={this.props.moveLoading?true:false}
-                                       nodesData={this.props.userTreeData}
+                                       loading={loadingTree}
+                                       confirmLoading={moveLoading?true:false}
+                                       nodesData={userTreeData}
                                        handleOk={this.handleOk.bind(this)}
                                        cancelChoose={this.handleCancel.bind(this)}/>
                     </Row>
@@ -271,23 +298,17 @@ UserInfo = Form.create()(UserInfo);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        userInfoData:state.getUserInfo.userInfoData,
-        loading:state.getUserInfo.loading,
-        selectedUserGroup: state.getSelectNode.selectedUserGroup,
-        loadingTree : state.getUserRelationTree.loading,
-        userTreeData: state.getUserRelationTree.userTreeData,
-        deleteResult:state.createUser.deleteResult,
-        deleteErrors:state.createUser.deleteErrors,
-        deleteLoading:state.createUser.deleteLoading,
-        moveResult:state.createUser.moveResult,
-        moveErrors:state.createUser.moveErrors,
-        moveLoading:state.createUser.moveLoading,
+        userInfo:state.UserRelation.getUserInfo,
+        selectNode:state.UserRelation.getSelectNode,
+        userRelationTree:state.UserRelation.getUserRelationTree,
+        moveUserInfo:state.UserRelation.moveUserRelation,
+        deleteUserInfo:state.UserRelation.deleteUserRelation,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getUserInfo:bindActionCreators(getUserInfo, dispatch),
+        getGroupsUsers:bindActionCreators(getUserInfo, dispatch),
         MoveUser:bindActionCreators(MoveUser, dispatch),
         DeleteGroupUser:bindActionCreators(DeleteGroupUser, dispatch),
     }

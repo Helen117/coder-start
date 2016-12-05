@@ -152,6 +152,7 @@ class ProjectCompile extends React.Component{
     }
 
     setCron(cron, cronDesc){
+        console.log('cron:',cron)
         const {setFieldsValue} = this.props.form;
         setFieldsValue({trigger:cron, triggerDesc:cronDesc});
     }
@@ -217,15 +218,9 @@ class ProjectCompile extends React.Component{
                                         <CronExpression ref="cron" expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
                                     </Col>
                                 </Row>
-                                <Row style={{display:'none'}}>
-                                    <Col span={21}>
-                                        {getFieldDecorator('trigger',
-                                            {rules:[
-                                                {required:true, message:'请设置调度'}
-                                            ]})(<Input type="text" placeholder="请设置调度"/>)}
-                                    </Col>
-                                </Row>
-                                <Row style={{display:'none'}}>
+                            </FormItem>
+                            <FormItem style={{display:'none'}}>
+                                <Row >
                                     <Col span={21}>
                                         {getFieldDecorator('trigger',
                                             {rules:[

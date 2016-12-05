@@ -4,14 +4,12 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, notification,Modal,Row,Col} from 'antd';
+import {Form, Input, Button, notification} from 'antd';
 import 'pubsub-js';
-import {AddSshKey,GetSshKeys} from './actions/ssh-key-action';
-import styles from './index.css';
+import {AddSshKeys,GetSshKeys} from './actions/update-user-info-action';
 import SshKeyList from './sshkey-list';
 
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 
 class UpdateSshKey extends React.Component {
     constructor(props) {
@@ -30,7 +28,7 @@ class UpdateSshKey extends React.Component {
                 sshKey_temp = formData.sshKey.replace(/\+/g,"%2B");
                 sshKey_temp = sshKey_temp.replace(/\&/g,"%26");
                 //调修改SSHKEY接口
-                actions.AddSshKey(loginInfo.username,formData.title,sshKey_temp)
+                actions.AddSshKeys(loginInfo.username,formData.title,sshKey_temp)
             }
         })
     }
@@ -52,10 +50,12 @@ class UpdateSshKey extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {addResult, addErrors} = nextProps;
+        const {AddSshkey} = nextProps;
         //添加返回信息
-        if (this.props.addResult != addResult && addResult) {
-            this.insertCallback("添加成功");
+        if(this.props.AddSshkey && AddSshkey){
+            if (this.props.AddSshkey.addResult != AddSshkey.addResult && AddSshkey.addResult) {
+                this.insertCallback("添加成功");
+            }
         }
     }
 
@@ -114,16 +114,13 @@ UpdateSshKey = Form.create()(UpdateSshKey);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        addResult:state.AddSshKey.addResult,
-        addErrors:state.AddSshKey.addErrors,
-        addLoading:state.AddSshKey.addLoading,
-        addDisabled:state.AddSshKey.addDisabled,
+        AddSshkey:state.UpdateUserInfo.AddSshkey,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({AddSshKey,GetSshKeys}, dispatch)
+        actions: bindActionCreators({AddSshKeys,GetSshKeys}, dispatch)
     }
 }
 

@@ -12,39 +12,24 @@ import {
 } from '../constants/consern-action-types';
 
 const initialState = {
-    fetchStatus:false,
-    statusErrors:null
 };
 
-export function consernProject(state = initialState, action = {}) {
+export default function consernProject(state = initialState, action = {}) {
     switch (action.type) {
+        //关注项目
         case CONSERN_PROJECT_PENDING:
-            return Object.assign({}, initialState, {fetchStatus: false});
+            return {...state, consernedInfo:{fetchStatus: false}};
         case CONSERN_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {fetchStatus:true, consernedInfo:action.payload});
+            return {...state, consernedInfo:{fetchStatus:true, consernedInfo:action.payload}};
         case CONSERN_PROJECT_ERROR:
-            return {
-                ...state,
-                fetchStatus: false,
-                statusErrors: action.payload.errorMsg
-            };
-        default:
-            return state;
-    }
-}
-
-export function unconsernProject(state = initialState, action = {}) {
-    switch (action.type) {
+            return {...state, consernedInfo:{fetchStatus: false}};
+        //取消关注项目
         case UNCONSERN_PROJECT_PENDING:
-            return Object.assign({}, initialState, {fetchStatus: false});
+            return {...state, unconsernInfo:{fetchStatus: false}};
         case UNCONSERN_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {fetchStatus:true, unconsernedInfo:action.payload});
+            return {...state, unconsernInfo:{fetchStatus:true, unconsernedInfo:action.payload}};
         case UNCONSERN_PROJECT_ERROR:
-            return {
-                ...state,
-                fetchStatus: false,
-                statusErrors: action.payload.errorMsg
-            };
+            return {...state, unconsernInfo:{fetchStatus: false,}};
         default:
             return state;
     }

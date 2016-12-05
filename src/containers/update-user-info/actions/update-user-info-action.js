@@ -1,10 +1,37 @@
 /**
- * Created by Administrator on 2016-11-18.
+ * Created by Administrator on 2016-12-02.
  */
 import api from '../../../api';
-import {ADD_SSHKEY,GET_SSHKEYS,DELETE_SSHKEYS} from '../constants/ssh-key-types';
+import {GET_ALL_USER_INFO,UPDATE_USER_INFO,
+    ADD_SSHKEY,GET_SSHKEYS,DELETE_SSHKEYS} from '../constants/update-user-info-types';
 
-export function AddSshKey(username,title,sshKey) {
+export function UpdateUser(userData) {
+    var path = '/user/update';
+    return {
+        type: UPDATE_USER_INFO,
+        payload: {
+            promise: api.post(path, {
+                data: userData
+            })
+        }
+    }
+}
+
+export function getAllUserInfo() {
+    var path = '/service-groups/user-list';
+    return {
+        type: GET_ALL_USER_INFO,
+        payload: {
+            promise: api.post(path, {
+                params: {
+
+                }
+            })
+        }
+    }
+}
+
+export function AddSshKeys(username,title,sshKey) {
     var path = '/user/add-key';
     return {
         type: ADD_SSHKEY,

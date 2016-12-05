@@ -2,18 +2,13 @@
  * Created by Administrator on 2016-11-09.
  */
 import React, { PropTypes } from 'react';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import ReactDOM from "react-dom";
-import {Form, Input, Button,Icon,Row,Col} from 'antd';
+import {Form, Icon,Row,Col} from 'antd';
 import Box from '../../components/box';
-import 'pubsub-js';
 import styles from './index.css';
-import UpdatePassword from './update-password';
-import UpdateBasicInfo from './update-basic-info';
-import UpdateSshKey from './update-sshkey';
-
-const FormItem = Form.Item;
+import UpdatePassword from './password';
+import UpdateBasicInfo from './basicinfo';
+import UpdateSshKey from './sshkey';
 
 class UpdateUserInfo extends React.Component {
     constructor(props) {
@@ -53,13 +48,6 @@ class UpdateUserInfo extends React.Component {
         })
     }
 
-    handleClick(e){
-        //console.log("e",e)
-        /*console.log("e.target:",e.target)
-         let node = ReactDOM.findDOMNode(this);
-         console.log("node:",node)*/
-    }
-
     render() {
 
         return(
@@ -85,7 +73,6 @@ class UpdateUserInfo extends React.Component {
                         <UpdatePassword visible={this.state.showPassword}/>
                         <UpdateBasicInfo visible={this.state.showBasicInfo}/>
                         <UpdateSshKey visible={this.state.showSshKey}/>
-                        {this.props.children}
                     </Col>
                 </Row>
             </Box>
