@@ -9,11 +9,12 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col, Popover} from 'antd';
+import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col, Popover, Timeline, Icon} from 'antd';
 import Box from '../../components/box';
 import './build-history.less';
 import {getBuildList, getCodeChanges} from './action';
 import 'pubsub-js';
+import moment from 'moment';
 
 class ProjectBuildHistory extends React.Component{
     constructor(props){
@@ -67,6 +68,7 @@ class ProjectBuildHistory extends React.Component{
                     dataSources.key = list.rows[i].buildNumber;
                     dataSources.gitCommitId=list.rows[i].gitCommitId;
                     dataSources.lastTimeGitCommitId=list.rows.length-i>1?list.rows[i+1].gitCommitId:'';
+                    dataSources.codeChanges = list.rows[i].codeChanges;
                     if(list.rows[i].buildDetails&&list.rows[i].buildDetails.length>0){
                         dataSources.startTime=list.rows[i].buildDetails[0].startTime;
                         dataSources.commit = "changes";
@@ -105,7 +107,7 @@ class ProjectBuildHistory extends React.Component{
     render(){
         const {selectNode, buildList} = this.props;
         return (
-            <Box title="查看编译发布历史">
+            <Box title="最近5次编译发布情况">
                 {(selectNode&&selectNode.isProject && buildList)?(
                     <div id="mytable">
                         <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
@@ -134,17 +136,17 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         colSpan: 1,
         dataIndex: 'startTime',
         width: 80,
-    // },{
-    //     colSpan: 0,
-    //     dataIndex: 'commit',
-    //     width: '8%',
-    //     render(text,record){
-    //         // if(text.indexOf("没变更")!=-1){
-    //         //     return <span>{text}</span>
-    //         // }else{
-    //         return <a onClick={self.codeChange.bind(self,text,record)}>{text}</a>
-    //         // }
-    //     }
+        // },{
+        //     colSpan: 0,
+        //     dataIndex: 'commit',
+        //     width: '8%',
+        //     render(text,record){
+        //         // if(text.indexOf("没变更")!=-1){
+        //         //     return <span>{text}</span>
+        //         // }else{
+        //         return <a onClick={self.codeChange.bind(self,text,record)}>{text}</a>
+        //         // }
+        //     }
     },
     {
         title: '更新代码',
@@ -161,12 +163,30 @@ ProjectBuildHistory.prototype.columns = (self)=>[
                     </Tooltip>
                 </div>
             }
-            const commitDetail = (<div>test</div>);
-            return <div style={divStyle}>
-                <Popover content={commitDetail} title="代码变更记录">
-                    <span>{text}</span>
+            let commitDetailItems = [];
+            const codeChanges = record.codeChanges;
+            for (let i = codeChanges.length - 1; i >= 0; i--){
+                commitDetailItems.push(
+                    <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+                        <p>{moment(codeChanges[i].created_at).format('YYYY-MM-DD hh:mm:ss')} 【{codeChanges[i].author_name} 提交】</p>
+                        <p><code>{codeChanges[i].title}</code></p>
+                    </Timeline.Item>
+                );
+            }
+            const commitDetail = (
+                <section className="markdown">
+                    <Timeline>
+                        {commitDetailItems}
+                    </Timeline>
+                </section>
+            );
+            return (
+                <Popover content={commitDetail} title={<h4>代码提交记录</h4>} placement="rightTop" arrowPointAtCenter>
+                    <div style={{...divStyle, cursor:'pointer'}}>
+                        <span>{text}</span>
+                    </div>
                 </Popover>
-            </div>
+            )
         }
     },
     {
