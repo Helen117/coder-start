@@ -45,8 +45,7 @@ import CodeView from './containers/code-files/code-view';
 import UserRelation from './containers/user-relation';
 import userInfo from './containers/user-relation/user-info';
 import UserGroupDetail from './containers/user-relation/user-group-detail';
-import UpdateUserInfo from './containers/user-relation/user-detail';
-import UpdatePassword from './containers/user-relation/update-password';
+import UpdateUserInfo from './containers/update-user-info';
 import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
@@ -72,6 +71,29 @@ const validate = function (next, replace, callback) {
 };
 const root = document.createElement('div');
 document.body.appendChild(root);
+
+// console.log = (function(oriLogFunc){
+//     return function(str) {
+//         if (process.env.NODE_ENV == 'development'){
+//             //oriLogFunc.call(console, str);
+//             oriLogFunc.apply(console, arguments);
+//         }
+//     }
+// })(console.log);
+
+const consoleFun = (oriConsoleFunc)=>function(str){
+    if (process.env.NODE_ENV == 'development'){
+        // for (let i in arguments){
+        //     arguments[i] = '[devops] ' + arguments[i];
+        // }
+        oriConsoleFunc.apply(console, arguments);
+    }
+}
+console.log = consoleFun(console.log);
+console.debug = consoleFun(console.debug);
+console.info = consoleFun(console.info);
+//console.warn = consoleFun(console.warn);
+//console.error = consoleFun(console.error);
 
 ReactDOM.render(
     <div>
@@ -132,9 +154,7 @@ ReactDOM.render(
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
-                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}>
-                            <Route name="updatePassword" breadcrumbName="修改密码" path="updatePassword" component={UpdatePassword}/>
-                        </Route>
+                        <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
 
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>

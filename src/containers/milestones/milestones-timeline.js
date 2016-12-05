@@ -7,8 +7,7 @@ import {Button,Spin,Breadcrumb, Icon, Row, Col} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {putProIdToState,getProjectSetMilestones} from './actions/milestones-action';
-import {closeSetMilestone} from './actions/edit-milestones-actions';
+import {putProIdToState,getProjectSetMilestones,} from './milestones-action';
 import MilestonesCalendar from '../../components/calendar'
 //import TimelineMilestone from '../../components/timeline';
 import moment from 'moment'
@@ -101,11 +100,9 @@ Milestones.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        milestoneData: state.milestones.items,
-        loading: state.milestones.loading,
-        milestoneProId: state.putMilestonesProId.milestoneProId,
-        closeSetMsLoading: state.closeSetMilestone.loading,
-        closeSetMsResult: state.closeSetMilestone.result,
+        milestoneData: state.milestones.milestones,
+        loading: state.milestones.acqMilestoneLoading,
+        milestoneProId: state.milestones.milestoneProId,
     };
 }
 
@@ -113,7 +110,6 @@ function mapDispatchToProps(dispatch) {
     return {
         getProjectSetMilestonesAction: bindActionCreators(getProjectSetMilestones, dispatch),
         putProIdToStateAction: bindActionCreators(putProIdToState, dispatch),
-        closeSetMilestoneAction:  bindActionCreators(closeSetMilestone, dispatch),
     }
 }
 

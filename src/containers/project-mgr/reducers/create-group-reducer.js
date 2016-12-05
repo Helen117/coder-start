@@ -23,6 +23,7 @@ const initialState = {
 
 export default function createGroup(state = initialState, action = {}) {
     switch (action.type) {
+        //创建项目组
         case CREATE_GROUP_PENDING:
             return Object.assign({}, initialState, {loading:true,disabled:true});
         case CREATE_GROUP_SUCCESS:
@@ -34,6 +35,7 @@ export default function createGroup(state = initialState, action = {}) {
                 loading:false,
                 disabled:false,
             };
+        //更新项目组
         case UPDATE_GROUP_PENDING:
             return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
         case UPDATE_GROUP_SUCCESS:
@@ -45,6 +47,7 @@ export default function createGroup(state = initialState, action = {}) {
                 updateLoading:false,
                 updateDisabled:false,
             };
+        //删除项目组
         case DELETE_GROUP_PENDING:
             return Object.assign({}, initialState, );
         case DELETE_GROUP_SUCCESS:

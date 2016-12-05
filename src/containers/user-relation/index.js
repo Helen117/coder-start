@@ -4,18 +4,16 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Row, Col, message, Modal, Input, Form, notification} from 'antd';
+import {Row, Col, message, Modal, Form, notification} from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import {getUserRelationTree} from './actions/user-relation-tree-action';
-import {getSelectNode} from './actions/select-node-action';
+import {getUserRelationTree} from './actions/user-relation-actions';
+import {getSelectNode} from './actions/user-relation-actions';
 import PopoverImg from '../../components/popover-img';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
-import {setUserGroupDelete} from './actions/user-group-detail-action';
+import {setUserGroupDelete} from './actions/user-relation-actions';
 import UserInfo from './user-info';
 import {getLeader} from '../register/actions/register-action';
-
-const FormItem = Form.Item;
 
 class UserRelation extends React.Component{
     constructor(props){
@@ -27,7 +25,11 @@ class UserRelation extends React.Component{
     }
 
     componentDidMount(){
-        const {userTreeData, selectedNode,loginInfo} = this.props;
+        const {userRelationTree,loginInfo,selectNode} = this.props;
+        let userTreeData = userRelationTree?(
+            userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+        let selectedNode = selectNode?selectNode.selectedNode:'';
+
         PubSub.subscribe("evtRefreshUserGroupTree",()=>this.props.getUserRelationTree(loginInfo.userId));
         if(userTreeData.length == 0){
             this.props.getUserRelationTree(loginInfo.userId);
@@ -41,7 +43,10 @@ class UserRelation extends React.Component{
 
     onSelectNode(node){
         //根据node.id找到点击的节点的组织的信息
-        const {userTreeData} = this.props;
+        const {userRelationTree} = this.props;
+        let userTreeData = userRelationTree?(
+            userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+
         let selectedGroup = findUserGroupById(node.id,userTreeData);
         this.props.getSelectNode(node.id,selectedGroup);
         this.props.getLeader();
@@ -51,7 +56,8 @@ class UserRelation extends React.Component{
     }
 
     handleOk() {
-        const { form,setUserGroupDelete,selectedUserGroup,loginInfo } = this.props;
+        const { setUserGroupDelete,selectNode,loginInfo } = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         //调删除组织接口
         setUserGroupDelete(selectedUserGroup.id,loginInfo.userId)
     }
@@ -65,7 +71,10 @@ class UserRelation extends React.Component{
     }
 
     deleteUserGroup(selectedUserGroup){//删除组织
-        const {userInfoData} = this.props;
+        const {getUserInfo} = this.props;
+        let userInfoData = getUserInfo?(
+            getUserInfo.userInfoData?getUserInfo.userInfoData:[]):[];
+
         if(selectedUserGroup){
             if(selectedUserGroup.children.length == 0 && userInfoData.length == 0){
                 this.setState({
@@ -80,7 +89,9 @@ class UserRelation extends React.Component{
     }
 
     editUserGroup(type,selectedRow){//新增、修改组织
-        const {selectedUserGroup} = this.props;
+        const {selectNode} = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+
         if(!selectedUserGroup && !type){
             message.error('请选择要修改的组织!',3);
         }else{
@@ -102,13 +113,16 @@ class UserRelation extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteResult, deleteErrors} = nextProps;
+        const {deleteUserGroup} = nextProps;
         //删除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult){
-            this.setState({
-                modalVisible: false,
-            });
-            this.insertCallback('删除成功!');
+        if(this.props.deleteUserGroup && deleteUserGroup){
+            if (this.props.deleteUserGroup.deleteResult != deleteUserGroup.deleteResult
+                && deleteUserGroup.deleteResult) {
+                this.setState({
+                    modalVisible: false,
+                });
+                this.insertCallback("删除成功");
+            }
         }
     }
 
@@ -120,7 +134,14 @@ class UserRelation extends React.Component{
     }
 
     render(){
-        const {userTreeData, loading, selectedNode, selectedUserGroup,visible} = this.props;
+        const {userRelationTree,selectNode,deleteUserGroup,visible} = this.props;
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        let selectedNode = selectNode?selectNode.selectedNode:'';
+        let loadingTree = userRelationTree?userRelationTree.loading:false;
+        let userTreeData = userRelationTree?(
+            userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+        let deleteGroupLoading = deleteUserGroup?deleteUserGroup.deleteLoading:false;
+
         const content = (
             <div>
                 <a style={{paddingLeft:10}}
@@ -136,7 +157,7 @@ class UserRelation extends React.Component{
             <Row className="ant-layout-content" style={{minHeight:300}}>
                 <Col span={6}>
                     <TreeFilter
-                        loading={loading}
+                        loading={loadingTree}
                         notFoundMsg='找不到项目'
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
@@ -153,7 +174,7 @@ class UserRelation extends React.Component{
                                        visible={this.state.modalVisible}
                                        onOk={this.handleOk.bind(this)}
                                        onCancel={this.handleCancel.bind(this)}
-                                       confirmLoading={this.props.deleteLoading?true:false}
+                                       confirmLoading={deleteGroupLoading?true:false}
                                 >
                                     <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
                                 </Modal>
@@ -184,14 +205,10 @@ UserRelation = Form.create()(UserRelation);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        loading : state.getUserRelationTree.loading,
-        userTreeData: state.getUserRelationTree.userTreeData,
-        userInfoData:state.getUserInfo.userInfoData,
-        selectedNode: state.getSelectNode.selectedNode,
-        selectedUserGroup: state.getSelectNode.selectedUserGroup,
-        deleteResult: state.createUserGroup.deleteResult,
-        deleteErrors:state.createUserGroup.errors,
-        deleteLoading:state.createUserGroup.deleteLoading,
+        userRelationTree:state.UserRelation.getUserRelationTree,
+        getUserInfo:state.UserRelation.getUserInfo,
+        selectNode:state.UserRelation.getSelectNode,
+        deleteUserGroup:state.UserRelation.deleteUserGroup,
     }
 }
 

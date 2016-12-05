@@ -1,6 +1,4 @@
-/**
- * Created by zhaojp on 2016/10/24.
- */
+
 /**
  * Created by zhaojp on 2016/10/24.
  */
@@ -10,35 +8,28 @@ import { Transfer, Button,Spin } from 'antd';
 export default class TransferFilter extends React.Component {
     constructor(props) {
         super(props);
-        this.mockData = [];
+        this.targetKeys = [],
         this.state ={
             targetKeys: [],
+            mockData: []
         }
-        this.targetKeys=[];
-        this.isChange = false;
 
     }
     componentDidMount() {
-        const targetKeys = this.getTarget();
-        this.setState({ targetKeys });
     }
 
-
-    getTarget(){
-        const targetKeys = [];
-        const targetData = this.props.targetKeys;
-        if(targetData){
-            for(let i=0; i<targetData.length; i++){
-                targetKeys.push(targetData[i].id.substring(0,targetData[i].id.length-2),);
-            }
+    componentWillReceiveProps(nextProps) {
+        const dataSource = nextProps.dataSource;
+        const targetData = nextProps.targetKeys;
+        if(dataSource!=this.props.dataSource ){
+            this.getMock(dataSource,targetData);
         }
-        return targetKeys;
+
     }
 
-    getMock() {
+    getMock(dataSource,targetData) {
         const mockData = [];
-        const dataSource = this.props.dataSource;
-        const targetData = this.props.targetKeys;
+        const targetKeys = [];
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
                 const data = {
@@ -54,24 +45,26 @@ export default class TransferFilter extends React.Component {
                         name: targetData[i].name,
                     };
                     mockData.push(data);
+                    targetKeys.push(data.key)
                 }
             }
         }
-        this.mockData = mockData
+        this.setState({ mockData, targetKeys });
     }
 
     handleChange(targetKeys) {
-        this.targetKeys = targetKeys;
         this.setState({ targetKeys });
+        this.targetKeys = targetKeys;
         const {onChange} = this.props;
-        this.isChange = true;
-        onChange(targetKeys);
+        onChange(this.targetKeys);
     }
 
     renderFooter() {
+        const dataSource = this.props.dataSource;
+        const targetData = this.props.targetKeys
         return (
             <Button type="ghost" size="small" style={{ float: 'right', margin: 5 }}
-                    onClick={this.getMock}
+                    onClick={this.getMock.bind(this,dataSource,targetData)}
             >
                 重置
             </Button>
@@ -80,14 +73,11 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
-        this.getMock();
-        this.targetKeys = this.getTarget();
-        const targetKeys = (!this.isChange && this.state.targetKeys.length==0)?this.targetKeys:this.state.targetKeys;
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer
-                    dataSource={this.mockData}
-                    targetKeys={targetKeys}
+                    dataSource={this.state.mockData}
+                    targetKeys={this.state.targetKeys}
                     showSearch
                     listStyle={{
                         width: 250,

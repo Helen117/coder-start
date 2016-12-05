@@ -74,27 +74,15 @@ class GroupDetail extends React.Component {
         this.context.router.goBack();
     }
 
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration: 4
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-        const {result, errMessage, updateResult, updateErrors} = nextProps;
+        const {result, updateResult} = nextProps;
         //创建返回信息
         if (this.props.result != result && result) {
             this.insertCallback("创建成功");
-        /*} else if (this.props.errMessage != errMessage && errMessage) {
-            this.errCallback("创建失败",errMessage);*/
         }
         //修改返回信息
         if (this.props.updateResult != updateResult && updateResult) {
             this.insertCallback("修改成功");
-        /*} else if (this.props.updateErrors != updateErrors && updateErrors) {
-            this.errCallback("修改失败",updateErrors);*/
         }
     }
 
@@ -108,31 +96,9 @@ class GroupDetail extends React.Component {
         }
     }
 
-    groupNameExists(rule, value, callback){
-        const {list} = this.props;
-        if(!value){
-            callback();
-        }else{
-            var count = 0;
-            for(var i=0;i<list.length;i++){
-                for(var j=0; j<list[i].children.length; j++){
-                    if(value == list[i].children[j].name){
-                        count++;
-                    }
-                }
-            }
-            if(count != 0){
-                callback([new Error('项目组名称已被占用')]);
-            }else {
-                callback();
-            }
-        }
-    }
-
-
     render() {
         const {editType} = this.props.location.state;
-        const {getFieldDecorator, getFieldError} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const {list} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
@@ -142,7 +108,6 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldDecorator('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                    //{validator:this.groupNameExists.bind(this)},
                 ]})(<Input type="text" placeholder="请输入项目名称"/>);
             const descriptionProps = getFieldDecorator('description',
                 {rules:[

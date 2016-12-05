@@ -79,7 +79,8 @@ export function getBuildList(projectId) {
         payload: {
             promise: api.post(path, {
                 params: {
-                    projectId: projectId
+                    projectId: projectId,
+                    limit:5
                 },
                 urlType:'ci'
             })
