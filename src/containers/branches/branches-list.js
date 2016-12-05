@@ -6,11 +6,10 @@
  */
 
 import React,{ PropTypes } from 'react';
-import {Button,Table, Modal,notification,Row, Icon, Tooltip, Spin, message,Form,Input} from 'antd';
+import {Button,Table, Modal,Row, Icon, Tooltip, Spin, message,Form,Input} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import fetchBranchesData from './actions/fetch-branches-action';
-import deleteBranch from './actions/branches-delete-action'
+import {fetchBranchesData,deleteBranch} from './branches-action';
 
 const createForm = Form.create;
 const confirm = Modal.confirm;
@@ -53,6 +52,7 @@ class BranchesList extends React.Component {
         message.success(type);
         const project_id = this.props.getProjectInfo.id;
         this.props.fetchBranchesData(project_id);
+        this.props.form.resetFields();
     }
 
     createBranches(type){
@@ -75,7 +75,6 @@ class BranchesList extends React.Component {
         const result = this.props.form.getFieldsValue().result;
         const deleteBranchAction = this.props.deleteBranchAction;
         deleteBranchAction(branch,project_id,result);
-        this.props.form.resetFields();
     }
 
     handleCancel() {
@@ -105,37 +104,36 @@ class BranchesList extends React.Component {
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
         const {getFieldDecorator} = this.props.form;
+        const isLoading = this.props.getBranchLoading? true: false;
         return(
             <div style={{margin:10}}>
-                <Spin spinning={this.props.delLoading} tip="正在删除数据">
-                    <Row >
-                        <Button className="pull-right" type="primary"
-                                disabled={this.props.getProjectInfo?false:true}
-                                onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
-                    </Row>
-                    <div style={{marginTop:5}}>
-                        <Table loading = {this.props.loading}
-                               onChange={this.onChange.bind(this)}
-                               columns={columns(this)}
-                               dataSource={data}
-                        />
-                    </div>
-                    <div>
-                        <Modal title="确认删除此分支吗?"
-                               visible={this.state.modalVisible}
-                               onOk={this.handleOk.bind(this)}
-                               confirmLoading={this.props.delLoading}
-                               onCancel={this.handleCancel.bind(this)}
-                        >
-                            <p>如果确认此操作，请在下框输入原因：</p>
-                            <Form>
-                                <FormItem>
-                                    {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
-                                </FormItem>
-                            </Form>
-                        </Modal>
-                    </div>
-                </Spin>
+                <Row >
+                    <Button className="pull-right" type="primary"
+                            disabled={this.props.getProjectInfo?false:true}
+                            onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
+                </Row>
+                <div style={{marginTop:5}}>
+                    <Table loading = {this.props.getBranchLoading}
+                           onChange={this.onChange.bind(this)}
+                           columns={columns(this)}
+                           dataSource={data}
+                    />
+                </div>
+                <div>
+                    <Modal title="确认删除此分支吗?"
+                           visible={this.state.modalVisible}
+                           onOk={this.handleOk.bind(this)}
+                           confirmLoading={this.props.delLoading}
+                           onCancel={this.handleCancel.bind(this)}
+                    >
+                        <p>如果确认此操作，请在下框输入原因：</p>
+                        <Form>
+                            <FormItem>
+                                {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
+                            </FormItem>
+                        </Form>
+                    </Modal>
+                </div>
             </div>
         )
 
@@ -172,10 +170,10 @@ BranchesList.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
-        branchesData: state.fetchBranches.branchesData,
-        loading: state.fetchBranches.loading,
-        delLoading: state.deleteBranch.loading,
-        delResult: state.deleteBranch.result,
+        branchesData: state.branch.branchesData,
+        getBranchLoading: state.branch.getBranchLoading,
+        delLoading: state.branch.deleteLoading,
+        delResult: state.branch.deleteResult,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
     };
 }

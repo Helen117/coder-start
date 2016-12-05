@@ -76,7 +76,7 @@ class MergeRequestList extends React.Component {
                         disabled={this.props.getProjectInfo?false:true}
                         onClick={this.createMergeRequest.bind(this,'add')}>创建合并请求</Button>
                 </Row>
-                    <div style={{marginTop:10}}>
+                    <div style={{marginTop:5}}>
                     <Table loading = {this.props.loading}
                            onChange={this.onChange.bind(this)}
                            columns={this.columns(this)}

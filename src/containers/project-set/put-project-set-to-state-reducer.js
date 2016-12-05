@@ -6,7 +6,7 @@
  */
 import {
     PUT_PROJECT_SET_TO_STATE
-} from '../constants/project-set-action-types';
+} from './constants/project-set-action-types';
 
 const initialState = {
 };

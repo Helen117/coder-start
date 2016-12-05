@@ -5,9 +5,7 @@ import React,{ PropTypes } from 'react';
 import { Transfer, Button, Form ,Modal, Input,Spin, notification,message} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
-import fetchProjectMsg from './actions/fetch-project-msg-action';
-import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
-import {createProjectSet,updateProjectSet} from './actions/project-set-create-action'
+import {createProjectSet,updateProjectSet,fetchProjectSetTree,fetchProjectMsg} from './project-set-action'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -47,10 +45,11 @@ class ProjectSetCreate extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted,updateResult } = nextProps;
-        if (this.props.inserted != inserted && inserted){
+        const { createResult,updateResult } = nextProps;
+        if (this.props.createResult != createResult && createResult){
             this.insertCallback('创建');
         }
+        console.log(this.props.updateResult ,updateResult)
         if(this.props.updateResult != updateResult && updateResult){
             this.insertCallback('修改');
         }
@@ -129,7 +128,9 @@ class ProjectSetCreate extends React.Component {
     render(){
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
-        const spinning = this.props.loading? true: false;
+        const createLoading = this.props.createLoading? true: false;
+        const updateLoading = this.props.updateLoading? true: false;
+        const getProjectInfoLoading = this.props.getProjectInfoLoading? true: false;
         const titleProps = getFieldDecorator('name', {
             rules: [
                 { required: true, message:'请输入项目集合名称' },
@@ -144,7 +145,7 @@ class ProjectSetCreate extends React.Component {
         const targetKeys = (editType=='update')?this.projectSetInfo?this.projectSetInfo.project_set:[]:[];
         return (
             <Box title={editType == 'add' ? '创建项目集合' : '修改项目集合'}>
-                <Spin spinning={this.props.updateLoading} tip="正在保存数据" >
+                <Spin spinning={updateLoading} tip="正在保存数据" >
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
                         <FormItem   {...formItemLayout} label="名称">
                             {titleProps(<Input  placeholder="请输入项目集合名称" />)}
@@ -156,10 +157,10 @@ class ProjectSetCreate extends React.Component {
                         </FormItem>
 
                         <FormItem   {...formItemLayout} label="项目">
-                                <Spin spinning={spinning}>
+                                <Spin spinning={createLoading}>
                                     {getFieldDecorator('project_set')(<TransferFilter dataSource = {this.props.projectInfo}
                                                                                       onChange={this.handleChange.bind(this)}
-                                                                                      loadingProMsg={this.props.loadingProMsg }
+                                                                                      loadingProMsg={getProjectInfoLoading}
                                                                                       fetchProMsgErr ={this.props.fetchProMsgErr}
                                                                                       targetKeys = {targetKeys}/>)}
                                 </Spin>
@@ -172,7 +173,7 @@ class ProjectSetCreate extends React.Component {
                         </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.createLoading} disabled={this.props.disabled}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -191,15 +192,15 @@ ProjectSetCreate.contextTypes = {
 function mapStateToProps(state) {
     return {
         logInfo: state.login.profile,
-        projectInfo: state.fetchProMsg.items,
-        loadingProMsg: state.fetchProMsg.loading,
-        fetchProMsgErr: state.fetchProMsg.errMessage,
-        inserted: state.createProjectSet.items,
-        loading: state.createProjectSet.loading,
-        projectSetTree: state.fetchProjectSetTree.projectSetTree,
+        projectInfo: state.projectSet.projectInfo,
+        getProjectInfoLoading: state.projectSet.getProjectInfoLoading,
+        fetchProMsgErr: state.projectSet.errMessage,
+        createResult: state.projectSet.createResult,
+        createLoading: state.projectSet.createLoading,
+        updateResult: state.projectSet.updateResult,
+        updateLoading: state.projectSet.updateLoading,
+        projectSetTree: state.projectSet.projectSetTree,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
-        updateLoading: state.updateProjectSet.loading,
-        updateResult: state.updateProjectSet.items,
 
     }
 }

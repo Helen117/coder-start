@@ -21,14 +21,10 @@ import {consernProject, unconsernProject} from '../containers/project-list/reduc
 import getProjectStar from '../containers/project-mgr/reducers/project-star-reducer';
 import {getGroupInfo, getProjectInfo} from '../containers/project-mgr/reducers/select-treenode-reducer';
 import {mergeRequest} from '../containers/mergeRequest/mergeRequest-reducer';
-import fetchBranches from '../containers/branches/reducers/fetch-branches-reducer';
-import createBranch from '../containers/branches/reducers/branches-create-reducer';
-import deleteBranch from '../containers/branches/reducers/branches-delete-reducer';
+import branch from '../containers/branches/branches-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
-import fetchProMsg from '../containers/project-set/reducers/fetch-project-msg-reducer';
-import {createProjectSet,updateProjectSet,deleteProjectSet} from '../containers/project-set/reducers/project-set-create-reducers'
-import projectSetToState from '../containers/project-set/reducers/put-project-set-to-state-reducer';
-import fetchProjectSetTree from '../containers/project-set/reducers/fetch-project-set-tree-reducer';
+import {projectSet} from '../containers/project-set/project-set-reducers'
+import projectSetToState from '../containers/project-set/put-project-set-to-state-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
  import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import getUserRelationTree from '../containers/user-relation/reducers/user-relation-tree-reducer';
@@ -62,17 +58,11 @@ const reducer = combineReducers({
     getGroupInfo,
     getProjectInfo,
     mergeRequest,
-    fetchBranches,
-    createBranch,
-    deleteBranch,
+    branch,
     getMenuBarInfo,
     getCodeFile,
-    fetchProMsg,
-    createProjectSet,
-    updateProjectSet,
-    deleteProjectSet,
+    projectSet,
     projectSetToState,
-    fetchProjectSetTree,
     getProjectMembers,
     getLeaderInfo,
     approve,
