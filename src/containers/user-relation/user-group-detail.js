@@ -264,7 +264,7 @@ function mapStateToProps(state) {
         selectNode:state.UserRelation.getSelectNode,
         createGroupInfo:state.UserRelation.createUserGroup,
         updateGroupInfo:state.UserRelation.updateUserGroup,
-        leaderInfo:state.getLeaderInfo.leader,
+        leaderInfo:state.register.leader,
     }
 }
 
