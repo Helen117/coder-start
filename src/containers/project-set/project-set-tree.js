@@ -94,7 +94,7 @@ function mapStateToProps(state) {
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
         projectSet: state.projectSet.projectSetTree,
         errMessage: state.projectSet.errMessage,
-        loading: state.projectSet.loading,
+        loading: state.projectSet.getProjectSetTreeLoading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
 
     }

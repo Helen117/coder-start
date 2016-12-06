@@ -65,7 +65,7 @@ class ProjectItem extends Component {
             PubSub.publish("evtRefreshGroupTree",{});
             this.setState({
                 showForkPath: false,
-                namespace:''
+                // namespace:''
             });
             message.success('Fork成功!',3);
         }
@@ -94,7 +94,7 @@ class ProjectItem extends Component {
         actions.getNamespace(loginInfo.userId);
         this.setState({
             showForkPath: true,
-            namespace:''
+            // namespace:''
         });
     }
 
