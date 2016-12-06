@@ -152,7 +152,6 @@ class ProjectCompile extends React.Component{
     }
 
     setCron(cron, cronDesc){
-        console.log('cron:',cron)
         const {setFieldsValue} = this.props.form;
         setFieldsValue({trigger:cron, triggerDesc:cronDesc});
     }

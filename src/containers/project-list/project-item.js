@@ -14,7 +14,6 @@ import * as starActions from './actions/consern-project-actions';
 import * as fork from '../project-list/actions/fork-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import styles from './index.css';
-import {findProjectIdByTreedata} from './util';
 import ProjectMember from './member';
 import {getProjectMembers} from '../project-mgr/actions/project-members-action';
 import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
@@ -144,26 +143,14 @@ class ProjectItem extends Component {
         }
     }
 
-    concernedChange(consernedProject,is_conserned){
-        const {loginInfo,starActions,treeData,getGroupInfo} = this.props;
-        var projectId = '';
-        let project_name = consernedProject.project_name;
-        for(var i=0;i<getGroupInfo.children.length;i++){
-            if(project_name == getGroupInfo.children[i].name){
-                projectId= getGroupInfo.children[i].id;
-            }
-        }
-        let p_index = consernedProject.project_name.indexOf("/");
-        if(p_index >= 0){
-            projectId = findProjectIdByTreedata(project_name,treeData);
-        }
-
+    concernedChange(is_conserned){
+        const {loginInfo,starActions,getProjectInfo} = this.props;
         var starInfo={
             username:null,
             projectId:null,
         };
         starInfo.username = loginInfo.username;
-        starInfo.projectId = projectId.substr(0,projectId.length-2);
+        starInfo.projectId = getProjectInfo.id;
         if(is_conserned == '关注'){
             starActions.consernProject(starInfo);
         }else{
@@ -181,11 +168,10 @@ class ProjectItem extends Component {
     }
 
     getDataSource(){
-        const {getProjectInfo,getGroupInfo} = this.props;
+        const {getProjectInfo} = this.props;
         let dataSource = [];
-        if(getProjectInfo && getGroupInfo){
+        if(getProjectInfo ){
             dataSource = [{
-                group_name:getGroupInfo.name,
                 project_name:getProjectInfo.name,
                 description:getProjectInfo.description,
                 memberNum:"共"+getProjectInfo.member_count+"人",
@@ -204,7 +190,6 @@ class ProjectItem extends Component {
 
         if(visible == true && treeData.length!=0){
             const columns = (self)=>[
-                {title: "项目组名称", dataIndex: "group_name", key: "group_name"},
                 {title: "项目名称", dataIndex: "project_name", key: "project_name"},
                 {title: "项目描述", dataIndex: "description", key: "description"},
                 {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
@@ -216,11 +201,11 @@ class ProjectItem extends Component {
                 {title: "是否关注", dataIndex: "consern", key: "consern",
                     render(text,record){
                         if(text == '关注'){
-                            return <a onClick={self.concernedChange.bind(self,record,text)}>{text}</a>
+                            return <a onClick={self.concernedChange.bind(self,text)}>{text}</a>
                         }else if(text == '取消关注'){
-                            return <a onClick={self.concernedChange.bind(self,record,text)}>{text}</a>
+                            return <a onClick={self.concernedChange.bind(self,text)}>{text}</a>
                         }else if(text == '项目成员不能取消关注'){
-                            return <a onClick={self.concernedChange.bind(self,record,text)} disabled>{text}</a>
+                            return <a onClick={self.concernedChange.bind(self,text)} disabled>{text}</a>
                         }
                     }},
                 {title: "项目状态", dataIndex: "state", key: "state"},
@@ -287,7 +272,6 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         treeData: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
-        getGroupInfo:state.getGroupInfo.groupInfo,
         forkResult:state.forkProject,
         consernedProject:state.consernProject,
         projectLoading:state.getProjectInfo.loading,

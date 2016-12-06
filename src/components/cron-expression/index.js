@@ -314,7 +314,7 @@ class CronExpression extends React.Component{
                                     </Select>
                                 )}
                                 {getFieldDecorator('grading',{initialValue:'perhour'})(
-                                    <Select style={{ width: '50%' }}
+                                    <Select style={{ width: '54%',paddingLeft:'12px' }}
                                             onChange={this.gradingChange.bind(this)}>
                                         <Option value="perhour">小时</Option>
                                         <Option value="perminute">分钟</Option>

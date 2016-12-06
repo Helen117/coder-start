@@ -7,6 +7,7 @@ import {
     GET_PROJECT_INFO_SUCCESS,
     GET_PROJECT_INFO_PENDING,
     GET_PROJECT_INFO_ERROR,
+    CLEAR_GROUP_PROJECT_INFO
 } from '../constants/select-treenode-types';
 
 const initialState = {
@@ -22,6 +23,8 @@ export function getGroupInfo(state = initialState, action = {}) {
                 ...state,
                 errors: action.errMessage
             };
+        case CLEAR_GROUP_PROJECT_INFO:
+            return initialState;
         default:
             return state;
     }
@@ -39,6 +42,8 @@ export function getProjectInfo(state = initialState, action = {}) {
                 errors: action.errMessage,
                 loading:false
             };
+        case CLEAR_GROUP_PROJECT_INFO:
+            return initialState;
         default:
             return state;
     }

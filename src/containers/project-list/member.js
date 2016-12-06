@@ -60,7 +60,7 @@ class ProjectMember extends Component {
         return newDate.toLocaleDateString();
     }
 
-    addMember(projectId){
+    addMember(){
         this.setState({
             addProjectMember: true,
         });
@@ -185,6 +185,7 @@ class ProjectMember extends Component {
                 <Col span={11}>项目创建目的:{projectInfo.description}</Col>
             </Row>
         ):(<div></div>);
+        let projectId = projectInfo?projectInfo.id:'';
 
         return (
             <div className={styles.project_list_div}>
@@ -211,8 +212,8 @@ class ProjectMember extends Component {
                     <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
                 </Modal>
                 <div style={{paddingTop:'10px'}}>
-                    <Button type="primary" onClick={this.addMember.bind(this,projectInfo.id)}>添加人员</Button>
-                    <Button type="primary" onClick={this.deleteMember.bind(this,projectInfo.id,user_ids)}>删除人员</Button>
+                    <Button type="primary" onClick={this.addMember.bind(this)}>添加人员</Button>
+                    <Button type="primary" onClick={this.deleteMember.bind(this,projectId,user_ids)}>删除人员</Button>
                 </div>
             </div>
         )
