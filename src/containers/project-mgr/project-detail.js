@@ -50,10 +50,13 @@ class ProjectDetail extends React.Component {
                 data.userId = loginInfo.userId;
                 data.name = formData.name;
                 data.description = formData.description;
-                data.groupId = this.state.selectGroupId;
+                if(this.state.selectGroupId.indexOf('_') < 0){
+                    data.groupId = this.state.selectGroupId;
+                }
+                /*data.groupId = this.state.selectGroupId;
                 if(data.groupId.indexOf('_')>=0){
                     data.groupId = data.groupId.substr(0,data.groupId.length-2);
-                }
+                }*/
                 data.visibility_level = formData.visibility_level;
                 if(editType == 'add'){
                     //调创建项目的接口
