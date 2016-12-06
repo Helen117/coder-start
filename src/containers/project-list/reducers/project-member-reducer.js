@@ -7,7 +7,7 @@ import {
     ADD_PROJECT_MEMBER_ERROR,
     DELETE_PROJECT_MEMBER_PENDING,
     DELETE_PROJECT_MEMBER_SUCCESS,
-    DELETE_PROJECT_MEMBER_ERROR
+    DELETE_PROJECT_MEMBER_ERROR,
 } from '../constants/project-member-types';
 
 const initialState = {};

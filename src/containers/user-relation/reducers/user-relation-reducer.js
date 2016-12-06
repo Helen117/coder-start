@@ -23,8 +23,10 @@ import {
     UPDATE_USER_GROUP_ERROR,
     DELETE_USER_GROUP_PENDING,
     DELETE_USER_GROUP_SUCCESS,
-    DELETE_USER_GROUP_ERROR
+    DELETE_USER_GROUP_ERROR,
+    SELECTED_ROW_KEYS
 } from '../constants/user-relation-types';
+import {CLEAR_USER_RELATION_INFO} from '../../project-list/constants/project-member-types';
 
 const initialState = {
     userInfoData:[]
@@ -99,6 +101,12 @@ export default function UserRelation(state = initialState, action = {}) {
             return {...state, deleteUserGroup:{deleteResult: action.payload,deleteLoading:false}};
         case DELETE_USER_GROUP_ERROR:
             return {...state,deleteUserGroup:{deleteLoading:false}};
+        //清除user_relation相关信息
+        case CLEAR_USER_RELATION_INFO:
+            return initialState;
+        //保存table的selectedRowKeys
+        case SELECTED_ROW_KEYS:
+            return {...state,selectedKeys:{selectedKeys:action.selectedRowKeys}};
         default:
             return state;
     }

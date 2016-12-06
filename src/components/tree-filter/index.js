@@ -153,7 +153,8 @@ export default class TreeFilter extends React.Component {
         const trProps = {
             selectable: true,
             showLine: true,
-            selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
+            //selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
+            selectedKeys: this.props.defaultSelectedKeys,
             defaultSelectedKeys: this.props.defaultSelectedKeys,
             onSelect: this.onSelectNode.bind(this),
             defaultExpandAll: false,

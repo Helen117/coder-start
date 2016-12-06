@@ -10,9 +10,10 @@ import {bindActionCreators} from 'redux';
 import {Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
 import styles from './index.css';
 import UserRelation from '../user-relation';
-import {addProjectMember,deleteProjectMember} from './actions/project-member-action';
+import {addProjectMember,deleteProjectMember,clearUserRelationInfo} from './actions/project-member-action';
 import {getProjectMembers} from '../project-mgr/actions/project-members-action';
 import {findUserIdByEmail} from '../user-relation/utils';
+import 'pubsub-js';
 
 
 const Option = Select.Option;
@@ -25,11 +26,17 @@ class ProjectMember extends Component {
             addProjectMember:false,
             accessLevel:40,
             selectedUsers:[],
+            selectedRowKeys:[],
+            selectedUserIds:[]
         }
     }
 
+    componentDidMount(){
+        this.props.clearUserRelationInfo();
+    }
+
     componentWillReceiveProps(nextProps) {
-        const {addResult, addErrors,deleteResult,deleteErrors} = nextProps;
+        const {addResult,deleteResult} = nextProps;
         //添加返回信息
         if (this.props.addResult != addResult && addResult) {
             this.insertCallback("添加成功");
@@ -47,7 +54,9 @@ class ProjectMember extends Component {
             duration: 2
         });
         this.setState({
-            addProjectMember: false
+            addProjectMember: false,
+            selectedRowKeys:[],
+            selectedUserIds:[]
         });
         //调项目成员接口
         const {actions,projectInfo} = this.props;
@@ -64,6 +73,7 @@ class ProjectMember extends Component {
         this.setState({
             addProjectMember: true,
         });
+        PubSub.publish("evtRefreshUserGroupTree",{});
     }
 
     deleteMember(projectId,user_ids){
@@ -106,13 +116,16 @@ class ProjectMember extends Component {
         }
         final_data.users = data;
         final_data.id = loginInfo.userId;
+        console.log('final_data:',final_data)
         actions.addProjectMember(final_data);
+        this.props.clearUserRelationInfo();
     }
 
     handleCancel(){
         this.setState({
             addProjectMember: false
         });
+        this.props.clearUserRelationInfo();
     }
 
     changeSelect(value){
@@ -127,8 +140,19 @@ class ProjectMember extends Component {
         })
     }
 
+    onSelectedChange(selectedRowKeys, selectedRows){
+        const {projectMembers} = this.props;
+        let user_ids = [];
+        for(let i=0; i<selectedRows.length; i++){
+            let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
+            user_ids.push(_id);
+        }
+        this.setState({selectedRowKeys,selectedUserIds:user_ids})
+    }
+
     render(){
         const {projectMembers,projectInfo} = this.props;
+        const {selectedRowKeys} = this.state;
 
         const columns = [
             {title: "项目人员", dataIndex: "name", key: "name"},
@@ -160,23 +184,9 @@ class ProjectMember extends Component {
                 });
             }
         }
-        let user_ids = [];
         const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {},
-            onSelect(record, selected, selectedRows) {
-                user_ids.splice(0,user_ids.length);
-                for(let i=0; i<selectedRows.length; i++){
-                    let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
-                    user_ids.push(_id);
-                }
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                user_ids.splice(0,user_ids.length);
-                for(let i=0; i<selectedRows.length; i++){
-                    let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
-                    user_ids.push(_id);
-                }
-            },
+            selectedRowKeys,
+            onChange:this.onSelectedChange.bind(this)
         };
         const projectDesc = projectInfo?(
             <Row>
@@ -213,7 +223,7 @@ class ProjectMember extends Component {
                 </Modal>
                 <div style={{paddingTop:'10px'}}>
                     <Button type="primary" onClick={this.addMember.bind(this)}>添加人员</Button>
-                    <Button type="primary" onClick={this.deleteMember.bind(this,projectId,user_ids)}>删除人员</Button>
+                    <Button type="primary" onClick={this.deleteMember.bind(this,projectId,this.state.selectedUserIds)}>删除人员</Button>
                 </div>
             </div>
         )
@@ -246,6 +256,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators({addProjectMember,getProjectMembers,deleteProjectMember},dispatch),
+        clearUserRelationInfo:bindActionCreators(clearUserRelationInfo,dispatch),
     }
 }
 

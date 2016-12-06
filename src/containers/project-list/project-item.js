@@ -37,27 +37,27 @@ class ProjectItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {node,consernedProject} = nextProps;
+        const {node,consernedInfo,unconsernInfo} = nextProps;
         if(this.props.node != node && node){
             this.setState({
                 showProjectMember:false
             })
         }
         const {loginInfo,selectNodeKey} = this.props;
-        if(consernedProject.consernedInfo && this.props.consernedProject.consernedInfo){
-            if (this.props.consernedProject.consernedInfo.consernedInfo !== consernedProject.consernedInfo.consernedInfo
-                && consernedProject.consernedInfo.consernedInfo){
-                this.props.getGroupTree(loginInfo.userId);
-                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
-            }
-        }else if(consernedProject.unconsernInfo && this.props.consernedProject.unconsernInfo){
-            if(this.props.consernedProject.unconsernInfo.unconsernedInfo !== consernedProject.unconsernInfo.unconsernedInfo
-                && consernedProject.unconsernInfo.unconsernedInfo){
+        if(consernedInfo && this.props.consernedInfo ){
+            if(consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
+            && consernedInfo.consernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
                 this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
             }
         }
-
+        if(unconsernInfo && this.props.unconsernInfo){
+            if(unconsernInfo.unconsernedInfo != this.props.unconsernInfo.unconsernedInfo
+            && unconsernInfo.unconsernedInfo){
+                this.props.getGroupTree(loginInfo.userId);
+                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+            }
+        }
 
         const {forkResult,getProjectInfo} = nextProps;
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
@@ -226,7 +226,8 @@ function mapStateToProps(state) {
         treeData: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
         forkResult:state.forkProject,
-        consernedProject:state.consernProject,
+        consernedInfo:state.consernProject.consernedInfo,
+        unconsernInfo:state.consernProject.unconsernInfo,
         projectLoading:state.getProjectInfo.loading,
         selectNodeKey: state.getGroupInfo.selectedNode,
     }
