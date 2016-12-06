@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Table, Button, Row, Modal, notification, Form, Input,Icon} from 'antd';
 import {getUserInfo} from './actions/user-relation-actions';
-import {MoveUser,DeleteGroupUser} from './actions/user-relation-actions';
+import {MoveUser,DeleteGroupUser,setSelectedRowKeys} from './actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
 import {findUserIdByEmail} from './utils';
@@ -173,41 +173,37 @@ class UserInfo extends React.Component {
         }
     }
 
-    render(){
-        const {userInfo,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            onSelected,moveUserInfo} = this.props;
+    onSelectedChange(selectedRowKeys, selectedRows){
+        const {userInfo,onSelected} = this.props;
         let userInfoData = userInfo?(
             userInfo.userInfoData?userInfo.userInfoData:[]):[];
+        let user_ids = [];
+        for(let i=0; i<selectedRows.length; i++){
+            let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
+            user_ids.push(_id);
+        }
+        if(onSelected){
+            onSelected(user_ids);
+        }
+        this.props.setSelectedRowKeys(selectedRowKeys);
+    }
+
+    render(){
+        const {userInfo,deleteUserInfo,userRelationTree, showUserInfo,visible,
+            moveUserInfo,selectedKeys} = this.props;
         let getUserLoading = userInfo?userInfo.loading:false;
         let removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
         let loadingTree = userRelationTree?userRelationTree.loading:false;
         let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+        let selectedRowKeys = selectedKeys?(
+            selectedKeys.selectedKeys?selectedKeys.selectedKeys:[]):[];
 
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {},
-            onSelect(record, selected, selectedRows) {
-                if(onSelected){
-                    let user_ids = [];
-                    for(let i=0; i<selectedRows.length; i++){
-                        let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
-                        user_ids.push(_id);
-                    }
-                    onSelected(user_ids);
-                }
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-                if(onSelected){
-                    let user_ids = [];
-                    for(let i=0; i<selectedRows.length; i++){
-                        let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
-                        user_ids.push(_id);
-                    }
-                    onSelected(user_ids);
-                }
-            },
+            selectedRowKeys,
+            onChange:this.onSelectedChange.bind(this)
         };
         let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
@@ -303,6 +299,7 @@ function mapStateToProps(state) {
         userRelationTree:state.UserRelation.getUserRelationTree,
         moveUserInfo:state.UserRelation.moveUserRelation,
         deleteUserInfo:state.UserRelation.deleteUserRelation,
+        selectedKeys:state.UserRelation.selectedKeys,
     }
 }
 
@@ -311,6 +308,7 @@ function mapDispatchToProps(dispatch) {
         getGroupsUsers:bindActionCreators(getUserInfo, dispatch),
         MoveUser:bindActionCreators(MoveUser, dispatch),
         DeleteGroupUser:bindActionCreators(DeleteGroupUser, dispatch),
+        setSelectedRowKeys:bindActionCreators(setSelectedRowKeys, dispatch),
     }
 }
 

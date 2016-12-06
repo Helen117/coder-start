@@ -6,7 +6,8 @@ import {GET_USER_RELATION_TREE,
     SET_SELECT_USER_NODE,
     GET_USER_INFO,
     MOVE_USER,DELETE_GROUP_USER,
-    CREATE_USER_GROUP,UPDATE_USER_GROUP,DELETE_USER_GROUP} from '../constants/user-relation-types';
+    CREATE_USER_GROUP,UPDATE_USER_GROUP,DELETE_USER_GROUP,
+    SELECTED_ROW_KEYS} from '../constants/user-relation-types';
 
 //获取组织树
 export function getUserRelationTree(userId) {
@@ -110,5 +111,12 @@ export function setUserGroupDelete(group_id, user_id) {
                 }
             })
         }
+    }
+}
+//保存table的selectedRowKeys
+export function setSelectedRowKeys(selectedRowKeys) {
+    return {
+        type: SELECTED_ROW_KEYS,
+        selectedRowKeys:selectedRowKeys
     }
 }
