@@ -158,11 +158,11 @@ class UserRelation extends React.Component{
                 <Col span={6}>
                     <TreeFilter
                         loading={loadingTree}
-                        notFoundMsg='找不到项目'
-                        inputPlaceholder="快速查询项目"
-                        loadingMsg="正在加载项目信息..."
+                        notFoundMsg='找不到组织'
+                        inputPlaceholder="快速查询组织"
+                        loadingMsg="正在加载组织信息..."
                         nodesData={userTreeData}
-                        defaultSelectedKeys={[selectedNode]}
+                        busiType="user-relation"
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
