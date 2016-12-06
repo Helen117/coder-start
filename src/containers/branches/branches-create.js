@@ -39,7 +39,6 @@ class CreateBranches extends Component {
     }
 
     insertCallback(type){
-        console.log('创建成功')
         message.success(type);
         this.context.router.goBack();
         this.props.fetchBranchesData(this.props.getProjectInfo.id);

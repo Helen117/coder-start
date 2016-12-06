@@ -36,7 +36,6 @@ export function fetchMergeBranchData(projectId) {
 
 
 export function fetchIssuesData(projectId,userId) {
-    console.log(projectId,userId)
     var path = '/project/list-mr-issue';
     return {
         type: FETCH_ISSUES_DATA,

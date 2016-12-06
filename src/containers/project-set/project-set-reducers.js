@@ -72,7 +72,7 @@ export function projectSet(state = initialState, action = {}) {
             return {...state,projectSetTree: action.payload, getProjectSetTreeLoading: false};
 
         case FETCH_PROJECT_SET_TREE_ERROR:
-            return {...state,projectSetTree:[], getProjectSetTreeLoading: false};
+            return {...state,projectSetTree:[], getProjectSetTreeLoading: false, errMessage: action.payload.errMessage};
 
 
         // get project info

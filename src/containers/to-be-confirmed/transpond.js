@@ -33,7 +33,6 @@ class DevelopTransPond extends Component {
             if (!!errors) {
                 return;
             } else {
-                console.log(form.getFieldsValue());
                 const formData = form.getFieldsValue();
             }
         })

@@ -22,7 +22,6 @@ export function createProjectSet(projectSetData) {
 }
 
 export function updateProjectSet(projectSetData) {
-    console.log('projectSetData',projectSetData)
     var path = '/project/update-set';
     return {
         type: UPDATE_PROJECT_SET,
