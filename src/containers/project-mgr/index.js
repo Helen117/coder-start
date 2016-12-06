@@ -57,7 +57,7 @@ class ProjectMgr extends React.Component{
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
-            this.props.clearProjectInfo();
+            //this.props.clearProjectInfo();
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
