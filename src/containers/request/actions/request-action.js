@@ -13,13 +13,13 @@ export function editDemand(message) {
     }
 }
 
-export function getDemandInfo(projectSetId) {
+export function getDemandInfo(setId) {
     return {
         type: 'FETCH_REQUIREMENT_INFO',
         payload: {
-            promise: api.post('/project/demand', {
+            promise: api.post('/project/list-demand', {
                 params: {
-                    projectSetId: projectSetId
+                    sets_id: setId
                 }
             })
         }
