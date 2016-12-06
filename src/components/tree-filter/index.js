@@ -7,34 +7,41 @@
  * Created by william.xu on 2016/9/14
  */
 import React, {PropTypes} from 'react';
-import { Tree, Input, Icon } from 'antd';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import { Tree, Input, Icon, Form } from 'antd';
+import * as actions from './action';
 
 import { loopAllChildren, flatToHierarchy, getPropValue, labelCompatible } from './util';
 import './index.less';
 
 const TreeNode = Tree.TreeNode;
 
-export default class TreeFilter extends React.Component {
+class TreeFilter extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            filterValue: '',
-            _expandedKeys: [],
-            _selectedKeys: [],
-            fireOnExpand: false
+            // filterValue: '',
+            // _expandedKeys: [],
+            // _selectedKeys: [],
+            // fireOnExpand: false
         }
     }
 
     componentDidMount() {
+        const filterValue = this.getFilterValue();
+        const {setFieldsValue} = this.props.form;
+        setFieldsValue({filterValue:filterValue});
     }
 
     onSelectNode(selectedKeys, e){
         const selectedNode = e.selectedNodes[0];
         if (selectedNode){
-            this.setState({
-                _selectedKeys: selectedKeys
-            });
-            const {onSelect} = this.props;
+            // this.setState({
+            //     _selectedKeys: selectedKeys
+            // });
+            const {onSelect, treeFilterAction, busiType} = this.props;
+            treeFilterAction.setSelectedNodeKey(selectedKeys, busiType);
             if (onSelect){
                 const node = {id: selectedNode.key, name: selectedNode.props.title};
                 if (selectedNode.props.title.props && selectedNode.props.title.props.children && selectedNode.props.title.props.children.length == 2){
@@ -51,9 +58,17 @@ export default class TreeFilter extends React.Component {
     }
     onInputChange(event) {
         const val = event.target.value;
-        this.setState({
-            filterValue: val
-        });
+        // this.setState({
+        //     filterValue: val,
+        //     fireOnExpand: false
+        // });
+        const {treeFilterAction, busiType} = this.props;
+        if (val){
+            treeFilterAction.setFilterValue(val, false, busiType);
+        }else{
+            treeFilterAction.setFilterValue(val, true, busiType);
+        }
+
     }
 
     filterTreeNode(input, child) {
@@ -63,9 +78,19 @@ export default class TreeFilter extends React.Component {
         return String(getPropValue(child, labelCompatible('title'))).indexOf(input) > -1;
     }
 
+    getFilterValue(){
+        let filterValue = '';
+        const {treeFilterState, busiType} = this.props;
+        if (treeFilterState[busiType] && treeFilterState[busiType].filterValue){
+            filterValue = treeFilterState[busiType].filterValue;
+        }
+        return filterValue;
+    }
+
     highlightTreeNode(treeNode) {
         const value = treeNode.props[labelCompatible('title')];
-        const {filterValue} = this.state;
+        // const {filterValue} = this.state;
+        const filterValue = this.getFilterValue();
         if (filterValue){
             if (value.props && value.props.children && value.props.children.length == 2){
                 return value.props.children[1].props.children.indexOf(filterValue) > -1;
@@ -79,19 +104,21 @@ export default class TreeFilter extends React.Component {
     }
 
     onExpand(expandedKeys) {
-        this.setState({
-            _expandedKeys: expandedKeys,
-            fireOnExpand: true,
-        });
+        // this.setState({
+        //     _expandedKeys: expandedKeys,
+        //     fireOnExpand: true,
+        // });
+        const {treeFilterAction, busiType} = this.props;
+        treeFilterAction.setFireOnExpand(expandedKeys, true, busiType);
     }
 
-    getTreeNodes(data, filterValue) {
+    getTreeNodes(data) {
         return data.map((item) => {
             if (item.children && item.children.length>0) {
                 return (
                     //<TreeNode key={item.id} title={item.name}>
                     <TreeNode key={item.id} title={<span><Icon type={item.icon} /><span>{item.name}</span></span>}>
-                        {this.getTreeNodes(item.children, filterValue)}
+                        {this.getTreeNodes(item.children)}
                     </TreeNode>
                 );
             }
@@ -143,19 +170,25 @@ export default class TreeFilter extends React.Component {
 
 
     render(){
-        const {filterValue} = this.state;
-        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg} = this.props;
-        let nodes = this.getTreeNodes(nodesData, filterValue);
+        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType} = this.props;
+        let nodes = this.getTreeNodes(nodesData);
+        //const {filterValue} = this.state;
+        const filterValue = this.getFilterValue();
         if (filterValue) {
             nodes = this.processTreeNode(nodes, filterValue);
         }
 
+        let selectedNodeKey = [];
+        if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
+            selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
+        }
         const trProps = {
             selectable: true,
             showLine: true,
-            //selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
-            selectedKeys: this.props.defaultSelectedKeys,
-            defaultSelectedKeys: this.props.defaultSelectedKeys,
+            // //selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
+            // selectedKeys: this.props.defaultSelectedKeys,
+            // defaultSelectedKeys: this.props.defaultSelectedKeys,
+            selectedKeys: selectedNodeKey,
             onSelect: this.onSelectNode.bind(this),
             defaultExpandAll: false,
             filterTreeNode: this.highlightTreeNode.bind(this),
@@ -165,13 +198,20 @@ export default class TreeFilter extends React.Component {
         if (this._expandedKeys && this._expandedKeys.length) {
             trProps.expandedKeys = this._expandedKeys;
         }
-        if (this.state.fireOnExpand) {
-            trProps.expandedKeys = this.state._expandedKeys;
+        // if (this.state.fireOnExpand) {
+        //     trProps.expandedKeys = this.state._expandedKeys;
+        //     trProps.autoExpandParent = false;
+        // }
+        if (treeFilterState[busiType] && treeFilterState[busiType].fireOnExpand){
+            trProps.expandedKeys = treeFilterState[busiType].expandedKeys;
             trProps.autoExpandParent = false;
         }
+        const {getFieldDecorator} = this.props.form;
         return(
             <div style={{border: "1px solid #e5e5e5", padding:10}}>
-                <Input placeholder={inputPlaceholder} onChange={this.onInputChange.bind(this)}/>
+                {getFieldDecorator('filterValue',
+                    {rules:[
+                    ]})(<Input placeholder={inputPlaceholder} onChange={this.onInputChange.bind(this)}/>)}
                 {loading?(
                     <span className="filter-not-found">
                         <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>{loadingMsg?loadingMsg:'正在加载数据...'}</span></i>
@@ -195,10 +235,26 @@ TreeFilter.propTypes = {
     loading: PropTypes.bool,
     nodesData: PropTypes.array,
     onSelect: PropTypes.func,
-    defaultSelectedKeys: PropTypes.array
+    busiType: PropTypes.string
 };
 
 TreeFilter.defaultProps = {
     nodesData: [],
-    defaultSelectedKeys: []
+    busiType: 'default'
 };
+
+TreeFilter = Form.create()(TreeFilter);
+
+function mapStateToProps(state) {
+    return {
+        treeFilterState : state.treeFilter,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        treeFilterAction : bindActionCreators(actions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TreeFilter);

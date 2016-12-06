@@ -32,6 +32,7 @@ import {toBeConfirmedItem} from '../containers/to-be-confirmed/reducer'
 import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
 import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
+import treeFilter from '../components/tree-filter/reducer';
 
 const reducer = combineReducers({
     login,
@@ -65,7 +66,8 @@ const reducer = combineReducers({
     projectCompile,
     label,
     UpdateUserInfo,
-    consernProject
+    consernProject,
+    treeFilter
 })
 
 
