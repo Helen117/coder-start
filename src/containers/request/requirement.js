@@ -18,7 +18,8 @@ class RequirementInfo extends Component {
     componentWillMount() {
         const {selectedProjectSet,actions} = this.props;
         if(selectedProjectSet&& selectedProjectSet.id){
-            // actions.getDemandInfo(selectedProjectSet.id);
+            let id =selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+            actions.getDemandInfo(id);
         }
     }
 
@@ -29,7 +30,7 @@ class RequirementInfo extends Component {
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
         //点击不同项目集，重新加载数据
         if(nextSetId&&thisSetId != nextSetId){
-            // actions.getDemandInfo(nextSetId);
+            actions.getDemandInfo(nextSetId.substr(0,nextSetId.length-2));
         }
 
     }
@@ -43,19 +44,32 @@ class RequirementInfo extends Component {
 
     }
 
+    getDataSources(list){
+        if(list&&list.length>0){
+            for(var i=0;i<list.length;i++){
+                if(typeof(list[i].practice_due_date)=="number") {
+                    list[i].last_operation_time = new Date(parseInt(list[i].practice_due_date)).toLocaleDateString();
+                }
+                if(typeof(list[i].expect_due_date)=="number") {
+                    list[i].expected_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
+                }
+                if(typeof(list[i].demand_comfirm_date)=="number") {
+                    list[i].demand_confirm_time = new Date(parseInt(list[i].demand_comfirm_date)).toLocaleDateString();
+                }
+                list[i].label = list[i].label_names&&list[i].label_names.length>0?list[i].label_names+'':'';
+                list[i].label_id = list[i].label_ids&&list[i].label_ids.length>0?list[i].label_ids+'':'';
+            }
+        }
+        return list;
+    }
+
     render() {
 
+        console.log('data:',this.props.requirementInfo);
         const pagination = {
             pageSize:20,
             // total: data.length,
         };
-
-        const data = [{
-            "title":"项目优化",
-            "label":"H5",
-            "status":"进行中",
-            "last_operation_time":"2016/12/23"
-        }];
 
         const selectedProjectSet = this.props.selectedProjectSet;
         const projectId = selectedProjectSet? selectedProjectSet.id.indexOf('g')!=-1:'';
@@ -63,7 +77,7 @@ class RequirementInfo extends Component {
             return (
                 <Box title="需求列表">
                     <Button type="primary" onClick={this.editDemand.bind(this, 'add', null)}>新增</Button>
-                    <Table columns={this.columns(this)} dataSource={data}
+                    <Table columns={this.columns(this)} dataSource={this.getDataSources(this.props.requirementInfo)}
                            bordered
                            size="middle"
                            pagination={pagination}
@@ -91,13 +105,13 @@ RequirementInfo.contextTypes = {
 
 RequirementInfo.prototype.columns = (self)=>[{
     title: '里程碑',
-    dataIndex: 'milestone',
+    dataIndex: 'milestone_name',
 },{
     title: '需求名称',
     dataIndex: 'title',
 }, {
     title: '当前状态',
-    dataIndex: 'status',
+    dataIndex: 'state',
 },{
     title: '业务范畴',
     dataIndex: 'label',
@@ -109,10 +123,10 @@ RequirementInfo.prototype.columns = (self)=>[{
     dataIndex: 'last_operation_time',
 }, {
     title: '需求确认时间',
-    dataIndex: 'demand_confirmation_time',
+    dataIndex: 'demand_confirm_time',
 }, {
     title: '期望上线时间',
-    dataIndex: 'expected_on-line_time',
+    dataIndex: 'expected_due_date',
 }];
 
 
