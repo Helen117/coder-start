@@ -4,10 +4,9 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Tree, Input, Icon, Transfer,Modal,Spin,message } from 'antd';
+import { Button, Row, Col } from 'antd';
 import TreeFilter from '../../components/tree-filter';
-import putProjectSetToState from './actions/put-project-set-into-state-action';
-import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
+import {putSelectedTreeItemToState,fetchProjectSetTree} from './project-set-action';
 import 'pubsub-js';
 
 class ProjectSetTree extends React.Component{
@@ -40,7 +39,7 @@ class ProjectSetTree extends React.Component{
     onSelectNode(node){
         const {currentOneInfo, currentTwoInfo} = this.props;
         node.selectedItemId=node.id.substring(0,node.id.length-2);
-        this.props.putProjectSetToState(node);
+        this.props.putSelectedTreeItemToStateAction(node);
         if(currentOneInfo){//根据菜单链接控制路由
             if(!this.isEmptyObject(currentTwoInfo)){
                 this.context.router.push({
@@ -93,9 +92,9 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
-        projectSet: state.fetchProjectSetTree.projectSetTree,
-        errMessage: state.fetchProjectSetTree.errMessage,
-        loading: state.fetchProjectSetTree.loading,
+        projectSet: state.projectSet.projectSetTree,
+        errMessage: state.projectSet.errMessage,
+        loading: state.projectSet.loading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
 
     }
@@ -104,7 +103,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
-        putProjectSetToState: bindActionCreators(putProjectSetToState, dispatch),
+        putSelectedTreeItemToStateAction: bindActionCreators(putSelectedTreeItemToState, dispatch),
     }
 }
 

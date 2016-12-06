@@ -7,8 +7,7 @@ import { Col, Button, Modal, Form, Input, Select,notification,message} from 'ant
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import fetchBranchesData from './actions/fetch-branches-action';
-import createBranch from './actions/branches-create-action';
+import {fetchBranchesData,createBranch} from './branches-action';
 
 
 const createForm = Form.create;
@@ -33,8 +32,8 @@ class CreateBranches extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result } = nextProps;
-        if (this.props.result != result && result){
+        const { createResult } = nextProps;
+        if (this.props.createResult != createResult && createResult){
             this.insertCallback('创建成功');
         }
     }
@@ -137,7 +136,7 @@ class CreateBranches extends Component {
                 </FormItem>
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading} disabled={this.props.disabled}>确定</Button>
+                        <Button type="primary" htmlType="submit" loading={this.props.createLoading}>确定</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
@@ -154,10 +153,9 @@ function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
         loginInfo:state.login.profile,
-        branchesData: state.fetchBranches.branchesData,
-        loading:state.createBranch.loading,
-        disabled:state.createBranch.disabled,
-        result: state.createBranch.result,
+        branchesData: state.branch.branchesData,
+        createLoading:state.branch.createLoading,
+        createResult: state.branch.createResult,
     };
 }
 

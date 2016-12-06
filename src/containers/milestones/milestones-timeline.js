@@ -60,7 +60,7 @@ class Milestones extends React.Component {
         const milestoneData = projectId?this.props.milestoneData:'';
         return (
             <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
-                <div id="mycalender" style={{margin:5}}>
+                <div id="mycalender" style={{margin:10}}>
                     <Row>
                         <Col span={12}>
                             <Breadcrumb>

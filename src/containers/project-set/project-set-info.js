@@ -11,9 +11,7 @@ import { message, Modal} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PopoverImg from '../../components/popover-img'
-import {deleteProjectSet} from './actions/project-set-create-action';
-import fetchProjectSetTree from  './actions/fetch-project_set_tree_action';
-
+import {deleteProjectSet,fetchProjectSetTree} from './project-set-action';
 
 const confirm = Modal.confirm;
 class SelectedSetInfo extends Component {
@@ -107,10 +105,6 @@ class SelectedSetInfo extends Component {
         }else{
             return null;
         }
-           /* <Spin spinning={spinning} tip="正在删除数据">
-
-               {/!* <PopoverImg content={content}></PopoverImg>*!/}
-            </Spin>*/
     }
 }
 
@@ -123,12 +117,11 @@ SelectedSetInfo.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        projectSetTree: state.fetchProjectSetTree.projectSetTree,
         loginInfo: state.login.profile,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
-        delResult: state.deleteProjectSet.result,
-        delLoading: state.deleteProjectSet.loading,
-
+        projectSetTree: state.projectSet.projectSetTree,
+        delResult: state.projectSet.deleteResult,
+        delLoading: state.projectSet.deleteLoading,
     }
 }
 

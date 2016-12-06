@@ -3,14 +3,15 @@
  */
 import api from '../../../api';
 
-export function forkProject(projectId,username) {
+export function forkProject(projectId,username,namesapce) {
     return {
         type: 'FORK_PROJECT',
         payload: {
             promise: api.post('/project/fork', {
                 params: {
                     projectId: projectId,
-                    username:username
+                    username:username,
+                    namesapce:namesapce
                 }
             })
         }
@@ -24,6 +25,19 @@ export function getForkList(projectId) {
             promise: api.post('/project/fork-list', {
                 params: {
                     projectId: projectId
+                }
+            })
+        }
+    }
+}
+
+export function getNamespace(userId) {
+    return {
+        type: 'GET_NAMESPACE',
+        payload: {
+            promise: api.post('/project/fork-path', {
+                params: {
+                    userId: userId
                 }
             })
         }

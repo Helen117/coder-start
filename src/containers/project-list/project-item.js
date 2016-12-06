@@ -6,7 +6,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { Select,Input, Button, message, Tooltip, Row,notification,Table} from 'antd';
+import { Select,Input, Button, message, Tooltip, Row,notification,Table,Modal} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
@@ -25,6 +25,7 @@ class ProjectItem extends Component {
         super(props);
         this.state = {
             showProjectMember:false,
+            showForkPath:false,
         };
     }
 
@@ -62,11 +63,16 @@ class ProjectItem extends Component {
         const {forkResult,getProjectInfo} = nextProps;
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
+            this.setState({
+                showForkPath: false,
+                namespace:''
+            });
             message.success('Fork成功!',3);
-        }else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
-            // message.error('Fork失败!'+forkResult.errors,3);
-            this.errorMessage('Fork失败!',forkResult.errors);
         }
+        // else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
+        //     // message.error('Fork失败!'+forkResult.errors,3);
+        //     this.errorMessage('Fork失败!',forkResult.errors);
+        // }
 
         if(getProjectInfo){
             this.setState({
@@ -84,8 +90,32 @@ class ProjectItem extends Component {
     }
 
     fork(){
+        const {actions,loginInfo} = this.props;
+        actions.getNamespace(loginInfo.userId);
+        this.setState({
+            showForkPath: true,
+            namespace:''
+        });
+    }
+
+    valueChange(value){
+        this.setState({namespace:value});
+    }
+
+    handleOk(){
         const {actions,getProjectInfo,loginInfo} = this.props;
-        actions.forkProject(getProjectInfo.id,loginInfo.username);
+        if(this.state.namespace){
+            actions.forkProject(getProjectInfo.id,loginInfo.username,this.state.namespace);
+        }else{
+            message.error('请选择fork项目的namespace',3);
+        }
+
+    }
+
+    handleCancel(){
+        this.setState({
+            showForkPath: false
+        });
     }
 
     getForks(){
@@ -156,7 +186,8 @@ class ProjectItem extends Component {
     }
 
     render() {
-        const {treeData,visible,getProjectInfo} = this.props;
+        const {treeData,visible,getProjectInfo,forkResult} = this.props;
+
         if(visible == true && treeData.length!=0){
             const columns = (self)=>[
                 {title: "项目名称", dataIndex: "project_name", key: "project_name"},
@@ -182,14 +213,16 @@ class ProjectItem extends Component {
                 {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
             ];
             const dataSource = this.getDataSource();
-            const forkFrom =getProjectInfo?<strong> Forked from {this.props.getProjectInfo.forks_from}</strong>:'';
+            const forkFrom =getProjectInfo&&getProjectInfo.forks_from?<strong> Forked from {this.props.getProjectInfo.forks_from}</strong>:'';
+
+            const forkPath =forkResult&&forkResult.namespace?forkResult.namespace.map(data => <Option key={data.path}>{data.path}</Option>):[];
 
             return (
                 <div>
                     <Row>
                         <div className={styles.project_list_div}>
                             <Tooltip placement="top" title={forkFrom}>
-                                <Button type="ghost" onClick={this.fork.bind(this)} loading={this.props.forkResult.loading}>Fork</Button>
+                                <Button type="ghost" onClick={this.fork.bind(this)} >Fork</Button>
                             </Tooltip>
                             <span className={styles.arrow}></span>
                             <a className={styles.count} onClick={this.getForks.bind(this)}>{getProjectInfo?getProjectInfo.forks_count:''}</a>
@@ -202,6 +235,20 @@ class ProjectItem extends Component {
                                        loading={this.props.projectLoading}
                             ></TableView>
                         </div>
+                        <Modal title="请选择fork项目的namespace"
+                               width="50%"
+                               visible={this.state.showForkPath}
+                               onOk={this.handleOk.bind(this)}
+                               confirmLoading={this.props.forkResult.loading}
+                               onCancel={this.handleCancel.bind(this)}
+                        >
+                            <div style={{paddingLeft:'10px'}}>
+                                <span>namespace：</span>
+                                <Select id="namespace" onSelect={this.valueChange.bind(this)} style={{ width: 200 }}>
+                                    {forkPath}
+                                </Select>
+                            </div>
+                        </Modal>
                     </Row>
                     <Row>
                         {this.state.showProjectMember==true?(
