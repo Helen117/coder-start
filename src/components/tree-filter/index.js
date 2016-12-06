@@ -63,11 +63,11 @@ class TreeFilter extends React.Component {
         //     fireOnExpand: false
         // });
         const {treeFilterAction, busiType} = this.props;
-        if (val){
+        // if (val){
             treeFilterAction.setFilterValue(val, false, busiType);
-        }else{
-            treeFilterAction.setFilterValue(val, true, busiType);
-        }
+        // }else{
+        //     treeFilterAction.setFilterValue(val, true, busiType);
+        // }
 
     }
 
@@ -170,7 +170,7 @@ class TreeFilter extends React.Component {
 
 
     render(){
-        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType} = this.props;
+        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType, treeFilterAction} = this.props;
         let nodes = this.getTreeNodes(nodesData);
         //const {filterValue} = this.state;
         const filterValue = this.getFilterValue();
@@ -197,14 +197,22 @@ class TreeFilter extends React.Component {
         trProps.onExpand = this.onExpand.bind(this);
         if (this._expandedKeys && this._expandedKeys.length) {
             trProps.expandedKeys = this._expandedKeys;
+            if (!filterValue){
+                treeFilterState[busiType].expandedKeys = trProps.expandedKeys;
+                treeFilterState[busiType].fireOnExpand = false;
+            }
         }
         // if (this.state.fireOnExpand) {
         //     trProps.expandedKeys = this.state._expandedKeys;
         //     trProps.autoExpandParent = false;
         // }
-        if (treeFilterState[busiType] && treeFilterState[busiType].fireOnExpand){
+        if (treeFilterState[busiType]){
             trProps.expandedKeys = treeFilterState[busiType].expandedKeys;
-            trProps.autoExpandParent = false;
+            if (treeFilterState[busiType].fireOnExpand){
+                trProps.autoExpandParent = false;
+            }else{
+                trProps.autoExpandParent = true;
+            }
         }
         const {getFieldDecorator} = this.props.form;
         return(
