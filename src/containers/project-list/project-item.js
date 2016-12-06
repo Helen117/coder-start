@@ -167,6 +167,16 @@ class ProjectItem extends Component {
         })
     }
 
+    transformDate(timestamp){
+        var newDate = new Date();
+        if(timestamp){
+            newDate.setTime(timestamp);
+            return newDate.toLocaleDateString();
+        }else{
+            return '';
+        }
+    }
+
     getDataSource(){
         const {getProjectInfo} = this.props;
         let dataSource = [];
@@ -175,7 +185,7 @@ class ProjectItem extends Component {
                 project_name:getProjectInfo.name,
                 description:getProjectInfo.description,
                 memberNum:"共"+getProjectInfo.member_count+"人",
-                current_milestom:getProjectInfo.current_mileston_date,
+                current_milestom:this.transformDate(getProjectInfo.current_mileston_date),
                 consern:getProjectInfo.star_state,
                 //state:
                 //tech_debt:
@@ -197,7 +207,7 @@ class ProjectItem extends Component {
                         return <a onClick={self.memberCountClick.bind(self,record)}>{text}</a>
                     }
                 },
-                {title: "当前里程碑结束时间", dataIndex: "next_milestom", key: "next_milestom"},
+                {title: "当前里程碑结束时间", dataIndex: "current_milestom", key: "current_milestom"},
                 {title: "是否关注", dataIndex: "consern", key: "consern",
                     render(text,record){
                         if(text == '关注'){
