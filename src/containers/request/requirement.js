@@ -2,12 +2,15 @@
  * Created by helen on 2016/11/25.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table,message,Button,Icon  } from 'antd';
+import { Table,message,Button,Icon,Modal,Form,Input, Tooltip   } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as request from './actions/request-action';
 
+
+const createForm = Form.create;
+const FormItem = Form.Item;
 class RequirementInfo extends Component {
 
     constructor(props) {
@@ -35,6 +38,28 @@ class RequirementInfo extends Component {
 
     }
 
+    deleteDemand(record){
+        this.setState({
+            modalVisible: true,
+            delRecord: record
+        });
+    }
+
+    handleOk(groupInfo) {
+        const branch = this.state.delRecord.branch;
+        const project_id = this.props.getProjectInfo.id;
+        const result = this.props.form.getFieldsValue().result;
+        const deleteBranchAction = this.props.deleteBranchAction;
+        deleteBranchAction(branch,project_id,result);
+    }
+
+    handleCancel() {
+        this.setState({
+            modalVisible: false,
+        });
+        this.props.form.resetFields();
+
+    }
 
     editDemand(type,selectedRow){
         this.context.router.push({
@@ -64,7 +89,7 @@ class RequirementInfo extends Component {
     }
 
     render() {
-
+        const {getFieldDecorator} = this.props.form;
         console.log('data:',this.props.requirementInfo);
         const pagination = {
             pageSize:20,
@@ -75,16 +100,29 @@ class RequirementInfo extends Component {
         const projectId = selectedProjectSet? selectedProjectSet.id.indexOf('g')!=-1:'';
         if(projectId) {
             return (
-                <Box title="需求列表">
-                    <Button type="primary" onClick={this.editDemand.bind(this, 'add', null)}>新增</Button>
+                <div style={{margin:10}}>
+                    <Button style={{marginBottom:5}} type="primary" onClick={this.editDemand.bind(this, 'add', null)}>新增</Button>
                     <Table columns={this.columns(this)} dataSource={this.getDataSources(this.props.requirementInfo)}
-                           bordered
+                           //bordered
                            size="middle"
                            pagination={pagination}
                         //loading={this.props.loading}
                            onRowClick={this.editDemand.bind(this, 'modify')}
                     />
-                </Box>
+                    <Modal title="确认删除此分支吗?"
+                           visible={this.state.modalVisible}
+                           onOk={this.handleOk.bind(this)}
+                           confirmLoading={this.props.delLoading}
+                           onCancel={this.handleCancel.bind(this)}
+                    >
+                        <p>如果确认此操作，请在下框输入原因：</p>
+                        <Form>
+                            <FormItem>
+                                {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
+                            </FormItem>
+                        </Form>
+                    </Modal>
+                </div>
             );
         }else{
             return (
@@ -127,6 +165,26 @@ RequirementInfo.prototype.columns = (self)=>[{
 }, {
     title: '期望上线时间',
     dataIndex: 'expected_due_date',
+},{
+    title: '操作',
+    dataIndex: 'key',
+    width: '10%',
+    render: (text, record) => (
+        <div>
+            <Tooltip placement="top" title="点击删除">
+                <a style={{marginRight:5}}>
+                    <Icon type="delete" onClick={self.deleteDemand.bind(self,record)}/>
+                </a>
+            </Tooltip>
+            <span className="ant-divider" />
+            <Tooltip placement="top" title="点击修改">
+                <a style={{marginLeft:5}}>
+                    <Icon type="edit" onClick={self.editDemand.bind(self,'modify',record)}/>
+                </a>
+            </Tooltip>
+        </div>
+
+    )
 }];
 
 
@@ -144,4 +202,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequirementInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(RequirementInfo));
