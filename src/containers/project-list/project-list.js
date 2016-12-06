@@ -99,51 +99,46 @@ class ProjectList extends Component {
 
     render() {
         const {node,visible} = this.props;
-        let listType = false,nullType = false;
+        let listType = false;
         if(visible == true){
             if(node.isLeaf==false && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
                 //项目组节点下有项目
-                listType = true;nullType = false;
+                listType = true;
             }else if(node.isLeaf==true && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
                 //项目组节点下没有项目
-                listType = false;nullType = true;
+                listType = true;
             }
+        }
+        const {treeData,getGroupInfo, deleteLoading} = this.props;
+        let dataSource = [],groupDesc = (<div></div>);
+        if(treeData.length>0){
+            dataSource = getGroupInfo?this.getDataSource(getGroupInfo):[];
+            groupDesc = getGroupInfo?(
+                <Row>
+                    <Col span={4}>项目组名称:{getGroupInfo.name}</Col>
+                    <Col span={4}>项目组创建人：{getGroupInfo.owner}</Col>
+                    <Col span={16}>项目组创建目的:{getGroupInfo.description}</Col>
+                </Row>
+            ):(<div></div>);
         }
 
         if(listType == true){//展示项目组信息
-            const {treeData,getGroupInfo, deleteLoading} = this.props;
-            if(treeData.length>0){
-                const dataSource = getGroupInfo?this.getDataSource(getGroupInfo):[];
-                const groupDesc = getGroupInfo?(
+            return (
+                <div>
                     <Row>
-                        <Col span={4}>项目组名称:{getGroupInfo.name}</Col>
-                        <Col span={4}>项目组创建人：{getGroupInfo.owner}</Col>
-                        <Col span={16}>项目组创建目的:{getGroupInfo.description}</Col>
+                        <div className ={styles.project_list_div}>
+                            {groupDesc}
+                            <TableView columns={this.groupColumns(this)}
+                                       dataSource={dataSource}
+                            ></TableView>
+                        </div>
+                        <Modal title="确认删除此项目吗?"
+                               visible={this.state.modalVisible}
+                               onOk={this.handleOk.bind(this)}
+                               confirmLoading={deleteLoading?true:false}
+                               onCancel={this.handleCancel.bind(this)}
+                        >   </Modal>
                     </Row>
-                ):(<div></div>);
-                return (
-                    <div>
-                        <Row>
-                            <div className ={styles.project_list_div}>
-                                {groupDesc}
-                                <TableView columns={this.groupColumns(this)}
-                                           dataSource={dataSource}
-                                ></TableView>
-                            </div>
-                            <Modal title="确认删除此项目吗?"
-                                   visible={this.state.modalVisible}
-                                   onOk={this.handleOk.bind(this)}
-                                   confirmLoading={deleteLoading?true:false}
-                                   onCancel={this.handleCancel.bind(this)}
-                            >   </Modal>
-                        </Row>
-                    </div>
-                )
-            }else{return null}
-        } else if(nullType == true){
-            return(
-                <div className={styles.null_type_div}>
-                    <span><Icon type="frown-circle" />&nbsp;&nbsp;&nbsp;当前项目组下没有项目！</span>
                 </div>
             )
         }else{
