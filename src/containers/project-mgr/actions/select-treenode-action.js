@@ -4,7 +4,8 @@
 import api from '../../../api';
 import {GET_GROUP_INFO_SUCCESS,
         GET_PROJECT_INFO,
-    CLEAR_GROUP_PROJECT_INFO} from '../constants/select-treenode-types';
+    CLEAR_GROUP_PROJECT_INFO,
+    CLEAR_PROJECT_INFO} from '../constants/select-treenode-types';
 
 export function getGroupInfoSuss(groupInfo, selectedNode,node) {
     return {
@@ -17,6 +18,10 @@ export function getGroupInfoSuss(groupInfo, selectedNode,node) {
 
 export function clearGroupProjectInfo() {
     return {type:CLEAR_GROUP_PROJECT_INFO};
+}
+
+export function clearProjectInfo() {
+    return {type:CLEAR_PROJECT_INFO};
 }
 
 export function getGroupInfo(groupInfo, selectedNode,node) {
