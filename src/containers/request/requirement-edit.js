@@ -24,9 +24,15 @@ class EditDemand extends Component{
     componentWillMount(){
         const {actions,selectedProjectSet} = this.props;
         const {selectedRow} = this.props.location.state;
+        console.log(selectedRow);
+        console.log(selectedRow.label_id.split(','));
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
+            setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
+            setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
+            setFieldsValue({'labels':selectedRow.label_id?selectedRow.label_id.split(','):[]});
+            setFieldsValue({'due_date': moment(selectedRow.last_operation_time,"YYYY-MM-DD")});//时间类型转换
         }
         if(!selectedProjectSet){
             notification.error({
