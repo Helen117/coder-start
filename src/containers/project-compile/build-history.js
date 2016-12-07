@@ -122,7 +122,7 @@ class ProjectBuildHistory extends React.Component{
                             //const time = moment(codeChanges[i].created_at).utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
                             const time = moment(codeChanges[i].created_at).format('YYYY-MM-DD HH:mm:ss');
                             commitDetailItems.push(
-                                <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+                                <Timeline.Item key={i} dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
                                     <p>{time} 【{codeChanges[i].author_name} 提交】</p>
                                     <p><code>{codeChanges[i].title}</code></p>
                                 </Timeline.Item>
@@ -138,7 +138,7 @@ class ProjectBuildHistory extends React.Component{
                         return (
                             <Popover content={commitDetail} title={<h4>代码提交记录</h4>} placement="rightTop" arrowPointAtCenter>
                                 <div className={statusClass} style={{cursor:'pointer'}}>
-                                    <span>{text}</span>
+                                    <span style={{textDecoration: 'underline'}}>{text}</span>
                                 </div>
                             </Popover>
                         );
