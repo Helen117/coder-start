@@ -8,14 +8,16 @@ import {GET_PROJECT_INFO,
     GET_CONFIRM_LIST} from './action-types';
 import api from '../../api';
 
-export function getProjectInfo(userId) {
-    var path ='/aaa';
+export function getProjectInfo(set_id,user_id) {
+   // console.log(set_id,user_id)
+    var path ='/project/demand-project';
     return {
         type: GET_PROJECT_INFO,
         payload: {
             promise: api.post(path, {
                 params: {
-                    userId: userId
+                    set_id: set_id,
+                    user_id: user_id
                 }
             })
         }
@@ -36,14 +38,14 @@ export function developConfirm(data) {
 }
 
 
-export function getConfirmList(userId) {
-    var path ='/aaa';
+export function getConfirmList(task_id) {
+    var path ='/examination/info';
     return {
         type: GET_CONFIRM_LIST,
         payload: {
             promise: api.post(path, {
                 params: {
-                    userId: userId
+                    task_id: task_id,
                 }
             })
         }

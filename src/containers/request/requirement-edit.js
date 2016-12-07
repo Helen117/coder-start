@@ -39,7 +39,7 @@ class EditDemand extends Component{
                 duration: 2
             });
         }else{
-            var id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+            var id = selectedProjectSet.selectedItemId;
             actions.getLabelInfo();
             actions.getDeveloperInfo(id,'set',30);
             actions.getTesterInfo(id,'set',20);
@@ -78,7 +78,8 @@ class EditDemand extends Component{
                 const data = form.getFieldsValue();
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
-                data.sid = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+                data.sid = selectedProjectSet.selectedItemId;
+                data.sid = selectedProjectSet.selectedItemId;
                 if(editType == 'add'){
                     actions.addDemand(data);
                 }else{

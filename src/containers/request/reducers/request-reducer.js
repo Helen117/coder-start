@@ -29,18 +29,18 @@ export default function request(state = initialState, action = {}) {
             return {...state, label: action.payload, getLabelLoading: false, getLabelError: action.payload.errorMsg};
 
         case 'ADD_DEMAND_PENDING':
-            return {...state, addDemandResult: null,addDemandLoading: true};
+            return {...state, addDemandLoading: true};
         case 'ADD_DEMAND_SUCCESS':
             return {...state, addDemandResult: action.payload, addDemandLoading: false};
         case 'ADD_DEMAND_ERROR':
-            return {...state, addDemandResult: null, addDemandLoading: false,  addDemandError: action.payload.errorMsg};
+            return {...state,  addDemandLoading: false,  addDemandError: action.payload.errorMsg};
 
         case 'EDIT_DEMAND_PENDING':
-            return {...state, editDemandResult: null,editDemandLoading: true};
+            return {...state, editDemandLoading: true};
         case 'EDIT_DEMAND_SUCCESS':
             return {...state, editDemandResult: action.payload, editDemandLoading: false};
         case 'EDIT_DEMAND_ERROR':
-            return {...state, editDemandResult: null, editDemandLoading: false,  editDemandError: action.payload.errorMsg};
+            return {...state, editDemandLoading: false,  editDemandError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
             return {...state,requirementInfo: [],loading: true};

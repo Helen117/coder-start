@@ -2,97 +2,54 @@
  * Created by helen on 2016/11/23.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table,message,notification} from 'antd';
+import { Table} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import Box from '../../components/box';
 import {getConfirmList} from './action';
-import DevelopTransPond from './transpond';
-import DevelopConfirm from './confirm';
+
 
 
 class ConfirmList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            showTranspod:false,
-            showConfirm:true
-        };
     }
 
     componentWillMount() {
-        //this.props.getConfirmListAction(this.props.loginInfo.userId);
-    }
-
-    componentWillReceiveProps(nextProps) {
-
-    }
-
-    accept(record){
-        this.setState({
-            showTranspod:false,
-            showConfirm:true
-        })
-    }
-
-
-    transpond(record){
-        this.setState({
-            showTranspod:true,
-            showConfirm:false
-        })
-    }
-
-    handleOk(){
-
-    }
-
-    handleCancel(){
+        const task_id = this.props.task_id
+        if(task_id){
+            this.props.getConfirmListAction(task_id);
+        }
 
     }
 
     getDataSource(confirmList){
-        const data = [];
         if(confirmList){
             for(let i=0; i<confirmList.length; i++){
-                data.push({
-                    name: confirmList[i].name
-                })
+                confirmList[i].due_date = new Date(confirmList[i].due_date).toLocaleDateString();
+                confirmList[i].created_at = new Date(confirmList[i].created_at).toLocaleDateString();
+                if(confirmList[i].type == 'demand'){
+                    confirmList[i].type = '需求';
+                }
             }
         }
-        return data;
+        return confirmList;
     }
 
     render() {
-        //console.log('this.state.showTranspod',this.state.showTranspod,this.state.showConfirm)
         const confirmList = this.props.confirmList;
-        const loading = this.props.loading?this.props.loading:false;
+        const loading = this.props.getConfirmListLoading?true:false;
         const pagination = {
             pageSize:20,
-            // total: data.length,
         };
-
-        const data = [{
-            "name":"项目优化",
-            "type":"需求",
-            "author":"孙磊",
-            "due_date": "2016/11/29",
-            "created_at":"2016/11/23",
-            "files":'qwe'
-        }];
-
+        const data = this.getDataSource(confirmList)
         return(
-            <Box title="待确认事项列表">
                 <Table columns={this.columns(this)} dataSource={data}
                        bordered
                        size="middle"
                        pagination={pagination}
-                       loading={this.props.loading}
+                       loading={loading}
                 />
-                <DevelopTransPond showTranspod={this.state.showTranspod} />
-                <DevelopConfirm showConfirm={this.state.showConfirm}/>
-            </Box>
         );
     }
 }
@@ -132,25 +89,12 @@ ConfirmList.prototype.columns = (self)=>[{
     dataIndex: 'due_date',
     width: '10%'
 
-},{
-    title: '操作',
-    dataIndex: 'key',
-    width: '10%',
-    render: (text, record) => (
-        <span>
-            <a onClick={self.accept.bind(self,record)}>确认</a>
-            <span className="ant-divider" />
-            <a onClick={self.transpond.bind(self,record)}>转派</a>
-        </span>
-
-    )
 }];
 
 function mapStateToProps(state) {
     return {
-        loginInfo: state.login.profile,
-        loading: state.toBeConfirmedItem.loading,
-        confirmList: state.toBeConfirmedItem.item,
+        getConfirmListLoading: state.toBeConfirmedItem.getConfirmListLoading,
+        confirmList: state.toBeConfirmedItem.confirmList,
     };
 }
 
