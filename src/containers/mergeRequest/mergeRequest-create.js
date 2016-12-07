@@ -19,23 +19,11 @@ class CreateMergeRequest extends Component {
     }
 
     componentWillMount() {
-       /* if(this.props.getProjectInfo) {
-            const projectId = this.props.getProjectInfo.id;
-            this.props.fetchMergeBranchData(projectId);
-            //获取当前项目本人的待办事项
-        }*/
+
     }
 
     componentWillReceiveProps(nextProps) {
         const { inserted} = nextProps;
-        /*if(this.props.mergeBranch != mergeBranch && mergeBranch){
-            const userId = this.props.loginInfo.userId;
-            console.log('this.props.mergeBranch',mergeBranch)
-            this.props.fetchIssuesData(mergeBranch[1].id,userId);
-        }
-        if(this.props.isMR != isMR && isMR==false){
-            this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
-        }*/
         if (this.props.inserted != inserted && inserted){
             this.insertCallback("创建成功");
         }
@@ -57,16 +45,6 @@ class CreateMergeRequest extends Component {
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
-
-    errCallback(type,errMessage,){
-        notification.error({
-            message: type,
-            description:errMessage,
-            duration: null
-        });
-        this.context.router.goBack();
-    }
-
 
     handleCancel() {
         const {form} = this.props;
@@ -210,7 +188,7 @@ class CreateMergeRequest extends Component {
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
-                            {getFieldDecorator('issue_id')
+                            {getFieldDecorator('issue_id',{rules:[{required: true, message: '请选择对应问题'}]})
                             (<Select size="large" allowClear={true}>{issuesOptions}</Select>)}
                         </FormItem>
 
@@ -235,7 +213,7 @@ function mapStateToProps(state) {
     return {
 
         mergeBranch : state.mergeRequest.mergeBranch,
-        getProjectInfo:state.getProjectInfo.projectInfo,
+        loginInfo:state.login.profile,
         loading:state.mergeRequest.createLoading,
         inserted: state.mergeRequest.createResult,
         issues: state.mergeRequest.Issues,
@@ -247,6 +225,7 @@ function mapDispatchToProps(dispatch){
 
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         createMr: bindActionCreators(createMr,dispatch),
+
     }
 }
 

@@ -28,6 +28,13 @@ export default function request(state = initialState, action = {}) {
         case 'FETCH_LABEL_INFO_ERROR':
             return {...state, label: action.payload, getLabelPending: false, getLabelError: action.payload.errorMsg};
 
+        case 'ADD_DEMAND_PENDING':
+            return {...state, addDemandPending: true};
+        case 'ADD_DEMAND_SUCCESS':
+            return {...state, addDemandResult: action.payload, addDemandPending: false,  addDemandError: null};
+        case 'ADD_DEMAND_ERROR':
+            return {...state, addDemandResult: action.payload, addDemandPending: false,  addDemandError: action.payload.errorMsg};
+
         case 'EDIT_DEMAND_PENDING':
             return {...state, editDemandPending: true};
         case 'EDIT_DEMAND_SUCCESS':
@@ -36,11 +43,19 @@ export default function request(state = initialState, action = {}) {
             return {...state, editDemandResult: action.payload, editDemandPending: false,  editDemandError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
-            return Object.assign({}, initialState, {loading: true});
+            return {...state, loading: true};
         case 'FETCH_REQUIREMENT_INFO_SUCCESS':
-            return Object.assign({}, initialState, {requirementInfo: action.payload, loading: false, errors: null});
+            return {...state, requirementInfo: action.payload, loading: false, errors: null};
         case 'FETCH_REQUIREMENT_INFO_ERROR':
-            return Object.assign({}, initialState, {requirementInfo: action.payload, loading: false, errors: action.payload.errorMsg});
+            return {...state, requirementInfo: action.payload, loading: false, errors: action.payload.errorMsg};
+
+
+        case 'DELETE_REQUIREMENT_INFO_PENDING':
+            return {...state, deleteResult: null, deleteLoading: true};
+        case 'DELETE_REQUIREMENT_INFO_SUCCESS':
+            return {...state, deleteResult: action.payload, deleteLoading: false};
+        case 'DELETE_REQUIREMENT_INFO_ERROR':
+            return {...state, deleteResult: null, deleteLoading: false};
 
         default:
             return state;
