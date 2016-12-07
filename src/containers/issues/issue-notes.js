@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import styles from './index.css';
 import Box from '../../components/box';
 import * as issue from './actions/issue-action';
+import * as home from '../home/actions/home-action';
 
 const FormItem = Form.Item;
  class IssueNotes extends Component {
@@ -69,9 +70,11 @@ const FormItem = Form.Item;
              if(issueState.state=='closed'){
                  this.setState({'closeButtonStyle':{'display':'none'},'reopenButtonStyle':{'display':''},color:{'color':'red'}});
                  message.success('问题关闭成功',2);
+                 this.props.home.getNotifyItems(this.props.loginInfo.userId);
              }else{
                  this.setState({'closeButtonStyle':{'display':''},'reopenButtonStyle':{'display':'none'},color:{'color':'green'}});
                  message.success('重开问题成功',2);
+                 this.props.home.getNotifyItems(this.props.loginInfo.userId);
              }
 
              this.setState({issueStatus: issueState.state});
@@ -266,7 +269,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(issue,dispatch)
+        actions : bindActionCreators(issue,dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 

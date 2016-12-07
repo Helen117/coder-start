@@ -78,12 +78,79 @@ class ProjectBuildHistory extends React.Component{
                             dataSources[errorMsg] = list.rows[i].buildDetails[j].errorMsg;
                         }
                     }
-                    // console.log("dataSources:",dataSources);
                     data.push(dataSources);
                 }
             }
         }
         return data;
+    }
+
+    getColumns(stages){
+        let columns = [{
+                title: '',
+                colSpan: 1,
+                dataIndex: 'startTime',
+                width: 80
+        }];
+        if (!stages){
+            return columns;
+        }
+        const self = this;
+        let widthPercent = 100;
+        if (stages.length > 0){
+            widthPercent = 100/stages.length;
+        }
+        for (let i in stages){
+            let stage = stages[i];
+            columns.push({
+                title: stage.name,
+                dataIndex: 'stageId_'+stage.id,
+                width: widthPercent+'%',
+                render(text,record){
+                    var statusClass = self.bgColor(record['stageId_'+stage.id+'_status']);
+                    if (record['stageId_'+stage.id+'_status'] == 2) {
+                        return <div className={statusClass}>
+                            <Tooltip placement="top" title={record['stageId_'+stage.id+'_errorMsg']}>
+                                <span>{text}</span>
+                            </Tooltip>
+                        </div>
+                    };
+                    if (stage.id == 1){
+                        let commitDetailItems = [];
+                        const codeChanges = record.codeChanges;
+                        for (let i = codeChanges.length - 1; i >= 0; i--){
+                            //const time = moment(codeChanges[i].created_at).utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
+                            const time = moment(codeChanges[i].created_at).format('YYYY-MM-DD HH:mm:ss');
+                            commitDetailItems.push(
+                                <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
+                                    <p>{time} 【{codeChanges[i].author_name} 提交】</p>
+                                    <p><code>{codeChanges[i].title}</code></p>
+                                </Timeline.Item>
+                            );
+                        };
+                        const commitDetail = (
+                            <section className="markdown">
+                                <Timeline>
+                                    {commitDetailItems}
+                                </Timeline>
+                            </section>
+                        );
+                        return (
+                            <Popover content={commitDetail} title={<h4>代码提交记录</h4>} placement="rightTop" arrowPointAtCenter>
+                                <div className={statusClass} style={{cursor:'pointer'}}>
+                                    <span>{text}</span>
+                                </div>
+                            </Popover>
+                        );
+                    }else{
+                        return <div className={statusClass}>
+                            <span>{text}</span>
+                        </div>;
+                    };
+                }
+            });
+        }
+        return columns;
     }
 
     bgColor(status){
@@ -105,7 +172,6 @@ class ProjectBuildHistory extends React.Component{
         }
     }
 
-
     render(){
         const {selectNode, buildList} = this.props;
         const action = (selectNode&&selectNode.isProject && buildList)?
@@ -115,7 +181,7 @@ class ProjectBuildHistory extends React.Component{
             <Box title="最近5次编译发布情况" action={action}>
                 {(selectNode&&selectNode.isProject && buildList)?(
                     <div id="mytable">
-                        <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
+                        <Table columns={this.getColumns.bind(this,buildList.stages)()} dataSource={this.getDataSource(buildList.data)}
                                loading={buildList && buildList.isLoading}
                                pagination={false}
                         >
@@ -141,163 +207,6 @@ class ProjectBuildHistory extends React.Component{
     }
 
 }
-
-ProjectBuildHistory.prototype.columns = (self)=>[
-    {
-        title: '',
-        colSpan: 1,
-        dataIndex: 'startTime',
-        width: 80,
-        // },{
-        //     colSpan: 0,
-        //     dataIndex: 'commit',
-        //     width: '8%',
-        //     render(text,record){
-        //         // if(text.indexOf("没变更")!=-1){
-        //         //     return <span>{text}</span>
-        //         // }else{
-        //         return <a onClick={self.codeChange.bind(self,text,record)}>{text}</a>
-        //         // }
-        //     }
-    },
-    {
-        title: '更新代码',
-        dataIndex: 'stageId_1',
-        width: '10%',
-        render(text,record){
-            //console.log(record);
-            //getCodeChanges(record.projectId, record.gitCommitId, record.lastTimeGitCommitId);
-            var statusClass = self.bgColor(record.stageId_1_status);
-            if (record.stageId_1_status == 2) {
-                return <div className={statusClass}>
-                    <Tooltip placement="top" title={record.stageId_1_errorMsg}>
-                        <span>{text}</span>
-                    </Tooltip>
-                </div>
-            }
-            let commitDetailItems = [];
-            const codeChanges = record.codeChanges;
-            for (let i = codeChanges.length - 1; i >= 0; i--){
-                commitDetailItems.push(
-                    <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-                        <p>{moment(codeChanges[i].created_at).format('YYYY-MM-DD hh:mm:ss')} 【{codeChanges[i].author_name} 提交】</p>
-                        <p><code>{codeChanges[i].title}</code></p>
-                    </Timeline.Item>
-                );
-            }
-            const commitDetail = (
-                <section className="markdown">
-                    <Timeline>
-                        {commitDetailItems}
-                    </Timeline>
-                </section>
-            );
-            return (
-                <Popover content={commitDetail} title={<h4>代码提交记录</h4>} placement="rightTop" arrowPointAtCenter>
-                    <div className={statusClass} style={{cursor:'pointer'}}>
-                        <span>{text}</span>
-                    </div>
-                </Popover>
-            )
-        }
-    },
-    {
-        title: '编译',
-        dataIndex: 'stageId_100',
-        width: '10%',
-        render(text,record){
-            var statusClassFun = self.bgColor.bind(self,record.stageId_100_status);
-            var statusClass = statusClassFun();
-            if (record.stageId_100_status == 2) {
-                return <div className={statusClass}>
-                    <Tooltip placement="top" title={record.stageId_100_errorMsg}>
-                        <span>{text}</span>
-                    </Tooltip>
-                </div>
-            }
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '生成单元测试案例',
-        dataIndex: 'generating_test_case',
-        width: '10%',
-        render(text,record){
-            // return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '代码质量扫描',
-        dataIndex: 'code_quality_scan',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '单元测试',
-        dataIndex: 'unit_test',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '打包',
-        dataIndex: 'package',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '生成镜像',
-        dataIndex: 'generated_mirror',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '发布',
-        dataIndex: 'stageId_200',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record.stageId_200_status);
-            if (record.stageId_200_status == 2) {
-                return <div className={statusClass}>
-                    <Tooltip placement="top" title={record.stageId_200_errorMsg}>
-                        <span>{text}</span>
-                    </Tooltip>
-                </div>
-            }
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }, {
-        title: '执行自动化测试',
-        dataIndex: 'auto_test',
-        width: '10%',
-        render(text,record){
-            var statusClass = self.bgColor(record);
-            return <div className={statusClass}>
-                <span>{text}</span>
-            </div>
-        }
-    }];
 
 ProjectBuildHistory.contextTypes = {
 };

@@ -13,6 +13,7 @@ import UserRelation from '../user-relation';
 import {addProjectMember,deleteProjectMember,clearUserRelationInfo} from './actions/project-member-action';
 import {getProjectMembers} from '../project-mgr/actions/project-members-action';
 import {findUserIdByEmail} from '../user-relation/utils';
+import {comfirmRoleId} from './util';
 import 'pubsub-js';
 
 
@@ -155,7 +156,7 @@ class ProjectMember extends Component {
     }
 
     render(){
-        const {projectMembers,projectInfo} = this.props;
+        const {projectMembers,projectInfo,loginInfo} = this.props;
         const {selectedRowKeys} = this.state;
 
         const columns = [
@@ -225,10 +226,12 @@ class ProjectMember extends Component {
                     </div>
                     <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
                 </Modal>
-                <div style={{paddingTop:'10px'}}>
-                    <Button type="primary" onClick={this.addMember.bind(this)}>添加人员</Button>
-                    <Button type="primary" onClick={this.deleteMember.bind(this,projectId,this.state.selectedUserIds)}>删除人员</Button>
-                </div>
+                {comfirmRoleId(loginInfo.userId,projectMembers)?(
+                    <div style={{paddingTop:'10px'}}>
+                        <Button type="primary" onClick={this.addMember.bind(this)}>添加人员</Button>
+                        <Button type="primary" onClick={this.deleteMember.bind(this,projectId,this.state.selectedUserIds)}>删除人员</Button>
+                    </div>
+                ):<div></div>}
             </div>
         )
     }

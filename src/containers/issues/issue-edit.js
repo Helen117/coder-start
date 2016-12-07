@@ -8,6 +8,7 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as issue from './actions/issue-action';
+import * as home from '../home/actions/home-action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -16,14 +17,14 @@ const confirm = Modal.confirm;
 class AddIssue extends Component{
     constructor(props){
         super(props);
-        this.state = {able:true,delable:false};
+        this.state = {delable:false};
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
     componentDidMount() {
         const {actions,projectInfo} = this.props;
-        const {selectedRow} = this.props.location.state;
+        const {selectedRow,editType} = this.props.location.state;
 
         if(selectedRow){
             actions.fetchDataSource(selectedRow.project_id);
@@ -37,8 +38,12 @@ class AddIssue extends Component{
         // console.log('selectedRow:',selectedRow);
         if (selectedRow){
             const {setFieldsValue} = this.props.form;
-            selectedRow.labels = selectedRow.labels?selectedRow.labels.split(','):[];
-            setFieldsValue(selectedRow);
+            if(editType=='add'){
+                setFieldsValue({'parent_id':selectedRow.id.toString()});
+            }else{
+                setFieldsValue(selectedRow);
+            }
+            setFieldsValue({'labels' : selectedRow.labels?selectedRow.labels.split(','):[]});
             //this.setState({assign:selectedRow.assignee_name,milestone:selectedRow.milestone_id});
             if(selectedRow.assignee_id){
                 setFieldsValue({'assignee.id':selectedRow.assignee_id.toString()});
@@ -48,14 +53,12 @@ class AddIssue extends Component{
             }
             if(selectedRow.due_date){
                 setFieldsValue({'due_date': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
-                }
+            }
+
             if(selectedRow.author_id==this.props.loginInfo.userId){
                 this.setState({delable:true});
             }
 
-            if(selectedRow.type!='demand'){
-                this.setState({able:false});
-            }
         }
     }
 
@@ -81,6 +84,7 @@ class AddIssue extends Component{
         // }
         if (!error && result) {
             message.success('新增成功');
+            this.props.home.getNotifyItems(this.props.loginInfo.userId);
             this.context.router.goBack();
         }
 
@@ -90,6 +94,7 @@ class AddIssue extends Component{
         // }
         if (!updateIssueError && updateIssue) {
             message.success('操作成功');
+            this.props.home.getNotifyItems(this.props.loginInfo.userId);
             this.context.router.goBack();
         }
 
@@ -130,36 +135,34 @@ class AddIssue extends Component{
         const { actions,form ,loginInfo,projectInfo,milestones,demandList} = this.props;
         const {editType,selectedRow} = this.props.location.state;
 
-        form.validateFields(['title','description','type','due_date'],(errors, values) => {
+        form.validateFields(['title','description','due_date','parent_id','assignee.id'],(errors, values) => {
             if (!!errors) {
                 //message.error(errors,2);
                 return;
             } else {
                 const data = form.getFieldsValue();
                 data.username=loginInfo.username;
+                data.type='bug';
                 // console.log('收到表单值：', data);
                 if(data.milestone.id&&data.due_date){
                     const due_date = this.getDueDate(data.milestone.id,milestones);
-                    // console.log(moment(new Date(parseInt(due_date)),'YYYY-MM-DD HH:mm:ss'));
-                    if(data.due_date<=new Date(parseInt(due_date))){
+
+                    if(new Date(due_date).toLocaleDateString()==new Date(data.due_date.format()).toLocaleDateString()||data.due_date<=new Date(due_date)){
 
                     }else{
                         message.error('问题计划完成时间不能大于里程碑时间:'+new Date(parseInt(due_date)).toLocaleDateString(),3);
                         return;
                     }
                 }
-                if(data.type!='demand'&&!data.parent_id){
-                    message.error('请选择对应的需求！',2);
-                    return;
-                }else if(data.type!='demand'&&data.parent_id){
+
                     const due_date = this.getDueDate(data.parent_id,demandList);
-                    if(data.due_date<=new Date(parseInt(due_date))){
+                    if(new Date(due_date).toLocaleDateString()==new Date(data.due_date.format()).toLocaleDateString()||data.due_date<=new Date(due_date)){
 
                     }else{
                         message.error('bug计划完成时间不能大于对应的需求时间:'+new Date(parseInt(due_date)).toLocaleDateString(),3);
                         return;
                     }
-                }
+
                 if(editType=='add'){
                     data.project_id = projectInfo.id;
                     // data.created_at = Date.now();
@@ -171,7 +174,7 @@ class AddIssue extends Component{
                             return;
                         } else {
                             if (data.title == selectedRow.title && data.description == selectedRow.description && new Date(parseInt(data.due_date.valueOf())).toLocaleDateString() == selectedRow.due_date
-                                && data.assignee.id == selectedRow.assign_id && data.milestone.id == selectedRow.milestone_id) {
+                                && data.assignee.id == selectedRow.assignee_id && data.milestone.id == selectedRow.milestone_id) {
                                 message.info('数据没有变更，不需提交', 2);
                             } else {
                                 data.author_id = loginInfo.userId;
@@ -218,18 +221,11 @@ class AddIssue extends Component{
         })
     }
 
-    handleChange(value){
-        if(value && value!='demand'){
-            this.setState({able:false});
-        }else{
-            this.setState({able:true});
-        }
-    }
-
     loadIssues(value){
+
         const {selectedRow} = this.props.location.state;
         const projectId = this.props.projectInfo.id;
-
+        console.log(value,selectedRow,projectId);
         if (value && projectId){
             this.props.actions.getIssueDemand(projectId,value);
         }else if(value && selectedRow){
@@ -304,21 +300,11 @@ class AddIssue extends Component{
             <Spin spinning={pending}>
             <Box title={editType == 'add' ? '新增问题' : '修改问题'}>
                  <Form horizontal onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout}  label="问题名称" >
-                        {getFieldDecorator('title',{rules:[{ required:true,message:'问题名称不能为空'}]})(<Input placeholder="title"/>)}
+                    <FormItem {...formItemLayout}  label="标题" >
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="问题描述" >
+                    <FormItem {...formItemLayout} label="描述" >
                         {getFieldDecorator('description',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="description" rows="5" />)}
-                    </FormItem>
-
-                    <FormItem {...formItemLayout} label="问题类型" >
-                        {getFieldDecorator('type',{rules:[{required:true,message:'请选择问题类型'}]})(
-                            <Select id="type"  style={{ width: 300 }} onSelect={this.handleChange.bind(this)}>
-                                <Option value="demand">需求</Option>
-                                <Option value="defect">缺陷</Option>
-                                <Option value="bug" >Bug</Option>
-                             </Select>)
-                        }
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="里程碑" >
@@ -335,13 +321,12 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="需求" >
-                        {getFieldDecorator('parent_id')(
+                        {getFieldDecorator('parent_id',{rules:[{required:true,message:'不能为空'}]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择对应的需求"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
-                                     disabled={this.state.able}
                                      style={{ width: 300 }} >
                             {demands}
                         </Select>)}
@@ -360,7 +345,7 @@ class AddIssue extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="指派给" >
-                        {getFieldDecorator('assignee.id')(
+                        {getFieldDecorator('assignee.id',{rules:[{required:true,message:'不能为空'}]})(
                             <Select showSearch
                                     showArrow={false}
                                     placeholder="请选择人员"
@@ -371,14 +356,6 @@ class AddIssue extends Component{
                             </Select>)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout}  label="上传" >
-                        {getFieldDecorator('attachment')(
-                            <Upload >
-                                <Button type="ghost">
-                                    <Icon type="upload" /> 点击上传
-                                </Button>
-                            </Upload>)}
-                    </FormItem>
                     {modifyReason}
 
                     <Modal title="您是否确定要删除此问题?" visible={this.state.visible}
@@ -438,7 +415,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(issue,dispatch)
+        actions : bindActionCreators(issue,dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 

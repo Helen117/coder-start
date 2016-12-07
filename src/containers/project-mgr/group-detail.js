@@ -87,12 +87,12 @@ class GroupDetail extends React.Component {
     }
 
     componentWillMount() {
-        const {selectedRow} = this.props.location.state;
-        if (selectedRow){
+        const {groupInfo} = this.props.location.state;
+        if (groupInfo){
             const {setFieldsValue} = this.props.form;
-            setFieldsValue({name:selectedRow.name});
-            setFieldsValue({description:selectedRow.description});
-            setFieldsValue({visibility_level:selectedRow.visibility_level.toString()});
+            setFieldsValue({name:groupInfo.name});
+            setFieldsValue({description:groupInfo.description});
+            setFieldsValue({visibility_level:groupInfo.visibility_level.toString()});
         }
     }
 
