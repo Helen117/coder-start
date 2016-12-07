@@ -124,3 +124,17 @@ export function resetGroupInfoState(groupInfo,resetData) {//修改项目后，�
         }
     }
 }
+
+export function comfirmRoleId(user_id,projectMembers) {
+    if(!projectMembers){
+        return false;
+    }
+    for(let i=0; i<projectMembers.length; i++){
+        if(user_id == projectMembers[i].id){
+            if(projectMembers[i].role == 40 || projectMembers[i].role == 50){
+                return true;
+            }
+        }
+    }
+    return false;
+}
