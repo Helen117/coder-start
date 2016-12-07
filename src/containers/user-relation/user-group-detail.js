@@ -9,7 +9,6 @@ import Box from '../../components/box';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {createUserGroup, UpdateUserGroup} from './actions/user-relation-actions';
-import {getLeader} from '../register/actions/register-action';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -90,10 +89,10 @@ class UserGroupDetail extends React.Component {
 
     findLeaderName(leaderId){
         const {leaderInfo} = this.props;
-        if(leaderInfo){
-            for(let i=0;i<leaderInfo.length; i++){
-                if(leaderId == leaderInfo[i].leader_id){
-                    return leaderInfo[i].leader_name;
+        if(leaderInfo && leaderInfo.notLeaderInfo){
+            for(let i=0;i<leaderInfo.notLeaderInfo.length; i++){
+                if(leaderId == leaderInfo.notLeaderInfo[i].leader_id){
+                    return leaderInfo.notLeaderInfo[i].leader_name;
                 }
             }
         }
@@ -174,7 +173,7 @@ class UserGroupDetail extends React.Component {
     render() {
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
-        const {createGroupInfo,updateGroupInfo} = this.props;
+        const {createGroupInfo,updateGroupInfo,leaderInfo} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
@@ -197,8 +196,8 @@ class UserGroupDetail extends React.Component {
                 {required:true, message:'请输入描述！'}
             ]})(<Input type="textarea" />);
 
-        const leader = this.props.leaderInfo?this.props.leaderInfo.map(
-            data => <Option key={data.leader_id}>{data.leader_name}</Option>):[];
+        const leader = leaderInfo?(leaderInfo.notLeaderInfo?leaderInfo.notLeaderInfo.map(
+            data => <Option key={data.leader_id}>{data.leader_name}</Option>):[]):[];
         let createLoading = createGroupInfo?createGroupInfo.loading:false;
         let updateLoading = updateGroupInfo?updateGroupInfo.updateLoading:false;
         let createDisabled = createGroupInfo?createGroupInfo.disabled:false;
@@ -264,13 +263,13 @@ function mapStateToProps(state) {
         selectNode:state.UserRelation.getSelectNode,
         createGroupInfo:state.UserRelation.createUserGroup,
         updateGroupInfo:state.UserRelation.updateUserGroup,
-        leaderInfo:state.register.leader,
+        leaderInfo:state.UserRelation.notLeaderInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createUserGroup, UpdateUserGroup,getLeader}, dispatch)
+        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch)
     }
 }
 
