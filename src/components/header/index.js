@@ -52,15 +52,16 @@ export default class Header extends React.Component {
     todoList(type){
         var data={
             assigned_id:this.props.profile.userId,
-            state:'opened',
+            state:'open_reopened',
+            to_do_issues_type:'today_or_all',
         };
         if(type=='today'){
             data.due_start=moment(new Date(parseInt(Date.now())).toLocaleDateString()+' 00:00:00','YYYY-MM-DD HH:mm:ss');
             data.due_end=moment(new Date(parseInt(Date.now())).toLocaleDateString()+' 23:59:59','YYYY-MM-DD HH:mm:ss');
         }else if(type=='milestone'){
-
+            data.to_do_issues_type ="current_milestone";
         }
-        console.log('data:',data);
+
         this.context.router.push({
             pathname: '/myIssue',
             state: {data}

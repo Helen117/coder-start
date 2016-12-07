@@ -335,21 +335,29 @@ IssueList.prototype.issueListColumns = (self)=>[
         let style={'display':'none'};
         let modifyStyle={'display':'none'};
         // console.log('self:',self);
-        if(record.key.indexOf('i')!=-1) {
-            style = {'display': ''};
-        }
-        if(record.key.indexOf('i')!=-1&&record.author_id==self.props.loginInfo.userId){
-            modifyStyle={'display':''}
-        }
+
         if (record.sets_name||record.project_name||record.milestone_name){
             obj.props.colSpan = 0;
             return obj;
         }
 
-        return <div>
-            <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
-            <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
-        </div>;
+        if(record.type!='demand'){
+            if(record.key.indexOf('i')!=-1) {
+                style = {'display': ''};
+            }
+            if(record.key.indexOf('i')!=-1&&record.author_id==self.props.loginInfo.userId){
+                modifyStyle={'display':''}
+            }
+            return <div>
+                <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+                <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+            </div>;
+        }else{
+            return <div>
+                <a onClick={self.editIssue.bind(self,'add', record)}>新增问题</a><br/>
+            </div>;
+        }
+
     }
 }];
 
