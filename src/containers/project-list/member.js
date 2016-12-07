@@ -65,8 +65,12 @@ class ProjectMember extends Component {
 
     transformDate(timestamp){
         var newDate = new Date();
-        newDate.setTime(timestamp);
-        return newDate.toLocaleDateString();
+        if(timestamp){
+            newDate.setTime(timestamp);
+            return newDate.toLocaleDateString();
+        }else {
+            return '';
+        }
     }
 
     addMember(){

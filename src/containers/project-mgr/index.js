@@ -12,7 +12,8 @@ import {connect} from 'react-redux';
 import { Row, Col, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
-import {getGroupInfo,getProjectInfo,clearGroupProjectInfo} from './actions/select-treenode-action';
+import {getGroupInfo,getProjectInfo,clearGroupProjectInfo,
+    clearProjectInfo} from './actions/select-treenode-action';
 import 'pubsub-js';
 
 export GroupDetail from './group-detail';
@@ -56,6 +57,7 @@ class ProjectMgr extends React.Component{
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
+            //this.props.clearProjectInfo();
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
@@ -97,7 +99,7 @@ class ProjectMgr extends React.Component{
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={treeData}
-                        defaultSelectedKeys={[selectNodeKey]}
+                        busiType="project-mgr"
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
@@ -134,6 +136,7 @@ function mapDispatchToProps(dispatch) {
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         clearGroupProjectInfo:bindActionCreators(clearGroupProjectInfo, dispatch),
+        clearProjectInfo:bindActionCreators(clearProjectInfo, dispatch),
     }
 }
 
