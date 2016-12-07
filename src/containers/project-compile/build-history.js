@@ -30,10 +30,7 @@ class ProjectBuildHistory extends React.Component{
     componentWillMount(){
     }
     componentDidMount(){
-        const {selectNode, getBuildList} = this.props;
-        if (selectNode && selectNode.isProject){
-            getBuildList(selectNode.node.id.substr(0,selectNode.node.id.length-2));
-        }
+        this.loadBuildList();
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
     componentWillUnmount(){
@@ -90,24 +87,32 @@ class ProjectBuildHistory extends React.Component{
     }
 
     bgColor(status){
-        let style={};
+        let statusClass = 'not-run';
         if (status == 2) {
-            style ={backgroundColor: "#ffb6c1",color:"red"};
+            statusClass = 'run-failed';
         }else if(status == 1){
-            style ={backgroundColor: "#f0fff0"};
+            statusClass = 'run-successful';
         }else if(status == 0){
-            style ={backgroundColor: "#6ADAFF"};
-        }else{
-            style ={backgroundColor: "#e9e9e9"};
+            statusClass = 'running';
         }
-        return style;
+        return statusClass;
+    }
+
+    loadBuildList(){
+        const {selectNode, getBuildList} = this.props;
+        if (selectNode && selectNode.isProject){
+            getBuildList(selectNode.node.id.substr(0,selectNode.node.id.length-2));
+        }
     }
 
 
     render(){
         const {selectNode, buildList} = this.props;
+        const action = (selectNode&&selectNode.isProject && buildList)?
+            (<Button type="primary" size="default" onClick={this.loadBuildList.bind(this)}>刷新</Button>
+            ):(<div/>);
         return (
-            <Box title="最近5次编译发布情况">
+            <Box title="最近5次编译发布情况" action={action}>
                 {(selectNode&&selectNode.isProject && buildList)?(
                     <div id="mytable">
                         <Table columns={this.columns(this)} dataSource={this.getDataSource(buildList)}
@@ -115,6 +120,13 @@ class ProjectBuildHistory extends React.Component{
                                pagination={false}
                         >
                         </Table>
+                        <div className="legend">
+                            <div className="run-failed">执行失败</div>
+                            <div className="run-successful">执行成功</div>
+                            <div className="running">执行中</div>
+                            <div className="not-run">未执行</div>
+                            <span>图例：</span>
+                        </div>
                     </div>
                 ):(
                     <Alert
@@ -155,9 +167,9 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         render(text,record){
             //console.log(record);
             //getCodeChanges(record.projectId, record.gitCommitId, record.lastTimeGitCommitId);
-            var  divStyle = self.bgColor(record.stageId_1_status);
+            var statusClass = self.bgColor(record.stageId_1_status);
             if (record.stageId_1_status == 2) {
-                return <div style={divStyle}>
+                return <div className={statusClass}>
                     <Tooltip placement="top" title={record.stageId_1_errorMsg}>
                         <span>{text}</span>
                     </Tooltip>
@@ -182,7 +194,7 @@ ProjectBuildHistory.prototype.columns = (self)=>[
             );
             return (
                 <Popover content={commitDetail} title={<h4>代码提交记录</h4>} placement="rightTop" arrowPointAtCenter>
-                    <div style={{...divStyle, cursor:'pointer'}}>
+                    <div className={statusClass} style={{cursor:'pointer'}}>
                         <span>{text}</span>
                     </div>
                 </Popover>
@@ -194,16 +206,16 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'stageId_100',
         width: '10%',
         render(text,record){
-            var divStyleFun = self.bgColor.bind(self,record.stageId_100_status);
-            var divStyle = divStyleFun();
+            var statusClassFun = self.bgColor.bind(self,record.stageId_100_status);
+            var statusClass = statusClassFun();
             if (record.stageId_100_status == 2) {
-                return <div style={divStyle}>
+                return <div className={statusClass}>
                     <Tooltip placement="top" title={record.stageId_100_errorMsg}>
                         <span>{text}</span>
                     </Tooltip>
                 </div>
             }
-            return <div style={divStyle}>
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -213,8 +225,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         width: '10%',
         render(text,record){
             // return <a onClick={self.stageDetail.bind(self,text,record)}>{text}</a>
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -223,8 +235,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'code_quality_scan',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -233,8 +245,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'unit_test',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -243,8 +255,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'package',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -253,8 +265,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'generated_mirror',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -263,15 +275,15 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'stageId_200',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record.stageId_200_status);
+            var statusClass = self.bgColor(record.stageId_200_status);
             if (record.stageId_200_status == 2) {
-                return <div style={divStyle}>
+                return <div className={statusClass}>
                     <Tooltip placement="top" title={record.stageId_200_errorMsg}>
                         <span>{text}</span>
                     </Tooltip>
                 </div>
             }
-            return <div style={divStyle}>
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }
@@ -280,8 +292,8 @@ ProjectBuildHistory.prototype.columns = (self)=>[
         dataIndex: 'auto_test',
         width: '10%',
         render(text,record){
-            var  divStyle = self.bgColor(record);
-            return <div style={divStyle}>
+            var statusClass = self.bgColor(record);
+            return <div className={statusClass}>
                 <span>{text}</span>
             </div>
         }

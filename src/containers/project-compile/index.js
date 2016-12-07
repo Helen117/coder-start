@@ -182,8 +182,8 @@ class ProjectCompile extends React.Component{
             mode: 'groovy'
         };
         const formItemLayout = {
-            labelCol: {span: 4},
-            wrapperCol: {span: 16},
+            labelCol: {span: 3},
+            wrapperCol: {span: 20},
         };
         return (
             <Box title={title}>
@@ -205,8 +205,8 @@ class ProjectCompile extends React.Component{
                 {(selectNode && selectNode.isProject)?(
                     <Spin spinning={saveLoading} tip="正在保存编译发布配置...">
                         <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                            <FormItem {...formItemLayout} label="配置调度表达式">
-                                <Row gutter={0}>
+                            <FormItem {...formItemLayout} label="配置执行调度">
+                                <Row gutter={10}>
                                     <Col span={21}>
                                         {getFieldDecorator('triggerDesc',
                                             {rules:[
@@ -234,7 +234,7 @@ class ProjectCompile extends React.Component{
                                             options={options}
                                             interact={this.interact} />
                             </FormItem>
-                            <FormItem wrapperCol={{span: 16, offset: 4}} style={{marginTop: 0}}>
+                            <FormItem wrapperCol={{span: 16, offset: 3}} style={{marginTop: 0}}>
                                 <Button type="primary" htmlType="submit">保存</Button>
                             </FormItem>
                         </Form>
