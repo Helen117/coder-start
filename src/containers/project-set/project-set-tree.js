@@ -65,9 +65,9 @@ class ProjectSetTree extends React.Component{
                         loading={loading}
                         notFoundMsg={errMessage}
                         inputPlaceholder="快速查询项目"
-                        loadingMsg="正在加载项目信息..."
+                        loadingMsg="正在加载项目集合信息..."
                         nodesData={projectSet}
-                        defaultSelectedKeys={[defaultSelectedKeys]}
+                        busiType="project-set-tree"
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
@@ -94,7 +94,7 @@ function mapStateToProps(state) {
         currentTwoInfo: state.getMenuBarInfo.currentTwo,
         projectSet: state.projectSet.projectSetTree,
         errMessage: state.projectSet.errMessage,
-        loading: state.projectSet.loading,
+        loading: state.projectSet.getProjectSetTreeLoading,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
 
     }

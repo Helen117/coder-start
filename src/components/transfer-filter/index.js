@@ -8,7 +8,6 @@ import { Transfer, Button,Spin } from 'antd';
 export default class TransferFilter extends React.Component {
     constructor(props) {
         super(props);
-        this.targetKeys = [],
         this.state ={
             targetKeys: [],
             mockData: []
@@ -54,9 +53,8 @@ export default class TransferFilter extends React.Component {
 
     handleChange(targetKeys) {
         this.setState({ targetKeys });
-        this.targetKeys = targetKeys;
         const {onChange} = this.props;
-        onChange(this.targetKeys);
+        onChange(targetKeys);
     }
 
     renderFooter() {

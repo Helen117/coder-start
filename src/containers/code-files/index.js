@@ -10,6 +10,7 @@ import styles from "./index.css";
 import 'pubsub-js';
 import FileTree from './file-tree';
 import CodeView from './code-view';
+import {fetchBranchesData} from '../branches/branches-action';
 
 const Option = Select.Option;
 
@@ -47,6 +48,7 @@ class CodeFiles extends React.Component {
         PubSub.subscribe("evtRefreshFileTree",this.refreshTreePath.bind(this));
         const {projectInfo} = this.props;
         if(projectInfo){
+            this.props.fetchBranchesData(projectInfo.id);
             this.props.getCodeFile(projectInfo.id,"",this.state.brand);
         }
     }
@@ -56,6 +58,8 @@ class CodeFiles extends React.Component {
         const {projectInfo} = nextProps;
         if(this.props.projectInfo != projectInfo && projectInfo){
             if(projectInfo){
+                this.state.brand = 'master';
+                this.props.fetchBranchesData(projectInfo.id);
                 this.props.getCodeFile(projectInfo.id,"",this.state.brand);
                 const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
                 this.setState({
@@ -165,22 +169,26 @@ class CodeFiles extends React.Component {
     }
 
     render(){
+        const {branches} = this.props;
         const bread = this.state.pathData.map((item)=> {
             return (
                 <Breadcrumb.Item key={'bc-' + item.pathKey}><a onClick={this.clickTreePath.bind(this,item.path)}>{item.path}</a></Breadcrumb.Item>
             )
         });
+        const branchData = branches?branches.branch.map((item)=>{
+            return (
+                <Option key={item}>{item}</Option>
+            )
+        }):(<Option key="master">master</Option>);
 
         return (
             <div>
                 <Row gutter={16}>
                     <Col span={3}>
-                        <Select id="branch" defaultValue="master" className={styles.select}
+                        <Select id="branch" value={this.state.brand} className={styles.select}
                                 disabled={this.state.selectDisabled}
                                 onChange={this.changeSelect.bind(this)}>
-                            <Option value="master">master</Option>
-                            <Option value="dev">dev</Option>
-                            <Option value="release" >release</Option>
+                            {branchData}
                         </Select>
                     </Col>
                     <Col span={21} className={styles.v_middle}>
@@ -212,6 +220,7 @@ CodeFiles.contextTypes = {
 function mapStateToProps(state) {
     return {
         projectInfo:state.getProjectInfo.projectInfo,
+        branches:state.branch.branchesData
     }
 }
 
@@ -219,6 +228,7 @@ function mapDispatchToProps(dispatch){
     return{
         getCodeFile: bindActionCreators(getCodeFile, dispatch),
         getCodeContent: bindActionCreators(getCodeContent, dispatch),
+        fetchBranchesData:bindActionCreators(fetchBranchesData, dispatch),
     }
 }
 

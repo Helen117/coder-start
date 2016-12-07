@@ -38,34 +38,34 @@ class ProjectItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {node,consernedProject} = nextProps;
+        const {node,consernedInfo,unconsernInfo} = nextProps;
         if(this.props.node != node && node){
             this.setState({
                 showProjectMember:false
             })
         }
         const {loginInfo,selectNodeKey} = this.props;
-        if(consernedProject.consernedInfo && this.props.consernedProject.consernedInfo){
-            if (this.props.consernedProject.consernedInfo.consernedInfo !== consernedProject.consernedInfo.consernedInfo
-                && consernedProject.consernedInfo.consernedInfo){
-                this.props.getGroupTree(loginInfo.userId);
-                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
-            }
-        }else if(consernedProject.unconsernInfo && this.props.consernedProject.unconsernInfo){
-            if(this.props.consernedProject.unconsernInfo.unconsernedInfo !== consernedProject.unconsernInfo.unconsernedInfo
-                && consernedProject.unconsernInfo.unconsernedInfo){
+        if(consernedInfo && this.props.consernedInfo ){
+            if(consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
+            && consernedInfo.consernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
                 this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
             }
         }
-
+        if(unconsernInfo && this.props.unconsernInfo){
+            if(unconsernInfo.unconsernedInfo != this.props.unconsernInfo.unconsernedInfo
+            && unconsernInfo.unconsernedInfo){
+                this.props.getGroupTree(loginInfo.userId);
+                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+            }
+        }
 
         const {forkResult,getProjectInfo} = nextProps;
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
             this.setState({
                 showForkPath: false,
-                namespace:''
+                // namespace:''
             });
             message.success('Fork成功!',3);
         }
@@ -94,7 +94,7 @@ class ProjectItem extends Component {
         actions.getNamespace(loginInfo.userId);
         this.setState({
             showForkPath: true,
-            namespace:''
+            // namespace:''
         });
     }
 
@@ -167,6 +167,16 @@ class ProjectItem extends Component {
         })
     }
 
+    transformDate(timestamp){
+        var newDate = new Date();
+        if(timestamp){
+            newDate.setTime(timestamp);
+            return newDate.toLocaleDateString();
+        }else{
+            return '';
+        }
+    }
+
     getDataSource(){
         const {getProjectInfo} = this.props;
         let dataSource = [];
@@ -175,7 +185,7 @@ class ProjectItem extends Component {
                 project_name:getProjectInfo.name,
                 description:getProjectInfo.description,
                 memberNum:"共"+getProjectInfo.member_count+"人",
-                current_milestom:getProjectInfo.current_mileston_date,
+                current_milestom:this.transformDate(getProjectInfo.current_mileston_date),
                 consern:getProjectInfo.star_state,
                 //state:
                 //tech_debt:
@@ -197,7 +207,7 @@ class ProjectItem extends Component {
                         return <a onClick={self.memberCountClick.bind(self,record)}>{text}</a>
                     }
                 },
-                {title: "当前里程碑结束时间", dataIndex: "next_milestom", key: "next_milestom"},
+                {title: "当前里程碑结束时间", dataIndex: "current_milestom", key: "current_milestom"},
                 {title: "是否关注", dataIndex: "consern", key: "consern",
                     render(text,record){
                         if(text == '关注'){
@@ -273,7 +283,8 @@ function mapStateToProps(state) {
         treeData: state.getGroupTree.treeData,
         getProjectInfo:state.getProjectInfo.projectInfo,
         forkResult:state.forkProject,
-        consernedProject:state.consernProject,
+        consernedInfo:state.consernProject.consernedInfo,
+        unconsernInfo:state.consernProject.unconsernInfo,
         projectLoading:state.getProjectInfo.loading,
         selectNodeKey: state.getGroupInfo.selectedNode,
     }

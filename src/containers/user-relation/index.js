@@ -13,7 +13,7 @@ import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {setUserGroupDelete} from './actions/user-relation-actions';
 import UserInfo from './user-info';
-import {getLeader} from '../register/actions/register-action';
+import {getUserLeader} from './actions/user-relation-actions';
 
 class UserRelation extends React.Component{
     constructor(props){
@@ -49,7 +49,7 @@ class UserRelation extends React.Component{
 
         let selectedGroup = findUserGroupById(node.id,userTreeData);
         this.props.getSelectNode(node.id,selectedGroup);
-        this.props.getLeader();
+        this.props.getUserLeader();
         this.setState({
             showUserInfo:true
         })
@@ -158,11 +158,11 @@ class UserRelation extends React.Component{
                 <Col span={6}>
                     <TreeFilter
                         loading={loadingTree}
-                        notFoundMsg='找不到项目'
-                        inputPlaceholder="快速查询项目"
-                        loadingMsg="正在加载项目信息..."
+                        notFoundMsg='找不到组织'
+                        inputPlaceholder="快速查询组织"
+                        loadingMsg="正在加载组织信息..."
                         nodesData={userTreeData}
-                        defaultSelectedKeys={[selectedNode]}
+                        busiType="user-relation"
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
@@ -217,7 +217,7 @@ function mapDispatchToProps(dispatch) {
         getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
         getSelectNode:bindActionCreators(getSelectNode, dispatch),
         setUserGroupDelete:bindActionCreators(setUserGroupDelete, dispatch),
-        getLeader:bindActionCreators(getLeader, dispatch),
+        getUserLeader:bindActionCreators(getUserLeader, dispatch),
     }
 }
 
