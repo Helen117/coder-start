@@ -94,7 +94,7 @@ class UpdateBasicInfo extends React.Component {
 
     render() {
         const {visible,loginInfo,AllUserInfo} = this.props;
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator,getFieldError} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
             wrapperCol: {span: 8},
@@ -115,9 +115,9 @@ class UpdateBasicInfo extends React.Component {
         );
 
         if(visible == true){
-            let initEmail = '',email_list=(<div></div>);
+            let email_list=(<div></div>);
             if(AllUserInfo && AllUserInfo.allUserInfo){
-                initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
+                let initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
                 let email_array = initEmail.split(' , ');
                 email_list = email_array.map((item)=>{
                     return (<Input placeholder="邮箱" key={item} value={item} readOnly/>)
@@ -126,7 +126,7 @@ class UpdateBasicInfo extends React.Component {
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="中文名"
-                        help="修改中文名后需刷新后才能获得认证！">
+                        help={getFieldError('name')?getFieldError('name'):"修改中文名后需刷新后才能获得认证！"}>
                         {nameProps}
                     </FormItem>
 
