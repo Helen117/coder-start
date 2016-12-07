@@ -126,7 +126,7 @@ class UpdateBasicInfo extends React.Component {
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="中文名"
-                        help="修改中文名后需退出后重新登录才能获得认证！">
+                        help="修改中文名后需刷新后才能获得认证！">
                         {nameProps}
                     </FormItem>
 
