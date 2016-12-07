@@ -75,10 +75,11 @@ class MoreUserGroup extends React.Component{
                 </FormItem>
                 <TreeFilter
                     loading={loading}
-                    notFoundMsg='找不到项目'
-                    inputPlaceholder="快速查询项目"
-                    loadingMsg="正在加载项目信息..."
+                    notFoundMsg='找不到组织'
+                    inputPlaceholder="快速查询组织"
+                    loadingMsg="正在加载组织信息..."
                     nodesData={nodesData}
+                    busiType="more-user-group"
                     onSelect={this.onSelectNode.bind(this)}/>
             </Modal>
         )

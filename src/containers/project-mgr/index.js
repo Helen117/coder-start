@@ -99,7 +99,7 @@ class ProjectMgr extends React.Component{
                         inputPlaceholder="快速查询项目"
                         loadingMsg="正在加载项目信息..."
                         nodesData={treeData}
-                        defaultSelectedKeys={[selectNodeKey]}
+                        busiType="project-mgr"
                         onSelect={this.onSelectNode.bind(this)}/>
                 </Col>
                 <Col span={18}>

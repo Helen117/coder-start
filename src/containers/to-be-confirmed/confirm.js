@@ -38,7 +38,6 @@ const FormItem = Form.Item;
      }
 
     handleChange(targetKeys){
-        console.log('handleChange',targetKeys)
         this.targetKeys = targetKeys;
     }
 
@@ -85,7 +84,6 @@ const FormItem = Form.Item;
         const props = {
             action: '/upload.do',
             beforeUpload(file){
-                console.log(file);
                 const isWord = file.type === 'application/msword';//'application/vnd.ms-excel'
                 if (!isWord) {
                     message.error('只能上传word文档',3);
@@ -94,7 +92,6 @@ const FormItem = Form.Item;
             },
             onChange(info) {
                 if (info.file.status !== 'uploading') {
-                    console.log(info.file, info.fileList);
                 }
                 if (info.file.status === 'done') {
                     message.success(`${info.file.name} file uploaded successfully.`);

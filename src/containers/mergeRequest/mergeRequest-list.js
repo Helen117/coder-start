@@ -7,7 +7,7 @@ import { Button,Row, Modal, Table,notification,Icon, Tooltip} from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {fetchMrListData} from './mergeRequest-action'
+import {fetchMrListData,fetchMergeBranchData,fetchIssuesData} from './mergeRequest-action'
 
 class MergeRequestList extends React.Component {
     constructor(props) {
@@ -23,19 +23,46 @@ class MergeRequestList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const {mergeBranch,issues} = nextProps;
         const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
         const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId!=''){
             this.props.fetchMrListData(nextProId);
         }
+        if(this.props.mergeBranch != mergeBranch && mergeBranch){
+            if(mergeBranch.length >1){
+                const userId = this.props.loginInfo.userId;
+                this.props.fetchIssuesData(mergeBranch[1].id,userId);
+            }else{
+                this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
+            }
+        }
+
+        if(this.props.issues != issues && issues){
+            if(issues.length >0 ){
+                this.context.router.push({
+                    pathname: '/CreateMergeRequest',
+                    state: {editType: 'add'}
+                });
+            }else{
+                this.errCallback('无需合并','您当前无待办事项，不能代码合并请求');
+            }
+
+        }
     }
 
-    createMergeRequest(type){
-        this.context.router.push({
-            pathname: '/CreateMergeRequest',
-            state: {editType: type}
+    errCallback(type,errMessage,){
+        notification.error({
+            message: type,
+            description:errMessage,
+            duration: null
         });
+    }
+
+    createMergeRequest(){
+        const projectId = this.props.getProjectInfo.id;
+        this.props.fetchMergeBranchData(projectId);
     }
 
     onChange(pagination, filters, sorter) {
@@ -75,7 +102,7 @@ class MergeRequestList extends React.Component {
                 <Row>
                     <Button className="pull-right" type="primary"
                             disabled={this.props.getProjectInfo?false:true}
-                            onClick={this.createMergeRequest.bind(this,'add')}>
+                            onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>
                 </Row>
@@ -153,14 +180,20 @@ MergeRequestList.contextTypes = {
 function mapStateToProps(state) {
     return {
         getProjectInfo:state.getProjectInfo.projectInfo,
+        mergeBranch : state.mergeRequest.mergeBranch,
+        issues: state.mergeRequest.Issues,
         mrList: state.mergeRequest.mrList,
-        loading: state.mergeRequest.getMrListLoading
+        loading: state.mergeRequest.getMrListLoading,
+        loginInfo:state.login.profile,
+
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
+        fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
+        fetchIssuesData : bindActionCreators(fetchIssuesData,dispatch),
     }
 }
 

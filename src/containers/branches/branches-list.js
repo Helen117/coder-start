@@ -69,7 +69,7 @@ class BranchesList extends React.Component {
          });
     }
 
-    handleOk(groupInfo) {
+    handleOk() {
         const branch = this.state.delRecord.branch;
         const project_id = this.props.getProjectInfo.id;
         const result = this.props.form.getFieldsValue().result;

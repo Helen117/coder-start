@@ -2,9 +2,9 @@
  * Created by helen on 2016/11/22.
  */
 import api from '../../../api';
-export function editDemand(message) {
+export function addDemand(message) {
     return {
-        type: 'EDIT_DEMAND',
+        type: 'ADD_DEMAND',
         payload: {
             promise: api.post('/project/add-demand', {
                 data: message
@@ -12,6 +12,18 @@ export function editDemand(message) {
         }
     }
 }
+
+export function editDemand(message) {
+    return {
+        type: 'EDIT_DEMAND',
+        payload: {
+            promise: api.post('/project/update-demand', {
+                data: message
+            })
+        }
+    }
+}
+
 
 export function getDemandInfo(setId) {
     return {
@@ -61,6 +73,20 @@ export function getTesterInfo(id,type,role) {
                     id: id,
                     type:type,
                     role:role
+                }
+            })
+        }
+    }
+}
+
+export function deleteDemandInfo(demand_id,userId) {
+    return {
+        type: 'DELETE_REQUIREMENT_INFO',
+        payload: {
+            promise: api.post('/project/delete-demand', {
+                params: {
+                    demand_id: demand_id,
+                    user_id: userId
                 }
             })
         }

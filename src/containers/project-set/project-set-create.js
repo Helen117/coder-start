@@ -49,7 +49,6 @@ class ProjectSetCreate extends React.Component {
         if (this.props.createResult != createResult && createResult){
             this.insertCallback('创建');
         }
-        console.log(this.props.updateResult ,updateResult)
         if(this.props.updateResult != updateResult && updateResult){
             this.insertCallback('修改');
         }

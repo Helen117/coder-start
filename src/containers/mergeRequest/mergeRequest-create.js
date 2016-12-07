@@ -6,7 +6,7 @@ import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,mess
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {fetchMrListData,fetchMergeBranchData,fetchIssuesData,createMr} from './mergeRequest-action'
+import {fetchMrListData,createMr} from './mergeRequest-action'
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -19,21 +19,11 @@ class CreateMergeRequest extends Component {
     }
 
     componentWillMount() {
-        const {router} = this.context;
-        if(this.props.getProjectInfo) {
-            const projectId = this.props.getProjectInfo.id;
-            const userId = this.props.loginInfo.userId;
-            this.props.fetchMergeBranchData(projectId);
-            //获取当前项目本人的待办事项
-            this.props.fetchIssuesData(projectId,userId);
-        }
+
     }
 
     componentWillReceiveProps(nextProps) {
-        const { inserted, errMessage ,isMR} = nextProps;
-        if(this.props.isMR != isMR && isMR==false){
-            this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
-        }
+        const { inserted} = nextProps;
         if (this.props.inserted != inserted && inserted){
             this.insertCallback("创建成功");
         }
@@ -55,16 +45,6 @@ class CreateMergeRequest extends Component {
         this.props.fetchMrListData(this.props.mergeBranch[1].id);
         this.context.router.goBack();
     }
-
-    errCallback(type,errMessage,){
-        notification.error({
-            message: type,
-            description:errMessage,
-            duration: null
-        });
-        this.context.router.goBack();
-    }
-
 
     handleCancel() {
         const {form} = this.props;
@@ -208,7 +188,7 @@ class CreateMergeRequest extends Component {
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
-                            {getFieldDecorator('issue_id')
+                            {getFieldDecorator('issue_id',{rules:[{required: true, message: '请选择对应问题'}]})
                             (<Select size="large" allowClear={true}>{issuesOptions}</Select>)}
                         </FormItem>
 
@@ -234,8 +214,6 @@ function mapStateToProps(state) {
 
         mergeBranch : state.mergeRequest.mergeBranch,
         loginInfo:state.login.profile,
-        getProjectInfo:state.getProjectInfo.projectInfo,
-        isMR: state.mergeRequest.isMR,
         loading:state.mergeRequest.createLoading,
         inserted: state.mergeRequest.createResult,
         issues: state.mergeRequest.Issues,
@@ -244,10 +222,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
-        fetchIssuesData : bindActionCreators(fetchIssuesData,dispatch),
+
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         createMr: bindActionCreators(createMr,dispatch),
+
     }
 }
 
