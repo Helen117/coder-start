@@ -35,9 +35,12 @@ class UpdateBasicInfo extends React.Component {
                 let data = {};
                 data.user_id = loginInfo.userId;
                 data.name = formData.name;
-                data.email = formData.email+formData.option;
+                if(this.state.add_new_email && formData.new_email){
+                    data.email = formData.new_email+formData.option;
+                }
+                console.log('data:',data);
                 //调修改成员信息接口
-                UpdateUser(data);
+                //UpdateUser(data);
             }
         })
     }
@@ -53,6 +56,8 @@ class UpdateBasicInfo extends React.Component {
             description: '',
             duration: null
         });
+        //调所有成员接口,更新邮箱信息
+        this.props.getAllUserInfo();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -81,7 +86,7 @@ class UpdateBasicInfo extends React.Component {
 
     addNewEmail(){
         this.setState({
-            add_new_email:true
+            add_new_email:!this.state.add_new_email
         })
     }
 
@@ -109,10 +114,8 @@ class UpdateBasicInfo extends React.Component {
 
         if(visible == true){
             let initEmail = '';
-            if(AllUserInfo){
-                if(AllUserInfo.allUserInfo){
-                    initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
-                }
+            if(AllUserInfo && AllUserInfo.allUserInfo){
+                initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
             }
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -120,23 +123,23 @@ class UpdateBasicInfo extends React.Component {
                         {nameProps}
                     </FormItem>
 
-                    <FormItem {...formItemLayout}  label="邮箱" >
-                        {getFieldDecorator('email',{rules:[{
-                            required:true,message:'不能为空'},{validator:this.checkEmail}],
-                            initialValue:initEmail})(
-                            <Input placeholder="邮箱" addonAfter={selectAfter}/>
-                        )}
-                    </FormItem>
-                    {/*<FormItem {...formItemLayout_1}  label="邮箱" >
+                    <FormItem {...formItemLayout_1}  label="邮箱" >
                         <Col span={19}>
-                            {getFieldDecorator('email',{rules:[{validator:this.checkEmail}],
-                                initialValue:initEmail})(
-                                <Input placeholder="邮箱" readOnly/>
-                            )}
+                            <div>
+                                {/*{
+                                    initEmail.forEach((item)=>{
+                                        return <Input placeholder="邮箱" value={item} readOnly/>
+                                    })
+                                }*/}
+                                <Input placeholder="邮箱" value={initEmail} readOnly/>
+                                <Input placeholder="邮箱" value={initEmail} readOnly/>
+                            </div>
                         </Col>
-                        <Col span={1} offset={1}><Icon type="plus-circle-o"
-                             style={{fontSize:20,cursor:'pointer',color:'#00c4ff'}}
-                             onClick={this.addNewEmail.bind(this)}/></Col>
+                        <Col span={4} offset={1}>
+                            {this.state.add_new_email?(
+                                <a onClick={this.addNewEmail.bind(this)}>取消添加</a>
+                            ):<a onClick={this.addNewEmail.bind(this)}>添加新邮箱</a>}
+                        </Col>
                     </FormItem>
                     {this.state.add_new_email?(
                         <FormItem {...formItemLayout}  label="添加新邮箱" >
@@ -144,7 +147,7 @@ class UpdateBasicInfo extends React.Component {
                                 <Input placeholder="邮箱" addonAfter={selectAfter}/>
                             )}
                         </FormItem>
-                    ):<div></div>}*/}
+                    ):<div></div>}
 
                     <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"

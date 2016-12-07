@@ -26,17 +26,21 @@ class ProjectMgrSub extends React.Component{
     }
 
     editGroup(type, groupInfo) {
-        if(!type && !groupInfo){
+        if(!type && this.isEmptyObject(groupInfo)){
             message.error('请选择要修改的项目组!',3);
         }else{
-            this.context.router.push({
-                pathname: '/group-detail',
-                state: {editType: type, groupInfo}
-            });
+            if(groupInfo.id.indexOf('_g')>=0){
+                message.error('此组为用户组，不可修改!',3);
+            }else{
+                this.context.router.push({
+                    pathname: '/group-detail',
+                    state: {editType: type, groupInfo}
+                });
+            }
         }
     }
     editProject(type, groupInfo) {
-        if(groupInfo){
+        if(!this.isEmptyObject(groupInfo)){
             this.context.router.push({
                 pathname: '/project-detail',
                 state: {editType: type, groupInfo,}
@@ -46,7 +50,7 @@ class ProjectMgrSub extends React.Component{
         }
     }
     deleteGroup(groupInfo){
-        if(groupInfo && !this.isEmptyObject(groupInfo)){
+        if(!this.isEmptyObject(groupInfo)){
             if(groupInfo.children.length == 0){
                 this.setState({
                     modalVisible: true,
