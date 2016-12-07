@@ -25,14 +25,14 @@ class EditDemand extends Component{
         const {actions,selectedProjectSet} = this.props;
         const {selectedRow} = this.props.location.state;
         console.log(selectedRow);
-        console.log(selectedRow.label_id.split(','));
         if(selectedRow){
+            console.log(selectedRow.label_id.split(','));
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
-            setFieldsValue({'labels':selectedRow.label_id?selectedRow.label_id.split(','):[]});
-            setFieldsValue({'due_date': moment(selectedRow.last_operation_time,"YYYY-MM-DD")});//时间类型转换
+            setFieldsValue({'labels':selectedRow.label_id.split(',')});
+            setFieldsValue({'practice_due_date': moment(selectedRow.practice_due_date)});//时间类型转换
         }
         if(!selectedProjectSet){
             notification.error({
@@ -71,11 +71,20 @@ class EditDemand extends Component{
             if (!!errors) {
                 return;
             } else {
+                const {selectedRow,editType} = this.props.location.state;
                 const data = form.getFieldsValue();
+                console.log('提交表单信息',data)
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
                 data.sid = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
-                actions.editDemand(data);
+                if(editType == 'add'){
+                    actions.addDemand(data);
+                }else{
+                    data.id = selectedRow.id;
+                    console.log('修改提交表单',data);
+                    actions.editDemand(data);
+                }
+
             }
         })
     }
@@ -134,7 +143,7 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="业务范畴" >
-                        {getFieldDecorator('lables',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
+                        {getFieldDecorator('labels',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
                             <Select multiple
                                     style={{ width: 300 }} >
                                 {labels}
@@ -167,7 +176,7 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        {getFieldDecorator('due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
+                        {getFieldDecorator('practice_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
                     </FormItem>
 
                     {modifyReason}
