@@ -33,57 +33,57 @@ export function projectSet(state = initialState, action = {}) {
     switch (action.type) {
         //create project set
         case CREATE_PROJECT_SET_PENDING:
-            return {...state,createResult:null, createLoading:true};
+            return {...state, createLoading:true};
 
         case CREATE_PROJECT_SET_SUCCESS:
             return {...state,createResult: action.payload, createLoading:false};
 
         case CREATE_PROJECT_SET_ERROR:
-            return {...state, createResult:null, createLoading:false};
+            return {...state,createLoading:false};
 
 
         //update project set
         case UPDATE_PROJECT_SET_PENDING:
-            return {...state,updateResult: null,updateLoading: true};
+            return {...state,updateLoading: true};
 
         case UPDATE_PROJECT_SET_SUCCESS:
             return {...state,updateResult: action.payload, updateLoading:false};
 
         case UPDATE_PROJECT_SET_ERROR:
-            return {...state, updateResult: null, updateLoading: false};
+            return {...state, updateLoading: false};
 
 
         //delete project set
         case DELETE_PROJECT_SET_PENDING:
-            return {...state,deleteResult:null,deleteLoading:true};
+            return {...state,deleteLoading:true};
 
         case DELETE_PROJECT_SET_SUCCESS:
             return {...state,deleteResult: action.payload, deleteLoading:false};
 
         case DELETE_PROJECT_SET_ERROR:
-            return {...state,deleteResult:null, deleteLoading:false,};
+            return {...state, deleteLoading:false,};
 
 
         //get project set tree
         case FETCH_PROJECT_SET_TREE_PENDING:
-            return {...state,projectSetTree:[], getProjectSetTreeLoading: true};
+            return {...state,getProjectSetTreeLoading: true};
 
         case FETCH_PROJECT_SET_TREE_SUCCESS:
             return {...state,projectSetTree: action.payload, getProjectSetTreeLoading: false};
 
         case FETCH_PROJECT_SET_TREE_ERROR:
-            return {...state,projectSetTree:[], getProjectSetTreeLoading: false, errMessage: action.payload.errMessage};
+            return {...state,getProjectSetTreeLoading: false, errMessage: action.payload.errMessage};
 
 
         // get project info
         case FETCH_PROJECT_INFO_PENDING:
-            return {...state,projectInfo:[],getProjectInfoLoading: true};
+            return {...state,getProjectInfoLoading: true};
 
         case FETCH_PROJECT_INFO_SUCCESS:
             return {...state,projectInfo: action.payload, getProjectInfoLoading: false};
 
         case FETCH_PROJECT_INFO_ERROR:
-            return {...state, projectInfo:[], getProjectInfoLoading: false, errMessage:action.payload.errMessage};
+            return {...state, getProjectInfoLoading: false, errMessage:action.payload.errMessage};
 
 
         default:

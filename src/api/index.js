@@ -3,8 +3,8 @@ import Api from './api';
 const api = new Api({
     ciBaseURI: 'http://10.10.152.144:13000/jenkins',
     //baseURI: '/gitlab',
-    baseURI: 'http://10.10.152.144:11000/gitlab',
-    //baseURI: 'http://10.10.156.111:11000/gitlab',
+    //baseURI: 'http://10.10.152.144:11000/gitlab',
+    baseURI: 'http://10.10.156.121:11000/gitlab',
 
     headers: {
         //'Accept': 'application/json',
