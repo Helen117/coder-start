@@ -28,8 +28,8 @@ class LabelEdit extends Component{
     componentWillReceiveProps(nextProps) {
         const {loading,editLabel} = nextProps;
 
-        if (!loading && editLabel) {
-            message.success('新增成功');
+        if (!loading && editLabel &&editLabel!=this.props.editLabel) {
+            message.success('提交成功');
             this.context.router.goBack();
         }
 
@@ -38,7 +38,7 @@ class LabelEdit extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const {actions, form, loginInfo} = this.props;
-        // const {editType, selectedRow} = this.props.location.state;
+        const {editType, selectedRow} = this.props.location.state;
 
         form.validateFields( (errors, values) => {
             if (!!errors) {
@@ -46,9 +46,18 @@ class LabelEdit extends Component{
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.username = loginInfo.username;
-                actions.editLabel(data);
+                data.user_id = loginInfo.userId;
                 // console.log('收到表单值：', data);
+                if(editType == 'add'){
+                    actions.editLabel(data);
+                }else{
+                    if(data.title==selectedRow.title&&data.description==selectedRow.description){
+                        message.info('数据没有变更，不需提交', 2);
+                    }else {
+                        data.id = selectedRow.id;
+                        actions.updateLabel(data);
+                    }
+                }
             }
         })
     }
@@ -69,6 +78,10 @@ class LabelEdit extends Component{
             wrapperCol: { span: 12 },
         };
 
+        const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="标签修改原因" >
+            {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
+        </FormItem>:'';
+
         return (
                 <Box title={editType == 'add' ? '新增Label' : '修改Label'}>
                     <Form horizontal onSubmit={this.handleSubmit}>
@@ -78,7 +91,7 @@ class LabelEdit extends Component{
                         <FormItem {...formItemLayout} label="描述" >
                             {getFieldDecorator('description',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="description" rows="5" />)}
                         </FormItem>
-
+                        {modifyReason}
                         <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
                             <Button type="primary" htmlType="submit" loading={this.props.loading}>提交</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>

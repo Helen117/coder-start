@@ -18,11 +18,16 @@ class Labels extends Component {
 
     componentWillMount() {
         const {actions} = this.props;
-        // actions.getLabelInfo(selectedProjectSet.id);
+        actions.getLabelInfo();
     }
 
     componentWillReceiveProps(nextProps) {
+        const {pending,editLabel} = nextProps;
 
+        if (!pending && editLabel&&this.props.editLabel!=editLabel) {
+            message.success('删除成功');
+            this.props.actions.getLabelInfo();
+        }
     }
 
 
@@ -46,9 +51,11 @@ class Labels extends Component {
             if (!!errors) {
                 return;
             } else {
+                actions.delLabel(this.state.delRow.id,loginInfo.userId,form.getFieldsValue());
                 this.setState({
                     visible: false,
                 });
+                form.resetFields();
             }
         })
     }
@@ -68,24 +75,18 @@ class Labels extends Component {
 
         const { getFieldDecorator } = this.props.form;
 
-        const data = [{
-            "title":"H5",
-            "description":"界面优化",
-            "mr":"1",
-            "issues":"2"
-        }];
-
             return (
                 <Box title="Label列表">
                     <Button type="primary" onClick={this.editLabel.bind(this, 'add', null)}>新增</Button>
-                    <Table columns={this.columns(this)} dataSource={data}
-                           bordered
+                    <Table columns={this.columns(this)} dataSource={this.props.label}
+                           //bordered
                            size="middle"
                            pagination={pagination}
-                        //loading={this.props.loading}
+                           loading={this.props.loading}
                     />
 
                     <Modal title="您是否确定要删除此标签?" visible={this.state.visible}
+                           confirmLoading={this.props.pending}
                            onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
                     >
                         <p>如确定，请输入原因：</p>
@@ -111,12 +112,6 @@ Labels.prototype.columns = (self)=>[{
 },{
     title: '描述',
     dataIndex: 'description',
-}, {
-    title: 'merge request',
-    dataIndex: 'mr',
-},{
-    title: '问题',
-    dataIndex: 'issues',
 },{
     title: '操作',
     dataIndex: 'key',
@@ -134,8 +129,11 @@ Labels = Form.create()(Labels);
 
 function mapStateToProps(state) {
     return {
-        loading:state.request.loading,
-        requirementInfo: state.request.requirementInfo,
+        loading:state.label.fetchLabelPending,
+        label: state.label.labelInfo,
+        pending:state.label.pending,
+        editLabel:state.label.editLabel,
+        loginInfo:state.login.profile,
     };
 }
 
