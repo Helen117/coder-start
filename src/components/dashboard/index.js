@@ -41,7 +41,6 @@ export class MyIssueList extends React.Component {
     mapTimeLineData(timeLineData){
         let data = [];
         if(timeLineData) {
-            console.log('timeLineData',timeLineData);
             data=timeLineData.map((item, index)=> {
                     const color = this.setTimeLineColor(item.dueDate);
                     const type = this.setType(item.type);
