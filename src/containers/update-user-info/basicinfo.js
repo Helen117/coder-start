@@ -38,9 +38,8 @@ class UpdateBasicInfo extends React.Component {
                 if(this.state.add_new_email && formData.new_email){
                     data.email = formData.new_email+formData.option;
                 }
-                console.log('data:',data);
                 //调修改成员信息接口
-                //UpdateUser(data);
+                UpdateUser(data);
             }
         })
     }
@@ -58,6 +57,9 @@ class UpdateBasicInfo extends React.Component {
         });
         //调所有成员接口,更新邮箱信息
         this.props.getAllUserInfo();
+        this.setState({
+            add_new_email:false,
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -113,26 +115,25 @@ class UpdateBasicInfo extends React.Component {
         );
 
         if(visible == true){
-            let initEmail = '';
+            let initEmail = '',email_list=(<div></div>);
             if(AllUserInfo && AllUserInfo.allUserInfo){
                 initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
+                let email_array = initEmail.split(' , ');
+                email_list = email_array.map((item)=>{
+                    return (<Input placeholder="邮箱" key={item} value={item} readOnly/>)
+                })
             }
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout} label="中文名">
+                    <FormItem {...formItemLayout} label="中文名"
+                        help="修改中文名后需退出后重新登录才能获得认证！">
                         {nameProps}
                     </FormItem>
 
                     <FormItem {...formItemLayout_1}  label="邮箱" >
                         <Col span={19}>
                             <div>
-                                {/*{
-                                    initEmail.forEach((item)=>{
-                                        return <Input placeholder="邮箱" value={item} readOnly/>
-                                    })
-                                }*/}
-                                <Input placeholder="邮箱" value={initEmail} readOnly/>
-                                <Input placeholder="邮箱" value={initEmail} readOnly/>
+                                {email_list}
                             </div>
                         </Col>
                         <Col span={4} offset={1}>
