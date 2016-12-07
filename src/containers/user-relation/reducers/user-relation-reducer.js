@@ -24,7 +24,10 @@ import {
     DELETE_USER_GROUP_PENDING,
     DELETE_USER_GROUP_SUCCESS,
     DELETE_USER_GROUP_ERROR,
-    SELECTED_ROW_KEYS
+    SELECTED_ROW_KEYS,
+    GET_USER_LEADER_PENDING,
+    GET_USER_LEADER_SUCCESS,
+    GET_USER_LEADER_ERROR
 } from '../constants/user-relation-types';
 import {CLEAR_USER_RELATION_INFO} from '../../project-list/constants/project-member-types';
 
@@ -107,6 +110,13 @@ export default function UserRelation(state = initialState, action = {}) {
         //保存table的selectedRowKeys
         case SELECTED_ROW_KEYS:
             return {...state,selectedKeys:{selectedKeys:action.selectedRowKeys}};
+        //非领导数据
+        case GET_USER_LEADER_PENDING:
+            return {...state,notLeaderInfo:{loading:true}};
+        case GET_USER_LEADER_SUCCESS:
+            return {...state, notLeaderInfo:{notLeaderInfo: action.payload,loading:false}};
+        case GET_USER_LEADER_ERROR:
+            return {...state,notLeaderInfo:{loading:false}};
         default:
             return state;
     }
