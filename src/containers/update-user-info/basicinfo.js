@@ -4,7 +4,7 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, notification,Modal,Select} from 'antd';
+import {Form, Input, Button, notification,Modal,Select,Icon,Row,Col} from 'antd';
 import 'pubsub-js';
 import {UpdateUser,getAllUserInfo} from './actions/update-user-info-action';
 import {findEmailByUserId} from './utils';
@@ -15,6 +15,9 @@ const Option = Select.Option;
 class UpdateBasicInfo extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            add_new_email:false,
+        }
     }
 
     componentDidMount(){
@@ -76,6 +79,12 @@ class UpdateBasicInfo extends React.Component {
         }
     }
 
+    addNewEmail(){
+        this.setState({
+            add_new_email:true
+        })
+    }
+
     render() {
         const {visible,loginInfo,AllUserInfo} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -83,12 +92,16 @@ class UpdateBasicInfo extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 8},
         };
+        const formItemLayout_1 = {
+            labelCol: {span: 5},
+            wrapperCol: {span: 10},
+        };
         const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入中文名！'},
             ],initialValue:loginInfo.name})(<Input type="text" placeholder="请输入中文名"/>);
         const selectAfter = getFieldDecorator('option',{initialValue:'@shpso.com'})(
-            <Select style={{ width: 100 }}>
+            <Select style={{ width: 100 }} >
                 <Option value="@shpso.com">@shpso.com</Option>
                 <Option value="@boss.com">@boss.com</Option>
             </Select>
@@ -114,6 +127,24 @@ class UpdateBasicInfo extends React.Component {
                             <Input placeholder="邮箱" addonAfter={selectAfter}/>
                         )}
                     </FormItem>
+                    {/*<FormItem {...formItemLayout_1}  label="邮箱" >
+                        <Col span={19}>
+                            {getFieldDecorator('email',{rules:[{validator:this.checkEmail}],
+                                initialValue:initEmail})(
+                                <Input placeholder="邮箱" readOnly/>
+                            )}
+                        </Col>
+                        <Col span={1} offset={1}><Icon type="plus-circle-o"
+                             style={{fontSize:20,cursor:'pointer',color:'#00c4ff'}}
+                             onClick={this.addNewEmail.bind(this)}/></Col>
+                    </FormItem>
+                    {this.state.add_new_email?(
+                        <FormItem {...formItemLayout}  label="添加新邮箱" >
+                            {getFieldDecorator('new_email',{rules:[{validator:this.checkEmail}]})(
+                                <Input placeholder="邮箱" addonAfter={selectAfter}/>
+                            )}
+                        </FormItem>
+                    ):<div></div>}*/}
 
                     <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
                         <Button type="primary" htmlType="submit"

@@ -7,6 +7,7 @@ export function findEmailByUserId(userId,allUser) {
             let index = allUser[i].email.indexOf('@');
             let email = allUser[i].email.substr(0,index);
             return email;
+            //return allUser[i].email;
         }
     }
 }

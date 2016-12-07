@@ -191,6 +191,7 @@ class TreeFilter extends React.Component {
             selectedKeys: selectedNodeKey,
             onSelect: this.onSelectNode.bind(this),
             defaultExpandAll: false,
+            expandedKeys: [],
             filterTreeNode: this.highlightTreeNode.bind(this),
         };
         trProps.autoExpandParent = true;
