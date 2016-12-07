@@ -119,9 +119,11 @@ class ProjectBuildHistory extends React.Component{
                         let commitDetailItems = [];
                         const codeChanges = record.codeChanges;
                         for (let i = codeChanges.length - 1; i >= 0; i--){
+                            //const time = moment(codeChanges[i].created_at).utcOffset('+0800').format('YYYY-MM-DD HH:mm:ss');
+                            const time = moment(codeChanges[i].created_at).format('YYYY-MM-DD HH:mm:ss');
                             commitDetailItems.push(
                                 <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />}>
-                                    <p>{moment(codeChanges[i].created_at).format('YYYY-MM-DD hh:mm:ss')} 【{codeChanges[i].author_name} 提交】</p>
+                                    <p>{time} 【{codeChanges[i].author_name} 提交】</p>
                                     <p><code>{codeChanges[i].title}</code></p>
                                 </Timeline.Item>
                             );
