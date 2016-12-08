@@ -8,7 +8,7 @@ import {Form, Input, Button, Modal, notification,Select} from 'antd';
 import Box from '../../components/box';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
-import {createUserGroup, UpdateUserGroup} from './actions/user-relation-actions';
+import {createUserGroup, UpdateUserGroup,getUserLeader} from './actions/user-relation-actions';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -100,6 +100,8 @@ class UserGroupDetail extends React.Component {
     }
 
     componentWillMount() {
+        console.log('componentWillMount')
+        this.props.getUserLeader();
         const {userRelationTree,selectNode} = this.props;
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
@@ -270,7 +272,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch)
+        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch),
+        getUserLeader:bindActionCreators(getUserLeader, dispatch),
     }
 }
 

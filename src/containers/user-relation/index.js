@@ -13,7 +13,6 @@ import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {setUserGroupDelete} from './actions/user-relation-actions';
 import UserInfo from './user-info';
-import {getUserLeader} from './actions/user-relation-actions';
 
 class UserRelation extends React.Component{
     constructor(props){
@@ -49,7 +48,6 @@ class UserRelation extends React.Component{
 
         let selectedGroup = findUserGroupById(node.id,userTreeData);
         this.props.getSelectNode(node.id,selectedGroup);
-        this.props.getUserLeader();
         this.setState({
             showUserInfo:true
         })
@@ -217,7 +215,6 @@ function mapDispatchToProps(dispatch) {
         getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
         getSelectNode:bindActionCreators(getSelectNode, dispatch),
         setUserGroupDelete:bindActionCreators(setUserGroupDelete, dispatch),
-        getUserLeader:bindActionCreators(getUserLeader, dispatch),
     }
 }
 
