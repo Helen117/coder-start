@@ -29,7 +29,7 @@ class ProjectMgrSub extends React.Component{
         if(!type && this.isEmptyObject(groupInfo)){
             message.error('请选择要修改的项目组!',3);
         }else{
-            if(groupInfo.id.indexOf('_g')>=0){
+            if(groupInfo && groupInfo.id.indexOf('_g')>=0){
                 message.error('此组为用户组，不可修改!',3);
             }else{
                 this.context.router.push({

@@ -212,14 +212,15 @@ class UserGroupDetail extends React.Component {
                     <FormItem {...formItemLayout} label="描述">
                         {descriptionProps}
                     </FormItem>
-                    <FormItem {...formItemLayout}  label="领导" >
-                        {getFieldDecorator('leader_id',{rules:[{
-                            required:true,message:'请选择组织领导'}]})(
+                    <FormItem {...formItemLayout}  label="领导"
+                        help="如果要将此组织的领导设为组织B的领导，请先修改组织B的领导！">
+                        {getFieldDecorator('leader_id')(
                             <Select showSearch
                                     showArrow={false}
                                     placeholder="leader"
                                     optionFilterProp="children"
-                                    notFoundContent="无法找到">
+                                    notFoundContent="无法找到"
+                                    allowClear>
                                 {leader}
                             </Select>
                         )}
