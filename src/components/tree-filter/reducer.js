@@ -26,7 +26,7 @@ export default function treeFilter(state = initialState, action = {}) {
     switch (action.type) {
         case SET_SELECTED_NODE_KEY:
             if (!state[action.busiType]){
-                state[action.busiType] = initState;
+                state[action.busiType] = Object.assign({}, initState);//等同于={...initState}
             }
             state[action.busiType].selectedNodeKey = action.selectedNodeKey;
             return {
@@ -34,7 +34,7 @@ export default function treeFilter(state = initialState, action = {}) {
             };
         case SET_FILTER_VALUE:
             if (!state[action.busiType]){
-                state[action.busiType] = initState;
+                state[action.busiType] = Object.assign({}, initState);
             }
             state[action.busiType].filterValue = action.filterValue;
             state[action.busiType].fireOnExpand = action.fireOnExpand;
@@ -43,7 +43,7 @@ export default function treeFilter(state = initialState, action = {}) {
             };
         case SET_FIRE_ON_EXPAND:
             if (!state[action.busiType]){
-                state[action.busiType] = initState;
+                state[action.busiType] = Object.assign({}, initState);
             }
             state[action.busiType].expandedKeys = action.expandedKeys;
             state[action.busiType].fireOnExpand = action.fireOnExpand;
