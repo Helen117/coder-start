@@ -51,35 +51,35 @@ export function milestones(state = initialState, action = {}) {
                 
             //create milestone
             case CREATE_MILESTONES_PENDING:
-                return {...state,createLoading:true};
+                return {...state,createResult:null,createLoading:true};
 
             case CREATE_MILESTONES_SUCCESS:
                 return {...state, createResult: action.payload,createLoading:false};
 
             case CREATE_MILESTONES_ERROR:
-                return { ...state, createLoading:false };
+                return { ...state, createResult:null,createLoading:false };
 
 
             //update milestone
             case UPDATE_MILESTONES_PENDING:
-                return {...state,updateLoading:true};
+                return {...state,updateResult:null,updateLoading:true};
 
             case UPDATE_MILESTONES_SUCCESS:
                 return {...state,updateResult: action.payload,updateLoading:false};
 
             case UPDATE_MILESTONES_ERROR:
-                return {...state, updateLoading:false };
+                return {...state, updateResult:null,updateLoading:false };
 
                 
             //get milestone issues
             case ACQUIRE_MILESTONES_ISSUES_PENDING:
-                return Object.assign({}, initialState, {acqIssuesLoading: true});
+                return {...state,milestoneIssues:[],acqIssuesLoading: true};
 
             case ACQUIRE_MILESTONES_ISSUES_SUCCESS:
-                return Object.assign({}, initialState, {milestoneIssues: action.payload, acqIssuesLoading: false});
+                return {...state,milestoneIssues: action.payload, acqIssuesLoading: false};
 
             case ACQUIRE_MILESTONES_ISSUES_ERROR:
-                return {state, acqIssuesLoading: false};
+                return {...state, milestoneIssues:[],acqIssuesLoading: false};
 
 
             default:

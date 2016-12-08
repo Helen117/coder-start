@@ -9,7 +9,6 @@ import {GET_PROJECT_INFO,
 import api from '../../api';
 
 export function getProjectInfo(set_id,user_id) {
-   // console.log(set_id,user_id)
     var path ='/project/demand-project';
     return {
         type: GET_PROJECT_INFO,
@@ -26,7 +25,7 @@ export function getProjectInfo(set_id,user_id) {
 
 
 export function developConfirm(data) {
-    var path ='/aaa';
+    var path ='/examination/demand-examine';
     return {
         type: DEVELOP_CONFIRM,
         payload: {
@@ -53,16 +52,16 @@ export function getConfirmList(task_id) {
 }
 
 
-export function getTranspondMember(id,type) {
-    var path ='/aaa';
+export function getTranspondMember(id,type,role) {
+    var path ='/project/assign-list';
     return {
         type: GET_TRANSPOND_MEMBER,
         payload: {
             promise: api.post(path, {
                 params: {
                     id: id,
-                    type: type,
-                    //role: role
+                    type:type,
+                    role:role
                 }
             })
         }
@@ -71,7 +70,7 @@ export function getTranspondMember(id,type) {
 
 
 export function developTranspond(data) {
-    var path ='/aaa';
+    var path ='/examination/demand-examine';
     return {
         type: DEVELOP_TRANSPOND,
         payload: {

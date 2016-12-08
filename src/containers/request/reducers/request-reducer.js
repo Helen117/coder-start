@@ -12,42 +12,42 @@ export default function request(state = initialState, action = {}) {
         case 'FETCH_TESTER_INFO_SUCCESS':
             return {...state, tester: action.payload, getTesterLoading: false, getTestError: null};
         case 'FETCH_TESTER_INFO_ERROR':
-            return {...state, tester: action.payload, getTesterLoading: false, getTesterError: action.payload.errorMsg};
+            return {...state, getTesterLoading: false, getTesterError: action.payload.errorMsg};
 
         case 'FETCH_DEVELOPER_INFO_PENDING':
             return {...state, developer: [],getDeveloperLoading: true};
         case 'FETCH_DEVELOPER_INFO_SUCCESS':
             return {...state, developer: action.payload, getDeveloperLoading: false, getDeveloperError: null};
         case 'FETCH_DEVELOPER_INFO_ERROR':
-            return {...state, developer: action.payload, getDeveloperLoading: false, getDeveloperError: action.payload.errorMsg};
+            return {...state,  getDeveloperLoading: false, getDeveloperError: action.payload.errorMsg};
 
         case 'FETCH_LABEL_INFO_PENDING':
-            return {...state, label: [],getLabelLoading: true};
+            return {...state, getLabelLoading: true};
         case 'FETCH_LABEL_INFO_SUCCESS':
             return {...state, label: action.payload, getLabelLoading: false, getLabelError: null};
         case 'FETCH_LABEL_INFO_ERROR':
-            return {...state, label: action.payload, getLabelLoading: false, getLabelError: action.payload.errorMsg};
+            return {...state,  getLabelLoading: false, getLabelError: action.payload.errorMsg};
 
         case 'ADD_DEMAND_PENDING':
-            return {...state, addDemandLoading: true};
+            return {...state, addDemandResult:null,addDemandLoading: true};
         case 'ADD_DEMAND_SUCCESS':
             return {...state, addDemandResult: action.payload, addDemandLoading: false};
         case 'ADD_DEMAND_ERROR':
-            return {...state,  addDemandLoading: false,  addDemandError: action.payload.errorMsg};
+            return {...state,  addDemandResult:null,addDemandLoading: false,  addDemandError: action.payload.errorMsg};
 
         case 'EDIT_DEMAND_PENDING':
-            return {...state, editDemandLoading: true};
+            return {...state, editDemandResult: null,editDemandLoading: true};
         case 'EDIT_DEMAND_SUCCESS':
             return {...state, editDemandResult: action.payload, editDemandLoading: false};
         case 'EDIT_DEMAND_ERROR':
-            return {...state, editDemandLoading: false,  editDemandError: action.payload.errorMsg};
+            return {...state, editDemandResult: null,editDemandLoading: false,  editDemandError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
             return {...state,requirementInfo: [],loading: true};
         case 'FETCH_REQUIREMENT_INFO_SUCCESS':
             return {...state, requirementInfo: action.payload, loading: false, errors: null};
         case 'FETCH_REQUIREMENT_INFO_ERROR':
-            return {...state, requirementInfo: action.payload, loading: false, errors: action.payload.errorMsg};
+            return {...state, loading: false, errors: action.payload.errorMsg};
 
 
         case 'DELETE_REQUIREMENT_INFO_PENDING':

@@ -42,7 +42,7 @@ export function getLabelInfo() {
     return {
         type: 'FETCH_LABEL_INFO',
         payload: {
-            promise: api.post('/project/lables')
+            promise: api.post('/project/labels')
         }
     }
 }
