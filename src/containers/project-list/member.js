@@ -121,7 +121,6 @@ class ProjectMember extends Component {
         }
         final_data.users = data;
         final_data.id = loginInfo.userId;
-        console.log('final_data:',final_data)
         actions.addProjectMember(final_data);
         this.props.clearUserRelationInfo();
     }

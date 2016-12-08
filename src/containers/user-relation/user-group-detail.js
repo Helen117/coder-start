@@ -8,7 +8,7 @@ import {Form, Input, Button, Modal, notification,Select} from 'antd';
 import Box from '../../components/box';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
-import {createUserGroup, UpdateUserGroup} from './actions/user-relation-actions';
+import {createUserGroup, UpdateUserGroup,getUserLeader} from './actions/user-relation-actions';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -39,7 +39,7 @@ class UserGroupDetail extends React.Component {
                 data.owner_id = loginInfo.userId;
                 data.reason = formData.reason;
                 data.parent_id = this.state.selectedUserGroup;
-                data.leader_id = formData.leader_id;
+                data.leader_id = parseInt(formData.leader_id);
                 if(editType == 'add'){
                     //调创建组织的接口
                     actions.createUserGroup(data);
@@ -89,10 +89,10 @@ class UserGroupDetail extends React.Component {
 
     findLeaderName(leaderId){
         const {leaderInfo} = this.props;
-        if(leaderInfo && leaderInfo.notLeaderInfo){
-            for(let i=0;i<leaderInfo.notLeaderInfo.length; i++){
-                if(leaderId == leaderInfo.notLeaderInfo[i].leader_id){
-                    return leaderInfo.notLeaderInfo[i].leader_name;
+        if(leaderInfo){
+            for(let i=0;i<leaderInfo.length; i++){
+                if(leaderId == leaderInfo[i].leader_id){
+                    return leaderInfo[i].leader_name;
                 }
             }
         }
@@ -100,6 +100,10 @@ class UserGroupDetail extends React.Component {
     }
 
     componentWillMount() {
+        const {notLeaderInfo} = this.props;
+        if(!notLeaderInfo || !notLeaderInfo.notLeaderInfo){
+            this.props.getNotLeader();
+        }
         const {userRelationTree,selectNode} = this.props;
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
@@ -173,7 +177,7 @@ class UserGroupDetail extends React.Component {
     render() {
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
-        const {createGroupInfo,updateGroupInfo,leaderInfo} = this.props;
+        const {createGroupInfo,updateGroupInfo,notLeaderInfo} = this.props;
         const formItemLayout = {
             labelCol: {span: 8},
             wrapperCol: {span: 8},
@@ -196,7 +200,7 @@ class UserGroupDetail extends React.Component {
                 {required:true, message:'请输入描述！'}
             ]})(<Input type="textarea" />);
 
-        const leader = leaderInfo?(leaderInfo.notLeaderInfo?leaderInfo.notLeaderInfo.map(
+        const leader = notLeaderInfo?(notLeaderInfo.notLeaderInfo?notLeaderInfo.notLeaderInfo.map(
             data => <Option key={data.leader_id}>{data.leader_name}</Option>):[]):[];
         let createLoading = createGroupInfo?createGroupInfo.loading:false;
         let updateLoading = updateGroupInfo?updateGroupInfo.updateLoading:false;
@@ -212,14 +216,15 @@ class UserGroupDetail extends React.Component {
                     <FormItem {...formItemLayout} label="描述">
                         {descriptionProps}
                     </FormItem>
-                    <FormItem {...formItemLayout}  label="领导" >
-                        {getFieldDecorator('leader_id',{rules:[{
-                            required:true,message:'请选择组织领导'}]})(
+                    <FormItem {...formItemLayout}  label="领导"
+                        help="如果要将此组织的领导设为组织B的领导，请先修改组织B的领导！">
+                        {getFieldDecorator('leader_id')(
                             <Select showSearch
                                     showArrow={false}
                                     placeholder="leader"
                                     optionFilterProp="children"
-                                    notFoundContent="无法找到">
+                                    notFoundContent="无法找到"
+                                    allowClear>
                                 {leader}
                             </Select>
                         )}
@@ -263,13 +268,15 @@ function mapStateToProps(state) {
         selectNode:state.UserRelation.getSelectNode,
         createGroupInfo:state.UserRelation.createUserGroup,
         updateGroupInfo:state.UserRelation.updateUserGroup,
-        leaderInfo:state.UserRelation.notLeaderInfo,
+        notLeaderInfo:state.UserRelation.notLeaderInfo,
+        leaderInfo:state.register.leader,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch)
+        actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch),
+        getNotLeader:bindActionCreators(getUserLeader, dispatch),
     }
 }
 

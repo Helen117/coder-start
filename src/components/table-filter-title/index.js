@@ -19,6 +19,17 @@ class TableFilterTitle extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        const {dataSource} = nextProps;
+        const {form} = this.props;
+        if(dataSource != this.props.dataSource && dataSource){
+            form.resetFields();
+            this.setState({
+                isFiled:false,
+            })
+        }
+    }
+
     filterData(dataSource,filterKey,formData){
         let newData=[];
         for(let i=0; i<dataSource.length; i++){
@@ -37,7 +48,7 @@ class TableFilterTitle extends React.Component {
 
     searchData(e){
         const {filterChange,filterKey,currentData,dataSource,filterKeys} = this.props;
-        let ifFiled;
+        let isFiled;
         let newdata = dataSource;
         if(e.target.value){
             let countKey = 0;
@@ -54,12 +65,12 @@ class TableFilterTitle extends React.Component {
                 newdata = this.filterData(newdata,this.state.filterKeys[i].filterKey,this.state.filterKeys[i].formData);
             }
             this.setState({
-                ifFiled:true,
-                visible:!this.state.visible
+                isFiled:true,
+                //visible:!this.state.visible
             })
-            ifFiled = true;
+            isFiled = true;
             if(filterChange){
-                filterChange(newdata,this.state.filterKeys,ifFiled);
+                filterChange(newdata,this.state.filterKeys,isFiled);
             }
         }else {
             let index = findFilterIndex(filterKeys,filterKey);
@@ -68,14 +79,21 @@ class TableFilterTitle extends React.Component {
                 newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);
             }
             this.setState({
-                ifFiled:false,
-                visible:!this.state.visible
+                isFiled:false,
+                //visible:!this.state.visible
             })
-            ifFiled = false;
+            isFiled = false;
             if(filterChange){
-                filterChange(newdata,filterKeys,ifFiled)
+                filterChange(newdata,filterKeys,isFiled)
             }
         }
+    }
+
+    onBlur(){
+        this.setState({
+            //isFiled:false,
+            visible:!this.state.visible
+        })
     }
 
     render(){
@@ -84,7 +102,8 @@ class TableFilterTitle extends React.Component {
             <Menu style={{width:"110px"}}>
                 <Menu.Item key="0">
                     {getFieldDecorator('searchContext')(
-                        <Input size="small" onBlur={this.searchData.bind(this)} />
+                        <Input size="small" onBlur={this.onBlur.bind(this)}
+                            onChange={this.searchData.bind(this)}/>
                     )}
                 </Menu.Item>
             </Menu>
@@ -97,7 +116,7 @@ class TableFilterTitle extends React.Component {
                     <Dropdown trigger={['click']} overlay={menu}
                               visible={this.state.visible}>
                         <Icon type="filter"
-                              style={this.state.ifFiled?{color:'#2db7f5'}:{color:'#aaaaaa'}}
+                              style={this.state.isFiled?{color:'#2db7f5'}:{color:'#aaaaaa'}}
                               onClick={this.clickFilterImg.bind(this)}/>
                     </Dropdown>
                 </span>
