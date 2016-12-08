@@ -62,7 +62,7 @@ ConfirmList.contextTypes = {
 
 
 ConfirmList.prototype.columns = (self)=>[{
-    title: '工单名称',
+    title: '主题',
     dataIndex: 'name',
 },{
     title: '描述',

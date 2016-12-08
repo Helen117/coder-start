@@ -41,46 +41,46 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
             
         //get project info
         case GET_PROJECT_INFO_PENDING:
-            return {...state, getProjectInfoLoading: true};
+            return {...state, projectInfo:[],getProjectInfoLoading: true};
 
         case GET_PROJECT_INFO_SUCCESS:
             return {...state, projectInfo: action.payload, getProjectInfoLoading: false};
 
         case GET_PROJECT_INFO_ERROR:
-            return {...state,  getProjectInfoLoading: false,};
+            return {...state,  projectInfo:[],getProjectInfoLoading: false,};
 
 
         //confirm
         case DEVELOP_CONFIRM_PENDING:
-            return {...state, confirmLoading: true};
+            return {...state,confirmResult:null, confirmLoading: true};
 
         case DEVELOP_CONFIRM_SUCCESS:
             return {...state, confirmResult: action.payload, confirmLoading: false};
 
         case DEVELOP_CONFIRM_ERROR:
-            return {...state, confirmLoading: false,};
+            return {...state, confirmResult:null,confirmLoading: false,};
 
 
         //get transpond member
         case GET_TRANSPOND_MEMBER_PENDING:
-            return {...state, getTranspondMemberLoading: true,};
+            return {...state, transpondMember:[], getTranspondMemberLoading: true,};
 
         case GET_TRANSPOND_MEMBER_SUCCESS:
             return {...state, transpondMember: action.payload, getTranspondMemberLoading: false};
 
         case GET_TRANSPOND_MEMBER_ERROR:
-            return {...state, getTranspondMemberLoading: false,};
+            return {...state, transpondMember:[],getTranspondMemberLoading: false,};
 
 
         //transpond
         case DEVELOP_TRANSPOND_PENDING:
-            return {...state, transpondLoading: true};
+            return {...state, transpondResult:null,transpondLoading: true};
 
         case DEVELOP_TRANSPOND_SUCCESS:
             return {...state, transpondResult: action.payload, transpondLoading: false};
 
         case DEVELOP_TRANSPOND_ERROR:
-            return {...state, transpondLoading: false,};
+            return {...state, transpondResult:null,transpondLoading: false,};
 
         default:
             return state;

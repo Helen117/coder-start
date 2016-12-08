@@ -63,6 +63,8 @@ class EditDemand extends Component{
 
     sucCallback(type){
         message.success(type);
+        const {actions,selectedProjectSet} = this.props;
+        actions.getDemandInfo(selectedProjectSet.selectedItemId)
         this.context.router.goBack();
     }
 
@@ -95,6 +97,21 @@ class EditDemand extends Component{
         return current && current < moment();
     }
 
+    developTestDistinct(checkTarget,rule, value, callback){
+        if (!value) {
+            callback();
+        } else {
+            setTimeout(() => {
+                if(value == checkTarget){
+                    callback([new Error('测试与开发不能指定同一人')]);
+                }else{
+                    callback();
+                }
+
+            }, 500);
+        }
+    }
+
     handleCancel() {
         const {form} = this.props;
         const {router} = this.context;
@@ -117,6 +134,8 @@ class EditDemand extends Component{
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
         const {editType} = this.props.location.state;
+        const assignee_test_id = this.props.form.getFieldValue('assignee_test_id');
+        const assignee_develop_id = this.props.form.getFieldValue('assignee_develop_id');
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
@@ -152,7 +171,10 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="开发人员" >
-                        {getFieldDecorator('assignee_develop_id',{rules:[{required:true, message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_develop_id',
+                            {rules:[{required:true, message:'不能为空'},
+                                { validator: this.developTestDistinct.bind(this,assignee_test_id)}
+                                ]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择开发人员"
@@ -164,7 +186,10 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="测试人员" >
-                        {getFieldDecorator('assignee_test_id',{rules:[{required:true,message:'不能为空'}]})(
+                        {getFieldDecorator('assignee_test_id',
+                            {rules:[{required:true,message:'不能为空'},
+                                { validator: this.developTestDistinct.bind(this,assignee_develop_id)}
+                                ]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择对应的测试人员"

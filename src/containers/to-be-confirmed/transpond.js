@@ -3,12 +3,13 @@
  */
 
 import React, {PropTypes,Component} from 'react';
-import { Select ,Form ,Input, Button, Modal} from 'antd';
+import { Select ,Form ,Input, Button, Modal, message,Spin} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getTranspondMember,developTranspond} from './action';
 import ConfirmList from './confirm-list';
 import Box from '../../components/box';
+import {getApproveList} from '../approve/actions/approve-action'
 
 
 const FormItem = Form.Item;
@@ -21,28 +22,45 @@ class DevelopTransPond extends Component {
     }
 
     componentWillMount() {
-        //const id = this.props.location.state.record.requestId
-        //this.props.getTranspondMemberAction(id)
+
     }
 
     componentWillReceiveProps(nextProps) {
-/*        const {id} = nextProps
-        if(this.props.id != id && id){
-            //this.props.getTranspondMemberAction(id)
-        }*/
+        const {confirmList,transpondResult} = nextProps
+        if(this.props.confirmList != confirmList && confirmList) {
+            const role = confirmList[0].role;
+            let roleId = 20;
+            if(role == 'developer'){
+                roleId = 30;
+            }
+            this.props.getTranspondMemberAction(confirmList[0].set_id,'set',roleId)
+        }
+        if(this.props.transpondResult != transpondResult && transpondResult){
+            this.insertCallback('需求转派成功');
+        }
     }
-    handleCancel(){
 
+    insertCallback(type){
+        message.success(type);
+        this.props.getApproveListAction(this.props.loginInfo.username);
+        this.context.router.goBack();
     }
+
 
     handleSubmit(e){
         e.preventDefault();
-        const {form,logInfo } = this.props;
+        const {form,confirmList,loginInfo} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-                const formData = form.getFieldsValue();
+                const data = form.getFieldsValue();
+                data.pass = false;
+                data.task_id = this.props.location.state.record.task_id;
+                data.demand_id = confirmList[0].demand_id;
+                data.role = confirmList[0].role;
+                data.username = loginInfo.username;
+                this.props.transpondAction(data)
             }
         })
     }
@@ -54,6 +72,7 @@ class DevelopTransPond extends Component {
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
+                router.goBack();
                 form.resetFields();
             },
             onCancel() {
@@ -63,35 +82,40 @@ class DevelopTransPond extends Component {
 
     render(){
         const { getFieldDecorator } = this.props.form;
+
         const task_id = this.props.location.state.record.task_id;
+        const {transpondMember,transpondLoading, getConfirmListLoading,getTranspondMemberLoading} = this.props;
+        const buttonLoading = this.props.transpondLoading? true: false;
+        const memberSelectOption =  transpondMember?transpondMember.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const dataLoading = getTranspondMemberLoading||getConfirmListLoading ?true: false;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
             return (
                    <Box title="需求转派">
-                        <ConfirmList task_id={task_id}/>
-                        <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                            <FormItem {...formItemLayout} label="转派给">
-                                {getFieldDecorator('assigne', {rules: [{required: true, message: '请选择要转派的人'}]})
-                                (<Select showSearch optionFilterProp="children" placeholder="请选择要转派的人">
-                                    <Option key="1">dfer</Option>
-                                    <Option key="2">222</Option>
-                                </Select>)}
-                            </FormItem>
+                       <Spin spinning={dataLoading} tip="正在加载数据，请稍候...">
+                            <ConfirmList task_id={task_id}/>
+                            <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                                <FormItem {...formItemLayout} label="转派给">
+                                    {getFieldDecorator('assigned_id', {rules: [{required: true, message: '请选择要转派的人'}]})
+                                    (<Select showSearch optionFilterProp="children" placeholder="请选择要转派的人">
+                                        {memberSelectOption}
+                                    </Select>)}
+                                </FormItem>
 
-                            <FormItem {...formItemLayout} label="说明">
-                                {getFieldDecorator('description', {rules: [{required: true, message: '请填写转派说明'}]})
-                                (<Input type="textarea" placeholder="请输入转派说明" rows="5"/>)}
-                            </FormItem>
+                               {/* <FormItem {...formItemLayout} label="说明">
+                                    {getFieldDecorator('description', {rules: [{required: true, message: '请填写转派说明'}]})
+                                    (<Input type="textarea" placeholder="请输入转派说明" rows="5"/>)}
+                                </FormItem>
+*/}
+                                <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
+                                    <Button type="primary" htmlType="submit" loading={buttonLoading}>转派</Button>
+                                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                                </FormItem>
 
-                            <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                                <Button type="primary" htmlType="submit" loading={this.props.loading}
-                                        disabled={this.props.disabled}>转派</Button>
-                                <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                            </FormItem>
-
-                        </Form>
+                            </Form>
+                       </Spin>
                 </Box>
             )
     }
@@ -107,14 +131,21 @@ DevelopTransPond.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        loading: state.toBeConfirmedItem.loading,
+        getTranspondMemberLoading: state.toBeConfirmedItem.getTranspondMemberLoading,
+        transpondMember: state.toBeConfirmedItem.transpondMember,
+        transpondLoading: state.toBeConfirmedItem.transpondLoading,
+        transpondResult: state.toBeConfirmedItem.transpondResult,
+        getConfirmListLoading: state.toBeConfirmedItem.getConfirmListLoading,
+        confirmList: state.toBeConfirmedItem.confirmList,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getTranspondMemberAction: bindActionCreators(getTranspondMember, dispatch),
-        developTranspondAction: bindActionCreators(developTranspond, dispatch),
+        transpondAction: bindActionCreators(developTranspond, dispatch),
+        getApproveListAction: bindActionCreators(getApproveList, dispatch),
+
     }
 }
 
