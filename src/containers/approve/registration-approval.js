@@ -7,6 +7,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as approve from './actions/approve-action';
+import * as home from '../home/actions/home-action';
 
 const FormItem = Form.Item;
 class RegistrationApproval  extends Component {
@@ -38,6 +39,7 @@ class RegistrationApproval  extends Component {
         // }
         if (!commit && !nextError && nextResult && nextResult!=this.props.result) {
             message.success('审批成功！');
+            this.props.home.getNotifyItems(this.props.loginInfo.userId);
             this.context.router.goBack();
         }
     }
@@ -153,7 +155,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(approve,dispatch)
+        actions : bindActionCreators(approve,dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 

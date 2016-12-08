@@ -10,7 +10,9 @@ import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import {getProjectInfo,developConfirm} from './action'
+import {getProjectInfo,developConfirm} from './action';
+import ConfirmList from './confirm-list'
+
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -25,9 +27,10 @@ const FormItem = Form.Item;
     }
 
      componentWillReceiveProps(nextProps) {
-         const { developConfirmResult} = nextProps;
-         if (this.props.developConfirmResult != developConfirmResult && developConfirmResult){
-             this.insertCallback('需求已确认');
+         const confirmList = nextProps.confirmList
+         if(this.props.confirmList != confirmList && confirmList) {
+             //console.log('confirmList',confirmList)
+            this.props.getProjectInfoAction(confirmList[0].set_id,this.props.loginInfo.userId)
          }
      }
 
@@ -75,6 +78,7 @@ const FormItem = Form.Item;
     render() {
 
         const { getFieldDecorator } = this.props.form;
+        const task_id = this.props.location.state.record.task_id;
         const getMyProjectLoading = this.props.getMyProjectLoading? this.props.getMyProjectLoading: false;
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -112,48 +116,43 @@ const FormItem = Form.Item;
             },
         };
 
-        const projectInfo =[
-            {"id":1,
-                "name":"devops/devops_web"},
-            {"id":2,
-                "name":"devops/devops_scm"}
-        ];
+        const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
+        console.log('projectInfo',projectInfo);
 
-        if(this.props.showConfirm){
         return(
-            <Form horizontal>
-                <FormItem   {...formItemLayout} label="涉及项目">
-                        {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
-                        (<TransferFilter dataSource = {projectInfo}
-                                         onChange={this.handleChange.bind(this)}
-                                         loadingProMsg={getMyProjectLoading}
-                                        //fetchProMsgErr ={this.props.fetchProMsgErr}
-                                        //targetKeys = {targetKeys}
-                        />)}
-                </FormItem>
+            <Box title="需求确认">
+                <ConfirmList task_id={task_id}/>
+                <Form horizontal>
+                    <FormItem   {...formItemLayout} label="涉及项目">
+                            {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
+                            (<TransferFilter dataSource = {projectInfo}
+                                             onChange={this.handleChange.bind(this)}
+                                             loadingProMsg={getMyProjectLoading}
+                                            //fetchProMsgErr ={this.props.fetchProMsgErr}
+                                            //targetKeys = {targetKeys}
+                            />)}
+                    </FormItem>
 
-                <FormItem {...formItemLayout} label="设计工时" >
-                    {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                </FormItem>
+                    <FormItem {...formItemLayout} label="设计工时" >
+                        {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                    </FormItem>
 
-                <FormItem {...formItemLayout}  label="设计文档上传" >
-                    {getFieldDecorator('attachment')(
-                        <Upload {...props} fileList={this.state.fileList}>
-                            <Button type="ghost">
-                                <Icon type="upload" /> 点击上传
-                            </Button>
-                        </Upload>)}
-                </FormItem>
+                    <FormItem {...formItemLayout}  label="设计文档上传" >
+                        {getFieldDecorator('attachment')(
+                            <Upload {...props} fileList={this.state.fileList}>
+                                <Button type="ghost">
+                                    <Icon type="upload" /> 点击上传
+                                </Button>
+                            </Upload>)}
+                    </FormItem>
 
-                <FormItem wrapperCol={{ span: 16, offset: 6 }}>
-                    <Button type="primary" onClick={this.approve.bind(this)}>确认</Button>
-                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                </FormItem>
-            </Form>
-
-        )}else{
-            return null;
-        };
+                    <FormItem wrapperCol={{ span: 16, offset: 6 }}>
+                        <Button type="primary" onClick={this.approve.bind(this)}>确认</Button>
+                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    </FormItem>
+                </Form>
+            </Box>
+        )
     }
 }
 
@@ -185,8 +184,9 @@ DevelopConfirm.prototype.columns = (self)=>[{
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
+        confirmList: state.toBeConfirmedItem.confirmList,
         getMyProjectLoading: state.toBeConfirmedItem.loading,
-        getMyProjectInfo: state.toBeConfirmedItem.items,
+        getMyProjectInfo: state.toBeConfirmedItem.projectInfo,
         developConfirmLoading: state.toBeConfirmedItem.loading,
         developConfirmResult: state.toBeConfirmedItem.result
     };

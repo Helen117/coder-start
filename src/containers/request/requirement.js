@@ -2,7 +2,7 @@
  * Created by helen on 2016/11/25.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table,message,Button,Icon,Modal,Form,Input, Tooltip   } from 'antd';
+import { Table,message,Button,Icon,Modal,Form,Input, Tooltip ,Breadcrumb, Row,Col  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -22,23 +22,23 @@ class RequirementInfo extends Component {
     }
 
     componentWillMount() {
-        const {selectedProjectSet,actions} = this.props;
-        if(selectedProjectSet&& selectedProjectSet.id){
-            let id =selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
-            actions.getDemandInfo(id);
+        const {selectedProjectSet,actions,requirementInfo} = this.props;
+        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && !requirementInfo){
+            actions.getDemandInfo(selectedProjectSet.selectedItemId);
         }
     }
 
     componentWillReceiveProps(nextProps) {
 
-        const {actions,selectedProjectSet, deleteResult} = this.props;
-        const thisSetId = selectedProjectSet?selectedProjectSet.id:'';
-        const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.id:'';
+        const {actions,selectedProjectSet} = this.props;
+        const {deleteResult} = nextProps;
+        const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
+        const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
-        if(nextSetId&&thisSetId != nextSetId){
-            actions.getDemandInfo(nextSetId.substr(0,nextSetId.length-2));
+        if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
+            actions.getDemandInfo(nextSetId);
         }
-        if(this.props.deleteResult != nextProps.deleteResult && nextProps.deleteResult){
+        if(this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
             });
@@ -89,8 +89,8 @@ class RequirementInfo extends Component {
                 if(typeof(list[i].update_at)=="number") {
                     list[i].update_at = new Date(parseInt(list[i].update_at)).toLocaleDateString();
                 }
-                if(typeof(list[i].practice_due_date)=="number") {
-                    list[i].practice_due_date = new Date(parseInt(list[i].practice_due_date)).toLocaleDateString();
+                if(typeof(list[i].expect_due_date)=="number") {
+                    list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
                 if(typeof(list[i].demand_comfirm_date)=="number") {
                     list[i].demand_confirm_time = new Date(parseInt(list[i].demand_comfirm_date)).toLocaleDateString();
@@ -106,7 +106,6 @@ class RequirementInfo extends Component {
         const {getFieldDecorator} = this.props.form;
         const pagination = {
             pageSize:20,
-            // total: data.length,
         };
 
         const selectedProjectSet = this.props.selectedProjectSet;
@@ -114,15 +113,30 @@ class RequirementInfo extends Component {
         if(projectId) {
             return (
                 <div style={{margin:10}}>
-                    <Button style={{marginBottom:5}} type="primary" onClick={this.editDemand.bind(this, 'add', null)}>新增</Button>
-                    <Table columns={this.columns(this)} dataSource={this.getDataSources(this.props.requirementInfo)}
-                           //bordered
+                    <Row>
+                        <Col span={12}>
+                            <Breadcrumb>
+                                <Breadcrumb.Item >
+                                    <Icon type="home" />
+                                    <span>{selectedProjectSet.name}</span>
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                        </Col>
+                        <Col span={12}>
+                            <div style={{textAlign:"right"}}>
+                                <Button style={{marginBottom:5}} type="primary"
+                                        onClick={this.editDemand.bind(this, 'add', null)}>
+                                    创建需求
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Table columns={this.columns(this)}
+                           dataSource={this.getDataSources(this.props.requirementInfo)}
                            size="middle"
                            pagination={pagination}
-                        //loading={this.props.loading}
-                        //   onRowClick={this.editDemand.bind(this, 'modify')}
-                    />
-                    <Modal title="确认删除此分支吗?"
+                           loading={this.props.loading} />
+                    <Modal title="确认删除此需求吗?"
                            visible={this.state.modalVisible}
                            onOk={this.handleOk.bind(this)}
                            confirmLoading={this.props.deleteLoading}
@@ -177,7 +191,7 @@ RequirementInfo.prototype.columns = (self)=>[{
     dataIndex: 'demand_confirm_time',
 }, {
     title: '期望上线时间',
-    dataIndex: 'practice_due_date',
+    dataIndex: 'expect_due_date',
 },{
     title: '操作',
     dataIndex: 'key',

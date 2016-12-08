@@ -109,6 +109,10 @@ class MyIssueList extends Component {
         });
     }
 
+    testPass(record){
+        this.context.router.push({pathname: '/confirmList'});
+    }
+
     dataSources(list){
         if(list&&list.length>0){
             for(var i=0;i<list.length;i++){
@@ -270,13 +274,16 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         dataIndex: 'key',
         width: '8%',
         render: (text, record, index)=> {
-            let style={'display':'none'};
             if(record.project_id){
-                style={'display':''}
+                return <div>
+                    <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+                </div>;
+            }else{
+                return <div>
+                    <a onClick={self.editIssue.bind(self,'add',record)}>新增Bug</a>
+                    <a onClick={self.testPass.bind(self, record)}>提交测试文档</a>
+                </div>;
             }
-            return <div>
-                <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
-            </div>;
         }
     }];
 

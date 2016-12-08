@@ -61,8 +61,9 @@ class Home extends React.Component {
         const {performanceMsg,myIssueListLoading,performanceMsgLoading} = this.props;
         const params = {
             assigned_id: this.props.loginInfo.userId,
-            state: 'opened'
-        }
+            state:'open_reopened',
+            to_do_issues_type:'today_or_all',
+        };
         let finished=0,unfinished=0;
         if(performanceMsg){
             finished = performanceMsg.finish;

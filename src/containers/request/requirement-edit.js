@@ -24,15 +24,13 @@ class EditDemand extends Component{
     componentWillMount(){
         const {actions,selectedProjectSet} = this.props;
         const {selectedRow} = this.props.location.state;
-        console.log(selectedRow);
         if(selectedRow){
-            console.log(selectedRow.label_id.split(','));
             const {setFieldsValue} = this.props.form;
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
-            setFieldsValue({'practice_due_date': moment(selectedRow.practice_due_date)});//时间类型转换
+            setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,'yyyy-mm-dd')});//时间类型转换
         }
         if(!selectedProjectSet){
             notification.error({
@@ -41,7 +39,7 @@ class EditDemand extends Component{
                 duration: 2
             });
         }else{
-            var id = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+            var id = selectedProjectSet.selectedItemId;
             actions.getLabelInfo();
             actions.getDeveloperInfo(id,'set',30);
             actions.getTesterInfo(id,'set',20);
@@ -54,13 +52,18 @@ class EditDemand extends Component{
 
     componentWillReceiveProps(nextProps) {
 
-        const {loading,result,error} = nextProps;
-
-        if (!loading && !error && result && result!=this.props.result) {
-            message.success('提交成功！');
-            this.context.router.goBack();
+        const {editDemandResult, addDemandResult} = nextProps;
+        if (this.props.editDemandResult != editDemandResult && editDemandResult ) {
+            this.sucCallback('修改成功')
         }
+        if(this.props.addDemandResult != addDemandResult && addDemandResult){
+            this.sucCallback('新建成功')
+        }
+    }
 
+    sucCallback(type){
+        message.success(type);
+        this.context.router.goBack();
     }
 
     handleSubmit(e) {
@@ -73,15 +76,14 @@ class EditDemand extends Component{
             } else {
                 const {selectedRow,editType} = this.props.location.state;
                 const data = form.getFieldsValue();
-                console.log('提交表单信息',data)
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
-                data.sid = selectedProjectSet.id.substr(0,selectedProjectSet.id.length-2);
+                data.sid = selectedProjectSet.selectedItemId;
+                data.sid = selectedProjectSet.selectedItemId;
                 if(editType == 'add'){
                     actions.addDemand(data);
                 }else{
                     data.id = selectedRow.id;
-                    console.log('修改提交表单',data);
                     actions.editDemand(data);
                 }
 
@@ -111,23 +113,21 @@ class EditDemand extends Component{
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo} = this.props;
+        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
-
+        const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
+        const {editType} = this.props.location.state;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
         };
-        const {editType} = this.props.location.state;
+
 
         const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="需求修改原因" >
             {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
-
         const labels = labelInfo?labelInfo.map(data => <Option key={data.id}>{data.title}</Option>):[];
-
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
         const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
 
@@ -176,13 +176,13 @@ class EditDemand extends Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" >
-                        {getFieldDecorator('practice_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
+                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
                     </FormItem>
 
                     {modifyReason}
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit" loading={this.props.loading}>提交</Button>
+                        <Button type="primary" htmlType="submit" loading={buttonLoading}>提交</Button>
                         <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                     </FormItem>
                 </Form>
@@ -207,14 +207,17 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         selectedProjectSet: state.projectSetToState.selectedProjectSet,
-        loading:state.request.editDemandPending,
-        result:state.request.editDemandResult,
-        error:state.request.editDemandError,
-        labelLoading:state.request.getLabelPending,
+        editDemandLoading:state.request.editDemandLoading,
+        editDemandResult:state.request.editDemandResult,
+        editDemandError: state.request.editDemandError,
+        addDemandResult: state.request.addDemandResult,
+        addDemandLoading: state.request.addDemandLoading,
+        addDemandError: state.request.addDemandError,
+        labelLoading:state.request.getLabelLoading,
         labelInfo:state.request.label,
-        developerLoading:state.request.getDeveloperPending,
+        developerLoading:state.request.getDeveloperLoading,
         developerInfo:state.request.developer,
-        testerLoading:state.request.getTesterPending,
+        testerLoading:state.request.getTesterLoading,
         testerInfo:state.request.tester,
     };
 }
