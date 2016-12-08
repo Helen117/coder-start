@@ -55,7 +55,7 @@ class TableFilterTitle extends React.Component {
             }
             this.setState({
                 ifFiled:true,
-                visible:!this.state.visible
+                //visible:!this.state.visible
             })
             ifFiled = true;
             if(filterChange){
@@ -69,7 +69,7 @@ class TableFilterTitle extends React.Component {
             }
             this.setState({
                 ifFiled:false,
-                visible:!this.state.visible
+                //visible:!this.state.visible
             })
             ifFiled = false;
             if(filterChange){
@@ -78,13 +78,21 @@ class TableFilterTitle extends React.Component {
         }
     }
 
+    onBlur(){
+        this.setState({
+            //ifFiled:false,
+            visible:!this.state.visible
+        })
+    }
+
     render(){
         const { getFieldDecorator } = this.props.form;
         const menu = (
             <Menu style={{width:"110px"}}>
                 <Menu.Item key="0">
                     {getFieldDecorator('searchContext')(
-                        <Input size="small" onBlur={this.searchData.bind(this)} />
+                        <Input size="small" onBlur={this.onBlur.bind(this)}
+                            onChange={this.searchData.bind(this)}/>
                     )}
                 </Menu.Item>
             </Menu>
