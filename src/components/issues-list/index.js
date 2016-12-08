@@ -218,7 +218,7 @@ IssueList.prototype.issueListColumns = (self)=>[
             props: {},
         };
         if (value) {
-            obj.props.colSpan = 13;
+            obj.props.colSpan = 12;
         }
         return obj;
     }
@@ -233,7 +233,7 @@ IssueList.prototype.issueListColumns = (self)=>[
             props: {},
         };
         if (value) {
-            obj.props.colSpan = 12;
+            obj.props.colSpan = 11;
         }else if (row.sets_name){
             obj.props.colSpan = 0;
         }
@@ -263,7 +263,7 @@ IssueList.prototype.issueListColumns = (self)=>[
                 props: {},
             };
             if (value) {
-                obj.props.colSpan = 11;
+                obj.props.colSpan = 10;
             }else if (row.sets_name||row.project_name){
                 obj.props.colSpan = 0;
             }
@@ -323,41 +323,43 @@ IssueList.prototype.issueListColumns = (self)=>[
     width: '7%',
     className:'columnClass',
     render:renderContent,
-},{
-    title: '操作',
-    dataIndex: 'key',
-    width: '8%',
-    render: (text, record, index)=> {
-        const obj = {
-            children: text,
-            props: {},
-        };
-        let style={'display':'none'};
-        let modifyStyle={'display':'none'};
-        // console.log('self:',self);
-
-        if (record.sets_name||record.project_name||record.milestone_name){
-            obj.props.colSpan = 0;
-            return obj;
-        }
-
-        if(record.type!='demand'){
-            if(record.key.indexOf('i')!=-1) {
-                style = {'display': ''};
-            }
-            if(record.key.indexOf('i')!=-1&&record.author_id==self.props.loginInfo.userId){
-                modifyStyle={'display':''}
-            }
-            return <div>
-                <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
-                <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
-            </div>;
-        }else{
-            return <div>
-                <a onClick={self.editIssue.bind(self,'add', record)}>新增问题</a><br/>
-            </div>;
-        }
-
-    }
-}];
+}
+// ,{
+//     title: '操作',
+//     dataIndex: 'key',
+//     width: '8%',
+//     render: (text, record, index)=> {
+//         const obj = {
+//             children: text,
+//             props: {},
+//         };
+//         let style={'display':'none'};
+//         let modifyStyle={'display':'none'};
+//         // console.log('self:',self);
+//
+//         if (record.sets_name||record.project_name||record.milestone_name){
+//             obj.props.colSpan = 0;
+//             return obj;
+//         }
+//
+//         if(record.type!='demand'){
+//             if(record.key.indexOf('i')!=-1) {
+//                 style = {'display': ''};
+//             }
+//             if(record.key.indexOf('i')!=-1&&record.author_id==self.props.loginInfo.userId){
+//                 modifyStyle={'display':''}
+//             }
+//             return <div>
+//                 <a style ={modifyStyle} onClick={self.editIssue.bind(self,'modify', record)}>修改</a><br/>
+//                 <a style ={style} onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
+//             </div>;
+//         }else{
+//             return <div>
+//                 <a onClick={self.editIssue.bind(self,'add', record)}>新增问题</a><br/>
+//             </div>;
+//         }
+//
+//     }
+// }
+];
 

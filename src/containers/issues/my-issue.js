@@ -101,12 +101,8 @@ class MyIssueList extends Component {
         });
     }
 
-    issueNotes(record) {
-        record.title = record.issue_name;
-        this.context.router.push({
-            pathname: '/issueNotes',
-            state: {record}
-        });
+    closeBug(record) {
+
     }
 
     testPass(record){
@@ -274,15 +270,18 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         dataIndex: 'key',
         width: '8%',
         render: (text, record, index)=> {
-            if(record.project_id){
-                return <div>
-                    <a onClick={self.issueNotes.bind(self, record)}>讨论历史</a>
-                </div>;
-            }else{
-                return <div>
-                    <a onClick={self.editIssue.bind(self,'add',record)}>新增Bug</a>
-                    <a onClick={self.testPass.bind(self, record)}>提交测试文档</a>
-                </div>;
+            if (!record.project_id&&record.state.indexOf('open')!=-1) {
+                if (record.type == 'bug') {
+                    return <div>
+                        <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
+                    </div>;
+                } else {
+                    return <div>
+                        <a onClick={self.editIssue.bind(self, 'add', record)}>开Bug票</a>
+                        <a onClick={self.testPass.bind(self, record)}>提交测试文档</a>
+                    </div>;
+
+                }
             }
         }
     }];

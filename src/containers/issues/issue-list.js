@@ -128,7 +128,7 @@ class ProjectIssueList extends Component {
             labelCol: { span: 8 },
             wrapperCol: { span: 16 },
         };
-
+//<Button type="primary" onClick={this.editIssue.bind(this, 'add', null)}>新增问题</Button>
         const title = this.props.projectInfo?this.props.projectInfo.name+'项目问题列表信息':'项目问题列表信息';
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
@@ -214,7 +214,6 @@ class ProjectIssueList extends Component {
                         </Panel>
                     </Collapse>
                     <Box title={title}>
-                        <Button type="primary" onClick={this.editIssue.bind(this, 'add', null)}>新增问题</Button>
                         <IssueList dataSource={this.props.issueList}
                                    loading={this.props.loading}
                                    loginInfo={this.props.loginInfo}
