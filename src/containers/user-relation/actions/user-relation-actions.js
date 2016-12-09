@@ -38,7 +38,7 @@ export function getSelectNode(selectedNode,selectedUserGroup) {
     }
 }
 //获取人员信息
-export function getUserInfo(group_id) {
+export function getUserInfo(group_id,busiType) {
     var path = '/service-groups/users';
     return {
         type: GET_USER_INFO,
@@ -48,7 +48,8 @@ export function getUserInfo(group_id) {
                     group_id: group_id
                 }
             })
-        }
+        },
+        meta:busiType
     }
 }
 //移动人员
