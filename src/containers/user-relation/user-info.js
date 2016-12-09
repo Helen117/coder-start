@@ -27,38 +27,42 @@ class UserInfo extends React.Component {
     }
 
     componentWillMount(){
-        const {userInfo,selectNode} = this.props;
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        let userInfoData = userInfo?(
-            userInfo.userInfoData?userInfo.userInfoData:[]):[];
-        if(selectedUserGroup){
-            if(userInfoData.length == 0){
-                this.props.getGroupsUsers(selectedUserGroup.id);
-            }
+        const {userRelationState,selectNode,busiType,treeFilterState} = this.props;
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData?
+                userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
+        let selectedNodeKey = [];
+        if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
+            selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
+        }
+        if(selectedNodeKey.length>0 && userInfoData.length == 0){
+            this.props.getGroupsUsers(parseInt(selectedNodeKey[0]),busiType);
         }
     }
 
     insertCallback(messageInfo){
-        const { selectNode, getGroupsUsers} = this.props;
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const { selectNode, getGroupsUsers,busiType,treeFilterState} = this.props;
+        let selectedNodeKey = [];
+        if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
+            selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
+        }
         notification.success({
             message: messageInfo,
             description: '',
             duration: 1
         });
         //调成员展示接口
-        getGroupsUsers(selectedUserGroup.id);
+        getGroupsUsers(parseInt(selectedNodeKey[0]),busiType);
     }
 
     componentWillReceiveProps(nextProps){
-        const {selectNode, moveUserInfo,deleteUserInfo,userInfo} = nextProps;
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        let userInfoData = userInfo?(
-            userInfo.userInfoData?userInfo.userInfoData:[]):[];
-
+        const {selectNode, moveUserInfo,deleteUserInfo,userRelationState,busiType} = nextProps;
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData
+                ?userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
-            this.props.getGroupsUsers(selectedUserGroup.id);
+            this.props.getGroupsUsers(parseInt(node),busiType);
         }
         if(userInfoData){
             this.data = this.getDataSource(userInfoData);
@@ -102,14 +106,17 @@ class UserInfo extends React.Component {
     }
 
     handleOk(node) {
-        const { form,loginInfo,selectNode,MoveUser,DeleteGroupUser } = this.props;
+        const { form,loginInfo,selectNode,MoveUser,DeleteGroupUser,treeFilterState,busiType } = this.props;
         const formData = form.getFieldsValue();
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        let selectedNodeKey = [];
+        if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
+            selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
+        }
         let data = {};
         data.user_id = loginInfo.userId;
         data.source_user_id = this.state.source_user_id;
         data.reason = formData.reason;
-        data.source_group_id = selectedUserGroup.id;
+        data.source_group_id = selectedNodeKey[0];
         if(this.state.moveOutVisible == true){
             //调移除接口
             DeleteGroupUser(data);
@@ -131,9 +138,10 @@ class UserInfo extends React.Component {
     }
 
     moveOutUser(type,record){
-        const {userInfo} = this.props;
-        let userInfoData = userInfo?(
-            userInfo.userInfoData?userInfo.userInfoData:[]):[];
+        const {userRelationState,busiType} = this.props;
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData?
+                userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         this.setState({
             moveOutVisible: true,
             source_user_id:findUserIdByEmail(record.email,userInfoData)
@@ -141,9 +149,10 @@ class UserInfo extends React.Component {
     }
 
     editUser(type,record){
-        const {userInfo} = this.props;
-        let userInfoData = userInfo?(
-            userInfo.userInfoData?userInfo.userInfoData:[]):[];
+        const {userRelationState,busiType} = this.props;
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData?
+                userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         this.setState({
             moreGroupVisible: true,
             source_user_id:findUserIdByEmail(record.email,userInfoData)
@@ -174,9 +183,10 @@ class UserInfo extends React.Component {
     }
 
     onSelectedChange(selectedRowKeys, selectedRows){
-        const {userInfo,onSelected} = this.props;
-        let userInfoData = userInfo?(
-            userInfo.userInfoData?userInfo.userInfoData:[]):[];
+        const {userRelationState,onSelected,busiType} = this.props;
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData?
+                userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         let user_ids = [];
         for(let i=0; i<selectedRows.length; i++){
             let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
@@ -189,9 +199,10 @@ class UserInfo extends React.Component {
     }
 
     render(){
-        const {userInfo,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,selectedKeys} = this.props;
-        let getUserLoading = userInfo?userInfo.loading:false;
+        const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
+            moveUserInfo,selectedKeys,busiType} = this.props;
+        let getUserLoading = userRelationState['getUserInfo_'+busiType]?
+            userRelationState['getUserInfo_'+busiType].loading:false;
         let removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
         let loadingTree = userRelationTree?userRelationTree.loading:false;
         let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
@@ -294,12 +305,13 @@ UserInfo = Form.create()(UserInfo);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        userInfo:state.UserRelation.getUserInfo,
+        userRelationState:state.UserRelation,
         selectNode:state.UserRelation.getSelectNode,
         userRelationTree:state.UserRelation.getUserRelationTree,
         moveUserInfo:state.UserRelation.moveUserRelation,
         deleteUserInfo:state.UserRelation.deleteUserRelation,
         selectedKeys:state.UserRelation.selectedKeys,
+        treeFilterState : state.treeFilter,
     }
 }
 

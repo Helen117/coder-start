@@ -13,6 +13,7 @@ import Box from '../../components/box';
 import {getProjectInfo,developConfirm} from './action';
 import {getApproveList} from '../approve/actions/approve-action'
 import ConfirmList from './confirm-list'
+import * as home from '../home/actions/home-action';
 
 
 const confirm = Modal.confirm;
@@ -39,6 +40,7 @@ const FormItem = Form.Item;
 
      insertCallback(type){
          message.success(type);
+         this.props.home.getNotifyItems(this.props.loginInfo.userId);
          this.props.getApproveListAction(this.props.loginInfo.username);
          this.context.router.goBack();
      }
@@ -211,7 +213,7 @@ function mapDispatchToProps(dispatch) {
         getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
         ConfirmAction: bindActionCreators(developConfirm, dispatch),
         getApproveListAction: bindActionCreators(getApproveList, dispatch),
-
+        home:bindActionCreators(home, dispatch),
     }
 }
 
