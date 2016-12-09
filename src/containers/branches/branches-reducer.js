@@ -24,26 +24,26 @@ export default function branch(state = initialState, action = {}) {
     switch (action.type) {
         //create branch
         case CREATE_BRANCHES_PENDING:
-            return {...state, createLoading:true};
+            return {...state, createResult:null,createLoading:true};
 
         case CREATE_BRANCHES_SUCCESS:
 
             return {...state, createResult: action.payload, createLoading:false};
 
         case CREATE_BRANCHES_ERROR:
-            return {...state,  createLoading:false};
+            return {...state, createResult:null, createLoading:false};
 
 
         //delete branch
         case DELETE_BRANCHES_PENDING:
-            return {...state, deleteLoading:true};
+            return {...state, deleteResult:null,deleteLoading:true};
 
         case DELETE_BRANCHES_SUCCESS:
 
             return {...state, deleteResult: action.payload, deleteLoading:false};
 
         case DELETE_BRANCHES_ERROR:
-            return { ...state, deleteLoading:false};
+            return { ...state,deleteResult:null, deleteLoading:false};
 
 
         //get branch

@@ -11,6 +11,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
 import {getProjectInfo,developConfirm} from './action';
+import {getApproveList} from '../approve/actions/approve-action'
 import ConfirmList from './confirm-list'
 
 
@@ -27,16 +28,18 @@ const FormItem = Form.Item;
     }
 
      componentWillReceiveProps(nextProps) {
-         const confirmList = nextProps.confirmList
+         const {confirmList,confirmResult} = nextProps
          if(this.props.confirmList != confirmList && confirmList) {
-             //console.log('confirmList',confirmList)
             this.props.getProjectInfoAction(confirmList[0].set_id,this.props.loginInfo.userId)
+         }
+         if(this.props.confirmResult != confirmResult && confirmResult){
+             this.insertCallback('需求确认成功')
          }
      }
 
      insertCallback(type){
          message.success(type);
-         //this.props.getConfirmListAction(this.props.loginInfo.userId);
+         this.props.getApproveListAction(this.props.loginInfo.username);
          this.context.router.goBack();
      }
 
@@ -46,14 +49,18 @@ const FormItem = Form.Item;
 
 
     approve(){
-        const {form} = this.props;
-        console.log(form.getFieldsValue());
+        const {form,confirmList,loginInfo} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-
+                data.pass = true;
+                data.task_id = this.props.location.state.record.task_id;
+                data.demand_id = confirmList[0].demand_id;
+                data.role = confirmList[0].role;
+                data.username = loginInfo.username;
+                this.props.ConfirmAction(data)
             }
         })
     }
@@ -66,7 +73,7 @@ const FormItem = Form.Item;
              title: '您是否确定要取消表单的编辑',
              content: '取消之后表单内未提交的修改将会被丢弃',
              onOk() {
-                 //router.goBack();
+                 router.goBack();
                  form.resetFields();
              },
              onCancel() {
@@ -78,8 +85,7 @@ const FormItem = Form.Item;
     render() {
 
         const { getFieldDecorator } = this.props.form;
-        const task_id = this.props.location.state.record.task_id;
-        const getMyProjectLoading = this.props.getMyProjectLoading? this.props.getMyProjectLoading: false;
+        const {task_id} = this.props.location.state.record;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
@@ -115,42 +121,49 @@ const FormItem = Form.Item;
                 }
             },
         };
-
         const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
-        console.log('projectInfo',projectInfo);
+        const confirmLoading = this.props.confirmLoading? true:false;
+        const role = this.props.confirmList?this.props.confirmList[0].role:'';
+        const { getConfirmListLoading,getMyProjectLoading} = this.props;
+        const TransferLoading = getMyProjectLoading? true: false;
+        const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
 
         return(
             <Box title="需求确认">
-                <ConfirmList task_id={task_id}/>
-                <Form horizontal>
-                    <FormItem   {...formItemLayout} label="涉及项目">
-                            {getFieldDecorator('project',{rules:[{required:true,type:"array",message:'请选择项目'}]})
-                            (<TransferFilter dataSource = {projectInfo}
-                                             onChange={this.handleChange.bind(this)}
-                                             loadingProMsg={getMyProjectLoading}
-                                            //fetchProMsgErr ={this.props.fetchProMsgErr}
-                                            //targetKeys = {targetKeys}
-                            />)}
-                    </FormItem>
+                <Spin spinning={dataLoading} tip="正在加载数据，请稍候...">
+                    <ConfirmList task_id={task_id}/>
+                    <Form horizontal>
+                        {role == 'developer' ?
+                            <FormItem   {...formItemLayout} label="涉及项目">
+                                    {getFieldDecorator('projects',{rules:[{required:true,type:"array",message:'请选择项目'}]})
+                                    (<TransferFilter dataSource = {projectInfo}
+                                                     onChange={this.handleChange.bind(this)}
+                                                     loadingProMsg={TransferLoading}
+                                                    //fetchProMsgErr ={this.props.fetchProMsgErr}
+                                                    //targetKeys = {targetKeys}
+                                    />)}
+                            </FormItem>:<div></div>
+                            }
 
-                    <FormItem {...formItemLayout} label="设计工时" >
-                        {getFieldDecorator('time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                    </FormItem>
+                        <FormItem {...formItemLayout} label="设计工时" >
+                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                        </FormItem>
 
-                    <FormItem {...formItemLayout}  label="设计文档上传" >
-                        {getFieldDecorator('attachment')(
-                            <Upload {...props} fileList={this.state.fileList}>
-                                <Button type="ghost">
-                                    <Icon type="upload" /> 点击上传
-                                </Button>
-                            </Upload>)}
-                    </FormItem>
+                        <FormItem {...formItemLayout}  label="设计文档上传" >
+                            {getFieldDecorator('files')(
+                                <Upload {...props} fileList={this.state.fileList}>
+                                    <Button type="ghost">
+                                        <Icon type="upload" /> 点击上传
+                                    </Button>
+                                </Upload>)}
+                        </FormItem>
 
-                    <FormItem wrapperCol={{ span: 16, offset: 6 }}>
-                        <Button type="primary" onClick={this.approve.bind(this)}>确认</Button>
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                    </FormItem>
-                </Form>
+                        <FormItem wrapperCol={{ span: 16, offset: 6 }}>
+                            <Button type="primary" onClick={this.approve.bind(this)} loading={confirmLoading}>确认</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Spin>
             </Box>
         )
     }
@@ -184,18 +197,21 @@ DevelopConfirm.prototype.columns = (self)=>[{
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
+        getConfirmListLoading: state.toBeConfirmedItem.getConfirmListLoading,
         confirmList: state.toBeConfirmedItem.confirmList,
         getMyProjectLoading: state.toBeConfirmedItem.loading,
         getMyProjectInfo: state.toBeConfirmedItem.projectInfo,
-        developConfirmLoading: state.toBeConfirmedItem.loading,
-        developConfirmResult: state.toBeConfirmedItem.result
+        confirmLoading: state.toBeConfirmedItem.confirmLoading,
+        confirmResult: state.toBeConfirmedItem.confirmResult
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
-        developConfirmAction: bindActionCreators(developConfirm, dispatch),
+        ConfirmAction: bindActionCreators(developConfirm, dispatch),
+        getApproveListAction: bindActionCreators(getApproveList, dispatch),
+
     }
 }
 
