@@ -44,6 +44,9 @@ class TableFilterTitle extends React.Component {
         this.setState({
             visible:!this.state.visible
         })
+        let node = document.getElementById('searchContext');
+        //node.focus();
+        console.log('node:',node)
     }
 
     searchData(e){

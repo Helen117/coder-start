@@ -34,6 +34,7 @@ import {CLEAR_USER_RELATION_INFO} from '../../project-list/constants/project-mem
 const initialState = {
     userInfoData:[]
 };
+const initState = {};
 
 export default function UserRelation(state = initialState, action = {}) {
     switch (action.type) {
@@ -52,10 +53,23 @@ export default function UserRelation(state = initialState, action = {}) {
                 selectedUserGroup:action.selectedUserGroup}};
         //获取人员信息
         case GET_USER_INFO_PENDING:
-            return {...state, getUserInfo:{loading: true}};
+            if (!state[action.meta]){
+                state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
+            }
+            state['getUserInfo_'+action.meta].loading = true;
+            return {...state};
         case GET_USER_INFO_SUCCESS:
-            return {...state, getUserInfo:{loading: false, userInfoData: action.payload}};
+            if (!state[action.meta]){
+                state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
+            }
+            state['getUserInfo_'+action.meta].loading = false;
+            state['getUserInfo_'+action.meta].userInfoData = action.payload;
+            return {...state};
         case GET_USER_INFO_ERROR:
+            if (!state[action.meta]){
+                state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
+            }
+            state['getUserInfo_'+action.meta].loading = false;
             return {
                 ...state,getUserInfo:{loading: false}
             };
