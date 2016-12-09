@@ -46,13 +46,13 @@ export function mergeRequest(state = initialState, action = {}) {
             
         //fetch merge issue    
         case FETCH_ISSUES_DATA_PENDING:
-            return {...state, Issues:[], fetchIssueLoading: true};
+            return {...state, Issues:null, fetchIssueLoading: true};
 
         case FETCH_ISSUES_DATA_SUCCESS:
             return {...state, Issues: action.payload, fetchIssueLoading: false };
 
         case FETCH_ISSUES_DATA_ERROR:
-            return {state, Issues:[], fetchIssueLoading: false };
+            return {state, Issues:null, fetchIssueLoading: false };
 
 
         //create mr
@@ -68,13 +68,13 @@ export function mergeRequest(state = initialState, action = {}) {
 
         //get mr list
         case FETCH_MR_LIST_PENDING:
-            return {...state, mrList:[],getMrListLoading: true};
+            return {...state, mrList:nul,getMrListLoading: true};
 
         case FETCH_MR_LIST_SUCCESS:
             return {...state, mrList: action.payload,  getMrListLoading:false};
 
         case FETCH_MR_LIST_ERROR:
-            return {...state, mrList:[],getMrListLoading:false};
+            return {...state, mrList:nul,getMrListLoading:false};
 
         default:
             return state;

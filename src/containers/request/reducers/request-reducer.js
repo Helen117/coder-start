@@ -8,14 +8,14 @@ export default function request(state = initialState, action = {}) {
     switch (action.type) {
 
         case 'FETCH_TESTER_INFO_PENDING':
-            return {...state, tester:[],getTesterLoading: true};
+            return {...state, tester:null,getTesterLoading: true};
         case 'FETCH_TESTER_INFO_SUCCESS':
             return {...state, tester: action.payload, getTesterLoading: false, getTestError: null};
         case 'FETCH_TESTER_INFO_ERROR':
             return {...state, getTesterLoading: false, getTesterError: action.payload.errorMsg};
 
         case 'FETCH_DEVELOPER_INFO_PENDING':
-            return {...state, developer: [],getDeveloperLoading: true};
+            return {...state, developer: null,getDeveloperLoading: true};
         case 'FETCH_DEVELOPER_INFO_SUCCESS':
             return {...state, developer: action.payload, getDeveloperLoading: false, getDeveloperError: null};
         case 'FETCH_DEVELOPER_INFO_ERROR':
@@ -43,7 +43,7 @@ export default function request(state = initialState, action = {}) {
             return {...state, editDemandResult: null,editDemandLoading: false,  editDemandError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
-            return {...state,requirementInfo: [],loading: true};
+            return {...state,requirementInfo: null,loading: true};
         case 'FETCH_REQUIREMENT_INFO_SUCCESS':
             return {...state, requirementInfo: action.payload, loading: false, errors: null};
         case 'FETCH_REQUIREMENT_INFO_ERROR':
