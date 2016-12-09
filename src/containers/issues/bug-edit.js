@@ -7,8 +7,8 @@ import {bindActionCreators} from 'redux';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import * as issue from './actions/issue-action';
 import * as home from '../home/actions/home-action';
+import * as request from '../request/actions/request-action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,19 +23,19 @@ class EditBug extends Component{
     }
 
     componentWillMount(){
-        // const {selectedRow} = this.props.location.state;
-        // if(selectedRow){
-        //     const {setFieldsValue} = this.props.form;
-        //     setFieldsValue({'due_date': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
-        //     setFieldsValue({'demand': selectedRow.title});
-        // }
+        // this.props.demand.getDeveloperInfo(id,'set',30);
+        const {selectedRow} = this.props.location.state;
+        // console.log(selectedRow);
+        if(selectedRow){
+            const {setFieldsValue} = this.props.form;
+            setFieldsValue({'planTime': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
+            setFieldsValue({'demand': selectedRow.issue_name});
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const result = nextProps.issue.addIssue;
-        const error = nextProps.issue.addIssueError;
-
-        if (!error && result&&result!=this.props.issue.addIssue) {
+        const {addDemandResult} = nextProps;
+        if(this.props.addDemandResult != addDemandResult && addDemandResult){
             message.success('提交成功');
             this.props.home.getNotifyItems(this.props.loginInfo.userId);
             this.context.router.goBack();
@@ -49,14 +49,30 @@ class EditBug extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const {actions, form, loginInfo} = this.props;
-
+        const {selectedRow} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
                 data.author_id = loginInfo.userId;
+                if(data.due_date>data.planTime){
+                    message.error('Bug预期完成时间不能大于关联工单上线时间！',3);
+                    return ;
+                }
+                if(data.adviceOrderDuty_person){
+                    data.adviceOrderDuty_person=0;
+                }else{
+                    data.adviceOrderDuty_person=1;
+                }
+                if(data.repairFlg){
+                    data.repairFlg=0;
+                }else{
+                    data.repairFlg=1;
+                }
+                data.tempRemandId=1;
                 console.log('收到表单值：', data);
+                actions.addDemand(data);
             }
         })
     }
@@ -86,6 +102,7 @@ class EditBug extends Component{
         };
 
         const pending = false;
+        // const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
             <Spin spinning={pending}>
@@ -146,15 +163,15 @@ class EditBug extends Component{
                                                  optionFilterProp="children"
                                                  notFoundContent="无法找到"
                                                  style={{ width: 200 }} >
-                                            <Option value="1">孙磊</Option>
-                                            <Option value="2">张军</Option>
+                                            <Option value="9">孙磊</Option>
+                                            <Option value="8">张军</Option>
                                         </Select>)}
                                 </FormItem>
                                 </Col>
                             <Col sm={8}>
                                 <FormItem {...formItemLayout} label="关联的需求" >
                                     {getFieldDecorator('demand',{rules:[{ required:true,message:'不能为空'}]})(
-                                        <Input disabled style={{ width: 200 }}/>)}
+                                        <Input  style={{ width: 200 }}/>)}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="缺陷属性" >
@@ -174,20 +191,20 @@ class EditBug extends Component{
                                         </Select>)}
                                 </FormItem>
                                 <FormItem {...formItemLayout} label="处理人员" >
-                                    {getFieldDecorator('developPeron',{rules:[{ required:true,message:'不能为空'}]})(
+                                    {getFieldDecorator('assignee_develop_id',{rules:[{ required:true,message:'不能为空'}]})(
                                         <Select  showSearch
                                                  showArrow={false}
                                                  optionFilterProp="children"
                                                  notFoundContent="无法找到"
                                                  style={{ width: 200 }} >
-                                            <Option value="1">孙磊</Option>
-                                            <Option value="2">张军</Option>
+                                            <Option value="9">孙磊</Option>
+                                            <Option value="8">张军</Option>
                                         </Select>)}
                                 </FormItem>
                             </Col>
                             <Col sm={8}>
                                 <FormItem {...formItemLayout} label="关联工单上线时间点" >
-                                    {getFieldDecorator('planTime',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabled style={{ width: 200 }}  />)}
+                                    {getFieldDecorator('planTime',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker style={{ width: 200 }}  />)}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="遗留问题" >
@@ -241,15 +258,19 @@ EditBug = Form.create()(EditBug);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        issue:state.issue,
+        developerLoading:state.request.getDeveloperLoading,
+        developerInfo:state.request.developer,
         loginInfo:state.login.profile,
+        addDemandResult: state.request.addDemandResult,
+        addDemandLoading: state.request.addDemandLoading,
+        addDemandError: state.request.addDemandError,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(issue,dispatch),
         home:bindActionCreators(home, dispatch),
+        actions : bindActionCreators(request,dispatch),
     }
 }
 
