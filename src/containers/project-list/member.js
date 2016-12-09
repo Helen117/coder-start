@@ -33,7 +33,7 @@ class ProjectMember extends Component {
     }
 
     componentDidMount(){
-        this.props.clearUserRelationInfo();
+        //this.props.clearUserRelationInfo();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -122,14 +122,14 @@ class ProjectMember extends Component {
         final_data.users = data;
         final_data.id = loginInfo.userId;
         actions.addProjectMember(final_data);
-        this.props.clearUserRelationInfo();
+        //this.props.clearUserRelationInfo();
     }
 
     handleCancel(){
         this.setState({
             addProjectMember: false
         });
-        this.props.clearUserRelationInfo();
+        //this.props.clearUserRelationInfo();
     }
 
     changeSelect(value){
@@ -223,7 +223,9 @@ class ProjectMember extends Component {
                             <Option value="20">测试</Option>
                         </Select>
                     </div>
-                    <UserRelation visible='true' onSelected={this.selectedUser.bind(this)}/>
+                    <UserRelation visible='true'
+                                  busiType="add-members"
+                                  onSelected={this.selectedUser.bind(this)}/>
                 </Modal>
                 {comfirmRoleId(loginInfo.userId,projectMembers)?(
                     <div style={{paddingTop:'10px'}}>
