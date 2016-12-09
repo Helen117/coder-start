@@ -15,7 +15,8 @@ class UpdatePassword extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            visible:false
+            visible:false,
+            passwordDirty:false,
         }
     }
 
@@ -72,6 +73,19 @@ class UpdatePassword extends React.Component {
         }
     }
 
+    handlePasswordBlur(e){
+        const value = e.target.value;
+        this.setState({ passwordDirty: this.state.passwordDirty || !!value });
+    }
+
+    checkConfirm(rule, value, callback){
+        const form = this.props.form;
+        if (value && this.state.passwordDirty) {
+            form.validateFields(['comfirm_password'], { force: true });
+        }
+        callback();
+    }
+
     render() {
         const {visible} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -86,7 +100,9 @@ class UpdatePassword extends React.Component {
         const newPasswordProps = getFieldDecorator('new_password',
             {rules:[
                 {required:true, message:'请输入新密码！'},
-            ]})(<Input type="password" placeholder="请输入新密码"/>);
+                {validator: this.checkConfirm.bind(this),},
+            ]})(<Input type="password" placeholder="请输入新密码"
+                       onBlur={this.handlePasswordBlur.bind(this)}/>);
         const comfirmNewPassword = getFieldDecorator('comfirm_password',
             {rules:[
                 {required:true, message:'请输入新密码！'},
