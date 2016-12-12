@@ -24,19 +24,30 @@ class BranchesList extends React.Component {
     }
 
     componentWillMount() {
-        if(this.props.getProjectInfo) {
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(projectInfo.id) {
             if(!this.props.branchesData && !this.props.loading) {
-                this.props.fetchBranchesData(this.props.getProjectInfo.id);
+                this.props.fetchBranchesData(projectInfo.id);
             }
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const delResult = nextProps.delResult;
-        const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
-        const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
+        const {project} = this.props;
+        const next_project = nextProps.project;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        let next_projectInfo = next_project.getProjectInfo?(
+            next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
+        ):{};
+
+        const thisProId = projectInfo.id;
+        const nextProId = next_projectInfo.id;
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId!=''){
+        if(thisProId != nextProId && nextProId){
             this.props.fetchBranchesData(nextProId);
         }
 
@@ -49,8 +60,10 @@ class BranchesList extends React.Component {
     }
 
     sucCallback(type){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         message.success(type);
-        const project_id = this.props.getProjectInfo.id;
+        const project_id = projectInfo.id;
         this.props.fetchBranchesData(project_id);
         this.props.form.resetFields();
     }
@@ -70,8 +83,10 @@ class BranchesList extends React.Component {
     }
 
     handleOk() {
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const branch = this.state.delRecord.branch;
-        const project_id = this.props.getProjectInfo.id;
+        const project_id = projectInfo.id;
         const result = this.props.form.getFieldsValue().result;
         const deleteBranchAction = this.props.deleteBranchAction;
         deleteBranchAction(branch,project_id,result);
@@ -106,12 +121,16 @@ class BranchesList extends React.Component {
         const branch = this.props.branchesData;
         const data = this.mapBranchTable(branch);
         const {getFieldDecorator} = this.props.form;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
         const isLoading = this.props.getBranchLoading? true: false;
         return(
             <div style={{margin:10}}>
                 <Row >
                     <Button className="pull-right" type="primary"
-                            disabled={this.props.getProjectInfo?false:true}
+                            disabled={projectInfo.id?false:true}
                             onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
                 </Row>
                 <div style={{marginTop:5}}>
@@ -171,12 +190,12 @@ BranchesList.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        getProjectInfo:state.getProjectInfo.projectInfo,
         branchesData: state.branch.branchesData,
         getBranchLoading: state.branch.getBranchLoading,
         delLoading: state.branch.deleteLoading,
         delResult: state.branch.deleteResult,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
+        project:state.project,
     };
 }
 

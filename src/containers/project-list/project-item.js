@@ -15,8 +15,8 @@ import * as fork from '../project-list/actions/fork-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import styles from './index.css';
 import ProjectMember from './member';
-import {getProjectMembers} from '../project-mgr/actions/project-members-action';
-import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
+import {getProjectMembers} from './actions/project-member-action';
+import {getProjectInfo} from '../project-mgr/actions/create-project-action';
 
 const Option = Select.Option;
 
@@ -30,9 +30,11 @@ class ProjectItem extends Component {
     }
 
     componentDidMount() {
-        if(this.props.getProjectInfo){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(projectInfo){
             this.setState({
-                url: this.props.getProjectInfo.sshUrl,
+                url: projectInfo.sshUrl,
             });
         }
     }
@@ -44,23 +46,25 @@ class ProjectItem extends Component {
                 showProjectMember:false
             })
         }
-        const {loginInfo,selectNodeKey} = this.props;
+        const {loginInfo,projectGroup} = this.props;
+        let selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if(consernedInfo && this.props.consernedInfo ){
             if(consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
             && consernedInfo.consernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
-                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+                this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
             }
         }
         if(unconsernInfo && this.props.unconsernInfo){
             if(unconsernInfo.unconsernedInfo != this.props.unconsernInfo.unconsernedInfo
             && unconsernInfo.unconsernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
-                this.props.getProject(selectNodeKey.substr(0,selectNodeKey.length-2),loginInfo.userId);
+                this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
             }
         }
 
-        const {forkResult,getProjectInfo} = nextProps;
+        const {forkResult,project} = nextProps;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
             this.setState({
@@ -74,9 +78,9 @@ class ProjectItem extends Component {
         //     this.errorMessage('Fork失败!',forkResult.errors);
         // }
 
-        if(getProjectInfo){
+        if(projectInfo){
             this.setState({
-                url: getProjectInfo.sshUrl,
+                url: projectInfo.sshUrl,
             });
         }
     }
@@ -103,9 +107,10 @@ class ProjectItem extends Component {
     }
 
     handleOk(){
-        const {actions,getProjectInfo,loginInfo} = this.props;
+        const {actions,project,loginInfo} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(this.state.namespace){
-            actions.forkProject(getProjectInfo.id,loginInfo.username,this.state.namespace);
+            actions.forkProject(projectInfo.id,loginInfo.username,this.state.namespace);
         }else{
             message.error('请选择fork项目的namespace',3);
         }
@@ -119,8 +124,9 @@ class ProjectItem extends Component {
     }
 
     getForks(){
-        const {getProjectInfo} = this.props;
-        const projectId = getProjectInfo.id;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectId = projectInfo.id;
 
         this.context.router.push({
             pathname: '/forkList',
@@ -129,28 +135,30 @@ class ProjectItem extends Component {
     }
 
     handleChange(value){
-        const {getProjectInfo} = this.props;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(value=='ssh'){
             this.setState({
                 value:'ssh',
-                url: getProjectInfo.sshUrl,
+                url: projectInfo.sshUrl,
             });
         }else{
             this.setState({
                 value:'http',
-                url: getProjectInfo.http_url_to_repo,
+                url: projectInfo.http_url_to_repo,
             });
         }
     }
 
     concernedChange(is_conserned){
-        const {loginInfo,starActions,getProjectInfo} = this.props;
+        const {loginInfo,starActions,project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         var starInfo={
             username:null,
             projectId:null,
         };
         starInfo.username = loginInfo.username;
-        starInfo.projectId = getProjectInfo.id;
+        starInfo.projectId = projectInfo.id;
         if(is_conserned == '关注'){
             starActions.consernProject(starInfo);
         }else{
@@ -160,8 +168,9 @@ class ProjectItem extends Component {
 
     memberCountClick(record){
         //调member接口
-        const { getProjectInfo } = this.props;
-        this.props.getProjectMembers(getProjectInfo.id);
+        const { project } = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        this.props.getProjectMembers(projectInfo.id);
         this.setState({
             showProjectMember:true,
         })
@@ -178,15 +187,16 @@ class ProjectItem extends Component {
     }
 
     getDataSource(){
-        const {getProjectInfo} = this.props;
+        const {project} = this.props;
         let dataSource = [];
-        if(getProjectInfo ){
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(projectInfo ){
             dataSource = [{
-                project_name:getProjectInfo.name,
-                description:getProjectInfo.description,
-                memberNum:"共"+getProjectInfo.member_count+"人",
-                current_milestom:this.transformDate(getProjectInfo.current_mileston_date),
-                consern:getProjectInfo.star_state,
+                project_name:projectInfo.name,
+                description:projectInfo.description,
+                memberNum:"共"+projectInfo.member_count+"人",
+                current_milestom:this.transformDate(projectInfo.current_mileston_date),
+                consern:projectInfo.star_state,
                 //state:
                 //tech_debt:
                 //test_cover:
@@ -196,7 +206,7 @@ class ProjectItem extends Component {
     }
 
     render() {
-        const {treeData,visible,getProjectInfo,forkResult} = this.props;
+        const {treeData,visible,project,forkResult} = this.props;
 
         if(visible == true && treeData.length!=0){
             const columns = (self)=>[
@@ -222,10 +232,12 @@ class ProjectItem extends Component {
                 {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
                 {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
             ];
+            let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
             const dataSource = this.getDataSource();
-            const forkFrom =getProjectInfo&&getProjectInfo.forks_from?<strong> Forked from {this.props.getProjectInfo.forks_from}</strong>:'';
+            const forkFrom =projectInfo&&projectInfo.forks_from?<strong> Forked from {projectInfo.forks_from}</strong>:'';
 
             const forkPath =forkResult&&forkResult.namespace?forkResult.namespace.map(data => <Option key={data.path}>{data.path}</Option>):[];
+            const projectLoading = project.getProjectInfo?project.getProjectInfo.loading:false;
 
             return (
                 <div>
@@ -235,14 +247,14 @@ class ProjectItem extends Component {
                                 <Button type="ghost" onClick={this.fork.bind(this)} >Fork</Button>
                             </Tooltip>
                             <span className={styles.arrow}></span>
-                            <a className={styles.count} onClick={this.getForks.bind(this)}>{getProjectInfo?getProjectInfo.forks_count:''}</a>
+                            <a className={styles.count} onClick={this.getForks.bind(this)}>{projectInfo?projectInfo.forks_count:''}</a>
                             <Select id="role"  defaultValue="ssh" style={{ width: 60 }} onSelect={this.handleChange.bind(this)}>
                                 <Option value="ssh">SSH</Option>
                             </Select>
                             <Input style={{ width: 300 }}  value={this.state.url} type="text" readOnly/>
                             <TableView columns={columns(this)}
                                        dataSource={dataSource}
-                                       loading={this.props.projectLoading}
+                                       loading={projectLoading}
                             ></TableView>
                         </div>
                         <Modal title="请选择fork项目的namespace"
@@ -281,12 +293,11 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         treeData: state.getGroupTree.treeData,
-        getProjectInfo:state.getProjectInfo.projectInfo,
         forkResult:state.forkProject,
         consernedInfo:state.consernProject.consernedInfo,
         unconsernInfo:state.consernProject.unconsernInfo,
-        projectLoading:state.getProjectInfo.loading,
-        selectNodeKey: state.getGroupInfo.selectedNode,
+        project:state.project,
+        projectGroup:state.projectGroup,
     }
 }
 

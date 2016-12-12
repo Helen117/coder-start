@@ -30,8 +30,9 @@ class CodeFiles extends React.Component {
     }
 
     componentWillMount(){
-        const {projectInfo} = this.props;
-        if(projectInfo){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(!this.isEmptyObject(projectInfo)){
             const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
             this.setState({
                 pathData:pathData,
@@ -46,8 +47,9 @@ class CodeFiles extends React.Component {
         //定义一个path数组？初始化为项目名称
         //默认跳转fileTree路由，以项目名称为参数调后台接口，dataSource初始化为返回的第一级数据.
         PubSub.subscribe("evtRefreshFileTree",this.refreshTreePath.bind(this));
-        const {projectInfo} = this.props;
-        if(projectInfo){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(!this.isEmptyObject(projectInfo)){
             this.props.fetchBranchesData(projectInfo.id);
             this.props.getCodeFile(projectInfo.id,"",this.state.brand);
         }
@@ -55,20 +57,24 @@ class CodeFiles extends React.Component {
 
     componentWillReceiveProps(nextProps){
         //初始化面包屑
-        const {projectInfo} = nextProps;
-        if(this.props.projectInfo != projectInfo && projectInfo){
-            if(projectInfo){
-                this.state.brand = 'master';
-                this.props.fetchBranchesData(projectInfo.id);
-                this.props.getCodeFile(projectInfo.id,"",this.state.brand);
-                const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
-                this.setState({
-                    pathData:pathData,
-                    activeKey:pathData[0].pathKey,
-                    showFileTree:true,
-                    showCodeView:false,
-                    selectDisabled:false
-                })
+        const {project} = nextProps;
+        if(this.props.project.getProjectInfo && project.getProjectInfo){
+            if(this.props.project.getProjectInfo.projectInfo != project.getProjectInfo.projectInfo
+                && project.getProjectInfo.projectInfo){
+                let projectInfo = project.getProjectInfo.projectInfo;
+                if(projectInfo){
+                    this.state.brand = 'master';
+                    this.props.fetchBranchesData(projectInfo.id);
+                    this.props.getCodeFile(projectInfo.id,"",this.state.brand);
+                    const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
+                    this.setState({
+                        pathData:pathData,
+                        activeKey:pathData[0].pathKey,
+                        showFileTree:true,
+                        showCodeView:false,
+                        selectDisabled:false
+                    })
+                }
             }
         }
     }
@@ -110,7 +116,8 @@ class CodeFiles extends React.Component {
     clickTreePath(pathName){
         //当点击面包屑时，遍历path，找到点击的name，将此name后的元素都删掉。更新面包屑
         //以pathName传参，跳转到相应页面
-        const {projectInfo} = this.props;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         let path_temp = this.state.pathData,type;
         let clickPathIndex;
         for(let i=0; i<path_temp.length; i++){
@@ -155,7 +162,8 @@ class CodeFiles extends React.Component {
     }
 
     changeSelect(value){
-        const {projectInfo} = this.props;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
         this.props.getCodeFile(projectInfo.id,"",value);
         this.setState({
@@ -219,8 +227,8 @@ CodeFiles.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        projectInfo:state.getProjectInfo.projectInfo,
-        branches:state.branch.branchesData
+        branches:state.branch.branchesData,
+        project:state.project,
     }
 }
 

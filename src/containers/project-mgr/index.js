@@ -12,8 +12,8 @@ import {connect} from 'react-redux';
 import { Row, Col, Form } from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getGroupTree, setSelectNode} from './actions/group-tree-action';
-import {getGroupInfo,getProjectInfo,clearGroupProjectInfo,
-    clearProjectInfo} from './actions/select-treenode-action';
+import {getProjectInfo} from './actions/create-project-action';
+import {getGroupInfo,clearGroupProjectInfo} from './actions/create-group-action';
 import 'pubsub-js';
 
 export GroupDetail from './group-detail';
@@ -57,7 +57,6 @@ class ProjectMgr extends React.Component{
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
-            //this.props.clearProjectInfo();
             PubSub.publish("onSelectProjectNode",{node:node, isProject:false});
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
@@ -88,7 +87,7 @@ class ProjectMgr extends React.Component{
     }
 
     render(){
-        const {treeData, loading, selectNodeKey} = this.props;
+        const {treeData, loading} = this.props;
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
@@ -123,7 +122,6 @@ function mapStateToProps(state) {
         loading : state.getGroupTree.loading,
         treeData: state.getGroupTree.treeData,
         loginInfo:state.login.profile,
-        selectNodeKey: state.getGroupInfo.selectedNode,
         currentOneInfo:state.getMenuBarInfo.currentOne,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
     }
@@ -136,7 +134,6 @@ function mapDispatchToProps(dispatch) {
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         clearGroupProjectInfo:bindActionCreators(clearGroupProjectInfo, dispatch),
-        clearProjectInfo:bindActionCreators(clearProjectInfo, dispatch),
     }
 }
 

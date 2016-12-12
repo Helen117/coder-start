@@ -10,7 +10,7 @@ import { Select,Input, Button, message, Row, notification} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
-import {getProjectInfo} from '../project-mgr/actions/select-treenode-action';
+import {getProjectInfo} from '../project-mgr/actions/create-project-action';
 
 const Option = Select.Option;
 
@@ -19,9 +19,17 @@ class SelectedProInfo extends Component {
         super(props);
     }
 
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     componentDidMount() {
-        const {getProjectInfo,selectedItemInfo} = this.props
-        if(!getProjectInfo && selectedItemInfo) {
+        const {project,selectedItemInfo} = this.props
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(!this.isEmptyObject(projectInfo) && selectedItemInfo) {
             const itemId = this.props.selectedItemInfo.id;
             this.callAction(itemId);
         }
@@ -46,7 +54,7 @@ class SelectedProInfo extends Component {
 
     getDataSource(getProjectInfo) {
         const data = [];
-        if (getProjectInfo ) {
+        if (!this.isEmptyObject(getProjectInfo) ) {
             data.push({
                 project_name: getProjectInfo.name,
                 description: getProjectInfo.description,
@@ -58,14 +66,18 @@ class SelectedProInfo extends Component {
 
 
     render(){
-        const {getProjectInfo,visible} = this.props;
-        const dataSource = this.getDataSource(getProjectInfo);
+        const {project,visible} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        const dataSource = this.getDataSource(projectInfo);
+        let projectLoading = project.getProjectInfo?project.getProjectInfo.loading:false;
         if(visible) {
             return (
                 <div style={{margin: 15}}>
                     <TableView columns={columns(this)}
                                dataSource={dataSource}
-                               loading={this.props.getProjectInfoLoading}
+                               loading={projectLoading}
                     ></TableView>
                 </div>
             )
@@ -98,9 +110,8 @@ SelectedProInfo.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        getProjectInfo:state.getProjectInfo.projectInfo,
-        getProjectInfoLoading: state.getProjectInfo.loading,
         selectedItemInfo: state.projectSetToState.selectedProjectSet,
+        project:state.project,
     }
 }
 

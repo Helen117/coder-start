@@ -17,7 +17,7 @@ import styles from './index.css';
 import { searchGroupByGroupId, findProjectIdByProjectName } from './util';
 import {setProjectDelete} from '../project-mgr/actions/create-project-action';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
-import {getGroupInfo} from '../project-mgr/actions/select-treenode-action';
+import {getGroupInfo} from '../project-mgr/actions/create-group-action';
 
 class ProjectList extends Component {
     constructor(props) {
@@ -38,20 +38,25 @@ class ProjectList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { deleteResult, treeData } = nextProps;
+        const { project, treeData } = nextProps;
+        const {projectGroup} = this.props;
         //删除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult){
-            this.setState({
-                modalVisible: false,
-            });
-            this.insertCallback('删除成功!');
+        if(this.props.project.deleteProject && project.deleteProject){
+            if(this.props.project.deleteProject.result != project.deleteProject.result
+            && project.deleteProject.result){
+                this.setState({
+                    modalVisible: false,
+                });
+                this.insertCallback('删除成功!');
+            }
         }
         //删除项目更新项目组信息
+        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if (this.props.treeData != treeData && treeData.length>0){
-            if(this.props.getGroupInfo){
-                let resetGroupInfo = searchGroupByGroupId(this.props.getGroupInfo.id,treeData);
+            if(projectGroup.getGroupInfo){
+                let resetGroupInfo = searchGroupByGroupId(projectGroup.getGroupInfo.groupInfo.id,treeData);
                 if(resetGroupInfo){
-                    this.props.setGroupInfo(resetGroupInfo, this.props.selectedNode,this.props.node);
+                    this.props.setGroupInfo(resetGroupInfo, node.id,node);
                 }
             }
         }
@@ -65,8 +70,9 @@ class ProjectList extends Component {
     }
 
     handleOk() {
-        const {loginInfo,setProjectDelete,getGroupInfo} = this.props;
-        let projectId = findProjectIdByProjectName(this.state.selectProjectName, getGroupInfo);
+        const {loginInfo,setProjectDelete,projectGroup} = this.props;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        let projectId = findProjectIdByProjectName(this.state.selectProjectName, groupInfo);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
         setProjectDelete(loginInfo.username,projectId);
@@ -97,9 +103,17 @@ class ProjectList extends Component {
         return dataSource;
     }
 
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     render() {
-        const {node,visible} = this.props;
+        const {visible,projectGroup,treeData, project} = this.props;
         let listType = false;
+        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if(visible == true){
             if(node.isLeaf==false && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
                 //项目组节点下有项目
@@ -109,18 +123,19 @@ class ProjectList extends Component {
                 listType = true;
             }
         }
-        const {treeData,getGroupInfo, deleteLoading} = this.props;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         let dataSource = [],groupDesc = (<div></div>);
         if(treeData.length>0){
-            dataSource = getGroupInfo?this.getDataSource(getGroupInfo):[];
-            groupDesc = getGroupInfo?(
+            dataSource = !this.isEmptyObject(groupInfo)?this.getDataSource(groupInfo):[];
+            groupDesc = !this.isEmptyObject(groupInfo)?(
                 <Row>
-                    <Col span={4}>项目组名称:{getGroupInfo.name}</Col>
-                    <Col span={4}>项目组创建人：{getGroupInfo.owner}</Col>
-                    <Col span={16}>项目组创建目的:{getGroupInfo.description}</Col>
+                    <Col span={4}>项目组名称:{groupInfo.name}</Col>
+                    <Col span={4}>项目组创建人：{groupInfo.owner}</Col>
+                    <Col span={16}>项目组创建目的:{groupInfo.description}</Col>
                 </Row>
             ):(<div></div>);
         }
+        const deleteLoading = project.deleteProject?project.deleteProject.loading:false;
 
         if(listType == true){//展示项目组信息
             return (
@@ -135,7 +150,7 @@ class ProjectList extends Component {
                         <Modal title="确认删除此项目吗?"
                                visible={this.state.modalVisible}
                                onOk={this.handleOk.bind(this)}
-                               confirmLoading={deleteLoading?true:false}
+                               confirmLoading={deleteLoading}
                                onCancel={this.handleCancel.bind(this)}
                         >   </Modal>
                     </Row>
@@ -174,12 +189,8 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         treeData: state.getGroupTree.treeData,
-        getGroupInfo:state.getGroupInfo.groupInfo,
-        deleteResult:state.createProject.deleteResult,
-        deleteErrors:state.createProject.deleteErrors,
-        deleteLoading:state.createProject.deleteLoading,
-        selectedNode:state.getGroupInfo.selectedNode,
-        node:state.getGroupInfo.node,
+        projectGroup:state.projectGroup,
+        project:state.project,
     }
 }
 

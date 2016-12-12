@@ -10,8 +10,8 @@ import {bindActionCreators} from 'redux';
 import {Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
 import styles from './index.css';
 import UserRelation from '../user-relation';
-import {addProjectMember,deleteProjectMember,clearUserRelationInfo} from './actions/project-member-action';
-import {getProjectMembers} from '../project-mgr/actions/project-members-action';
+import {addProjectMember,deleteProjectMember,
+    getProjectMembers} from './actions/project-member-action';
 import {findUserIdByEmail} from '../user-relation/utils';
 import {comfirmRoleId} from './util';
 import 'pubsub-js';
@@ -33,18 +33,24 @@ class ProjectMember extends Component {
     }
 
     componentDidMount(){
-        //this.props.clearUserRelationInfo();
+
     }
 
     componentWillReceiveProps(nextProps) {
-        const {addResult,deleteResult} = nextProps;
+        const {projectMember} = nextProps;
         //添加返回信息
-        if (this.props.addResult != addResult && addResult) {
-            this.insertCallback("添加成功");
+        if(this.props.projectMember.addProjectMember && projectMember.addProjectMember){
+            if(this.props.projectMember.addProjectMember.result !=
+                projectMember.addProjectMember.result && projectMember.addProjectMember.result){
+                this.insertCallback("添加成功");
+            }
         }
         //删除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult) {
-            this.insertCallback("删除成功");
+        if(this.props.projectMember.deleteProjectMember && projectMember.deleteProjectMember){
+            if(this.props.projectMember.deleteProjectMember.result !=
+                projectMember.deleteProjectMember.result && projectMember.deleteProjectMember.result){
+                this.insertCallback("删除成功");
+            }
         }
     }
 
@@ -60,7 +66,10 @@ class ProjectMember extends Component {
             selectedUserIds:[]
         });
         //调项目成员接口
-        const {actions,projectInfo} = this.props;
+        const {actions,project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
         actions.getProjectMembers(projectInfo.id);
     }
 
@@ -110,8 +119,11 @@ class ProjectMember extends Component {
 
     handleOk(){
         //调添加成员接口
-        const {actions,projectInfo,loginInfo} = this.props;
+        const {actions,project,loginInfo} = this.props;
         let data = [],final_data={};
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
         for(let i=0; i<this.state.selectedUsers.length; i++){
             data.push({
                 projectId:projectInfo.id,
@@ -122,14 +134,12 @@ class ProjectMember extends Component {
         final_data.users = data;
         final_data.id = loginInfo.userId;
         actions.addProjectMember(final_data);
-        //this.props.clearUserRelationInfo();
     }
 
     handleCancel(){
         this.setState({
             addProjectMember: false
         });
-        //this.props.clearUserRelationInfo();
     }
 
     changeSelect(value){
@@ -145,7 +155,10 @@ class ProjectMember extends Component {
     }
 
     onSelectedChange(selectedRowKeys, selectedRows){
-        const {projectMembers} = this.props;
+        const {projectMember} = this.props;
+        let projectMembers = projectMember.getProjectMembers?(
+            projectMember.getProjectMembers?projectMember.getProjectMembers.projectMembers:[]
+        ):[];
         let user_ids = [];
         for(let i=0; i<selectedRows.length; i++){
             let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
@@ -155,9 +168,13 @@ class ProjectMember extends Component {
     }
 
     render(){
-        const {projectMembers,projectInfo,loginInfo} = this.props;
+        const {projectMember,project,loginInfo} = this.props;
         const {selectedRowKeys} = this.state;
 
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        let projectMembers = projectMember.getProjectMembers?(
+            projectMember.getProjectMembers.projectMembers?projectMember.getProjectMembers.projectMembers:[]
+        ):[];
         const columns = [
             {title: "项目人员", dataIndex: "name", key: "name"},
             {title: "角色", dataIndex: "role", key: "role"},
@@ -166,7 +183,7 @@ class ProjectMember extends Component {
             {title: "人员状态", dataIndex: "state", key: "state"}
         ];
         const dataSource = [];
-        if(projectMembers){
+        if(projectMembers.length > 0){
             for(var i=0;i<projectMembers.length;i++){
                 let role = '';
                 if(projectMembers[i].role == 40){
@@ -200,19 +217,21 @@ class ProjectMember extends Component {
             </Row>
         ):(<div></div>);
         let projectId = projectInfo?projectInfo.id:'';
+        let membersLoading = projectMember.getProjectMembers?projectMember.getProjectMembers.loading:false;
+        let addLoading = projectMember.addProjectMember?projectMember.addProjectMember.loading:false;
 
         return (
             <div className={styles.project_list_div}>
                 {projectDesc}
                 <Table columns={columns} dataSource={dataSource}
                        rowSelection={rowSelection}
-                       loading={this.props.membersLoading}></Table>
+                       loading={membersLoading}></Table>
                 <Modal title="添加成员"
                        width="80%"
                        visible={this.state.addProjectMember}
                        onOk={this.handleOk.bind(this)}
                        onCancel={this.handleCancel.bind(this)}
-                       confirmLoading={this.props.addLoading?true:false}
+                       confirmLoading={addLoading}
                 >
                     <div style={{paddingLeft:'10px'}}>
                         <span>添加成员作为：</span>
@@ -246,25 +265,14 @@ ProjectMember.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        projectMembers:state.getProjectMembers.projectMembers,
-        membersLoading:state.getProjectMembers.loading,
-        addResult:state.addProjectMember.addResult,
-        addLoading:state.addProjectMember.addLoading,
-        addDisabled:state.addProjectMember.addDisabled,
-        addErrors:state.addProjectMember.addErrors,
-        deleteResult:state.addProjectMember.deleteResult,
-        deleteLoading:state.addProjectMember.deleteLoading,
-        deleteDisabled:state.addProjectMember.deleteDisabled,
-        deleteErrors:state.addProjectMember.deleteErrors,
-        projectInfo:state.getProjectInfo.projectInfo,
-        groupInfo:state.getGroupInfo.groupInfo,
+        projectMember:state.projectMember,
+        project:state.project,
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators({addProjectMember,getProjectMembers,deleteProjectMember},dispatch),
-        clearUserRelationInfo:bindActionCreators(clearUserRelationInfo,dispatch),
     }
 }
 

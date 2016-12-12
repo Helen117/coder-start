@@ -15,19 +15,31 @@ class MergeRequestList extends React.Component {
     }
 
     componentWillMount() {
-        if(this.props.getProjectInfo) {
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        if(projectInfo.id) {
             if(!this.props.mrList && !this.props.loading) {
-                this.props.fetchMrListData(this.props.getProjectInfo.id);
+                this.props.fetchMrListData(projectInfo.id);
             }
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const {mergeBranch,issues} = nextProps;
-        const thisProId = this.props.getProjectInfo?this.props.getProjectInfo.id:'';
-        const nextProId = nextProps.getProjectInfo?nextProps.getProjectInfo.id:'';
+        const {project} = this.props;
+        const next_project = nextProps.project;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        let next_projectInfo = next_project.getProjectInfo?(
+            next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
+        ):{};
+        const thisProId = projectInfo.id;
+        const nextProId = next_projectInfo.id;
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId!=''){
+        if(thisProId != nextProId && nextProId){
             this.props.fetchMrListData(nextProId);
         }
         if(this.props.mergeBranch != mergeBranch && mergeBranch){
@@ -61,7 +73,9 @@ class MergeRequestList extends React.Component {
     }
 
     createMergeRequest(){
-        const projectId = this.props.getProjectInfo.id;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectId = projectInfo.id;
         this.props.fetchMergeBranchData(projectId);
     }
 
@@ -97,11 +111,15 @@ class MergeRequestList extends React.Component {
     render(){
         const mrList = this.props.mrList;
         const data = this.getDataSource(mrList);
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
         return(
             <div style={{margin: 10}}>
                 <Row>
                     <Button className="pull-right" type="primary"
-                            disabled={this.props.getProjectInfo?false:true}
+                            disabled={projectInfo.id?false:true}
                             onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>
@@ -179,13 +197,12 @@ MergeRequestList.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        getProjectInfo:state.getProjectInfo.projectInfo,
         mergeBranch : state.mergeRequest.mergeBranch,
         issues: state.mergeRequest.Issues,
         mrList: state.mergeRequest.mrList,
         loading: state.mergeRequest.getMrListLoading,
         loginInfo:state.login.profile,
-
+        project:state.project,
     };
 }
 
