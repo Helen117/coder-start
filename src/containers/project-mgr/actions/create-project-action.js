@@ -7,7 +7,22 @@
  * Created by william.xu on 2016/9/20
  */
 import api from '../../../api';
-import {CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT, RESET_DELETE_RESULT} from '../constants/create-project-types';
+import {CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT,GET_PROJECT_INFO} from '../constants/create-project-types';
+
+export function getProjectInfo(project_id,user_id) {
+    var path = '/project/info';
+    return {
+        type: GET_PROJECT_INFO,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    project_id: project_id,
+                    user_id:user_id
+                }
+            })
+        }
+    }
+}
 
 export function createProject(projectData) {
     //var path = '/project-mgr/createProject';

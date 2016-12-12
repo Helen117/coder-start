@@ -10,7 +10,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Row, notification, Modal, message, Form } from 'antd';
-import {getGroupTree, setSelectNode} from '../project-mgr/actions/group-tree-action';
+import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
 import PopoverImg from '../../components/popover-img';
@@ -125,18 +125,22 @@ class ProjectMgrSub extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteResult} = nextProps;
+        const {projectGroup} = nextProps;
         //删除返回信息
-        if (this.props.deleteResult != deleteResult && deleteResult){
-            this.setState({
-                modalVisible: false,
-            });
-            this.insertCallback('删除成功!');
+        if(this.props.projectGroup.deleteGroup && projectGroup.deleteGroup){
+            if(this.props.projectGroup.deleteGroup.result != projectGroup.deleteGroup.result
+            && projectGroup.deleteGroup.result){
+                this.setState({
+                    modalVisible: false,
+                });
+                this.insertCallback('删除成功!');
+            }
         }
     }
 
     render(){
-        const {currentTwoInfo, groupInfo,deleteLoading,node} = this.props;
+        const {currentTwoInfo,projectGroup} = this.props;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         const content = (
             <div>
                 <a style={{paddingLeft:10}}
@@ -150,6 +154,7 @@ class ProjectMgrSub extends React.Component{
             </div>
         );
         let showProjectList=false,showProjectItem=false;
+        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if(node){
             if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){
                 showProjectList=true;
@@ -162,6 +167,7 @@ class ProjectMgrSub extends React.Component{
                 showProjectItem=false;
             }
         }
+        let deleteLoading = projectGroup.deleteGroup?projectGroup.deleteGroup.loading:false;
 
         return (
             <div>
@@ -171,7 +177,7 @@ class ProjectMgrSub extends React.Component{
                         <Modal title="确认删除此项目组吗?"
                                visible={this.state.modalVisible}
                                onOk={this.handleOk.bind(this,groupInfo)}
-                               confirmLoading={deleteLoading?true:false}
+                               confirmLoading={deleteLoading}
                                onCancel={this.handleCancel.bind(this)}
                         >
                             <p>{groupInfo?groupInfo.name:''}</p>
@@ -202,11 +208,8 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,
-        node:state.getGroupInfo.node,
         currentTwoInfo:state.getMenuBarInfo.currentTwo,
-        groupInfo:state.getGroupInfo.groupInfo,
-        deleteResult: state.createGroup.deleteResult,
-        deleteLoading:state.createGroup.deleteLoading,
+        projectGroup:state.projectGroup,
     }
 }
 

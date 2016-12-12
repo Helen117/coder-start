@@ -16,46 +16,54 @@ import {
     DELETE_PROJECT_PENDING,
     DELETE_PROJECT_SUCCESS,
     DELETE_PROJECT_ERROR,
+    GET_PROJECT_INFO_SUCCESS,
+    GET_PROJECT_INFO_PENDING,
+    GET_PROJECT_INFO_ERROR
 } from '../constants/create-project-types';
+import {CLEAR_GROUP_PROJECT_INFO} from '../constants/create-group-types';
 
 const initialState = {
 };
 
-export default function createProject(state = initialState, action = {}) {
+export default function project(state = initialState, action = {}) {
     switch (action.type) {
+        //获取项目
+        case GET_PROJECT_INFO_PENDING:
+            return {...state, getProjectInfo:{fetchProjectStatus: false,loading:true}};
+        case GET_PROJECT_INFO_SUCCESS:
+            return {...state, getProjectInfo:{fetchProjectStatus: true,projectInfo: action.payload, loading:false}};
+        case GET_PROJECT_INFO_ERROR:
+            return {
+                ...state,getProjectInfo:{loading:false}
+            };
+        case CLEAR_GROUP_PROJECT_INFO:
+            return {...state,getProjectInfo:{}};
         //创建项目
         case CREATE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {loading:true,disabled:true});
+            return {...state, createProject:{loading:true,disabled:true}};
         case CREATE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
+            return {...state, createProject:{result: action.payload,loading:false,disabled:false}};
         case CREATE_PROJECT_ERROR:
             return {
-                ...state,
-                errors: action.payload.errorMsg,
-                loading:false,
-                disabled:false,
+                ...state,createProject:{loading:false, disabled:false,}
             };
         //更新项目
         case UPDATE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
+            return {...state, updateProject:{loading:true,disabled:true}};
         case UPDATE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {updateResult: action.payload,updateLoading:false,updateDisabled:false});
+            return {...state, updateProject:{result: action.payload,loading:false,disabled:false}};
         case UPDATE_PROJECT_ERROR:
             return {
-                ...state,
-                updateErrors: action.payload.errorMsg,
-                updateLoading:false,
-                updateDisabled:false,
+                ...state,updateProject:{loading:false, disabled:false,}
             };
         //删除项目
         case DELETE_PROJECT_PENDING:
-            return Object.assign({}, initialState, {});
+            return {...state, deleteProject:{loading:true}};
         case DELETE_PROJECT_SUCCESS:
-            return Object.assign({}, initialState, {deleteResult: action.payload});
+            return {...state, deleteProject:{result: action.payload,loading:false}};
         case DELETE_PROJECT_ERROR:
             return {
-                ...state,
-                deleteErrors: action.payload.errorMsg,
+                ...state,deleteProject:{loading:true}
             };
         default:
             return state;

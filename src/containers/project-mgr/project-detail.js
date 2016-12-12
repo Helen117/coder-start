@@ -14,7 +14,7 @@ import Box from '../../components/box';
 import {createProject, UpdateProject, DeleteProject} from './actions/create-project-action';
 import 'pubsub-js';
 import {findProjectIdByProjectName, resetGroupInfoState,searchGroupByGroupId} from '../project-list/util';
-import {getGroupInfo} from '../project-mgr/actions/select-treenode-action';
+import {getGroupInfo} from './actions/create-group-action';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -32,9 +32,10 @@ class ProjectDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo, list,groupInfo } = this.props;
+        const { actions, form, loginInfo, projectGroup } = this.props;
         const {selectedRow } = this.props.location.state;
         const {editType} = this.props.location.state;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -53,10 +54,6 @@ class ProjectDetail extends React.Component {
                 if(this.state.selectGroupId.indexOf('_') < 0){
                     data.groupId = this.state.selectGroupId;
                 }
-                /*data.groupId = this.state.selectGroupId;
-                if(data.groupId.indexOf('_')>=0){
-                    data.groupId = data.groupId.substr(0,data.groupId.length-2);
-                }*/
                 data.visibility_level = formData.visibility_level;
                 if(editType == 'add'){
                     //调创建项目的接口
@@ -98,16 +95,24 @@ class ProjectDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { result, updateResult,list } = nextProps;
-        const {groupInfo,node} = this.props;
+        const { project,list } = nextProps;
+        const {projectGroup} = this.props;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         const {editType} = this.props.location.state;
         //创建返回信息
-        if (this.props.result != result && result){
-            this.insertCallback("创建成功");
+        if(this.props.project.createProject && project.createProject){
+            if(this.props.project.createProject.result != project.createProject.result
+            && project.createProject.result){
+                this.insertCallback("创建成功");
+            }
         }
         //更新返回信息
-        if (this.props.updateResult != updateResult && updateResult){
-            this.insertCallback("修改成功");
+        if(this.props.project.updateProject && project.updateProject){
+            if(this.props.project.updateProject.result != project.updateProject.result
+                && project.updateProject.result){
+                this.insertCallback("修改成功");
+            }
         }
         //更新选择项目组信息
         if (this.props.list != list && list.length>0){
@@ -133,7 +138,8 @@ class ProjectDetail extends React.Component {
     componentDidMount() {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
-        const {groupInfo} = this.props;
+        const {projectGroup} = this.props;
+        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         if (selectedRow){
             for(let i=0; i<groupInfo.children.length; i++){
                 if(selectedRow.projectName == groupInfo.children[i].name){
@@ -185,7 +191,7 @@ class ProjectDetail extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        const {list} = this.props;
+        const {list,project} = this.props;
         if(list){
             let options = (<Option value="1"></Option>);
             if(list.length > 0){
@@ -226,6 +232,11 @@ class ProjectDetail extends React.Component {
                     {required:editType == 'add'?false:true, message:'请输入修改原因！'}
                 ]})(<Input type="textarea" rows={4} />);
 
+            const addLoading = project.createProject?project.createProject.loading:false;
+            const addDisabled = project.createProject?project.createProject.disabled:false;
+            const updateLoading = project.updateProject?project.updateProject.loading:false;
+            const updateDisabled = project.updateProject?project.updateProject.disabled:false;
+
             return (
                 <Box title={editType == 'add' ? '新建项目' : '修改项目'}>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
@@ -250,8 +261,8 @@ class ProjectDetail extends React.Component {
                         )}
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
-                                    loading={editType == 'add'?this.props.loading:this.props.updateLoading}
-                                    disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
+                                    loading={editType == 'add'?addLoading:updateLoading}
+                                    disabled={editType == 'add'?addDisabled:updateDisabled}>
                                 确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
@@ -274,18 +285,10 @@ ProjectDetail = Form.create()(ProjectDetail);
 
 function mapStateToProps(state) {
     return {
-        result: state.createProject.result,
-        errMessage:state.createProject.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,
-        loading:state.createProject.loading,
-        disabled:state.createProject.disabled,
-        groupInfo:state.getGroupInfo.groupInfo,
-        updateResult:state.createProject.updateResult,
-        updateErrors:state.createProject.updateErrors,
-        updateLoading:state.createProject.updateLoading,
-        updateDisabled:state.createProject.updateDisabled,
-        node:state.getGroupInfo.node,
+        project:state.project,
+        projectGroup:state.projectGroup,
     }
 }
 

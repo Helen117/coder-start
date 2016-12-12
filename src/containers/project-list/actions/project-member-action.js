@@ -3,7 +3,7 @@
  */
 import api from '../../../api';
 import {ADD_PROJECT_MEMBER,DELETE_PROJECT_MEMBER,
-    CLEAR_USER_RELATION_INFO} from '../constants/project-member-types';
+    GET_PROJECTMEMBERS} from '../constants/project-member-types';
 
 export function addProjectMember(addInfo) {
     var path = '/project/add-member';
@@ -29,6 +29,16 @@ export function deleteProjectMember(deleteInfo) {
     }
 }
 
-export function clearUserRelationInfo() {
-    return { type: CLEAR_USER_RELATION_INFO }
+export function getProjectMembers(projectId) {
+    var path = '/project/members';
+    return {
+        type: GET_PROJECTMEMBERS,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    projectId: projectId
+                }
+            })
+        }
+    }
 }

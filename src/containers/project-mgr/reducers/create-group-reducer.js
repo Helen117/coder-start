@@ -15,47 +15,48 @@ import {
     UPDATE_GROUP_ERROR,
     DELETE_GROUP_PENDING,
     DELETE_GROUP_SUCCESS,
-    DELETE_GROUP_ERROR
+    DELETE_GROUP_ERROR,
+    GET_GROUP_INFO_SUCCESS,
+    CLEAR_GROUP_PROJECT_INFO
 } from '../constants/create-group-types';
 
 const initialState = {
 };
 
-export default function createGroup(state = initialState, action = {}) {
+export default function projectGroup(state = initialState, action = {}) {
     switch (action.type) {
+        //获取项目组
+        case GET_GROUP_INFO_SUCCESS:
+            return {...state, getGroupInfo:{groupInfo: action.data, selectedNode: action.selectNodeData,
+            node:action.node}};
+        case CLEAR_GROUP_PROJECT_INFO:
+            return {...state,getGroupInfo:{}};
         //创建项目组
         case CREATE_GROUP_PENDING:
-            return Object.assign({}, initialState, {loading:true,disabled:true});
+            return {...state, createGroup:{loading:true,disabled:true}};
         case CREATE_GROUP_SUCCESS:
-            return Object.assign({}, initialState, {result: action.payload,loading:false,disabled:false});
+            return {...state, createGroup:{result: action.payload,loading:false,disabled:false}};
         case CREATE_GROUP_ERROR:
             return {
-                ...state,
-                errors: action.payload.errorMsg,
-                loading:false,
-                disabled:false,
+                ...state,createGroup:{loading:false, disabled:false}
             };
         //更新项目组
         case UPDATE_GROUP_PENDING:
-            return Object.assign({}, initialState, {updateLoading:true,updateDisabled:true});
+            return {...state, updateGroup:{loading:true,disabled:true}};
         case UPDATE_GROUP_SUCCESS:
-            return Object.assign({}, initialState, {updateResult: action.payload,updateLoading:false,updateDisabled:false});
+            return {...state, updateGroup:{result: action.payload,loading:false,disabled:false}};
         case UPDATE_GROUP_ERROR:
             return {
-                ...state,
-                updateErrors: action.payload.errorMsg,
-                updateLoading:false,
-                updateDisabled:false,
+                ...state,updateGroup:{loading:false, disabled:false}
             };
         //删除项目组
         case DELETE_GROUP_PENDING:
-            return Object.assign({}, initialState, );
+            return {...state,deleteGroup:{loading:true}};
         case DELETE_GROUP_SUCCESS:
-            return Object.assign({}, initialState, {deleteResult: action.payload});
+            return {...state, deleteGroup:{result: action.payload,loading:false}};
         case DELETE_GROUP_ERROR:
             return {
-                ...state,
-                deleteErrors: action.payload.errorMsg,
+                ...state,deleteGroup:{loading:true}
             };
         default:
             return state;
