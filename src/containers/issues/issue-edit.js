@@ -409,15 +409,15 @@ AddIssue = Form.create()(AddIssue);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        milestones:state.GetIssueDependent.milestones,
-        labels:state.GetIssueDependent.labels,
-        members : state.GetIssueDependent.members,
-        fetchErrors:state.GetIssueDependent.fetchErrors,
+        milestones:state.issue.milestones,
+        labels:state.issue.labels,
+        members : state.issue.members,
+        fetchErrors:state.issue.fetchErrors,
         issue:state.issue,
         loginInfo:state.login.profile,
-        pending:state.GetIssueDemand.pending,
-        demandList:state.GetIssueDemand.demands,
-        errors:state.GetIssueDemand.errors,
+        pending:state.issue.pending,
+        demandList:state.issue.demands,
+        errors:state.issue.errors,
         project:state.project,
     };
 }

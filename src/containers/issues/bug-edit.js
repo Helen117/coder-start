@@ -23,9 +23,9 @@ class EditBug extends Component{
     }
 
     componentWillMount(){
-        // this.props.demand.getDeveloperInfo(id,'set',30);
         const {selectedRow} = this.props.location.state;
         // console.log(selectedRow);
+        this.props.actions.getDeveloperInfo(selectedRow.sets_issue_id,'demand_developer','');
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
             setFieldsValue({'planTime': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
@@ -55,8 +55,12 @@ class EditBug extends Component{
                 return;
             } else {
                 const data = form.getFieldsValue();
+                data.type='bug';
                 data.author_id = loginInfo.userId;
-                if(data.due_date>data.planTime){
+                data.sm_id=selectedRow.milestone_id;
+                data.labels=selectedRow.labels;
+                data.parent_id = selectedRow.sets_issue_id;
+                if(new Date(data.due_date).toLocaleDateString()!=new Date(data.planTime).toLocaleDateString()&&data.due_date>data.planTime){
                     message.error('Bug预期完成时间不能大于关联工单上线时间！',3);
                     return ;
                 }
@@ -70,8 +74,7 @@ class EditBug extends Component{
                 }else{
                     data.repairFlg=1;
                 }
-                data.tempRemandId=1;
-                console.log('收到表单值：', data);
+                // console.log('收到表单值：', data);
                 actions.addDemand(data);
             }
         })
@@ -102,7 +105,7 @@ class EditBug extends Component{
         };
 
         const pending = false;
-        // const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const developer = this.props.developerInfo?this.props.developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
             <Spin spinning={pending}>
@@ -163,8 +166,7 @@ class EditBug extends Component{
                                                  optionFilterProp="children"
                                                  notFoundContent="无法找到"
                                                  style={{ width: 200 }} >
-                                            <Option value="9">孙磊</Option>
-                                            <Option value="8">张军</Option>
+                                            {developer}
                                         </Select>)}
                                 </FormItem>
                                 </Col>
@@ -197,8 +199,7 @@ class EditBug extends Component{
                                                  optionFilterProp="children"
                                                  notFoundContent="无法找到"
                                                  style={{ width: 200 }} >
-                                            <Option value="9">孙磊</Option>
-                                            <Option value="8">张军</Option>
+                                            {developer}
                                         </Select>)}
                                 </FormItem>
                             </Col>
@@ -236,7 +237,7 @@ class EditBug extends Component{
                             </Col>
                         </Row>
                         <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
-                            <Button type="primary" htmlType="submit">提交</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.addDemandLoading}>提交</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
