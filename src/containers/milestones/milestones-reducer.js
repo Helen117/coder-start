@@ -73,13 +73,13 @@ export function milestones(state = initialState, action = {}) {
                 
             //get milestone issues
             case ACQUIRE_MILESTONES_ISSUES_PENDING:
-                return {...state,milestoneIssues:[],acqIssuesLoading: true};
+                return {...state,milestoneIssues:null,acqIssuesLoading: true};
 
             case ACQUIRE_MILESTONES_ISSUES_SUCCESS:
                 return {...state,milestoneIssues: action.payload, acqIssuesLoading: false};
 
             case ACQUIRE_MILESTONES_ISSUES_ERROR:
-                return {...state, milestoneIssues:[],acqIssuesLoading: false};
+                return {...state, milestoneIssues:null,acqIssuesLoading: false};
 
 
             default:

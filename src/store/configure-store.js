@@ -23,7 +23,6 @@ import {mergeRequest} from '../containers/mergeRequest/mergeRequest-reducer';
 import branch from '../containers/branches/branches-reducer';
 import getMenuBarInfo from '../containers/menubar/reducers/menubar-reducer';
 import {projectSet} from '../containers/project-set/project-set-reducers'
-import projectSetToState from '../containers/project-set/put-project-set-to-state-reducer';
 import getProjectMembers from '../containers/project-mgr/reducers/project-members-reducer';
 import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import UserRelation from '../containers/user-relation/reducers/user-relation-reducer';
@@ -51,7 +50,6 @@ const reducer = combineReducers({
     getMenuBarInfo,
     getCodeFile,
     projectSet,
-    projectSetToState,
     getProjectMembers,
     approve,
     UserRelation,

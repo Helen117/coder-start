@@ -118,7 +118,7 @@ SelectedSetInfo.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        selectedItemInfo: state.projectSetToState.selectedProjectSet,
+        selectedItemInfo: state.projectSet.selectedProjectSet,
         projectSetTree: state.projectSet.projectSetTree,
         delResult: state.projectSet.deleteResult,
         delLoading: state.projectSet.deleteLoading,

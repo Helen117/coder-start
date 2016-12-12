@@ -199,7 +199,7 @@ function mapStateToProps(state) {
         updateResult: state.projectSet.updateResult,
         updateLoading: state.projectSet.updateLoading,
         projectSetTree: state.projectSet.projectSetTree,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
 
     }
 }
