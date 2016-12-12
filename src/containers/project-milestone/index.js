@@ -14,10 +14,19 @@ class ProjectMilestones extends React.Component {
         super(props);
     }
 
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     shouldComponentUpdate(nextprops,nextState){
-        const getProjectInfo = nextprops.getProjectInfo;
+        //const getProjectInfo = nextprops.getProjectInfo;
+        const {project} = nextprops;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         //console.log(nextprops,nextState)
-        if(!getProjectInfo){
+        if(this.isEmptyObject(projectInfo)){
             return false;
         }else{
             return true;
@@ -26,9 +35,10 @@ class ProjectMilestones extends React.Component {
     }
 
     render(){
-        const getProjectInfo = this.props.getProjectInfo;
-        const projectId = getProjectInfo? getProjectInfo.id+'_p':'';
-        const projectName = getProjectInfo? getProjectInfo.name:''
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
+        const projectName = !this.isEmptyObject(projectInfo)? projectInfo.name:'';
 
         /*if(projectId) {*/
             return (
@@ -46,7 +56,7 @@ class ProjectMilestones extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        getProjectInfo:state.getProjectInfo.projectInfo,
+        project:state.project,
     };
 }
 

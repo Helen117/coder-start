@@ -110,9 +110,12 @@ class App extends React.Component {
             this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
             //返回时更新面包屑，除去点击项目树和顶部导航的情况
-            if(this.props.selectedNode == nextProps.selectedNode && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
-                var is_menuclick = false;
-                this.props.updateNavPath(path_return, key_return, is_menuclick);
+            if(this.props.projectGroup.getGroupInfo && nextProps.projectGroup.getGroupInfo){
+                if(this.props.projectGroup.getGroupInfo.node == nextProps.projectGroup.getGroupInfo.node
+                    && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
+                    var is_menuclick = false;
+                    this.props.updateNavPath(path_return, key_return, is_menuclick);
+                }
             }
         }
     }
@@ -195,7 +198,7 @@ function mapStateToProps(state) {
         menuData:state.menu.items,
         navpath: state.menu.navpath,
         is_menuclick:state.menu.is_menuclick,
-        selectedNode:state.getGroupInfo.selectedNode,
+        projectGroup:state.projectGroup,
         getMenuBarInfo:state.getMenuBarInfo,
         notifyItems:state.getNotifyItems.notifyItems,
     }

@@ -23,9 +23,18 @@ class ProjectIssueList extends Component {
         this.state ={};
     }
 
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
+
     componentWillMount() {
-        const {actions,projectInfo,getUserAction} = this.props;
-        if(projectInfo) {
+        const {actions,project,getUserAction} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+
+        if(!this.isEmptyObject(projectInfo)) {
             actions.fetchDataSource(projectInfo.id);
             getUserAction.getAllUser();
             var data = {project_id: projectInfo.id};
@@ -55,17 +64,24 @@ class ProjectIssueList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {actions,projectInfo} = this.props;
-        const thisProId = projectInfo?projectInfo.id:'';
-        const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
+        const {actions,project} = this.props;
+        const next_project = nextProps.project;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        let next_projectInfo = next_project.getProjectInfo?(
+            next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
+        ):{};
+        const thisProId = projectInfo.id;
+        const nextProId = next_projectInfo.id;
         const errorMsg = nextProps.errors;
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId!=''){
+        if(thisProId != nextProId && nextProId){
             var data ={
-                project_id:nextProps.projectInfo.id,
+                project_id:nextProId,
             };
             actions.getIssueList(data);
-            actions.fetchDataSource(nextProps.projectInfo.id);
+            actions.fetchDataSource(nextProId);
         }
 
         // if(errorMsg&&errorMsg!=this.props.errors){
@@ -88,10 +104,10 @@ class ProjectIssueList extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,projectInfo,form} = this.props;
+        const {actions,project,form} = this.props;
         const data = form.getFieldsValue();
         // console.log("查询条件：",data);
-
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         var dataList ={
             project_id:projectInfo.id,
             milestone_id:data.milestone,
@@ -124,12 +140,14 @@ class ProjectIssueList extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 16 },
         };
 //<Button type="primary" onClick={this.editIssue.bind(this, 'add', null)}>新增问题</Button>
-        const title = this.props.projectInfo?this.props.projectInfo.name+'项目问题列表信息':'项目问题列表信息';
+        const title = !this.isEmptyObject(projectInfo)?projectInfo.name+'项目问题列表信息':'项目问题列表信息';
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
@@ -137,7 +155,7 @@ class ProjectIssueList extends Component {
         const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
-        if(this.props.projectInfo) {
+        if(!this.isEmptyObject(projectInfo)) {
             return (
                 <div style={{marginLeft:'10px'}}>
                     <Collapse defaultActiveKey={['1']}>
@@ -249,10 +267,9 @@ function mapStateToProps(state) {
         loading:state.issue.loading,
         issueList: state.issue.issueList,
         errors:state.issue.errors,
-        projectInfo:state.getProjectInfo.projectInfo,
-        groupInfo:state.getGroupInfo.groupInfo,
         loginInfo:state.login.profile,
         user:state.register.users,
+        project:state.project,
     };
 }
 

@@ -22,15 +22,22 @@ class AddIssue extends Component{
 
     }
 
-    componentDidMount() {
-        const {actions,projectInfo} = this.props;
-        const {selectedRow,editType} = this.props.location.state;
+    isEmptyObject(obj){
+        for(var key in obj){
+            return false;
+        }
+        return true;
+    }
 
+    componentDidMount() {
+        const {actions,project} = this.props;
+        const {selectedRow,editType} = this.props.location.state;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(selectedRow){
             actions.fetchDataSource(selectedRow.project_id);
             var milestoneId = selectedRow.milestone_id?selectedRow.milestone_id:0;
             actions.getIssueDemand(selectedRow.project_id,milestoneId);
-        }else if(projectInfo){
+        }else if(!this.isEmptyObject(projectInfo)){
             actions.fetchDataSource(projectInfo.id);
             actions.getIssueDemand(projectInfo.id,0);
         }
@@ -132,7 +139,7 @@ class AddIssue extends Component{
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions,form ,loginInfo,projectInfo,milestones,demandList} = this.props;
+        const { actions,form ,loginInfo,project,milestones,demandList} = this.props;
         const {editType,selectedRow} = this.props.location.state;
 
         form.validateFields(['title','description','due_date','parent_id','assignee.id'],(errors, values) => {
@@ -224,7 +231,9 @@ class AddIssue extends Component{
     loadIssues(value){
 
         const {selectedRow} = this.props.location.state;
-        const projectId = this.props.projectInfo.id;
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectId = projectInfo.id;
         console.log(value,selectedRow,projectId);
         if (value && projectId){
             this.props.actions.getIssueDemand(projectId,value);
@@ -406,10 +415,10 @@ function mapStateToProps(state) {
         fetchErrors:state.issue.fetchErrors,
         issue:state.issue,
         loginInfo:state.login.profile,
-        projectInfo:state.getProjectInfo.projectInfo,
         pending:state.issue.pending,
         demandList:state.issue.demands,
         errors:state.issue.errors,
+        project:state.project,
     };
 }
 

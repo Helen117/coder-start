@@ -7,7 +7,24 @@
  * Created by william.xu on 2016/9/20
  */
 import api from '../../../api';
-import {CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP} from '../constants/create-group-types';
+import {CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP,
+    GET_GROUP_INFO_SUCCESS,
+    CLEAR_GROUP_PROJECT_INFO} from '../constants/create-group-types';
+
+export function getGroupInfo(groupInfo, selectedNode,node) {
+    if (groupInfo) {
+        return {
+            type:GET_GROUP_INFO_SUCCESS,
+            data:groupInfo,
+            selectNodeData: selectedNode,
+            node:node
+        }
+    }
+}
+
+export function clearGroupProjectInfo() {
+    return {type:CLEAR_GROUP_PROJECT_INFO};
+}
 
 export function createGroup(groupData) {
     //var path = '/project-mgr/createGroup';

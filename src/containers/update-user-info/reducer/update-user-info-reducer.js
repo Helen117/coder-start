@@ -6,6 +6,10 @@ import {
     UPDATE_USER_INFO_SUCCESS,
     UPDATE_USER_INFO_ERROR,
 
+    ADD_EMAIL_PENDING,
+    ADD_EMAIL_SUCCESS,
+    ADD_EMAIL_ERROR,
+
     GET_ALL_USER_INFO_PENDING,
     GET_ALL_USER_INFO_SUCCESS,
     GET_ALL_USER_INFO_ERROR,
@@ -39,6 +43,18 @@ export default function UpdateUserInfo(state = initialState, action = {}) {
                 ...state,
                 UserInfo:{updateLoading:false,
                     updateDisabled:false,}
+            };
+        //添加邮箱
+        case ADD_EMAIL_PENDING:
+            return {...state, AddEmailInfo:{loading:true,disabled:true}};
+        case ADD_EMAIL_SUCCESS:
+            return {...state, AddEmailInfo:{result: action.payload,loading:false,
+                disabled:false}};
+        case ADD_EMAIL_ERROR:
+            return {
+                ...state,
+                AddEmailInfo:{loading:false,
+                    disabled:false,}
             };
         //获取所有用户信息
         case GET_ALL_USER_INFO_PENDING:

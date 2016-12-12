@@ -3,7 +3,8 @@
  */
 import api from '../../../api';
 import {GET_ALL_USER_INFO,UPDATE_USER_INFO,
-    ADD_SSHKEY,GET_SSHKEYS,DELETE_SSHKEYS} from '../constants/update-user-info-types';
+    ADD_SSHKEY,GET_SSHKEYS,DELETE_SSHKEYS,
+    ADD_EMAIL} from '../constants/update-user-info-types';
 
 export function UpdateUser(userData) {
     var path = '/user/update';
@@ -12,6 +13,21 @@ export function UpdateUser(userData) {
         payload: {
             promise: api.post(path, {
                 data: userData
+            })
+        }
+    }
+}
+
+export function AddEmail(user_id,email) {
+    var path = '/user/add-email';
+    return {
+        type: ADD_EMAIL,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    user_id:user_id,
+                    email:email
+                }
             })
         }
     }
