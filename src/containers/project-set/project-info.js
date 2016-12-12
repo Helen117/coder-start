@@ -100,7 +100,7 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         getProjectInfo:state.getProjectInfo.projectInfo,
         getProjectInfoLoading: state.getProjectInfo.loading,
-        selectedItemInfo: state.projectSetToState.selectedProjectSet,
+        selectedItemInfo: state.projectSet.selectedProjectSet,
     }
 }
 

@@ -95,7 +95,7 @@ function mapStateToProps(state) {
         projectSet: state.projectSet.projectSetTree,
         errMessage: state.projectSet.errMessage,
         loading: state.projectSet.getProjectSetTreeLoading,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
 
     }
 }

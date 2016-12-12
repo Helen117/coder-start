@@ -218,7 +218,7 @@ RequirementInfo.prototype.columns = (self)=>[{
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
         loading:state.request.loading,
         requirementInfo: state.request.requirementInfo,
         deleteResult: state.request.deleteResult,

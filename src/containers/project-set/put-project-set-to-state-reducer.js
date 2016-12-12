@@ -11,7 +11,7 @@ import {
 const initialState = {
 };
 
-export default function projectSetToState(state = initialState, action = {}) {
+export default function projectSet(state = initialState, action = {}) {
 
     switch (action.type) {
         case PUT_PROJECT_SET_TO_STATE:
