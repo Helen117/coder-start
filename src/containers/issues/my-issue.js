@@ -2,11 +2,12 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification,Table,Input  } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification,Table,Input,Modal ,Upload,Icon,InputNumber } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
 import * as getAllUser from '../register/actions/register-action';
+import * as home from '../home/actions/home-action';
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
 import Box from '../../components/box';
@@ -20,7 +21,7 @@ class MyIssueList extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={};
+        this.state ={visible: false,};
     }
 
     componentWillMount() {
@@ -46,6 +47,16 @@ class MyIssueList extends Component {
         const {actions,loginInfo,myIssueError} = this.props;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
+        }
+
+        if(nextProps.closeBug&&nextProps.closeBug!=this.props.closeBug){
+            message.success('操作成功');
+            var data ={
+                        state:'opened',
+                        assigned_id:loginInfo.userId,
+                    };
+            this.props.home.getNotifyItems(this.props.loginInfo.userId);
+            actions.getMyIssue(data);
         }
         // const thisProId = projectInfo?projectInfo.id:'';
         // const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
@@ -109,11 +120,42 @@ class MyIssueList extends Component {
     }
 
     closeBug(record) {
-
+        const {actions,loginInfo} = this.props;
+        var data = {
+            devops_issues_key : record.devops_issues_key,
+            author_id:loginInfo.userId,
+            state_event : 'close',
+        };
+        actions.updateIssue(data);
     }
 
     testPass(record){
-        this.context.router.push({pathname: '/confirmList'});
+        this.setState({
+            visible: true,
+            record:record,
+        });
+    }
+
+    handleOk() {
+        const {actions,form,loginInfo} = this.props;
+
+        form.validateFields(['design_work_time'],(errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                this.setState({
+                    visible: false,
+                });
+
+                form.resetFields(['design_work_time']);
+            }
+        })
+    }
+
+    cancel(e) {
+        this.setState({
+            visible: false,
+        });
     }
 
     dataSources(list){
@@ -196,6 +238,24 @@ class MyIssueList extends Component {
                                     <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
                                 </Col>
                             </Row>
+
+                            <Modal title="上传测试文档" visible={this.state.visible}
+                                   onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
+                            >
+                                <FormItem {...formItemLayout} label="工时" >
+                                    {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                                </FormItem>
+
+                                <FormItem {...formItemLayout}  label="文档上传" >
+                                    {getFieldDecorator('files')(
+                                        <Upload>
+                                            <Button type="ghost">
+                                                <Icon type="upload" /> 点击上传
+                                            </Button>
+                                        </Upload>)}
+                                </FormItem>
+                            </Modal>
+
                         </Form>
                     </Panel>
                 </Collapse>
@@ -277,23 +337,25 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         dataIndex: 'key',
         width: '8%',
         render: (text, record, index)=> {
-            if (!record.project_id&&record.state.indexOf('open')!=-1) {
-                if (record.type == 'bug') {
-                    return <div>
-                        <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
-                    </div>;
-                } else {
-                    return <div>
-                        <a onClick={self.editBug.bind(self,record)}>开Bug票</a>
-                        <br/>
-                        <a onClick={self.testPass.bind(self, record)}>提交测试文档</a>
-                    </div>;
+            if(record.state.indexOf('open')!=-1){
+                if (!record.project_id) {
+                    if (record.type == 'bug') {
+                        return <div>
+                            <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
+                        </div>;
+                    } else {
+                        return <div>
+                            <a onClick={self.editBug.bind(self,record)}>开Bug票</a>
+                            <br/>
+                            <a onClick={self.testPass.bind(self, record)}>提交测试报告</a>
+                        </div>;
 
+                    }
+                }else{
+                    return <div>
+                        <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
+                    </div>;
                 }
-            }else if(record.project_id&&record.state.indexOf('open')!=-1){
-                return <div>
-                    <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
-                </div>;
             }
         }
     }];
@@ -305,6 +367,7 @@ function mapStateToProps(state) {
         issueList: state.issue.myIssueList,
         loading:state.issue.myIssueLoading,
         myIssueError:state.issue.myIssueError,
+        closeBug:state.issue.updateIssue,
         loginInfo:state.login.profile,
         user:state.register.users,
     };
@@ -314,6 +377,7 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(issue, dispatch),
         getUserAction : bindActionCreators(getAllUser, dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 

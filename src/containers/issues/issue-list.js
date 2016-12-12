@@ -243,9 +243,9 @@ ProjectIssueList = Form.create()(ProjectIssueList);
 
 function mapStateToProps(state) {
     return {
-        milestones:state.GetIssueDependent.milestones,
-        labels:state.GetIssueDependent.labels,
-        members : state.GetIssueDependent.members,
+        milestones:state.issue.milestones,
+        labels:state.issue.labels,
+        members : state.issue.members,
         loading:state.issue.loading,
         issueList: state.issue.issueList,
         errors:state.issue.errors,

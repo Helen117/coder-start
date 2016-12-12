@@ -9,7 +9,7 @@ import menu from '../containers/sidebar/reducers/menu-reducer';
 
 import {milestones} from '../containers/milestones/milestones-reducer';
 import register from '../containers/register/reducers/register-reducer';
-import {issue,GetIssueDependent,GetIssueDemand} from '../containers/issues/reducers/issue-reducer';
+import issue from '../containers/issues/reducers/issue-reducer';
 import forkProject from '../containers/project-list/reducers/fork-project-reducer';
 import approve from '../containers/approve/reducers/approve-reducer';
 import request from '../containers/request/reducers/request-reducer';
@@ -43,8 +43,6 @@ const reducer = combineReducers({
     createProject,
     register,
     issue,
-    GetIssueDependent,
-    GetIssueDemand,
     forkProject,
     getGroupInfo,
     getProjectInfo,
