@@ -257,7 +257,7 @@ EditDemand = Form.create()(EditDemand);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
         editDemandLoading:state.request.editDemandLoading,
         editDemandResult:state.request.editDemandResult,
         editDemandError: state.request.editDemandError,

@@ -23,6 +23,8 @@ import {
     FETCH_PROJECT_INFO_PENDING,
     FETCH_PROJECT_INFO_ERROR,
 
+    PUT_PROJECT_SET_TO_STATE,
+
 } from './project-set-action-types';
 
 const initialState = {
@@ -66,7 +68,7 @@ export function projectSet(state = initialState, action = {}) {
 
         //get project set tree
         case FETCH_PROJECT_SET_TREE_PENDING:
-            return {...state,projectSetTree:null, getProjectSetTreeLoading: true};
+            return {...state,projectSetTree:[], getProjectSetTreeLoading: true};
 
         case FETCH_PROJECT_SET_TREE_SUCCESS:
             return {...state,projectSetTree: action.payload, getProjectSetTreeLoading: false};
@@ -86,6 +88,9 @@ export function projectSet(state = initialState, action = {}) {
             return {...state, getProjectInfoLoading: false, errMessage:action.payload.errMessage};
 
 
+        //put selected tree item to state
+        case PUT_PROJECT_SET_TO_STATE:
+            return {...state, selectedProjectSet: action.payload.data};
         default:
             return state;
     }

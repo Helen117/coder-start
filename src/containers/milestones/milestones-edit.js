@@ -187,7 +187,7 @@ ProjectSetMilestonesEdit.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
         getProjectInfo: state.getProjectInfo.projectInfo,
         logInfo: state.login.profile,
         inserted: state.milestones.createResult,

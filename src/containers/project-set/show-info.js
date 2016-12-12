@@ -45,7 +45,7 @@ class ShowInfo extends Component {
 
 function mapStateToProps(state) {
     return {
-        selectedItemInfo: state.projectSetToState.selectedProjectSet,
+        selectedItemInfo: state.projectSet.selectedProjectSet,
     }
 }
 
