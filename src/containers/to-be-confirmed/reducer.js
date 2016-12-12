@@ -41,13 +41,13 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
             
         //get project info
         case GET_PROJECT_INFO_PENDING:
-            return {...state, projectInfo:[],getProjectInfoLoading: true};
+            return {...state, projectInfo:null,getProjectInfoLoading: true};
 
         case GET_PROJECT_INFO_SUCCESS:
             return {...state, projectInfo: action.payload, getProjectInfoLoading: false};
 
         case GET_PROJECT_INFO_ERROR:
-            return {...state,  projectInfo:[],getProjectInfoLoading: false,};
+            return {...state,  projectInfo:null,getProjectInfoLoading: false,};
 
 
         //confirm
@@ -63,13 +63,13 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
 
         //get transpond member
         case GET_TRANSPOND_MEMBER_PENDING:
-            return {...state, transpondMember:[], getTranspondMemberLoading: true,};
+            return {...state, transpondMember:null, getTranspondMemberLoading: true,};
 
         case GET_TRANSPOND_MEMBER_SUCCESS:
             return {...state, transpondMember: action.payload, getTranspondMemberLoading: false};
 
         case GET_TRANSPOND_MEMBER_ERROR:
-            return {...state, transpondMember:[],getTranspondMemberLoading: false,};
+            return {...state, transpondMember:null,getTranspondMemberLoading: false,};
 
 
         //transpond

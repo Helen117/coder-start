@@ -35,7 +35,7 @@ class ProjectSetMilestones extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
     };
 }
 

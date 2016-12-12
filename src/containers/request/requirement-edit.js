@@ -17,7 +17,9 @@ const confirm = Modal.confirm;
 class EditDemand extends Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            developDirty: false
+        };
 
     }
 
@@ -112,6 +114,30 @@ class EditDemand extends Component{
         }
     }
 
+    handleChangeBlur(value) {
+        this.setState({ developDirty: this.state.developDirty || !! value });
+    }
+
+    checkTest(rule, value, callback){
+
+        const form = this.props.form;
+        const id = form.getFieldValue('assignee_test_id');
+        if (value && value == form.getFieldValue('assignee_develop_id')) {
+            callback('开发和测试不能指定同一人');
+        } else {
+            callback();
+        }
+
+    }
+
+    checkDevelop(rule, value, callback){
+        const form = this.props.form;
+        if (value && this.state.developDirty) {
+            form.validateFields(['assignee_test_id'], { force: true });
+        }
+        callback();
+    }
+
     handleCancel() {
         const {form} = this.props;
         const {router} = this.context;
@@ -134,8 +160,6 @@ class EditDemand extends Component{
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
         const {editType} = this.props.location.state;
-        const assignee_test_id = this.props.form.getFieldValue('assignee_test_id');
-        const assignee_develop_id = this.props.form.getFieldValue('assignee_develop_id');
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
@@ -173,14 +197,15 @@ class EditDemand extends Component{
                     <FormItem {...formItemLayout} label="开发人员" >
                         {getFieldDecorator('assignee_develop_id',
                             {rules:[{required:true, message:'不能为空'},
-                                { validator: this.developTestDistinct.bind(this,assignee_test_id)}
+                                { validator: this.checkDevelop.bind(this)}
                                 ]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择开发人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
-                                     style={{ width: 300 }}>
+                                     style={{ width: 300 }}
+                                     onChange={this.handleChangeBlur.bind(this)}>
                                 {developer}
                             </Select>)}
                     </FormItem>
@@ -188,14 +213,15 @@ class EditDemand extends Component{
                     <FormItem {...formItemLayout} label="测试人员" >
                         {getFieldDecorator('assignee_test_id',
                             {rules:[{required:true,message:'不能为空'},
-                                { validator: this.developTestDistinct.bind(this,assignee_develop_id)}
+                                { validator: this.checkTest.bind(this)}
                                 ]})(
                             <Select  showSearch
                                      showArrow={false}
                                      placeholder="请选择对应的测试人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
-                                     style={{ width: 300 }} >
+                                     style={{ width: 300 }}
+                                      >
                                 {tester}
                             </Select>)}
                     </FormItem>
@@ -231,7 +257,7 @@ EditDemand = Form.create()(EditDemand);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        selectedProjectSet: state.projectSetToState.selectedProjectSet,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
         editDemandLoading:state.request.editDemandLoading,
         editDemandResult:state.request.editDemandResult,
         editDemandError: state.request.editDemandError,

@@ -94,10 +94,17 @@ class MyIssueList extends Component {
         actions.getMyIssue(dataList);
     }
 
-    editIssue(type, selectedRow) {
+    editBug(selectedRow) {
         this.context.router.push({
-            pathname: '/issueEdit',
-            state: {editType: type, selectedRow}
+            pathname: '/bug-edit',
+            state: {selectedRow}
+        });
+    }
+
+    mergeRequest(record){
+        this.context.router.push({
+            pathname: '/CreateMergeRequest',
+            state: {record}
         });
     }
 
@@ -277,11 +284,16 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                     </div>;
                 } else {
                     return <div>
-                        <a onClick={self.editIssue.bind(self, 'add', record)}>开Bug票</a>
+                        <a onClick={self.editBug.bind(self,record)}>开Bug票</a>
+                        <br/>
                         <a onClick={self.testPass.bind(self, record)}>提交测试文档</a>
                     </div>;
 
                 }
+            }else if(record.project_id&&record.state.indexOf('open')!=-1){
+                return <div>
+                    <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
+                </div>;
             }
         }
     }];

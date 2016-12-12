@@ -52,6 +52,7 @@ class MergeRequestList extends React.Component {
         }
 
         if(this.props.issues != issues && issues){
+            console.log('issues',this.props.issues, issues)
             if(issues.length >0 ){
                 this.context.router.push({
                     pathname: '/CreateMergeRequest',
