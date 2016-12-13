@@ -86,7 +86,8 @@ class CronExpression extends React.Component{
                 });
             }
         }else{
-            let minute = expression_array[0].split(',');
+            //let minute = expression_array[0].split(',');
+            let minute = expression_array[0];
             let hour = expression_array[1].split(',');
             this.setState({
                 radioValue:1,
@@ -143,9 +144,9 @@ class CronExpression extends React.Component{
             }
         }else{
             let hour_temp = cron_array[1];
-            let minute_temp = cron_array[0];
+            let minute = cron_array[0];
             let hour = hour_temp.split(',');
-            let minute = minute_temp.split(',');
+            //let minute = minute_temp.split(',');
             let expression_desc = this.cronToDesc(hour,minute);
             return expression_desc;
         }
@@ -169,8 +170,8 @@ class CronExpression extends React.Component{
             }else{
                 expression_desc = this.cronToDesc(formData.hour,formData.minute);
                 hour = formData.hour.join();
-                minute = formData.minute.join();
-                cronExpression[0] = minute; cronExpression[1] = hour;
+                //minute = formData.minute.join();
+                cronExpression[0] = formData.minute; cronExpression[1] = hour;
                 final_expression = cronExpression.join(' ');
             }
         }else if(this.state.radioValue == 3){
@@ -197,9 +198,10 @@ class CronExpression extends React.Component{
         if(this.state.radioValue == 1){
             let expression_desc_temp = [];
             for(let i=0; i<hour.length; i++){
-                for(let j=0; j<minute.length; j++){
+                /*for(let j=0; j<minute.length; j++){
                     expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
-                }
+                }*/
+                expression_desc_temp.push(hour[i]+'点'+minute+'分')
             }
             expression_desc = expression_desc_temp.join(' ');
             expression_desc = '每天： '+expression_desc+' 执行';
