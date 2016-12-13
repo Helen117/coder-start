@@ -35,8 +35,8 @@ class CronExpression extends React.Component{
         const {setFieldsValue} = this.props.form;
         let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
         let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
-        let reg_perhour = /^\*\/(2[0-3]|[0-1]?\d)$/;
-        let reg_perminute = /^\*\/([0-5]?\d)$/;
+        let reg_perhour = /^\*\/[1-9]\d*$/;
+        let reg_perminute = /^\*\/[1-9]\d*$/;
         let expression_array = expression.split(' ');
         if(expression_array[2]!='*' || expression_array[3]!='*'
             || expression_array[4]!='*'){
@@ -86,7 +86,8 @@ class CronExpression extends React.Component{
                 });
             }
         }else{
-            let minute = expression_array[0].split(',');
+            //let minute = expression_array[0].split(',');
+            let minute = expression_array[0];
             let hour = expression_array[1].split(',');
             this.setState({
                 radioValue:1,
@@ -123,8 +124,8 @@ class CronExpression extends React.Component{
         }
         let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
         let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
-        let reg_perhour = /^\*\/(2[0-3]|[0-1]?\d)$/;
-        let reg_perminute = /^\*\/([0-5]?\d)$/;
+        let reg_perhour = /^\*\/[1-9]\d*$/;
+        let reg_perminute = /^\*\/[1-9]\d*$/;
         let cron_array = cron.split(' ');
         if(cron_array.length!=5){
             return cron
@@ -143,9 +144,9 @@ class CronExpression extends React.Component{
             }
         }else{
             let hour_temp = cron_array[1];
-            let minute_temp = cron_array[0];
+            let minute = cron_array[0];
             let hour = hour_temp.split(',');
-            let minute = minute_temp.split(',');
+            //let minute = minute_temp.split(',');
             let expression_desc = this.cronToDesc(hour,minute);
             return expression_desc;
         }
@@ -169,8 +170,8 @@ class CronExpression extends React.Component{
             }else{
                 expression_desc = this.cronToDesc(formData.hour,formData.minute);
                 hour = formData.hour.join();
-                minute = formData.minute.join();
-                cronExpression[0] = minute; cronExpression[1] = hour;
+                //minute = formData.minute.join();
+                cronExpression[0] = formData.minute; cronExpression[1] = hour;
                 final_expression = cronExpression.join(' ');
             }
         }else if(this.state.radioValue == 3){
@@ -197,9 +198,10 @@ class CronExpression extends React.Component{
         if(this.state.radioValue == 1){
             let expression_desc_temp = [];
             for(let i=0; i<hour.length; i++){
-                for(let j=0; j<minute.length; j++){
+                /*for(let j=0; j<minute.length; j++){
                     expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
-                }
+                }*/
+                expression_desc_temp.push(hour[i]+'点'+minute+'分')
             }
             expression_desc = expression_desc_temp.join(' ');
             expression_desc = '每天： '+expression_desc+' 执行';
@@ -290,7 +292,6 @@ class CronExpression extends React.Component{
                                 <span>：</span>
                                 {getFieldDecorator('minute')(
                                     <Select
-                                        multiple
                                         style={{ width: '50%' }}
                                         placeholder="请选择分钟"
                                         onChange={this.handleChange.bind(this)}
@@ -303,15 +304,8 @@ class CronExpression extends React.Component{
                             <Radio value={2} style={radioStyle} >
                                 <span style={{paddingRight:'5px'}}>每隔</span>
                                 {getFieldDecorator('percent')(
-                                    <Select
-                                        showSearch
-                                        style={{ width: '50%' }}
-                                        placeholder="请选择时间跨度"
-                                        optionFilterProp="children"
-                                        onChange={this.percentChange.bind(this)}
-                                    >
-                                        {this.state.isPercentHour?percentHour:percentMinute}
-                                    </Select>
+                                    <Input style={{ width: '50%' }}
+                                           onFocus={this.percentChange.bind(this)} />
                                 )}
                                 {getFieldDecorator('grading',{initialValue:'perhour'})(
                                     <Select style={{ width: '54%',paddingLeft:'12px' }}
@@ -325,7 +319,7 @@ class CronExpression extends React.Component{
                             <Radio value={3} style={radioStyle} >
                                 <span>自定义Cron表达式：</span>
                                 {getFieldDecorator('expression')(
-                                    <Input onClick={this.changeInput.bind(this)}/>
+                                    <Input onFocus={this.changeInput.bind(this)}/>
                                 )}
                             </Radio>
                         </RadioGroup>

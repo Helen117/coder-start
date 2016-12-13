@@ -163,7 +163,7 @@ class UpdateBasicInfo extends React.Component {
                     );
                 })
             }
-            
+
             return(
                 <div>
                     <Row style={{textAlign:'right'}}>
