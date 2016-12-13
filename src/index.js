@@ -123,6 +123,10 @@ ReactDOM.render(
                             <Route name="projectBuildHistory" path="project-build-history" component={ProjectBuildHistory}/>
 
                         </Route>
+                        <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
+                            <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
+                        </Route>
+                        <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
 
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
@@ -150,10 +154,6 @@ ReactDOM.render(
                         <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
                         <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
                         <Route name="transpondOperate" breadcrumbName="转派操作" path="transpondOperate" component={DevelopTransPond}/>
-                        <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
-                            <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
-                        </Route>
-                        <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
 
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
