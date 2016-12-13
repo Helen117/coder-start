@@ -39,17 +39,17 @@ class ConfirmList extends Component {
     render() {
         const confirmList = this.props.confirmList;
         const loading = this.props.getConfirmListLoading?true:false;
-        const pagination = {
-            pageSize:20,
-        };
         const data = this.getDataSource(confirmList)
         return(
-                <Table columns={this.columns(this)} dataSource={data}
+            <div style={{margin:10}}>
+                <Table columns={this.columns(this)}
+                       dataSource={data}
                        bordered
                        size="middle"
-                       pagination={pagination}
+                       pagination={false}
                        loading={loading}
                 />
+            </div>
         );
     }
 }

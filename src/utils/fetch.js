@@ -19,10 +19,23 @@ export default function fetchData(url,params,callback,errStr) {
         opts.body = queryString;
     }
 
-     return fetch(url, opts).then ( function (res) {
+    return fetch(url, opts).then ( function (res) {
         if(res.ok){
             return res.json().then(function(json) {
                 if (json.success) {
+                   return json.result
+                }else{
+                    callback(json.errorMsg);
+                }
+            })
+
+        }
+    })
+     /*return fetch(url, opts).then ( function (res) {
+        if(res.ok){
+            return res.json().then(function(json) {
+                if (json.success) {
+                    console.log('123333')
                     if(json.result){
                         callback();
                     }else{
@@ -35,5 +48,5 @@ export default function fetchData(url,params,callback,errStr) {
             })
 
         }
-    }).catch(function (error) {});
+    }).catch(function (error) {});*/
 }

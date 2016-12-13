@@ -10,6 +10,7 @@ import {getTranspondMember,developTranspond} from './action';
 import ConfirmList from './confirm-list';
 import Box from '../../components/box';
 import {getApproveList} from '../approve/actions/approve-action'
+import * as home from '../home/actions/home-action';
 
 
 const FormItem = Form.Item;
@@ -42,6 +43,7 @@ class DevelopTransPond extends Component {
 
     insertCallback(type){
         message.success(type);
+        this.props.home.getNotifyItems(this.props.loginInfo.userId);
         this.props.getApproveListAction(this.props.loginInfo.username);
         this.context.router.goBack();
     }
@@ -145,7 +147,7 @@ function mapDispatchToProps(dispatch) {
         getTranspondMemberAction: bindActionCreators(getTranspondMember, dispatch),
         transpondAction: bindActionCreators(developTranspond, dispatch),
         getApproveListAction: bindActionCreators(getApproveList, dispatch),
-
+        home:bindActionCreators(home, dispatch),
     }
 }
 
