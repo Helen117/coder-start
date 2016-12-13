@@ -54,6 +54,14 @@ export function mergeRequest(state = initialState, action = {}) {
         case FETCH_ISSUES_DATA_ERROR:
             return {state, Issues:null, fetchIssueLoading: false };
 
+        case 'MR_ASSIGN_PENDING':
+            return {...state,mrAssignee:null, mrAssigneeLoading:true};
+
+        case 'MR_ASSIGN_SUCCESS':
+            return {...state, mrAssignee: action.payload, mrAssigneeLoading:false};
+
+        case 'MR_ASSIGN_ERROR':
+            return { ...state, mrAssignee:null,mrAssigneeLoading:false, };
 
         //create mr
         case CREATE_MR_PENDING:

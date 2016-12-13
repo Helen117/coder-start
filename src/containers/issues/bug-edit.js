@@ -104,7 +104,7 @@ class EditBug extends Component{
             wrapperCol: { span: 14 },
         };
 
-        const pending = false;
+        const pending = this.props.developerLoading?true:false;
         const developer = this.props.developerInfo?this.props.developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
@@ -173,7 +173,7 @@ class EditBug extends Component{
                             <Col sm={8}>
                                 <FormItem {...formItemLayout} label="关联的需求" >
                                     {getFieldDecorator('demand',{rules:[{ required:true,message:'不能为空'}]})(
-                                        <Input  style={{ width: 200 }}/>)}
+                                        <Input disabled style={{ width: 200 }}/>)}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="缺陷属性" >
@@ -205,7 +205,7 @@ class EditBug extends Component{
                             </Col>
                             <Col sm={8}>
                                 <FormItem {...formItemLayout} label="关联工单上线时间点" >
-                                    {getFieldDecorator('planTime',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker style={{ width: 200 }}  />)}
+                                    {getFieldDecorator('planTime',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabled style={{ width: 200 }}  />)}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="遗留问题" >

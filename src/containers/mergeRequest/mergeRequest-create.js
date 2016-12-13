@@ -6,7 +6,7 @@ import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,mess
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {fetchMrListData,createMr} from './mergeRequest-action'
+import {fetchMrListData,createMr,fetchMergeAssign} from './mergeRequest-action'
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -19,7 +19,10 @@ class CreateMergeRequest extends Component {
     }
 
     componentWillMount() {
-
+        const {projectId} = this.props.location.state;
+        if(projectId){
+            this.props.fetchMergeAssign(projectId);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -67,18 +70,27 @@ class CreateMergeRequest extends Component {
         const {mergeBranch,loginInfo} = this.props;
         const author = {};
         author.username= loginInfo.username;
+        author.userId= loginInfo.userId;
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.project_id=mergeBranch[0].id;
-                data.target_project_id = mergeBranch[1].id;
+                data.project_id=this.mapSourceProject(mergeBranch,data.path);
+                data.target_project_id = mergeBranch[0].id;
                 data.author = author;
                 this.props.createMr(data);
             }
         })
+    }
+
+    mapSourceProject(mergeBranch,path){
+        for(let i=1; i<mergeBranch.length; i++){
+            if(mergeBranch[i].path_with_namespace==path){
+                return mergeBranch[i].id;
+            }
+        }
     }
 
     mapSelectOption(branches){
@@ -117,68 +129,76 @@ class CreateMergeRequest extends Component {
 
     render(){
 
-        const {editType} = this.props.location.state;
+        const {record} = this.props.location.state;
         const { getFieldDecorator } = this.props.form;
         const {mergeBranch} = this.props;
-        let targetPath,sourceBranch,initialSourceBranch;
+        let targetPath,sourceBranch,initialSourceBranch,initSourcePath,initTargetPath;
         let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch && mergeBranch.length>1){
-                sourcePath = mergeBranch[0].path_with_namespace;
-                targetPath = mergeBranch[1].path_with_namespace;
-                sourceBranch = this.mapSelectOption(mergeBranch[0].branches);
-                targetBranch = this.mapSelectOption(mergeBranch[1].branches);
-                initialSourceBranch = mergeBranch[0].branches[0];
-                initialTargetBranchAll = mergeBranch[1].branches;
+                initTargetPath = mergeBranch[0].path_with_namespace;
+                initSourcePath = mergeBranch[1].path_with_namespace;
+                targetPath = <Option key={mergeBranch[0].path_with_namespace}>{mergeBranch[0].path_with_namespace}</Option>;
+                sourcePath=[];
+                for(let i=1; i<mergeBranch.length; i++){
+                    sourcePath.push(<Option key={mergeBranch[i].path_with_namespace}>{mergeBranch[i].path_with_namespace}</Option>)
+                }
+                // sourceBranch = this.mapSelectOption(mergeBranch[0].branches);
+                // targetBranch = this.mapSelectOption(mergeBranch[1].branches);
+                // initialSourceBranch = mergeBranch[0].branches[0];
+                // initialTargetBranchAll = mergeBranch[1].branches;
         }
 
-        const initialTargetBranch = this.initialTargetBranch(initialSourceBranch,initialTargetBranchAll);
-        const issuesOptions = this.props.issues?this.props.issues.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        // const initialTargetBranch = this.initialTargetBranch(initialSourceBranch,initialTargetBranchAll);
+        const issuesOptions = this.props.issues?this.props.issues.map(data => <Option key={data.id}>{data.title}</Option>):(record?<Option key={record.id}>{record.issue_name}</Option>:[]);
+        let assign = this.props.mrAssignee?this.props.mrAssignee.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
 
-        if(mergeBranch && mergeBranch.length>1){
-                return (
-                <Box title={editType == 'add' ? '添加MR' : '修改MR'}>
+            return (
+                <Box title='添加MR'>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <Row>
                             <Col span="9">
                                 <FormItem labelCol={{span: 16}} wrapperCol={{span: 4}} label="源分支">
-                                    {getFieldDecorator('path', {
-                                        initialValue: sourcePath,
-                                        rules: [{ required: true, message: '请选择源分支' }]})
-                                    (<Select style={{width: 200}}><Option key={sourcePath}>{sourcePath}</Option></Select>)}
+                                    {getFieldDecorator('path',{initialValue:initSourcePath})
+                                    (<Select style={{width: 200}}>{sourcePath}</Select>)}
                                 </FormItem>
                             </Col>
 
-                           <Col span="3" offset="1">
+                            <Col span="3" offset="1">
                                 <FormItem  {...formItemLayout} label="">
-                                    {getFieldDecorator('source_branch', {initialValue: initialSourceBranch})
-                                    (<Select style={{width: 100, marginLeft: 5}} onSelect={this.changeTargetBranch.bind(this)}>
-                                        {sourceBranch}</Select>)}
+                                    {getFieldDecorator('source_branch', {initialValue: 'dev'})
+                                    (<Select style={{width: 100, marginLeft: 5}}
+                                             onSelect={this.changeTargetBranch.bind(this)}>
+                                        <Option key='dev'>dev</Option></Select>)}
                                 </FormItem>
-                           </Col>
+                            </Col>
 
                             <Col span="4">
-                                <FormItem  labelCol={{span: 7}} wrapperCol={{span: 14}} label="目标分支">
-                                    {getFieldDecorator('target_project_path', {initialValue: targetPath})
-                                    (<Select style={{width: 200}}><Option value={targetPath}>{targetPath}</Option></Select>)}
+                                <FormItem labelCol={{span: 7}} wrapperCol={{span: 14}} label="目标分支">
+                                    {getFieldDecorator('target_project_path',{initialValue:initTargetPath})
+                                    (<Select style={{width: 200}}>{targetPath}</Select>)}
                                 </FormItem>
                             </Col>
 
                             <Col span="6" offset="1">
                                 <FormItem required={true} {...formItemLayout} label="">
-                                    {getFieldDecorator('target_branch', {initialValue: initialTargetBranch,
-                                        rules: [{required: true, message: '没有与其对应的目标分支'}]})
-                                    (<Select style={{width: 100, marginLeft: 5}}>{targetBranch}</Select>)}
+                                    {getFieldDecorator('target_branch', {
+                                        initialValue: 'dev'
+                                    })
+                                    (<Select style={{width: 100, marginLeft: 5}}><Option
+                                        key='dev'>dev</Option></Select>)}
                                 </FormItem>
                             </Col>
                         </Row>
 
                         <FormItem {...formItemLayout} label="MR名称">
-                            {getFieldDecorator('title', {rules: [{required: true, message: '请填写MR名称'},
-                                {max: 30,message: 'MR名称长度最大30个字符'}]})
+                            {getFieldDecorator('title', {
+                                rules: [{required: true, message: '请填写MR名称'},
+                                    {max: 30, message: 'MR名称长度最大30个字符'}]
+                            })
                             (<Input placeholder="请输入MR名称"/>)}
                         </FormItem>
 
@@ -188,8 +208,13 @@ class CreateMergeRequest extends Component {
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
-                            {getFieldDecorator('issue_id',{rules:[{required: true, message: '请选择对应问题'}]})
-                            (<Select size="large" allowClear={true}>{issuesOptions}</Select>)}
+                            {getFieldDecorator('issue_id', {rules: [{required: true, message: '请选择对应问题'}]})
+                            (<Select size="large" allowClear={true} >{issuesOptions}</Select>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="审批人">
+                            {getFieldDecorator('assignee.id', {rules: [{required: true, message: '不能为空'}]})
+                            (<Select size="large" >{assign}</Select>)}
                         </FormItem>
 
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
@@ -198,10 +223,6 @@ class CreateMergeRequest extends Component {
                         </FormItem>
                     </Form>
                 </Box>);
-        }else {
-            return null
-        }
-
     }
 }
 
@@ -217,6 +238,7 @@ function mapStateToProps(state) {
         loading:state.mergeRequest.createLoading,
         inserted: state.mergeRequest.createResult,
         issues: state.mergeRequest.Issues,
+        mrAssignee:state.mergeRequest.mrAssignee,
     };
 }
 
@@ -225,7 +247,7 @@ function mapDispatchToProps(dispatch){
 
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         createMr: bindActionCreators(createMr,dispatch),
-
+        fetchMergeAssign:bindActionCreators(fetchMergeAssign,dispatch),
     }
 }
 
