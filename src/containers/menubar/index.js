@@ -175,7 +175,7 @@ class MenuBar extends React.Component {
                 }
             }
         }
-        return {defaultMenuTwo_id}
+        return defaultMenuTwo_id
     }
 
     clickMenuOne(e){

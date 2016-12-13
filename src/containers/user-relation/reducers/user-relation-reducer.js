@@ -123,7 +123,11 @@ export default function UserRelation(state = initialState, action = {}) {
             return initialState;
         //保存table的selectedRowKeys
         case SELECTED_ROW_KEYS:
-            return {...state,selectedKeys:{selectedKeys:action.selectedRowKeys}};
+            if (!state[action.busi_type]){
+                state['selectedKeys_'+action.busi_type] = Object.assign({}, initState);//等同于={...initState}
+            }
+            state['selectedKeys_'+action.busi_type].selectedKeys = action.selectedRowKeys;
+            return {...state};
         //非领导数据
         case GET_USER_LEADER_PENDING:
             return {...state,notLeaderInfo:{loading:true}};

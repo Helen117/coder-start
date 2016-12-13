@@ -34,18 +34,16 @@ class UpdateBasicInfo extends React.Component {
             } else {
                 const formData = form.getFieldsValue();
                 if(formData.new_email){
-                    console.log('formData:',formData)
                     //调添加邮箱接口
                     let email = formData.new_email+formData.option_add;
-                    //AddEmail(loginInfo.userId,email);
+                    AddEmail(loginInfo.userId,email);
                 }else{
                     //调修改成员信息接口
-                    console.log('formData:',formData)
                     let data = {};
                     data.user_id = loginInfo.userId;
                     data.name = formData.name;
                     data.email = formData.email_0+formData.option_0;
-                    //UpdateUser(data);
+                    UpdateUser(data);
                 }
             }
         })
@@ -165,11 +163,11 @@ class UpdateBasicInfo extends React.Component {
                     );
                 })
             }
-
+            
             return(
                 <div>
                     <Row style={{textAlign:'right'}}>
-                        {email_array.length>=0?(this.state.add_new_email?(
+                        {email_array.length==0?(this.state.add_new_email?(
                             <Button onClick={this.addNewEmail.bind(this)}
                                     type="gost"
                             > 取消添加 </Button>
