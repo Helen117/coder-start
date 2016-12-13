@@ -27,7 +27,8 @@ class App extends React.Component {
         super(props);
         this.state={
             isOpened:false,
-            isRefresh:false
+            is_menuclick:false,
+            lightMenuBar:''
         }
     }
 
@@ -42,7 +43,7 @@ class App extends React.Component {
     }
 
     findMenuByLocation(data,pathName){//根据url找到对应的一级菜单，作为面包屑
-        var navi_keypath_return = [], navi_key_return, find_path = 0;
+        var navi_keypath_return = [], navi_key_return, find_path = 0, light_menubar='';
         for(var i=0; i<data.length;i++){
             if(find_path == 0){
                 if(pathName == data[i].link){//url对应一级菜单
@@ -65,6 +66,7 @@ class App extends React.Component {
                                     navi_key_return = "menu"+data[i].id;
                                     navi_keypath_return[0] = navi_key_return;
                                     find_path++;
+                                    light_menubar = "menu"+menuTree[k].id;
                                     break;
                                 }
                             }
@@ -73,58 +75,58 @@ class App extends React.Component {
                 }
             }else{break;}
         }
-        return {navi_keypath_return, navi_key_return}
+        return {navi_keypath_return, navi_key_return,light_menubar}
     }
 
     componentWillReceiveProps(nextProps){
         const {uid,home} = this.props;
-        // console.log('nextProps:',nextProps);
         const {menuData, navpath} = nextProps;
         //根据url找到面包屑的key
-        var {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData, window.location.pathname);
+        var {navi_keypath_return, navi_key_return,light_menubar} = this.findMenuByLocation(menuData, window.location.pathname);
         //如果没有找到key,去掉最后一个“/”，继续找
         let path_return = navi_keypath_return,key_return = navi_key_return;
+        let light = light_menubar;
         let truePath = window.location.pathname;
         while(!key_return && menuData.length>0){//如果没有找到key,去掉最后一个“/”，继续找
             let trueIndex = truePath.lastIndexOf("/");
-            if(trueIndex == 0 && navpath.length==0){
+            if(trueIndex == 0 && navpath.length==0){//刷新回首页
                 path_return[0] = "menu1";
                 key_return = "menu1";
                 this.context.router.push({
                     pathname: '/home',
                 });
-            }else if(trueIndex == 0 && navpath.length>0){
+            }else if(trueIndex == 0 && navpath.length>0){//保持当前面包屑
                 key_return = "menu"+navpath[0].key;
                 path_return[0] = key_return;
-            }else{
+            }else{//找到新面包屑
                 truePath = truePath.substr(0,trueIndex);
-                let {navi_keypath_return, navi_key_return} = this.findMenuByLocation(menuData,truePath);
+                let {navi_keypath_return, navi_key_return,light_menubar} = this.findMenuByLocation(menuData,truePath);
                 path_return = navi_keypath_return;
                 key_return = navi_key_return;
+                light = light_menubar;
             }
         }
 
-        let _key = key_return.replace('menu','');
+        let _key;
+        if(key_return){
+            _key = key_return.replace('menu','');
+        }
+        if(this.state.lightMenuBar != light){
+            this.setState({
+                lightMenuBar:light,
+                is_menuclick:false
+            })
+        }
         if(nextProps.navpath.length == 0 && key_return){//登录，刷新时更新面包屑
             home.getNotifyItems(uid);
             var is_menuclick = false;
-            this.props.updateNavPath(path_return, key_return, is_menuclick);
+            this.props.updateNavPath(path_return, key_return);
         }else if(nextProps.navpath[0] && this.props.navpath[0] && key_return
         && nextProps.navpath[0].key != _key){
             //navpath改变时调接口
             var is_menuclick = false;
-            this.props.updateNavPath(path_return, key_return, is_menuclick);
-        }/*else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
-            //返回时更新面包屑，除去点击项目树和顶部导航的情况
-            if(this.props.projectGroup.getGroupInfo && nextProps.projectGroup.getGroupInfo){
-                if(this.props.projectGroup.getGroupInfo.node == nextProps.projectGroup.getGroupInfo.node
-                    && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
-                    var is_menuclick = false;
-                    console.log('3')
-                    this.props.updateNavPath(path_return, key_return, is_menuclick);
-                }
-            }
-        }*/
+            this.props.updateNavPath(path_return, key_return);
+        }
     }
 
     logout() {
@@ -144,9 +146,9 @@ class App extends React.Component {
         });
     }
 
-    sideMenuClick(isRefresh){
-        this.setState = ({
-            isRefresh:isRefresh
+    sideMenuClick(is_menuclick){
+        this.setState({
+            is_menuclick:is_menuclick
         })
     }
 
@@ -165,11 +167,13 @@ class App extends React.Component {
                          sideMenuClick={this.sideMenuClick.bind(this)}
                 />
                 <Affix>
-                    <Header profile={profile} logout={this.logout.bind(this)} showSideBar={this.clickBreadSideBar.bind(this)} items={items}/>
+                    <Header profile={profile} logout={this.logout.bind(this)}
+                            showSideBar={this.clickBreadSideBar.bind(this)} items={items}/>
                     <NavPath />
                     <MenuBar menuData={this.props.menuData}
                              navpath={this.props.navpath}
-                             is_menuclick={this.props.is_menuclick}
+                             is_menuclick={this.state.is_menuclick}
+                             light_menubar={this.state.lightMenuBar}
                     />
                 </Affix>
                 <div className="ant-layout-main" >
@@ -204,7 +208,6 @@ function mapStateToProps(state) {
         profile: login.profile ? login.profile : null,
         menuData:state.menu.items,
         navpath: state.menu.navpath,
-        is_menuclick:state.menu.is_menuclick,
         projectGroup:state.projectGroup,
         getMenuBarInfo:state.getMenuBarInfo,
         notifyItems:state.getNotifyItems.notifyItems,
