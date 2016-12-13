@@ -195,21 +195,23 @@ class UserInfo extends React.Component {
         if(onSelected){
             onSelected(user_ids);
         }
-        this.props.setSelectedRowKeys(selectedRowKeys);
+        this.props.setSelectedRowKeys(selectedRowKeys,busiType);
     }
 
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,selectedKeys,busiType} = this.props;
+            moveUserInfo,userRelation,busiType} = this.props;
+
         let getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
         let removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
         let loadingTree = userRelationTree?userRelationTree.loading:false;
         let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
+
+        let selectedRowKeys = userRelation['selectedKeys_'+busiType]?
+            userRelation['selectedKeys_'+busiType].selectedKeys:[];
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let selectedRowKeys = selectedKeys?(
-            selectedKeys.selectedKeys?selectedKeys.selectedKeys:[]):[];
 
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
@@ -310,8 +312,8 @@ function mapStateToProps(state) {
         userRelationTree:state.UserRelation.getUserRelationTree,
         moveUserInfo:state.UserRelation.moveUserRelation,
         deleteUserInfo:state.UserRelation.deleteUserRelation,
-        selectedKeys:state.UserRelation.selectedKeys,
         treeFilterState : state.treeFilter,
+        userRelation:state.UserRelation,
     }
 }
 

@@ -15,6 +15,7 @@ import {addProjectMember,deleteProjectMember,
 import {findUserIdByEmail} from '../user-relation/utils';
 import {comfirmRoleId} from './util';
 import 'pubsub-js';
+import {getProjectInfo} from '../project-mgr/actions/create-project-action';
 
 
 const Option = Select.Option;
@@ -66,11 +67,11 @@ class ProjectMember extends Component {
             selectedUserIds:[]
         });
         //调项目成员接口
-        const {actions,project} = this.props;
-        let projectInfo = project.getProjectInfo?(
-            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
-        ):{};
-        actions.getProjectMembers(projectInfo.id);
+        const {actions,loginInfo,projectGroup} = this.props;
+        let selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        let projectId = selectedKey.id.substr(0,selectedKey.id.length-2);
+        this.props.getProject(projectId,loginInfo.userId);
+        actions.getProjectMembers(projectId);
     }
 
     transformDate(timestamp){
@@ -267,12 +268,14 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         projectMember:state.projectMember,
         project:state.project,
+        projectGroup:state.projectGroup,
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators({addProjectMember,getProjectMembers,deleteProjectMember},dispatch),
+        getProject:bindActionCreators(getProjectInfo, dispatch),
     }
 }
 
