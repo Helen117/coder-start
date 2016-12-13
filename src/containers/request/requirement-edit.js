@@ -32,7 +32,7 @@ class EditDemand extends Component{
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
-            setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,'yyyy-mm-dd')});//时间类型转换
+            setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date)});//时间类型转换
         }
         if(!selectedProjectSet){
             notification.error({
@@ -175,7 +175,7 @@ class EditDemand extends Component{
 
 
         return (
-            <Spin spinning={pending}>
+            <Spin spinning={pending} >
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout}  label="需求名称" >
