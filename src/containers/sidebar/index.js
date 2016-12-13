@@ -43,7 +43,11 @@ class Sidebar extends React.Component {
 
     menuClickHandle(item) {
         var is_menuclick = true;
-        this.props.updateNavPath(item.keyPath, item.key, is_menuclick);
+        const {sideMenuClick} = this.props;
+        if(sideMenuClick){
+            sideMenuClick(is_menuclick);
+        }
+        this.props.updateNavPath(item.keyPath, item.key);
     }
 
     clickSideBar(){
@@ -90,7 +94,10 @@ class Sidebar extends React.Component {
                 <Icon className="action-button-sidebar"
                       type="bars"
                       onClick={this.clickSideBar.bind(this)}/>
-                <Menu mode="inline" theme="light" openKeys={openKey} selectedKeys={this.props.navpath.length==0?["menu1"]:["menu"+this.props.navpath[0].key]} onSelect={this.menuClickHandle.bind(this)} className="side-bar-menu">
+                <Menu mode="inline" theme="light" openKeys={openKey}
+                      selectedKeys={this.props.navpath.length==0?
+                          ["menu1"]:["menu"+this.props.navpath[0].key]}
+                      onSelect={this.menuClickHandle.bind(this)} className="side-bar-menu">
                     {menu}
                 </Menu>
             </aside>
