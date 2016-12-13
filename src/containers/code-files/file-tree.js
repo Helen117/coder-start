@@ -62,7 +62,8 @@ class FileTree extends React.Component {
         //每次点击table，push一次
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
         //如果不是，调接口，取下一级数据，重新渲染
-        const {projectInfo,brand} = this.props;
+        const {project,brand} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         let type,filePath = this.state.filePath;
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name == record.name){
@@ -137,7 +138,7 @@ function mapStateToProps(state) {
         codeFile:state.getCodeFile.codeFile,
         loading:state.getCodeFile.loading,
         fetchCodeStatus:state.getCodeFile.fetchCodeStatus,
-        projectInfo:state.getProjectInfo.projectInfo,
+        project:state.project,
     }
 }
 

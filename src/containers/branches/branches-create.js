@@ -21,8 +21,10 @@ class CreateBranches extends Component {
     }
 
     componentDidMount() {
-        if(this.props.getProjectInfo) {
-            this.props.fetchBranchesData(this.props.getProjectInfo.id);
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        if(projectInfo.id) {
+            this.props.fetchBranchesData(projectInfo.id);
         }else{
             const {router} = this.context;
             router.goBack();
@@ -39,9 +41,11 @@ class CreateBranches extends Component {
     }
 
     insertCallback(type){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         message.success(type);
         this.context.router.goBack();
-        this.props.fetchBranchesData(this.props.getProjectInfo.id);
+        this.props.fetchBranchesData(projectInfo.id);
     }
     
     titleExists(rule, value, callback){
@@ -84,14 +88,15 @@ class CreateBranches extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {getProjectInfo,loginInfo} = this.props;
+        const {project,loginInfo} = this.props;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.project_id=getProjectInfo.id;
+                data.project_id=projectInfo.id;
                 data.username = loginInfo.username;
                 this.props.createBranch(data);
             }
@@ -150,11 +155,11 @@ CreateBranches.contextTypes = {
 
 function mapStateToProps(state) {
     return {
-        getProjectInfo:state.getProjectInfo.projectInfo,
         loginInfo:state.login.profile,
         branchesData: state.branch.branchesData,
         createLoading:state.branch.createLoading,
         createResult: state.branch.createResult,
+        project:state.project,
     };
 }
 

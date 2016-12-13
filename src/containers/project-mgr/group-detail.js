@@ -28,8 +28,9 @@ class GroupDetail extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions, form, loginInfo, getGroupInfo } = this.props;
+        const { actions, form, loginInfo, projectGroup } = this.props;
         const {editType} = this.props.location.state;
+        let getGroupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -75,14 +76,20 @@ class GroupDetail extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {result, updateResult} = nextProps;
+        const {projectGroup} = nextProps;
         //创建返回信息
-        if (this.props.result != result && result) {
-            this.insertCallback("创建成功");
+        if(this.props.projectGroup.createGroup && projectGroup.createGroup){
+            if(this.props.projectGroup.createGroup.result != projectGroup.createGroup.result
+                && projectGroup.createGroup.result){
+                this.insertCallback("创建成功");
+            }
         }
         //修改返回信息
-        if (this.props.updateResult != updateResult && updateResult) {
-            this.insertCallback("修改成功");
+        if(this.props.projectGroup.updateGroup && projectGroup.updateGroup){
+            if(this.props.projectGroup.updateGroup.result != projectGroup.updateGroup.result
+                && projectGroup.updateGroup.result){
+                this.insertCallback("修改成功");
+            }
         }
     }
 
@@ -99,7 +106,7 @@ class GroupDetail extends React.Component {
     render() {
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
-        const {list} = this.props;
+        const {list,projectGroup} = this.props;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
@@ -124,6 +131,10 @@ class GroupDetail extends React.Component {
                 {rules:[
                     {required:editType == 'add'?false:true, message:'请输入修改原因！'}
                 ]})(<Input type="textarea" rows={4} />);
+            const addLoading = projectGroup.createGroup?projectGroup.createGroup.loading:false;
+            const addDisabled = projectGroup.createGroup?projectGroup.createGroup.disabled:false;
+            const updateLoading = projectGroup.updateGroup?projectGroup.updateGroup.loading:false;
+            const updateDisabled = projectGroup.updateGroup?projectGroup.updateGroup.disabled:false;
 
             return (
                 <Box title={editType == 'add' ? '新建项目组' : '修改项目组'}>
@@ -144,8 +155,8 @@ class GroupDetail extends React.Component {
                         )}
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
-                                    loading={editType == 'add'?this.props.loading:this.props.updateLoading}
-                                    disabled={editType == 'add'?this.props.disabled:this.props.updateDisabled}>
+                                    loading={editType == 'add'?addLoading:updateLoading}
+                                    disabled={editType == 'add'?addDisabled:updateDisabled}>
                                 确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
@@ -168,17 +179,9 @@ GroupDetail = Form.create()(GroupDetail);
 
 function mapStateToProps(state) {
     return {
-        result: state.createGroup.result,
-        errMessage:state.createGroup.errors,
         loginInfo:state.login.profile,
         list: state.getGroupTree.treeData,
-        loading:state.createGroup.loading,
-        disabled:state.createGroup.disabled,
-        updateResult:state.createGroup.updateResult,
-        updateErrors:state.createGroup.updateErrors,
-        getGroupInfo:state.getGroupInfo.groupInfo,
-        updateLoading:state.createGroup.updateLoading,
-        updateDisabled:state.createGroup.updateDisabled,
+        projectGroup:state.projectGroup,
     }
 }
 
