@@ -52,6 +52,8 @@ const FormItem = Form.Item;
 
     approve(){
         const {form,confirmList,loginInfo} = this.props;
+        form.setFieldsValue({'files':this.state.fileList});
+
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -62,6 +64,8 @@ const FormItem = Form.Item;
                 data.demand_id = confirmList[0].demand_id;
                 data.role = confirmList[0].role;
                 data.username = loginInfo.username;
+                data.files= this.state.fileList;
+                // console.log('接收的数据',data);
                 this.props.ConfirmAction(data)
             }
         })
@@ -83,6 +87,34 @@ const FormItem = Form.Item;
          })
      }
 
+     beforeUpload(file){
+         console.log(file);
+          //'application/vnd.ms-excel'
+         if (!file.type === 'application/msword') {
+             message.error('只能上传word文档',3);
+             return false;
+         }
+         if(file.size/ 1024 / 1024 > 10){
+             message.error('文件大小不能超过10M',3);
+             return false;
+         }
+         let reader = new FileReader();
+         reader.onloadend = function () {
+             this.setState({
+                 fileList:[{
+                     uid: file.uid,
+                     name: file.name,
+                     status: 'done',
+                     url: reader.result
+                 }]
+             });
+             // console.log(reader.result);
+         }.bind(this);
+         reader.readAsDataURL(file);
+         //reader.readAsArrayBuffer(file);
+         return false;
+     }
+
 
     render() {
 
@@ -95,33 +127,7 @@ const FormItem = Form.Item;
 
         const props = {
             action: '/upload.do',
-            beforeUpload(file){
-                const isWord = file.type === 'application/msword';//'application/vnd.ms-excel'
-                if (!isWord) {
-                    message.error('只能上传word文档',3);
-                }
-                return isWord;
-            },
-            onChange(info) {
-                if (info.file.status !== 'uploading') {
-                }
-                if (info.file.status === 'done') {
-                    message.success(`${info.file.name} file uploaded successfully.`);
-                    let fileList = info.fileList;
 
-                    fileList = fileList.map((file) => {
-                        if (file.response) {
-                            file.url = file.response.url;
-                        }
-                        return file;
-                    });
-
-                    this.setState({ fileList });
-
-                } else if (info.file.status === 'error') {
-                    message.error(`${info.file.name} file upload failed.`,3);
-                }
-            },
         };
         const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
         const confirmLoading = this.props.confirmLoading? true:false;
@@ -147,13 +153,13 @@ const FormItem = Form.Item;
                             </FormItem>:<div></div>
                             }
 
-                        <FormItem {...formItemLayout} label="设计工时" >
-                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                        <FormItem {...formItemLayout} label="工时" >
+                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写工时'}]})(<InputNumber min={1} max={100}/>)}
                         </FormItem>
 
-                        <FormItem {...formItemLayout}  label="设计文档上传" >
-                            {getFieldDecorator('files')(
-                                <Upload {...props} fileList={this.state.fileList}>
+                        <FormItem {...formItemLayout}  label="文档上传" >
+                            {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
+                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
                                     <Button type="ghost">
                                         <Icon type="upload" /> 点击上传
                                     </Button>

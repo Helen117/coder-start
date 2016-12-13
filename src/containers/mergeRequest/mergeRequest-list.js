@@ -52,11 +52,11 @@ class MergeRequestList extends React.Component {
         }
 
         if(this.props.issues != issues && issues){
-            console.log('issues',this.props.issues, issues)
+            // console.log('issues',this.props.issues, issues)
             if(issues.length >0 ){
                 this.context.router.push({
                     pathname: '/CreateMergeRequest',
-                    state: {editType: 'add'}
+                    state: {record: '',projectId:mergeBranch[0].id}
                 });
             }else{
                 this.errCallback('无需合并','您当前无待办事项，不能代码合并请求');
@@ -77,7 +77,7 @@ class MergeRequestList extends React.Component {
         const {project} = this.props;
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = projectInfo.id;
-        this.props.fetchMergeBranchData(projectId);
+        this.props.fetchMergeBranchData(projectId,'','');
     }
 
     onChange(pagination, filters, sorter) {
@@ -120,7 +120,7 @@ class MergeRequestList extends React.Component {
             <div style={{margin: 10}}>
                 <Row>
                     <Button className="pull-right" type="primary"
-                            disabled={projectInfo.id?false:true}
+                            disabled={projectInfo&&projectInfo.forks_from?false:true}
                             onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>

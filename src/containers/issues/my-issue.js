@@ -2,12 +2,13 @@
  * Created by helen on 2016/10/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification,Table,Input,Modal ,Upload,Icon,InputNumber } from 'antd';
+import { Button,Form,Select,DatePicker,Col,Row,Collapse,message,notification,Table,Input,Modal ,Upload,Icon,InputNumber,Spin } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as issue from './actions/issue-action';
 import * as getAllUser from '../register/actions/register-action';
 import * as home from '../home/actions/home-action';
+import {fetchMergeBranchData} from '../mergeRequest/mergeRequest-action';
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
 import Box from '../../components/box';
@@ -113,9 +114,11 @@ class MyIssueList extends Component {
     }
 
     mergeRequest(record){
+        const {fetchMergeBranchData,loginInfo} = this.props;
+        fetchMergeBranchData('',record.project_id,loginInfo.userId);
         this.context.router.push({
             pathname: '/CreateMergeRequest',
-            state: {record}
+            state: {record,projectId:record.project_id}
         });
     }
 
@@ -138,13 +141,14 @@ class MyIssueList extends Component {
 
     handleOk() {
         const {actions,form,loginInfo} = this.props;
-
-        form.validateFields(['design_work_time'],(errors, values) => {
+        form.setFieldsValue({'files':this.state.fileList});
+        form.validateFields(['design_work_time','files'],(errors, values) => {
             if (!!errors) {
                 return;
             } else {
                 this.setState({
                     visible: false,
+                    fileList:'',
                 });
 
                 form.resetFields(['design_work_time']);
@@ -179,6 +183,39 @@ class MyIssueList extends Component {
         return list;
     }
 
+    rowClassName(record,index) {
+        if (record.state == 'opened') {
+            return styles.open;
+        }
+        if (record.state == 'closed') {
+            return styles.open;
+        }
+    }
+
+    beforeUpload(file){
+        //'application/vnd.ms-excel'
+        if (!file.type === 'application/msword') {
+            message.error('只能上传word文档',3);
+            return false;
+        }
+        if(file.size/ 1024 / 1024 >10){
+            message.error('文件大小不能超过10M',3);
+            return false;
+        }
+        let reader = new FileReader();
+            this.setState({
+                fileList: [{
+                    uid: file.uid,
+                    name: file.name,
+                    status: 'done',
+                    url: reader.result
+                }]
+            });
+        reader.readAsDataURL(file);
+        //reader.readAsArrayBuffer(file);
+        return false;
+    }
+
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -187,8 +224,16 @@ class MyIssueList extends Component {
             wrapperCol: { span: 14 },
         };
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
+        let loading =this.props.updateIssueLoading?true:false;
+        const data =[{
+    'project_id':34,
+    'id':1,
+    'type':'demand',
+    'state':'opened',
+    'issue_name':'需求测试',
+}]
         return (
+            <Spin spinning={loading}>
             <div>
                 <Collapse defaultActiveKey={['1']}>
                     <Panel header="查询条件" key="1">
@@ -247,8 +292,8 @@ class MyIssueList extends Component {
                                 </FormItem>
 
                                 <FormItem {...formItemLayout}  label="文档上传" >
-                                    {getFieldDecorator('files')(
-                                        <Upload>
+                                    {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
+                                        <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
                                             <Button type="ghost">
                                                 <Icon type="upload" /> 点击上传
                                             </Button>
@@ -263,10 +308,12 @@ class MyIssueList extends Component {
                     <Table  columns={this.issueListColumns(this)} dataSource={this.dataSources(this.props.issueList)}
                             bordered
                             loading={this.props.loading}
+                            rowClassName={this.rowClassName}
                     >
                     </Table>
                 </Box>
             </div>
+            </Spin>
         )
 
     }
@@ -288,42 +335,34 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         title: '问题类型',
         dataIndex: 'issueType',
         width: '9%',
-        className:'columnClass',
     },{
         title: '问题名称',
         dataIndex: 'issue_name',
         width: '9%',
-        className:'columnClass',
+    },{
+        title: '描述',
+        dataIndex: 'description',
+        width: '9%',
     },{
         title: '问题标签',
         dataIndex: 'labels',
         width: '9%',
-        className:'columnClass',
     }, {
         title: '创建人',
         dataIndex: 'author_name',
         width: '9%',
-        className:'columnClass',
-    },{
-        title: '修复人',
-        dataIndex: 'assignee_name',
-        width: '9%',
-        className:'columnClass',
     }, {
         title: '问题创建时间',
         dataIndex: 'created_at',
         width: '9%',
-        className:'columnClass',
     }, {
         title: '计划完成时间',
         dataIndex: 'due_date',
         width: '9%',
-        className:'columnClass',
     },{
         title: '状态',
         dataIndex: 'state',
         width: '9%',
-        className:'columnClass',
     },{
         title: '项目',
         dataIndex: 'project_name',
@@ -368,6 +407,7 @@ function mapStateToProps(state) {
         loading:state.issue.myIssueLoading,
         myIssueError:state.issue.myIssueError,
         closeBug:state.issue.updateIssue,
+        updateIssueLoading:state.issue.updateIssueLoading,
         loginInfo:state.login.profile,
         user:state.register.users,
     };
@@ -378,6 +418,7 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators(issue, dispatch),
         getUserAction : bindActionCreators(getAllUser, dispatch),
         home:bindActionCreators(home, dispatch),
+        fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
     }
 }
 
