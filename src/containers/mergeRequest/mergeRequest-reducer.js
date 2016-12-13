@@ -68,13 +68,13 @@ export function mergeRequest(state = initialState, action = {}) {
 
         //get mr list
         case FETCH_MR_LIST_PENDING:
-            return {...state, mrList:nul,getMrListLoading: true};
+            return {...state, mrList:null,getMrListLoading: true};
 
         case FETCH_MR_LIST_SUCCESS:
             return {...state, mrList: action.payload,  getMrListLoading:false};
 
         case FETCH_MR_LIST_ERROR:
-            return {...state, mrList:nul,getMrListLoading:false};
+            return {...state, mrList:null,getMrListLoading:false};
 
         default:
             return state;

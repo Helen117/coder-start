@@ -99,7 +99,11 @@ class ProjectSetMilestonesEdit extends React.Component {
             const path = '/project/milestone-time-check'
             const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
             const errStr = '计划完成时间超出允许设定范围';
-            fetchData(path, params, callback, errStr);
+            //fetchData(path, params, callback, errStr);
+            console.log('1111')
+            if(fetchData(path, params, callback, errStr)){
+                console.log(fetchData(path, params, callback, errStr))
+            }
 
         }else{
             callback();
