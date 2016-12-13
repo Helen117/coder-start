@@ -104,25 +104,27 @@ class App extends React.Component {
             }
         }
 
+        let _key = key_return.replace('menu','');
         if(nextProps.navpath.length == 0 && key_return){//登录，刷新时更新面包屑
             home.getNotifyItems(uid);
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath[0] && this.props.navpath[0] && key_return
-        && nextProps.navpath[0].key != this.props.navpath[0].key){
+        && nextProps.navpath[0].key != _key){
             //navpath改变时调接口
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
-        }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
+        }/*else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
             //返回时更新面包屑，除去点击项目树和顶部导航的情况
             if(this.props.projectGroup.getGroupInfo && nextProps.projectGroup.getGroupInfo){
                 if(this.props.projectGroup.getGroupInfo.node == nextProps.projectGroup.getGroupInfo.node
                     && this.props.getMenuBarInfo == nextProps.getMenuBarInfo){
                     var is_menuclick = false;
+                    console.log('3')
                     this.props.updateNavPath(path_return, key_return, is_menuclick);
                 }
             }
-        }
+        }*/
     }
 
     logout() {
