@@ -94,9 +94,10 @@ class MenuBar extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {navpath, menuData} = nextProps;
+        const {navpath, menuData,light_menubar} = nextProps;
         if(navpath.length != 0){
-            if(this.props.navpath != navpath && navpath ){
+            if((this.props.light_menubar != light_menubar && light_menubar) ||
+                (this.props.navpath != navpath && navpath)){
                 if(nextProps.is_menuclick == true){//点击侧边导航，顶部导航恢复默认值
                     let {defaultMenuOne_id, defaultMenuTwo_id} = this.findDefaultMenuBar(menuData, navpath);
                     this.setState({
