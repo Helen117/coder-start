@@ -108,6 +108,11 @@ class App extends React.Component {
             home.getNotifyItems(uid);
             var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return, is_menuclick);
+        }else if(nextProps.navpath[0] && this.props.navpath[0] && key_return
+        && nextProps.navpath[0].key != this.props.navpath[0].key){
+            //navpath改变时调接口
+            var is_menuclick = false;
+            this.props.updateNavPath(path_return, key_return, is_menuclick);
         }else if(nextProps.navpath.length != 0 && this.props.navpath == nextProps.navpath){
             //返回时更新面包屑，除去点击项目树和顶部导航的情况
             if(this.props.projectGroup.getGroupInfo && nextProps.projectGroup.getGroupInfo){
