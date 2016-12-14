@@ -15,7 +15,7 @@ export default function request(state = initialState, action = {}) {
             return {...state, getTesterLoading: false, getTesterError: action.payload.errorMsg};
 
         case 'FETCH_DEVELOPER_INFO_PENDING':
-            return {...state, developer: null,getDeveloperLoading: true};
+            return {...state, developer: null, currentMilestone:null, getDeveloperLoading: true};
         case 'FETCH_DEVELOPER_INFO_SUCCESS':
             return {...state, developer: action.payload, getDeveloperLoading: false, getDeveloperError: null};
         case 'FETCH_DEVELOPER_INFO_ERROR':
@@ -29,14 +29,14 @@ export default function request(state = initialState, action = {}) {
             return {...state,  getLabelLoading: false, getLabelError: action.payload.errorMsg};
 
         case 'ADD_DEMAND_PENDING':
-            return {...state, addDemandResult:null,currentMilestone:null ,addDemandLoading: true};
+            return {...state, addDemandResult:null,currentMilestone:null, addDemandLoading: true};
         case 'ADD_DEMAND_SUCCESS':
             return {...state, addDemandResult: action.payload, addDemandLoading: false};
         case 'ADD_DEMAND_ERROR':
             return {...state,  addDemandResult:null,addDemandLoading: false,  addDemandError: action.payload.errorMsg};
 
         case 'EDIT_DEMAND_PENDING':
-            return {...state, editDemandResult: null,currentMilestone:null,editDemandLoading: true};
+            return {...state, editDemandResult: null, currentMilestone:null, editDemandLoading: true};
         case 'EDIT_DEMAND_SUCCESS':
             return {...state, editDemandResult: action.payload, editDemandLoading: false};
         case 'EDIT_DEMAND_ERROR':
