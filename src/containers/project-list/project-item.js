@@ -67,6 +67,7 @@ class ProjectItem extends Component {
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
+            this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
             this.setState({
                 showForkPath: false,
             });

@@ -84,19 +84,23 @@ class RequirementInfo extends Component {
     }
 
     getDataSources(list){
-        if(list&&list.length>0){
-            for(var i=0;i<list.length;i++){
-                if(typeof(list[i].update_at)=="number") {
+        if(list&&list.length>0) {
+            for (var i = 0; i < list.length; i++) {
+                if (typeof(list[i].update_at) == "number") {
                     list[i].update_at = new Date(parseInt(list[i].update_at)).toLocaleDateString();
                 }
-                if(typeof(list[i].expect_due_date)=="number") {
+                if (typeof(list[i].expect_due_date) == "number") {
                     list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
-                if(typeof(list[i].demand_comfirm_date)=="number") {
-                    list[i].demand_confirm_time = new Date(parseInt(list[i].demand_comfirm_date)).toLocaleDateString();
-                }
-                list[i].label = list[i].label_names&&list[i].label_names.length>0?list[i].label_names+'':'';
-                list[i].label_id = list[i].label_ids&&list[i].label_ids.length>0?list[i].label_ids+'':'';
+                console.log('list[i].developer_confirm_date',list[i].developer_confirm_date)
+                const developer_confirm_date=list[i].developer_confirm_date? list[i].developer_confirm_date + "(开发) ":'';
+                const tester_confirm_date=list[i].tester_confirm_date? list[i].tester_confirm_date + "(测试)":'';
+                list[i].confirm_time = developer_confirm_date + tester_confirm_date;
+
+                list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
+                list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
+                list[i].assignee = list[i].assignee_develop_name + "(开发)、" + list[i].assignee_test_name + "(测试)"
+
             }
         }
         return list;
@@ -175,6 +179,9 @@ RequirementInfo.prototype.columns = (self)=>[{
     title: '需求名称',
     dataIndex: 'title',
 }, {
+    title: '指派人员',
+    dataIndex: 'assignee',
+}, {
     title: '当前状态',
     dataIndex: 'state',
 },{
@@ -183,12 +190,12 @@ RequirementInfo.prototype.columns = (self)=>[{
 },{
     title: '创建人',
     dataIndex: 'author',
-},{
+},/*{
     title: '最后操作时间',
     dataIndex: 'update_at',
-}, {
+},*/ {
     title: '需求确认时间',
-    dataIndex: 'demand_confirm_time',
+    dataIndex: 'confirm_time',
 }, {
     title: '期望上线时间',
     dataIndex: 'expect_due_date',
@@ -198,12 +205,16 @@ RequirementInfo.prototype.columns = (self)=>[{
     width: '10%',
     render: (text, record) => (
         <div>
-            <Tooltip placement="top" title="点击删除">
-                <a style={{marginRight:5}}>
-                    <Icon type="delete" onClick={self.deleteDemand.bind(self,record)}/>
-                </a>
-            </Tooltip>
-            <span className="ant-divider" />
+            {record.developer_confirm_date||record.tester_confirm_time ?
+                <div/>:
+                <span>
+                    <Tooltip placement="top" title="点击删除">
+                        <a style={{marginRight:5}}>
+                            <Icon type="delete" onClick={self.deleteDemand.bind(self,record)}/>
+                        </a>
+                    </Tooltip>
+                    <span className="ant-divider" />
+                </span>}
             <Tooltip placement="top" title="点击修改">
                 <a style={{marginLeft:5}}>
                     <Icon type="edit" onClick={self.editDemand.bind(self,'modify',record)}/>

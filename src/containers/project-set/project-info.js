@@ -67,12 +67,12 @@ class SelectedProInfo extends Component {
 
     render(){
         const {project,visible} = this.props;
-        let projectInfo = project.getProjectInfo?(
-            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
-        ):{};
-        const dataSource = this.getDataSource(projectInfo);
-        let projectLoading = project.getProjectInfo?project.getProjectInfo.loading:false;
         if(visible) {
+            const projectInfo = project.getProjectInfo?(
+                project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+            ):{};
+            const dataSource = this.getDataSource(projectInfo);
+            const projectLoading = project.getProjectInfo?project.getProjectInfo.loading:false;
             return (
                 <div style={{margin: 15}}>
                     <TableView columns={columns(this)}
@@ -90,11 +90,7 @@ class SelectedProInfo extends Component {
 const columns = (self)=>[
     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
     {title: "项目描述", dataIndex: "description", key: "description"},
-    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum",
-        render(text,record){
-            return <a >{text}</a>
-        }
-    },
+    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum"},
     {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
     {title: "项目状态", dataIndex: "state", key: "state"},
     {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
