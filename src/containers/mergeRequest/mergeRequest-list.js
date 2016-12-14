@@ -112,7 +112,7 @@ class MergeRequestList extends React.Component {
     render(){
         const mrList = this.props.mrList;
         const data = this.getDataSource(mrList);
-        const {project} = this.props;
+        const {project,loginInfo} = this.props;
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
@@ -120,7 +120,7 @@ class MergeRequestList extends React.Component {
             <div style={{margin: 10}}>
                 <Row>
                     <Button className="pull-right" type="primary"
-                            disabled={projectInfo&&projectInfo.forks_from?false:true}
+                            disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
                             onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>

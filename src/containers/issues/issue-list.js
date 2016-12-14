@@ -167,6 +167,7 @@ class ProjectIssueList extends Component {
                                             {getFieldDecorator('milestone')(
                                                 <Select showSearch
                                                         showArrow={false}
+                                                        allowClear={true}
                                                         placeholder="请选择里程碑"
                                                         optionFilterProp="children"
                                                         notFoundContent="无法找到">
@@ -177,6 +178,7 @@ class ProjectIssueList extends Component {
                                             {getFieldDecorator('assignee')(
                                                 <Select showSearch
                                                         showArrow={false}
+                                                        allowClear={true}
                                                         placeholder="请选择实施人"
                                                         optionFilterProp="children"
                                                         notFoundContent="无法找到">
@@ -184,10 +186,9 @@ class ProjectIssueList extends Component {
                                                 </Select>)}
                                         </FormItem>
                                         <FormItem label="状态" {...formItemLayout}>
-                                            {getFieldDecorator('state')(<Select>
+                                            {getFieldDecorator('state')(<Select allowClear={true}>
                                                 <Option value="opened">打开</Option>
                                                 <Option value="closed">关闭</Option>
-                                                <Option value="reopened">重开</Option>
                                             </Select>)}
                                         </FormItem>
                                     </Col>
@@ -214,6 +215,7 @@ class ProjectIssueList extends Component {
                                             {getFieldDecorator('author_name')(
                                                 <Select showSearch
                                                         showArrow={false}
+                                                        allowClear={true}
                                                         placeholder="请选择创建人"
                                                         optionFilterProp="children"
                                                         notFoundContent="无法找到">

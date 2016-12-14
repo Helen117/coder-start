@@ -69,9 +69,9 @@ class ProjectItem extends Component {
             PubSub.publish("evtRefreshGroupTree",{});
             this.setState({
                 showForkPath: false,
-                // namespace:''
             });
             message.success('Fork成功!',3);
+            this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
         }
         // else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
         //     // message.error('Fork失败!'+forkResult.errors,3);
@@ -98,7 +98,6 @@ class ProjectItem extends Component {
         actions.getNamespace(loginInfo.userId);
         this.setState({
             showForkPath: true,
-            // namespace:''
         });
     }
 

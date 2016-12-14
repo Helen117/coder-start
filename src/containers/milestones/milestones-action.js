@@ -58,7 +58,7 @@ export function getMilestonesIssues(milestonesId,setId,projectId,state,due_end) 
         payload: {
             promise: api.post(path, {
                 data:{
-                    set_id : setId,
+                    sets_id : setId,
                     project_id: projectId,
                     milestone_id: milestonesId,
                     state: state,
