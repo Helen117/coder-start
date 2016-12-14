@@ -175,12 +175,10 @@ export default class MilestonesCalendar extends React.Component{
                 const milestoneTime = milestoneData[i].due_date+60*60*24*1000;
                 const colorId = i%6;
                 if(calendarTime < milestoneTime){
-                    let milestoneMount = null,issuesMount = null;
-                    let issuesList = [];
+                    let milestoneMount = null,issuesMount = null, issuesList = [];
                     if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
                         milestoneMount = this.getMilestoneData(milestoneData[i],calendarTime);
                     }
-                    console.log()
                     for(let j=0; j<milestoneData[i].issues.length; j++ ){
                         if(this.getTime(calendarTime) == this.getTime(milestoneData[i].issues[j].dueDate)){
                             issuesList.push(milestoneData[i].issues[j])
@@ -191,7 +189,7 @@ export default class MilestonesCalendar extends React.Component{
                         }
                     }
                     issuesMount = this.getIssuesData(issuesList);
-                    const dateCellMount =<div className={`background-${colorId}`} > {milestoneMount}{issuesMount}</div>
+                    const dateCellMount =<div style={{minHeight:'100%'}} className={`background-${colorId}`} > {milestoneMount}{issuesMount}</div>
                     return dateCellMount
                 }
 

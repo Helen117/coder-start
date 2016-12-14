@@ -28,12 +28,13 @@ class EditDemand extends Component{
         const {selectedRow} = this.props.location.state;
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
+            //console.log(selectedRow.expect_due_date,moment(selectedRow.expect_due_date))
             //this.getMilestone(moment(selectedRow.expect_due_date).valueOf());
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
-            setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date)});//时间类型转换
+            setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,"YYYY-MM-DD")});//时间类型转换
         }
         if(!selectedProjectSet){
             notification.error({
@@ -89,6 +90,8 @@ class EditDemand extends Component{
                     actions.addDemand(data);
                 }else{
                     data.id = selectedRow.id;
+                    data.expect_due_date = data.expect_due_date.valueOf();
+                    console.log(data,new Date(parseInt(data.expect_due_date)).toLocaleDateString())
                     actions.editDemand(data);
                 }
 
@@ -139,13 +142,12 @@ class EditDemand extends Component{
         callback();
     }
 
-    getMilestone(date){
+    getMilestone(date,time){
+        //console.log('date',date,time)
         const selectedProjectSet = this.props.selectedProjectSet;
         const sets_id = selectedProjectSet.selectedItemId;
         const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
         this.props.actions.getCurrentMilestone(sets_id,due_date)
-
-        //console.log('日期改变')
     }
 
     handleCancel() {
@@ -167,7 +169,6 @@ class EditDemand extends Component{
     disabledEditAssignee(selectedRow){
         let disabledEditTester=false,disabledEditDeveloper=false;
         if(selectedRow){
-            console.log('selectedRow',selectedRow)
             if(selectedRow.developer_confirm_date){
                 disabledEditDeveloper=true;
             }
@@ -189,7 +190,7 @@ class EditDemand extends Component{
         let helpMsg = ''
         if(currentMilestone) {
             if(currentMilestone.length>0){
-                helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+currentMilestone[0].dueDate
+                helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
             }else{
                 helpMsg = '未查询到匹配的里程碑'
             }
