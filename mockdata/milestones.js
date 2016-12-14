@@ -1,128 +1,23 @@
 
 module.exports.milestones ={
-    "success": true,
-    "errorCode": null,
-    "errorMsg": null,
-    "result": [
-        {
-            "id": 105,
-            "title": "sdfaa",
-            "description": "sdfa",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 104,
-            "title": "czcxzvcty",
-            "description": "vzxcv",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "closed",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 103,
-            "title": "czcxzvc",
-            "description": "vzxcv",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 102,
-            "title": "czcxzvcx",
-            "description": "vzxcv",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "closed",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 101,
-            "title": "dsafgs",
-            "description": "sdf",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 100,
-            "title": "dsafg",
-            "description": "sdf",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 99,
-            "title": "zxczxc",
-            "description": "zxc",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 98,
-            "title": "dsaf",
-            "description": "sdf",
-            "rate": 100,
-            "total": 1,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 97,
-            "title": "xcv",
-            "description": "cv",
-            "rate": 100,
-            "total": 0,
-            "unfinished": 0,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        },
-        {
-            "id": 96,
-            "title": "as",
-            "description": "as",
-            "rate": 25,
-            "total": 4,
-            "unfinished": 1,
-            "expired": 0,
-            "owner": null,
-            "state": "active",
-            "due_date": 1477353600000
-        }
-    ]
+    "success":true,
+    "errorCode":null,
+    "errorMsg":null,
+    "result":[
+        {"id":1,"title":"devops流程贯通","description":"devops主体流程完善及交叉测试","rate":10,"total":10,"unfinished":9,"expired":8,"state":"active","reason":null,
+            "issues":[{"id":38,"issueId":6,"gmId":1,"gitlabPid":34,"parentId":null,"type":"bug","title":"功能实现出错","assigneeId":3,"authorId":3,"createdAt":1481625449000,"updatedAt":1481625449000,"description":"测试","state":"opened","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":null,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":79,"urgent_degree":null,"record_status":null},
+                {"id":34,"issueId":null,"gmId":1,"gitlabPid":null,"parentId":null,"type":"bug","title":"GIFOAO分","assigneeId":7,"authorId":7,"createdAt":1481610097000,"updatedAt":null,"description":"等待","state":"closed","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481558400000,"movedToId":null,"reason":null,"requirePerson":5,"bugType":"功能点或规则未实现","ditch":"开发","bugAttribute":"深层次","historicalFlg":"0","adviceOrderDuty_person":"1","module":"CRM","repairFlg":"0","planTime":1481644800000,"tempRemandId":null,"setIssueId":80,"urgent_degree":null,"record_status":null},
+                {"id":43,"issueId":9,"gmId":1,"gitlabPid":34,"parentId":null,"type":"demand","title":"指派给张的需求","assigneeId":2,"authorId":2,"createdAt":1481680208000,"updatedAt":1481680208000,"description":"指派给张的需求","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481558400000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":84,"urgent_degree":null,"record_status":null},
+                {"id":28,"issueId":1,"gmId":1,"gitlabPid":34,"parentId":null,"type":"demand","title":"需求999","assigneeId":2,"authorId":2,"createdAt":1481598328000,"updatedAt":1481598328000,"description":"需求999","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":71,"urgent_degree":null,"record_status":null},
+                {"id":29,"issueId":2,"gmId":1,"gitlabPid":34,"parentId":null,"type":"demand","title":"bug的创建修改","assigneeId":3,"authorId":3,"createdAt":1481603860000,"updatedAt":1481603860000,"description":"bug的创建修改","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":74,"urgent_degree":null,"record_status":null},
+                {"id":32,"issueId":null,"gmId":1,"gitlabPid":null,"parentId":null,"type":"demand","title":"bug的创建修改","assigneeId":7,"authorId":1,"createdAt":1481608929000,"updatedAt":null,"description":"bug的创建修改","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":74,"urgent_degree":null,"record_status":null},
+                {"id":33,"issueId":null,"gmId":1,"gitlabPid":null,"parentId":null,"type":"bug","title":"功能实现出错","assigneeId":3,"authorId":7,"createdAt":1481608762000,"updatedAt":null,"description":"测试","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":2,"bugType":"业务逻辑实现问题","ditch":"测试","bugAttribute":"浅层次","historicalFlg":"1","adviceOrderDuty_person":"1","module":"项目","repairFlg":"1","planTime":1481644800000,"tempRemandId":null,"setIssueId":79,"urgent_degree":null,"record_status":null},
+                {"id":35,"issueId":null,"gmId":1,"gitlabPid":null,"parentId":null,"type":"demand","title":"需求999","assigneeId":4,"authorId":1,"createdAt":1481612889000,"updatedAt":null,"description":"需求999","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":71,"urgent_degree":null,"record_status":null},
+                {"id":41,"issueId":null,"gmId":1,"gitlabPid":null,"parentId":null,"type":"demand","title":"指派给赵婧瓶的需求","assigneeId":4,"authorId":1,"createdAt":1481627881000,"updatedAt":null,"description":"指派给赵婧瓶的需求","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":83,"urgent_degree":null,"record_status":null},
+                {"id":42,"issueId":8,"gmId":1,"gitlabPid":34,"parentId":null,"type":"demand","title":"指派给赵婧瓶的需求","assigneeId":2,"authorId":2,"createdAt":1481627845000,"updatedAt":1481627845000,"description":"指派给赵婧瓶的需求","state":"expired","position":0,"branchName":null,"updatedById":null,"confidential":0,"deletedAt":null,"dueDate":1481644800000,"movedToId":null,"reason":null,"requirePerson":null,"bugType":null,"ditch":null,"bugAttribute":null,"historicalFlg":null,"adviceOrderDuty_person":null,"module":null,"repairFlg":null,"planTime":null,"tempRemandId":null,"setIssueId":83,"urgent_degree":null,"record_status":null}
+                ],
+            "set_id":2,
+            "author_id":1,
+            "due_date":1481731200000}
+        ]
 };
