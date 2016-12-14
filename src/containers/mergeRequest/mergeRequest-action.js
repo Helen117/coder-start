@@ -27,7 +27,7 @@ export function fetchMergeBranchData(projectId) {
         payload: {
             promise: api.post('/project/fork-info', {
                 params: {
-                    projectId: projectId
+                    s_project_id: projectId
                 }
             })
         }

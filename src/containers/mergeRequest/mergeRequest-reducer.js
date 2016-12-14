@@ -31,17 +31,13 @@ export function mergeRequest(state = initialState, action = {}) {
 
         //get merge path
         case FETCH_MERGE_PATH_PENDING:
-            return {...state, fetchMergePath: true, isMR:true};
+            return {...state, mergeBranch:null, mergeBranchLoading:true};
 
         case FETCH_MERGE_PATH_SUCCESS:
-            let isMR = false;
-            if(action.payload.length > 1){
-                isMR = true;
-            }
-            return {...state, mergeBranch: action.payload, isMR:isMR,fetchMergePath: false};
+            return {...state, mergeBranch: action.payload, mergeBranchLoading:false};
 
         case FETCH_MERGE_PATH_ERROR:
-            return {...state, fetchMergePath: false};
+            return {...state, mergeBranch:null, mergeBranchLoading:false };
 
             
         //fetch merge issue    

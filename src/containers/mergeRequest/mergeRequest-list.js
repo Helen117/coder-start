@@ -112,7 +112,8 @@ class MergeRequestList extends React.Component {
     render(){
         const mrList = this.props.mrList;
         const data = this.getDataSource(mrList);
-        const {project} = this.props;
+        const {project,fetchIssueLoading,mergeBranchLoading} = this.props;
+        const buttonLoading = fetchIssueLoading || mergeBranchLoading
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
@@ -121,7 +122,8 @@ class MergeRequestList extends React.Component {
                 <Row>
                     <Button className="pull-right" type="primary"
                             disabled={projectInfo.id?false:true}
-                            onClick={this.createMergeRequest.bind(this)}>
+                            onClick={this.createMergeRequest.bind(this)}
+                            loading={buttonLoading}>
                         创建合并请求
                     </Button>
                 </Row>
@@ -198,7 +200,9 @@ MergeRequestList.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        mergeBranchLoading: state.mergeRequest.mergeBranchLoading,
         mergeBranch : state.mergeRequest.mergeBranch,
+        fetchIssueLoading: state.mergeRequest.fetchIssueLoading,
         issues: state.mergeRequest.Issues,
         mrList: state.mergeRequest.mrList,
         loading: state.mergeRequest.getMrListLoading,

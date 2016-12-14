@@ -28,6 +28,7 @@ class EditDemand extends Component{
         const {selectedRow} = this.props.location.state;
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
+            //this.getMilestone(moment(selectedRow.expect_due_date).valueOf());
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
@@ -138,6 +139,15 @@ class EditDemand extends Component{
         callback();
     }
 
+    getMilestone(date){
+        const selectedProjectSet = this.props.selectedProjectSet;
+        const sets_id = selectedProjectSet.selectedItemId;
+        const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
+        this.props.actions.getCurrentMilestone(sets_id,due_date)
+
+        //console.log('日期改变')
+    }
+
     handleCancel() {
         const {form} = this.props;
         const {router} = this.context;
@@ -154,20 +164,44 @@ class EditDemand extends Component{
         })
     }
 
+    disabledEditAssignee(selectedRow){
+        let disabledEditTester=false,disabledEditDeveloper=false;
+        if(selectedRow){
+            console.log('selectedRow',selectedRow)
+            if(selectedRow.developer_confirm_date){
+                disabledEditDeveloper=true;
+            }
+            if(selectedRow.tester_confirm_date){
+                disabledEditTester=true;
+            }
+        }
+
+        return {disabledEditDeveloper,disabledEditTester}
+    }
+
     render() {
+        const {editType,selectedRow} = this.props.location.state;
         const { getFieldDecorator } = this.props.form;
-        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading} = this.props;
+        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
-        const {editType} = this.props.location.state;
+        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow)
+        let helpMsg = ''
+        if(currentMilestone) {
+            if(currentMilestone.length>0){
+                helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+currentMilestone[0].dueDate
+            }else{
+                helpMsg = '未查询到匹配的里程碑'
+            }
+        }
+
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
         };
 
-
         const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="需求修改原因" >
-            {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
+            {getFieldDecorator('reason',{rules:[{ required:true,message:'请填写修改原因'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
         const labels = labelInfo?labelInfo.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
@@ -205,6 +239,7 @@ class EditDemand extends Component{
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      style={{ width: 300 }}
+                                     disabled={disabledEditDeveloper}
                                      onChange={this.handleChangeBlur.bind(this)}>
                                 {developer}
                             </Select>)}
@@ -220,14 +255,18 @@ class EditDemand extends Component{
                                      placeholder="请选择对应的测试人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
+                                     disabled={disabledEditTester}
                                      style={{ width: 300 }}
                                       >
                                 {tester}
                             </Select>)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="计划完成时间" >
-                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 300 }}  />)}
+                    <FormItem {...formItemLayout} label="计划完成时间" help={helpMsg}>
+                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})
+                        (<DatePicker disabledDate={this.disabledDate.bind(this)}
+                                     onChange={this.getMilestone.bind(this)}
+                                     style={{ width: 300 }}  />)}
                     </FormItem>
 
                     {modifyReason}
@@ -256,26 +295,27 @@ EditDemand = Form.create()(EditDemand);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        loginInfo:state.login.profile,
+        loginInfo: state.login.profile,
         selectedProjectSet: state.projectSet.selectedProjectSet,
-        editDemandLoading:state.request.editDemandLoading,
-        editDemandResult:state.request.editDemandResult,
+        editDemandLoading: state.request.editDemandLoading,
+        editDemandResult: state.request.editDemandResult,
         editDemandError: state.request.editDemandError,
         addDemandResult: state.request.addDemandResult,
         addDemandLoading: state.request.addDemandLoading,
         addDemandError: state.request.addDemandError,
-        labelLoading:state.request.getLabelLoading,
-        labelInfo:state.request.label,
-        developerLoading:state.request.getDeveloperLoading,
-        developerInfo:state.request.developer,
-        testerLoading:state.request.getTesterLoading,
-        testerInfo:state.request.tester,
+        labelLoading: state.request.getLabelLoading,
+        labelInfo: state.request.label,
+        developerLoading: state.request.getDeveloperLoading,
+        developerInfo: state.request.developer,
+        testerLoading: state.request.getTesterLoading,
+        testerInfo: state.request.tester,
+        currentMilestone: state.request.currentMilestone,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators(request,dispatch)
+        actions: bindActionCreators(request,dispatch),
     }
 }
 
