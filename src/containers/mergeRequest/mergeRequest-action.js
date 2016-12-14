@@ -42,7 +42,7 @@ export function fetchMergeAssign(projectId) {
         payload: {
             promise: api.post('/project/mr-assign', {
                 params: {
-                    id: projectId,
+                    id: projectId
                 }
             })
         }
