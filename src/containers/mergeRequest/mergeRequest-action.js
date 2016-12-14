@@ -21,13 +21,28 @@ export function fetchMrListData(projectId) {
 }
 
 
-export function fetchMergeBranchData(projectId) {
+export function fetchMergeBranchData(sProjectId,tProjectId,userId) {
     return {
         type: 'FETCH_MERGE_PATH',
         payload: {
             promise: api.post('/project/fork-info', {
                 params: {
-                    projectId: projectId
+                    s_project_id: sProjectId,
+                    t_project_id: tProjectId,
+                    user_id:userId
+                }
+            })
+        }
+    }
+}
+
+export function fetchMergeAssign(projectId) {
+    return {
+        type: 'MR_ASSIGN',
+        payload: {
+            promise: api.post('/project/mr-assign', {
+                params: {
+                    id: projectId
                 }
             })
         }

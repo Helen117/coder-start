@@ -29,14 +29,14 @@ export default function request(state = initialState, action = {}) {
             return {...state,  getLabelLoading: false, getLabelError: action.payload.errorMsg};
 
         case 'ADD_DEMAND_PENDING':
-            return {...state, addDemandResult:null,addDemandLoading: true};
+            return {...state, addDemandResult:null,currentMilestone:null ,addDemandLoading: true};
         case 'ADD_DEMAND_SUCCESS':
             return {...state, addDemandResult: action.payload, addDemandLoading: false};
         case 'ADD_DEMAND_ERROR':
             return {...state,  addDemandResult:null,addDemandLoading: false,  addDemandError: action.payload.errorMsg};
 
         case 'EDIT_DEMAND_PENDING':
-            return {...state, editDemandResult: null,editDemandLoading: true};
+            return {...state, editDemandResult: null,currentMilestone:null,editDemandLoading: true};
         case 'EDIT_DEMAND_SUCCESS':
             return {...state, editDemandResult: action.payload, editDemandLoading: false};
         case 'EDIT_DEMAND_ERROR':
@@ -57,6 +57,14 @@ export default function request(state = initialState, action = {}) {
         case 'DELETE_REQUIREMENT_INFO_ERROR':
             return {...state, deleteResult: null, deleteLoading: false};
 
+
+        case 'GET_CURRENT_MILESTONE_PENDING':
+            return {...state, currentMilestone: null, currentMilestoneLoading: true};
+        case 'GET_CURRENT_MILESTONE_SUCCESS':
+            return {...state, currentMilestone: action.payload, currentMilestoneLoading: false};
+        case 'GET_CURRENT_MILESTONE_ERROR':
+            return {...state, currentMilestone: null, currentMilestoneLoading: false};
+            
         default:
             return state;
     }

@@ -41,10 +41,12 @@ export default function issue(state = {}, action = {}) {
         case 'COMMENT_ERROR':
             return {...state,commentLoading: false,commentError:action.payload.errorMsg};
 
+        case 'UPDATE_ISSUE_PENDING':
+            return {...state,updateIssueLoading: true};
         case 'UPDATE_ISSUE_SUCCESS':
-            return {...state,updateIssue: action.payload};
+            return {...state,updateIssue: action.payload,updateIssueLoading:false};
         case 'UPDATE_ISSUE_ERROR':
-            return {...state,updateIssueError: action.payload.errorMsg};
+            return {...state,updateIssueError: action.payload.errorMsg,updateIssueLoading:false};
 
         case 'FETCH_DATA_SUCCESS':
             return {...state,milestones: action.payload.milestones,members:action.payload.members,labels:action.payload.labels,fetchErrors: null};

@@ -31,17 +31,13 @@ export function mergeRequest(state = initialState, action = {}) {
 
         //get merge path
         case FETCH_MERGE_PATH_PENDING:
-            return {...state, fetchMergePath: true, isMR:true};
+            return {...state, mergeBranch:null, mergeBranchLoading:true};
 
         case FETCH_MERGE_PATH_SUCCESS:
-            let isMR = false;
-            if(action.payload.length > 1){
-                isMR = true;
-            }
-            return {...state, mergeBranch: action.payload, isMR:isMR,fetchMergePath: false};
+            return {...state, mergeBranch: action.payload, mergeBranchLoading:false};
 
         case FETCH_MERGE_PATH_ERROR:
-            return {...state, fetchMergePath: false};
+            return {...state, mergeBranch:null, mergeBranchLoading:false };
 
             
         //fetch merge issue    
@@ -54,6 +50,14 @@ export function mergeRequest(state = initialState, action = {}) {
         case FETCH_ISSUES_DATA_ERROR:
             return {state, Issues:null, fetchIssueLoading: false };
 
+        case 'MR_ASSIGN_PENDING':
+            return {...state,mrAssignee:null, mrAssigneeLoading:true};
+
+        case 'MR_ASSIGN_SUCCESS':
+            return {...state, mrAssignee: action.payload, mrAssigneeLoading:false};
+
+        case 'MR_ASSIGN_ERROR':
+            return { ...state, mrAssignee:null,mrAssigneeLoading:false, };
 
         //create mr
         case CREATE_MR_PENDING:

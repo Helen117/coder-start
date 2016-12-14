@@ -7,10 +7,11 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { message, Modal} from 'antd';
+import { message, Modal, Spin, Icon} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import PopoverImg from '../../components/popover-img'
+import PopoverImg from '../../components/popover-img';
+import TableView from '../../components/table';
 import {deleteProjectSet,fetchProjectSetTree} from './project-set-action';
 
 const confirm = Modal.confirm;
@@ -34,6 +35,12 @@ class SelectedSetInfo extends Component {
         }
     }
 
+    successCallback(type){
+        message.success(type);
+        const userId = this.props.loginInfo.userId;
+        this.props.fetchProjectSetTree(userId);
+    }
+
     editProjectSet(type,selectedProjectSet){
         if(selectedProjectSet){
             this.context.router.push({
@@ -47,7 +54,6 @@ class SelectedSetInfo extends Component {
     }
 
     delProjectSet(type,selectedProjectSet){
-        
         if(selectedProjectSet) {
             const deleteProjectSetAction = this.props.deleteProjectSetAction;
             const userId = this.props.loginInfo.userId;
@@ -75,38 +81,83 @@ class SelectedSetInfo extends Component {
         }
     }
 
-    successCallback(type){
-        message.success(type);
-        const userId = this.props.loginInfo.userId;
-        this.props.fetchProjectSetTree(userId);
+
+
+    getDataSource(selectedProjectSet){
+        let dataSource = [];
+        if(selectedProjectSet){
+            for(let j=0; j<selectedProjectSet.children.length; j++){
+                dataSource.push({
+                    project_name: selectedProjectSet.children[j].name,
+                    description: selectedProjectSet.children[j].description,
+                    creator: selectedProjectSet.children[j].creator,
+                })
+            }
+        }
+        return dataSource;
+    }
+    
+    getSelectedProjectSet(selectedItemInfo){
+        const projectSetTree = this.props.projectSetTree;
+        if(projectSetTree && selectedItemInfo) {
+            for (let i = 0; i < projectSetTree.length; i++) {
+                if(projectSetTree[i].id == selectedItemInfo.id){
+                    return projectSetTree[i];
+                }
+            }
+        }
     }
 
 
     render(){
-        const visible = this.props.visible;
-        const selectedProjectSet = this.props.selectedItemInfo;
-        const spinning = this.props.delLoading?true:false;
-        const content = (
-            <div >
-                <a style={{paddingLeft:10}}
-                   onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
-                <a style={{paddingLeft:10}}
-                   onClick={this.editProjectSet.bind(this,'update',selectedProjectSet)}>修改项目集</a>
-                <a style={{paddingLeft:10}}
-                   onClick={this.delProjectSet.bind(this,'del',selectedProjectSet)}>删除项目集</a>
-            </div>
-        );
+        const {visible,selectedItemInfo,delLoading} = this.props;
+
         if(visible){
-            return (
-                <div style={{margin:5}}>
-                    <PopoverImg content={content}></PopoverImg>
+            const spinning = delLoading?true:false;
+            const selectedProjectSet = this.getSelectedProjectSet(selectedItemInfo);
+            const dataSource = this.getDataSource(selectedProjectSet);
+            const content = (
+                <div >
+                    <a style={{paddingLeft:10}}
+                       onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
+                    <a style={{paddingLeft:10}}
+                       onClick={this.editProjectSet.bind(this,'update',selectedItemInfo)}>修改项目集</a>
+                    <a style={{paddingLeft:10}}
+                       onClick={this.delProjectSet.bind(this,'del',selectedItemInfo)}>删除项目集</a>
                 </div>
+            );
+
+            return (
+                <Spin spinning={spinning} tip="正在删除数据，请稍候...">
+                    <div style={{margin:5}}>
+                        <PopoverImg content={content}></PopoverImg>
+                        {
+                            selectedProjectSet?
+                                <div>
+                                    <span>项目集合：{selectedProjectSet.name}</span>
+                                    <span style={{marginLeft:20}}>描述：{selectedProjectSet.description}</span>
+                                    <TableView columns={columns(this)}
+                                               dataSource={dataSource}
+                                    ></TableView>
+                                </div>:<div className="null_type_div">
+                                <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
+                            </div>
+                        }
+
+                    </div>
+                </Spin>
             )
         }else{
             return null;
         }
     }
 }
+
+const columns = (self)=>[
+    {title: "项目名称", dataIndex: "project_name", key: "project_name"},
+    {title: "项目描述", dataIndex: "description", key: "description"},
+    {title: "创建人", dataIndex: "creator", key: "creator"},
+];
 
 
 SelectedSetInfo.contextTypes = {
