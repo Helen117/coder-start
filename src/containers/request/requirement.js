@@ -92,9 +92,8 @@ class RequirementInfo extends Component {
                 if (typeof(list[i].expect_due_date) == "number") {
                     list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
-                console.log('list[i].developer_confirm_date',list[i].developer_confirm_date)
-                const developer_confirm_date=list[i].developer_confirm_date? list[i].developer_confirm_date + "(开发) ":'';
-                const tester_confirm_date=list[i].tester_confirm_date? list[i].tester_confirm_date + "(测试)":'';
+                const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
+                const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
                 list[i].confirm_time = developer_confirm_date + tester_confirm_date;
 
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
@@ -196,8 +195,10 @@ RequirementInfo.prototype.columns = (self)=>[{
 },*/ {
     title: '需求确认时间',
     dataIndex: 'confirm_time',
+    width: '12%',
+
 }, {
-    title: '期望上线时间',
+    title: '计划完成时间',
     dataIndex: 'expect_due_date',
 },{
     title: '操作',
