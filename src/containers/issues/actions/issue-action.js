@@ -39,6 +39,17 @@ export function updateIssue(issue) {
     }
 }
 
+export function testPass(data) {
+    return {
+        type: 'UPDATE_ISSUE',
+        payload: {
+            promise: api.post('/examination/submit-test-report',{
+                data:data
+            })
+        }
+    }
+}
+
 export function issueNotes(projectId,issueId) {
     return {
         type: 'ISSUE_NOTES',
