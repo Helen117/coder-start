@@ -70,6 +70,7 @@ const validate = function (next, replace, callback) {
     callback();
 };
 const root = document.createElement('div');
+root.style = "min-height:100%";
 document.body.appendChild(root);
 
 // console.log = (function(oriLogFunc){
