@@ -92,6 +92,7 @@ class Home extends React.Component {
                         </Col>
                     </Row>
                 </Row>
+                 <Row style={{height:'10px',backgroundColor:'#ECECEC'}}></Row>
                 <Row>
                    <Col  style={{paddingRight: 5}}>
                         <MyIssueList timeLineData={this.props.myIssueList}
