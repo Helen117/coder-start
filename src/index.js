@@ -55,6 +55,9 @@ import ProjectBuildHistory from './containers/project-compile/build-history';
 import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
+import MainPageComponent from './components/echarts-demo/MainPageComponent.jsx';
+import EchartsComponent from './components/echarts-demo/EchartsComponent.jsx';
+
 const history = useRouterHistory(createHistory)({basename: ''});
 //const history = syncHistoryWithStore(hashHistory, store);
 const store = configureStore();
@@ -162,6 +165,11 @@ ReactDOM.render(
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
+
+                    <Route path="/echarts" component={MainPageComponent}>
+                        <Route path="/echarts/:type" component={EchartsComponent}/>
+                    </Route>
+
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>
