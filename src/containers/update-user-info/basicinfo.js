@@ -102,7 +102,7 @@ class UpdateBasicInfo extends React.Component {
     }
 
     render() {
-        const {visible,loginInfo,AllUserInfo} = this.props;
+        const {visible,loginInfo,AllUserInfo,UserInfo} = this.props;
         const {getFieldDecorator,getFieldError} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
@@ -135,7 +135,7 @@ class UpdateBasicInfo extends React.Component {
                 email_list = email_array.map((item,index)=>{
                     let _index = item.indexOf('@');
                     let _email = item.substr(0,_index);
-                    let email_ = item.substr(_index+1,item.length);
+                    let email_ = item.substr(_index,item.length);
 
                     selectAfter = getFieldDecorator(`option_${index}`,{initialValue:email_})(
                         <Select style={{ width: 100 }} >
@@ -163,6 +163,8 @@ class UpdateBasicInfo extends React.Component {
                     );
                 })
             }
+            let updateLoading = UserInfo?UserInfo.updateLoading:false;
+            let updateDisabled = UserInfo?UserInfo.updateDisabled:false;
 
             return(
                 <div>
@@ -184,7 +186,7 @@ class UpdateBasicInfo extends React.Component {
                         </FormItem>):(
                             <div>
                                 <FormItem {...formItemLayout} label="中文名"
-                                          help={getFieldError('name')?getFieldError('name'):"修改中文名后需刷新后才能获得认证！"}>
+                                          help={getFieldError('name')?getFieldError('name'):"修改中文名后需退出登录后才能获得新数据！"}>
                                     {nameProps}
                                 </FormItem>
                                 {email_list}
@@ -192,8 +194,8 @@ class UpdateBasicInfo extends React.Component {
                         )}
                         <FormItem wrapperCol={{span: 10, offset: 7}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit"
-                                    loading={this.props.updateLoading}
-                                    disabled={this.props.updateDisabled}>
+                                    loading={updateLoading}
+                                    disabled={updateDisabled}>
                                 确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>重置</Button>
                         </FormItem>
