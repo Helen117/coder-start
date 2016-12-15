@@ -65,7 +65,6 @@ const FormItem = Form.Item;
                 data.role = confirmList[0].role;
                 data.username = loginInfo.username;
                 data.files= this.state.fileList;
-                // console.log('接收的数据',data);
                 this.props.ConfirmAction(data)
             }
         })
@@ -88,7 +87,6 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-         // console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
              if (!(file.type === 'application/msword')) {
                  message.error('只能上传word文档',3);
@@ -115,7 +113,6 @@ const FormItem = Form.Item;
                      url: reader.result
                  }]
              });
-             // console.log(reader.result);
          }.bind(this);
          reader.readAsDataURL(file);
          //reader.readAsArrayBuffer(file);
