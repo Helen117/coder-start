@@ -39,3 +39,25 @@ export function approveResult(data) {
         }
     }
 }
+
+export function getMrDetail(task_id) {
+    return {
+        type: 'GET_MR_DETAIL',
+        payload: {
+            promise: api.post('/examination/register-examine', {
+                task_id:task_id
+            })
+        }
+    }
+}
+
+export function MrCodeChanges(task_id) {
+    return {
+        type: 'GET_CODE_CHANGES',
+        payload: {
+            promise: api.post('/examination/register-examine', {
+                task_id:task_id
+            })
+        }
+    }
+}
