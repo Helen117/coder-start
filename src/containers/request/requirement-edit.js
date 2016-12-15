@@ -8,6 +8,7 @@ import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
+import * as home from '../home/actions/home-action';
 import * as request from './actions/request-action';
 
 const FormItem = Form.Item;
@@ -30,6 +31,15 @@ class EditDemand extends Component{
             const {setFieldsValue} = this.props.form;
             //console.log(selectedRow.expect_due_date,moment(selectedRow.expect_due_date))
             //this.getMilestone(moment(selectedRow.expect_due_date).valueOf());
+            if(selectedRow.files&&selectedRow.files.length>0){
+                this.setState({fileList:[{
+                    uid: -1,
+                    name: selectedRow.files[0],
+                    status: 'done',
+                    url: ''
+                }]
+                });
+            }
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
             setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
@@ -68,7 +78,8 @@ class EditDemand extends Component{
     sucCallback(type){
         message.success(type);
         const {actions,selectedProjectSet} = this.props;
-        actions.getDemandInfo(selectedProjectSet.selectedItemId)
+        actions.getDemandInfo(selectedProjectSet.selectedItemId);
+        this.props.home.getNotifyItems(this.props.loginInfo.userId);
         this.context.router.goBack();
     }
 
@@ -85,13 +96,15 @@ class EditDemand extends Component{
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
-                data.sid = selectedProjectSet.selectedItemId;
+                data.files= this.state.fileList;
+                // console.log('接收的数据',data);
                 if(editType == 'add'){
                     actions.addDemand(data);
                 }else{
                     data.id = selectedRow.id;
+                    data.files= this.state.fileList&&selectedRow.files&&this.state.fileList[0].name==selectedRow.files[0]?'':this.state.fileList;
                     data.expect_due_date = data.expect_due_date.valueOf();
-                    console.log(data,new Date(parseInt(data.expect_due_date)).toLocaleDateString())
+                    // console.log(data,new Date(parseInt(data.expect_due_date)).toLocaleDateString())
                     actions.editDemand(data);
                 }
 
@@ -178,6 +191,31 @@ class EditDemand extends Component{
         }
 
         return {disabledEditDeveloper,disabledEditTester}
+    }
+
+    beforeUpload(file){
+        if (!(file.type === 'application/msword')) {
+            message.error('上传的需求文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
+            return false;
+        }
+        if(file.size/ 1024 / 1024 >10){
+            message.error('文件大小不能超过10M',3);
+            return false;
+        }
+        let reader = new FileReader();
+        reader.onloadend = function () {
+            this.setState({
+                fileList:[{
+                    uid: file.uid,
+                    name: file.name,
+                    status: 'done',
+                    url: reader.result
+                }]
+            });
+            // console.log(reader.result);
+        }.bind(this);
+        reader.readAsDataURL(file);
+        return false;
     }
 
     render() {
@@ -270,6 +308,15 @@ class EditDemand extends Component{
                                      style={{ width: 300 }}  />)}
                     </FormItem>
 
+                    <FormItem {...formItemLayout}  label="文档上传" >
+                        {getFieldDecorator('files')(
+                            <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
+                                <Button type="ghost">
+                                    <Icon type="upload" /> 点击上传
+                                </Button>
+                            </Upload>)}
+                    </FormItem>
+
                     {modifyReason}
 
                     <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
@@ -317,6 +364,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch){
     return{
         actions: bindActionCreators(request,dispatch),
+        home:bindActionCreators(home, dispatch),
     }
 }
 

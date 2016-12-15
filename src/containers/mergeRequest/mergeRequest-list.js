@@ -123,7 +123,7 @@ class MergeRequestList extends React.Component {
                 <Row>
                     <Button className="pull-right" type="primary"
                             disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
-                            loading={buttonLoading}>
+                            loading={buttonLoading}
                             onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>
