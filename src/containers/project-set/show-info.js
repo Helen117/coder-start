@@ -20,7 +20,6 @@ class ShowInfo extends Component {
 
     componentDidMount() {
         const selectedItemId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
-        console.log('调用componentDidMount',selectedItemId)
         this.isShowModel(selectedItemId)
     }
 
@@ -44,7 +43,6 @@ class ShowInfo extends Component {
     }
 
     render(){
-        console.log('showSetInfo',showSetInfo,'showProjectInfo',showProjectInfo)
         return(
             <div>
                 <SelectedSetInfo visible={showSetInfo}/>

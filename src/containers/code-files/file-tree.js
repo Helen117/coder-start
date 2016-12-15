@@ -97,6 +97,9 @@ class FileTree extends React.Component {
 
     render(){
         const { fetchCodeStatus,visible } = this.props;
+        const pagination = {
+            pageSize:30
+        };
         if((fetchCodeStatus || false) && (visible == true) ){
             const dataSource = [];
             for(var i=0; i<this.state.dataSource.length; i++){
@@ -108,7 +111,9 @@ class FileTree extends React.Component {
 
             return (
                 <div style={{"paddingLeft":"10px"}}>
-                    <Table columns={this.getColumns(this,this.state.dataSource)} dataSource={dataSource}
+                    <Table columns={this.getColumns(this,this.state.dataSource)}
+                           dataSource={dataSource}
+                           pagination={pagination}
                            onRowClick={this.clickFileTree.bind(this)}></Table>
                 </div>
             )

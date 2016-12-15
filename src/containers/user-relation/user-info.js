@@ -214,6 +214,9 @@ class UserInfo extends React.Component {
             selectedRowKeys,
             onChange:this.onSelectedChange.bind(this)
         };
+        const pagination = {
+            pageSize:20
+        };
         let dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
@@ -229,6 +232,7 @@ class UserInfo extends React.Component {
                                    this.state.dataSource,this.state.filterKeys)}
                                dataSource={dataSource}
                                rowSelection={showOpt==true?null:rowSelection}
+                               pagination={pagination}
                                loading={getUserLoading?true:false}></Table>
                         <Modal title="确认移除此成员吗?"
                                visible={this.state.moveOutVisible}
