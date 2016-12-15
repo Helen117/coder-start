@@ -14,11 +14,11 @@ export default function approve(state = initialState, action = {}) {
             return Object.assign({}, initialState, {loading: false,approveList:null,errors: action.payload.errorMsg});
 
         case 'APPROVAL_DETAIL_PENDING':
-            return {...state, getDetailLoading: true};
+            return {...state, approvalDetail:null, getDetailLoading: true};
         case 'APPROVAL_DETAIL_SUCCESS':
             return {...state,approvalDetail: action.payload, getDetailLoading: false};
         case 'APPROVAL_DETAIL_ERROR':
-            return {...state,getDetailError: action.payload.errorMsg, getDetailLoading: false};
+            return {...state,approvalDetail:null,getDetailError: action.payload.errorMsg, getDetailLoading: false};
 
         case 'APPROVE_RESULT_PENDING':
             return {...state,approveResult:null, commitLoading: true};
@@ -28,13 +28,6 @@ export default function approve(state = initialState, action = {}) {
             return {...state,commitLoading: false,approveResult:null,resultErrors: action.payload.errorMsg};
 
 
-        case 'GET_MR_DETAIL_PENDING':
-            return {...state,mrDetail:null, mrDetailLoading: true};
-        case 'GET_MR_DETAIL_SUCCESS':
-            return {...state,mrDetail:action.payload,mrDetailLoading: false};
-        case 'GET_MR_DETAIL_ERROR':
-            return {...state,mrDetail:null ,mrDetailLoading: false};
-
         case 'GET_CODE_CHANGES_PENDING':
             return {...state,codeChanges:null, codeChangesLoading: true};
         case 'GET_CODE_CHANGES_SUCCESS':
@@ -42,11 +35,11 @@ export default function approve(state = initialState, action = {}) {
         case 'GET_CODE_CHANGES_ERROR':
             return {...state,codeChanges:null, codeChangesLoading: false};
 
-        case 'APPROVE_MR_RESULT_PENDING':
+        case 'APPROVE_MR_PENDING':
             return {...state,approveMrResult:null, approveMrLoading: true};
-        case 'APPROVE_MR_RESULT_SUCCESS':
+        case 'APPROVE_MR_SUCCESS':
             return {...state,approveMrResult:action.payload, approveMrLoading: false};
-        case 'APPROVE_MR_RESULT_ERROR':
+        case 'APPROVE_MR_ERROR':
             return {...state,approveMrResult:null, approveMrLoading: false};
             
         default:

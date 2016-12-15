@@ -3,4 +3,4 @@
  */
 export ConfirmList from './confirm-list';
 export DevelopConfirm from './confirm';
-export DevelopTransPond from  './transpond'
+export DevelopTransPond from  './transpond';

@@ -5,7 +5,7 @@ import React,{ PropTypes } from 'react';
 import { Transfer, Button, Form ,Modal, Input,Spin, notification,message} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
-import {createProjectSet,updateProjectSet,fetchProjectSetTree,fetchProjectMsg} from './project-set-action'
+import {createProjectSet,updateProjectSet,fetchProjectSetTree,getSetProject} from './project-set-action'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -21,7 +21,7 @@ class ProjectSetCreate extends React.Component {
 
     componentWillMount(){
         const userId = this.props.logInfo.userId;
-        this.props.fetchProjectMsg(userId);
+        this.props.getSetProjectAction(userId);
     }
     componentDidMount() {
         if(this.props.location.state.editType != 'add'){
@@ -207,7 +207,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
-        fetchProjectMsg: bindActionCreators(fetchProjectMsg, dispatch),
+        getSetProjectAction: bindActionCreators(getSetProject, dispatch),
         createProjectSet: bindActionCreators(createProjectSet, dispatch),
         updateProjectSetAction: bindActionCreators(updateProjectSet, dispatch),
     }

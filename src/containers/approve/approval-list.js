@@ -46,8 +46,8 @@ class ApproveList extends Component {
             }else{
                 pathName = '/transpondOperate'
             }
-        }else if(record.type=='代码合并'){
-
+        }else if(record.type=='代码合并申请'){
+            pathName='/approveMr'
         }
 
         this.context.router.push({
