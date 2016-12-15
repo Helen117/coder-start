@@ -294,8 +294,16 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKey
     }else{
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
+                                       filterKey="name"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
+                                       filterKey="role"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
         ]
