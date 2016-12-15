@@ -104,7 +104,6 @@ class EditDemand extends Component{
                     data.id = selectedRow.id;
                     data.files= this.state.fileList&&selectedRow.files&&this.state.fileList[0].name==selectedRow.files[0]?'':this.state.fileList;
                     data.expect_due_date = data.expect_due_date.valueOf();
-                    // console.log(data,new Date(parseInt(data.expect_due_date)).toLocaleDateString())
                     actions.editDemand(data);
                 }
 

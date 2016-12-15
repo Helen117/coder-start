@@ -50,7 +50,7 @@ class TableFilterTitle extends React.Component {
     }
 
     searchData(e){
-        const {filterChange,filterKey,currentData,dataSource,filterKeys} = this.props;
+        const {filterChange,filterKey,dataSource,filterKeys} = this.props;
         let isFiled;
         let newdata = dataSource;
         if(e.target.value){
@@ -69,7 +69,6 @@ class TableFilterTitle extends React.Component {
             }
             this.setState({
                 isFiled:true,
-                //visible:!this.state.visible
             })
             isFiled = true;
             if(filterChange){
@@ -83,7 +82,6 @@ class TableFilterTitle extends React.Component {
             }
             this.setState({
                 isFiled:false,
-                //visible:!this.state.visible
             })
             isFiled = false;
             if(filterChange){

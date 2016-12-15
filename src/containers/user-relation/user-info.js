@@ -192,15 +192,12 @@ class UserInfo extends React.Component {
             let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
             user_ids.push(_id);
         }
-        if(onSelected){
-            onSelected(user_ids);
-        }
-        this.props.setSelectedRowKeys(selectedRowKeys,busiType);
+        this.props.setSelectedRowKeys(selectedRowKeys,user_ids);
     }
 
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,userRelation,busiType} = this.props;
+            moveUserInfo,busiType,selectedUsers} = this.props;
 
         let getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
@@ -208,8 +205,7 @@ class UserInfo extends React.Component {
         let loadingTree = userRelationTree?userRelationTree.loading:false;
         let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
 
-        let selectedRowKeys = userRelation['selectedKeys_'+busiType]?
-            userRelation['selectedKeys_'+busiType].selectedKeys:[];
+        let selectedRowKeys = selectedUsers?selectedUsers.selectedKeys:[];
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
 
@@ -232,7 +228,7 @@ class UserInfo extends React.Component {
                                columns={this.groupColumns(this,showOpt,this.data,
                                    this.state.dataSource,this.state.filterKeys)}
                                dataSource={dataSource}
-                               rowSelection={rowSelection}
+                               rowSelection={showOpt==true?null:rowSelection}
                                loading={getUserLoading?true:false}></Table>
                         <Modal title="确认移除此成员吗?"
                                visible={this.state.moveOutVisible}
@@ -294,8 +290,16 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKey
     }else{
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
+                                       filterKey="name"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
             {title: (<TableFilterTitle id="role" title="角色"
+                                       filterKey="role"
+                                       filterKeys={filterKeys}
+                                       dataSource={dataSource}
+                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
         ]
@@ -314,6 +318,7 @@ function mapStateToProps(state) {
         deleteUserInfo:state.UserRelation.deleteUserRelation,
         treeFilterState : state.treeFilter,
         userRelation:state.UserRelation,
+        selectedUsers:state.UserRelation.selectedUsers,
     }
 }
 

@@ -116,11 +116,11 @@ export function setUserGroupDelete(group_id, user_id) {
     }
 }
 //保存table的selectedRowKeys
-export function setSelectedRowKeys(selectedRowKeys,busi_type) {
+export function setSelectedRowKeys(selectedRowKeys,user_ids) {
     return {
         type: SELECTED_ROW_KEYS,
         selectedRowKeys:selectedRowKeys,
-        busi_type:busi_type
+        user_ids:user_ids
     }
 }
 //非领导数据
