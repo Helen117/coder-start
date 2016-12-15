@@ -21,6 +21,7 @@ class SelectedSetInfo extends Component {
     }
 
     componentDidMount() {
+        //console.log('调用componentDidMount')
     }
 
     componentWillReceiveProps(nextProps) {
@@ -111,13 +112,13 @@ class SelectedSetInfo extends Component {
 
     render(){
         const {visible,selectedItemInfo,delLoading} = this.props;
-
+        console.log('visible')
         if(visible){
             const spinning = delLoading?true:false;
             const selectedProjectSet = this.getSelectedProjectSet(selectedItemInfo);
             const dataSource = this.getDataSource(selectedProjectSet);
             const content = (
-                <div >
+                <div>
                     <a style={{paddingLeft:10}}
                        onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
                     <a style={{paddingLeft:10}}

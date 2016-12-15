@@ -18,22 +18,33 @@ class ShowInfo extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        const selectedItemId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
+        console.log('调用componentDidMount',selectedItemId)
+        this.isShowModel(selectedItemId)
+    }
+
     componentWillReceiveProps(nextProps) {
         const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
         const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
         //点击项目集合树切换数据类型，页面加载不同内容
         if(thisId != nextId && nextId){
-            if(nextId.indexOf("_g")>0) {
-                showProjectInfo = false;
-                showSetInfo = true;
-            }else if(nextId.indexOf("_p")>0){
-                showProjectInfo = true;
-                showSetInfo = false;
-            }
+            this.isShowModel(nextId)
+        }
+    }
+
+    isShowModel(id){
+        if(id.indexOf("_g")>0) {
+            showProjectInfo = false;
+            showSetInfo = true;
+        }else if(id.indexOf("_p")>0){
+            showProjectInfo = true;
+            showSetInfo = false;
         }
     }
 
     render(){
+        console.log('showSetInfo',showSetInfo,'showProjectInfo',showProjectInfo)
         return(
             <div>
                 <SelectedSetInfo visible={showSetInfo}/>
