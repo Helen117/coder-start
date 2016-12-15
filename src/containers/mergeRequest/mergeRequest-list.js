@@ -112,8 +112,9 @@ class MergeRequestList extends React.Component {
     render(){
         const mrList = this.props.mrList;
         const data = this.getDataSource(mrList);
-        const {project,fetchIssueLoading,mergeBranchLoading} = this.props;
-        const buttonLoading = fetchIssueLoading || mergeBranchLoading
+        const {project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
+        const buttonLoading = fetchIssueLoading || mergeBranchLoading;
+
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
@@ -121,8 +122,8 @@ class MergeRequestList extends React.Component {
             <div style={{margin: 10}}>
                 <Row>
                     <Button className="pull-right" type="primary"
-                            loading={buttonLoading}>
-                            disabled={projectInfo&&projectInfo.forks_from?false:true}
+                            disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
+                            loading={buttonLoading}
                             onClick={this.createMergeRequest.bind(this)}>
                         创建合并请求
                     </Button>

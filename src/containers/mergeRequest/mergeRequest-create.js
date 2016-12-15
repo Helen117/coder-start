@@ -25,6 +25,14 @@ class CreateMergeRequest extends Component {
         }
     }
 
+    componentDidMount() {
+        const {record} = this.props.location.state;
+        const {setFieldsValue} = this.props.form;
+        if(record){
+            setFieldsValue({'issue_id':record.issue_name});
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
         const { inserted} = nextProps;
         if (this.props.inserted != inserted && inserted){
@@ -72,6 +80,7 @@ class CreateMergeRequest extends Component {
         author.username= loginInfo.username;
         author.userId= loginInfo.userId;
         const {form} = this.props;
+        const {record} = this.props.location.state;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -80,6 +89,7 @@ class CreateMergeRequest extends Component {
                 data.project_id=this.mapSourceProject(mergeBranch,data.path);
                 data.target_project_id = mergeBranch[0].id;
                 data.author = author;
+                data.issue_id = record?record.id:data.issue_id;
                 this.props.createMr(data);
             }
         })

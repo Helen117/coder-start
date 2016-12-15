@@ -44,7 +44,6 @@ class MyIssueList extends Component {
 
 
     componentWillReceiveProps(nextProps) {
-        // console.log('nextProps:',nextProps);
         const {actions,loginInfo,myIssueError} = this.props;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
@@ -92,7 +91,6 @@ class MyIssueList extends Component {
         e.preventDefault();
         const {actions,form,loginInfo} = this.props;
         const data = form.getFieldsValue();
-        // console.log("查询条件：",data);
         var dataList ={
             assigned_id:loginInfo.userId,
             title:data.title,
@@ -146,12 +144,16 @@ class MyIssueList extends Component {
             if (!!errors) {
                 return;
             } else {
+                const data = form.getFieldsValue();
+                // data.demand_id=this.state.record.sets_issue_id;
+                data.devops_issues_key = this.state.record.devops_issues_key;
+                actions.testPass(data);
                 this.setState({
                     visible: false,
                     fileList:'',
                 });
 
-                form.resetFields(['design_work_time']);
+                form.resetFields();
             }
         })
     }
@@ -159,7 +161,9 @@ class MyIssueList extends Component {
     cancel(e) {
         this.setState({
             visible: false,
+            fileList:'',
         });
+        this.props.form.resetFields();
     }
 
     dataSources(list){
@@ -188,14 +192,13 @@ class MyIssueList extends Component {
             return styles.open;
         }
         if (record.state == 'closed') {
-            return styles.open;
+            return styles.close;
         }
     }
 
     beforeUpload(file){
-        //'application/vnd.ms-excel'
-        if (!file.type === 'application/msword') {
-            message.error('只能上传word文档',3);
+        if (!(file.type === 'application/vnd.ms-excel')) {
+            message.error('只能上传excel',3);
             return false;
         }
         if(file.size/ 1024 / 1024 >10){
@@ -203,16 +206,18 @@ class MyIssueList extends Component {
             return false;
         }
         let reader = new FileReader();
+        reader.onloadend = function () {
             this.setState({
-                fileList: [{
+                fileList:[{
                     uid: file.uid,
                     name: file.name,
                     status: 'done',
                     url: reader.result
                 }]
             });
+            // console.log(reader.result);
+        }.bind(this);
         reader.readAsDataURL(file);
-        //reader.readAsArrayBuffer(file);
         return false;
     }
 
@@ -251,10 +256,9 @@ class MyIssueList extends Component {
                                 </Col>
                                 <Col sm={9}>
                                     <FormItem label="状态" {...formItemLayout}>
-                                        {getFieldDecorator('state')(<Select >
+                                        {getFieldDecorator('state')(<Select allowClear={true}>
                                             <Option value="opened">打开</Option>
                                             <Option value="closed">关闭</Option>
-                                            <Option value="reopened" >重开</Option>
                                         </Select>)}
                                     </FormItem>
 
@@ -268,6 +272,7 @@ class MyIssueList extends Component {
                                         {getFieldDecorator('author_name')(
                                             <Select showSearch
                                                     showArrow={false}
+                                                    allowClear={true}
                                                     placeholder="请选择创建人"
                                                     optionFilterProp="children"
                                                     notFoundContent="无法找到">
@@ -285,6 +290,7 @@ class MyIssueList extends Component {
                             </Row>
 
                             <Modal title="上传测试文档" visible={this.state.visible}
+                                   confirmLoading={this.props.updateIssueLoading}
                                    onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
                             >
                                 <FormItem {...formItemLayout} label="工时" >

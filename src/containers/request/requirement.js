@@ -76,6 +76,7 @@ class RequirementInfo extends Component {
     }
 
     editDemand(type,selectedRow){
+        console.log(selectedRow)
         this.context.router.push({
             pathname: '/demandEdit',
             state: {editType:type,selectedRow}
@@ -92,9 +93,8 @@ class RequirementInfo extends Component {
                 if (typeof(list[i].expect_due_date) == "number") {
                     list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
-                console.log('list[i].developer_confirm_date',list[i].developer_confirm_date)
-                const developer_confirm_date=list[i].developer_confirm_date? list[i].developer_confirm_date + "(开发) ":'';
-                const tester_confirm_date=list[i].tester_confirm_date? list[i].tester_confirm_date + "(测试)":'';
+                const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
+                const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
                 list[i].confirm_time = developer_confirm_date + tester_confirm_date;
 
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
@@ -196,33 +196,41 @@ RequirementInfo.prototype.columns = (self)=>[{
 },*/ {
     title: '需求确认时间',
     dataIndex: 'confirm_time',
+    width: '12%',
+
 }, {
-    title: '期望上线时间',
+    title: '计划完成时间',
     dataIndex: 'expect_due_date',
 },{
     title: '操作',
     dataIndex: 'key',
     width: '10%',
-    render: (text, record) => (
-        <div>
-            {record.developer_confirm_date||record.tester_confirm_time ?
-                <div/>:
-                <span>
-                    <Tooltip placement="top" title="点击删除">
-                        <a style={{marginRight:5}}>
-                            <Icon type="delete" onClick={self.deleteDemand.bind(self,record)}/>
-                        </a>
-                    </Tooltip>
-                    <span className="ant-divider" />
-                </span>}
-            <Tooltip placement="top" title="点击修改">
-                <a style={{marginLeft:5}}>
-                    <Icon type="edit" onClick={self.editDemand.bind(self,'modify',record)}/>
-                </a>
-            </Tooltip>
-        </div>
+    render: (text, record) => {
+        const userLimits = self.props.loginInfo.name == record.author? true: false;
+        const deleteLimits = record.developer_confirm_date || record.tester_confirm_date? false: true;
+        //console.log('self.props.loginInfo.name',self.props.loginInfo.name,record.author)
+        return (<div>
+           {/* {userLimits?
+                <div>*/}
+                    {deleteLimits ?
+                        <span>
+                            <Tooltip placement="top" title="点击删除">
+                                <a style={{marginRight: 5}}>
+                                    <Icon type="delete" onClick={self.deleteDemand.bind(self, record)}/>
+                                </a>
+                            </Tooltip>
+                            <span className="ant-divider"/>
+                        </span>: <div/>}
+                <Tooltip placement="top" title="点击修改">
+                    <a style={{marginLeft: 5}}>
+                        <Icon type="edit" onClick={self.editDemand.bind(self, 'modify', record)}/>
+                    </a>
+                </Tooltip>
+               {/*</div>:<div/>
+        }*/}
+        </div>)
 
-    )
+    }
 }];
 
 

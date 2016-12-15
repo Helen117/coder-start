@@ -88,12 +88,19 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-         console.log(file);
-          //'application/vnd.ms-excel'
-         if (!file.type === 'application/msword') {
-             message.error('只能上传word文档',3);
-             return false;
+         // console.log(file);
+         if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
+             if (!(file.type === 'application/msword')) {
+                 message.error('只能上传word文档',3);
+                 return false;
+             }
+         }else{
+             if (!(file.type === 'application/vnd.ms-excel')) {
+                 message.error('只能上传excel',3);
+                 return false;
+             }
          }
+
          if(file.size/ 1024 / 1024 > 10){
              message.error('文件大小不能超过10M',3);
              return false;
@@ -125,10 +132,6 @@ const FormItem = Form.Item;
             wrapperCol: { span: 14 },
         };
 
-        const props = {
-            action: '/upload.do',
-
-        };
         const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
         const confirmLoading = this.props.confirmLoading? true:false;
         const role = this.props.confirmList?this.props.confirmList[0].role:'';

@@ -179,7 +179,7 @@ app.post('/gitlab/project/members', function (req, res) {
 });
 
 
-app.post('/gitlab/milestone/project', function (req, res) {
+app.post('/gitlab/project/milestones', function (req, res) {
     res.json(milestones);
 });
 
