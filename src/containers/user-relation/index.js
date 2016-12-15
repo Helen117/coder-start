@@ -139,13 +139,6 @@ class UserRelation extends React.Component{
         }
     }
 
-    selectedUser(users){
-        const {onSelected} = this.props;
-        if(onSelected){
-            onSelected(users);
-        }
-    }
-
     render(){
         const {userRelationTree,selectNode,deleteUserGroup,visible,treeFilterState} = this.props;
         let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
@@ -203,7 +196,6 @@ class UserRelation extends React.Component{
                         <UserInfo showUserInfo={this.state.showUserInfo}
                                   selectedNode={selectedNodeKey[0]}
                                   visible={visible}
-                                  onSelected={this.selectedUser.bind(this)}
                                   busiType={busi_type}/>
                         {this.props.children}
                     </Row>
