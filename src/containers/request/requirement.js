@@ -76,6 +76,7 @@ class RequirementInfo extends Component {
     }
 
     editDemand(type,selectedRow){
+        console.log(selectedRow)
         this.context.router.push({
             pathname: '/demandEdit',
             state: {editType:type,selectedRow}
@@ -204,26 +205,32 @@ RequirementInfo.prototype.columns = (self)=>[{
     title: '操作',
     dataIndex: 'key',
     width: '10%',
-    render: (text, record) => (
-        <div>
-            {record.developer_confirm_date||record.tester_confirm_time ?
-                <div/>:
-                <span>
-                    <Tooltip placement="top" title="点击删除">
-                        <a style={{marginRight:5}}>
-                            <Icon type="delete" onClick={self.deleteDemand.bind(self,record)}/>
-                        </a>
-                    </Tooltip>
-                    <span className="ant-divider" />
-                </span>}
-            <Tooltip placement="top" title="点击修改">
-                <a style={{marginLeft:5}}>
-                    <Icon type="edit" onClick={self.editDemand.bind(self,'modify',record)}/>
-                </a>
-            </Tooltip>
-        </div>
+    render: (text, record) => {
+        const userLimits = self.props.loginInfo.name == record.author? true: false;
+        const deleteLimits = record.developer_confirm_date || record.tester_confirm_date? false: true;
+        //console.log('self.props.loginInfo.name',self.props.loginInfo.name,record.author)
+        return (<div>
+           {/* {userLimits?
+                <div>*/}
+                    {deleteLimits ?
+                        <span>
+                            <Tooltip placement="top" title="点击删除">
+                                <a style={{marginRight: 5}}>
+                                    <Icon type="delete" onClick={self.deleteDemand.bind(self, record)}/>
+                                </a>
+                            </Tooltip>
+                            <span className="ant-divider"/>
+                        </span>: <div/>}
+                <Tooltip placement="top" title="点击修改">
+                    <a style={{marginLeft: 5}}>
+                        <Icon type="edit" onClick={self.editDemand.bind(self, 'modify', record)}/>
+                    </a>
+                </Tooltip>
+               {/*</div>:<div/>
+        }*/}
+        </div>)
 
-    )
+    }
 }];
 
 

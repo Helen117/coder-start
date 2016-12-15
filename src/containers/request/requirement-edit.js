@@ -91,7 +91,6 @@ class EditDemand extends Component{
                 }else{
                     data.id = selectedRow.id;
                     data.expect_due_date = data.expect_due_date.valueOf();
-                    console.log(data,new Date(parseInt(data.expect_due_date)).toLocaleDateString())
                     actions.editDemand(data);
                 }
 
