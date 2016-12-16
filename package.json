@@ -32,7 +32,9 @@
     "highlight.js": "~9.7.0",
     "lowlight": "^1.2.0",
     "codemirror": "^5.21.0",
-    "react-codemirror": "^0.3.0"
+    "react-codemirror": "^0.3.0",
+    "echarts": "^3.3.2",
+    "echarts-for-react": "^1.1.6"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
