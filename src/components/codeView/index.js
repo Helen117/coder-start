@@ -27,9 +27,14 @@ class CodeView extends React.Component {
 
     render(){
         const {fileName,filePath,code} = this.props;
-        let index = fileName.lastIndexOf('.');
-        let categary = fileName.substr(index+1,fileName.length);
-        let imgPath = '/'+filePath;
+        let index =0,categary='',imgPath='';
+        if(fileName){
+            index = fileName.lastIndexOf('.');
+            categary = fileName.substr(index+1,fileName.length);
+        }
+        if(filePath){
+            imgPath = '/'+filePath
+        }
         return (
             <div className={styles.code_view}>
                 <Row className={styles.blob_commit_info}>

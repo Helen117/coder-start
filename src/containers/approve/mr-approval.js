@@ -24,53 +24,66 @@ class MrApproval  extends Component {
     componentWillMount() {
         const {actions} = this.props;
         const {record} = this.props.location.state;
-        actions.getMrDetail(record.task_id);
+        actions.approvalDetail(record.task_id);
     }
 
     componentWillReceiveProps(nextProps) {
-        const approveMrResult = nextProps.approveMrResult;
+        const {approveMrResult,approvalDetail} = nextProps;
         if (approveMrResult && approveMrResult!=this.props.approveMrResult) {
             message.success('审批成功！');
-            this.props.home.getNotifyItems(this.props.loginInfo.userId);
+            this.props.home.getNotifyItems(this.props.logInfo.userId);
             this.context.router.goBack();
         }
     }
 
+    viewCodeChanges(){
+        const {approvalDetail,actions} = this.props;
+        if(approvalDetail){
+            actions.MrCodeChanges(approvalDetail[0].project_id,approvalDetail[0].mr_id)
+        }
+    }
 
     approve(type){
-        const {actions,form,loginInfo} = this.props;
+        const {actions,approvalDetail,logInfo} = this.props;
         const {record} = this.props.location.state;
-        form.validateFields((errors, values) => {
-            if (!!errors) {
-                return;
-            } else {
-                const data = form.getFieldsValue();
-                data.username = loginInfo.username;
-                data.task_id = record.task_id;
-                if (type == 'accept') {
-                    data.result = true;
-                    actions.approveResult(data);
-                } else {
-                    data.reason = false;
-                    actions.approveResult(data);
-                }
-            }
-        })
+        const data = {};
+        data.username = logInfo.username;
+        data.task_id = record.task_id;
+        data.project_id = approvalDetail[0].project_id;
+        data.mr_id = approvalDetail[0].mr_id;
+        if (type == 'accept') {
+            data.pass = true;
+            actions.approveMr(data);
+        } else {
+            data.pass = false;
+            actions.approveMr(data);
+        }
     }
 
 
+
     render() {
-        const loading = this.props.approveMrLoading?true:false;
+        const {codeChanges,approvalDetail,getDetailLoading,approveMrLoading,codeChangesLoading} = this.props;
+        const loading = approveMrLoading?true:false;
+        const showChanges = codeChanges?codeChanges.changes.map((data,index) => <CodeView key={index} code={data.diff}/>):null;
         return(
-            <Box title="注册审批">
+            <Box title="代码合并审批">
                 <Spin spinning={loading} tip="正在提交，请稍候..." >
-                    <Table columns={this.columns(this)} dataSource={this.props.mrDetail}
+                    <Table columns={this.columns(this)}
+                           dataSource={approvalDetail}
                            bordered
                            size="middle"
-                           loading={this.props.mrDetailLoading}
+                           loading={getDetailLoading}
+                           pagination={false}
                     />
                 </Spin>
-                <CodeView/>
+                {!codeChanges?<div style={{textAlign:"right", marginTop:10}}>
+                    <a onClick={this.viewCodeChanges.bind(this)}>查看代码变更详情</a>
+                </div>:<div style={{height:10}}></div>}
+                {codeChangesLoading?
+                    <span className="filter-not-found">
+                        <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>'正在加载数据...'</span></i>
+                    </span>:showChanges}
             </Box>
         );
     }
@@ -85,27 +98,32 @@ MrApproval.contextTypes = {
 MrApproval.prototype.columns = (self)=>[{
     title: '申请人',
     dataIndex: 'username',
-    width: '20%',
 },{
     title: '名称',
     dataIndex: 'title',
-    width: '20%',
 },{
     title: '描述',
     dataIndex: 'description',
     width: '20%',
-}, {
-    title: '合并路径',
-    dataIndex: 'path',
-    width: '20%',
 },{
     title: '里程碑',
     dataIndex: 'milestone',
-    width: '20%',
 },{
     title: '需求',
     dataIndex: 'request',
-    width: '20%',
+},{
+    title: '操作',
+    dataIndex: 'key',
+    width: '10%',
+    render: (text, record) => (
+        <div>
+            <a onClick={self.approve.bind(self,'accept')}>接受</a>
+            <span style={{marginLeft:10,marginRight:10}} className="ant-divider"/>
+            <a onClick={self.approve.bind(self,'close')}>关闭</a>
+        </div>
+
+
+    )
 }];
 
 
@@ -116,8 +134,9 @@ MrApproval = Form.create()(MrApproval);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        mrDetailLoading:state.approve.mrDetailLoading,
-        mrDetail:state.approve.mrDetail,
+        logInfo: state.login.profile,
+        getDetailLoading:state.approve.getDetailLoading,
+        approvalDetail:state.approve.approvalDetail,
         codeChanges: state.approve.codeChanges,
         codeChangesLoading: state.approve.codeChangesLoading,
         approveMrResult:state.approve.approveMrResult,

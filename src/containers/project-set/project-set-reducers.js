@@ -19,9 +19,9 @@ import {
     FETCH_PROJECT_SET_TREE_PENDING,
     FETCH_PROJECT_SET_TREE_ERROR,
 
-    FETCH_PROJECT_INFO_SUCCESS,
-    FETCH_PROJECT_INFO_PENDING,
-    FETCH_PROJECT_INFO_ERROR,
+    GET_SET_PROJECTS_SUCCESS,
+    GET_SET_PROJECTS_PENDING,
+    GET_SET_PROJECTS_ERROR,
 
     PUT_PROJECT_SET_TO_STATE,
 
@@ -77,15 +77,24 @@ export function projectSet(state = initialState, action = {}) {
             return {...state,projectSetTree:null, getProjectSetTreeLoading: false, errMessage: action.payload.errMessage};
 
 
-        // get project info
-        case FETCH_PROJECT_INFO_PENDING:
+        // get projects in set
+        case GET_SET_PROJECTS_PENDING:
             return {...state,getProjectInfoLoading: true};
 
-        case FETCH_PROJECT_INFO_SUCCESS:
+        case GET_SET_PROJECTS_SUCCESS:
             return {...state,projectInfo: action.payload, getProjectInfoLoading: false};
 
-        case FETCH_PROJECT_INFO_ERROR:
+        case GET_SET_PROJECTS_ERROR:
             return {...state, getProjectInfoLoading: false, errMessage:action.payload.errMessage};
+
+
+        // get project info
+        case 'GET_PROJECT_INFO_PENDING':
+            return {...state, projectInfoLoading:true, projectInfo:null};
+        case 'GET_PROJECT_INFO_SUCCESS':
+            return {...state, projectInfoLoading:false, projectInfo:action.payload};
+        case 'GET_PROJECT_INFO_ERROR':
+            return {...state, projectInfoLoading:false, projectInfo:null};
 
 
         //put selected tree item to state

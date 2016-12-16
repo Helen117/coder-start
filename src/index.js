@@ -33,7 +33,7 @@ import {RequirementInfo,EditDemand} from './containers/request';
 
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddDemand} from './containers/issues';
-import {ApproveList,RegistrationApproval} from './containers/approve';
+import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
@@ -155,8 +155,8 @@ ReactDOM.render(
                         <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
                         <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
                         <Route name="transpondOperate" breadcrumbName="转派操作" path="transpondOperate" component={DevelopTransPond}/>
+                        <Route name="approveMr" breadcrumbName="代码合并审批" path="approveMr" component={MrApproval}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
-
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
                     </Route>

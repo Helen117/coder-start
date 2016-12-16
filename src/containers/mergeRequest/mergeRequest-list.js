@@ -45,7 +45,7 @@ class MergeRequestList extends React.Component {
         if(this.props.mergeBranch != mergeBranch && mergeBranch){
             if(mergeBranch.length >1){
                 const userId = this.props.loginInfo.userId;
-                this.props.fetchIssuesData(mergeBranch[1].id,userId);
+                this.props.fetchIssuesData(mergeBranch[0].id,userId);
             }else{
                 this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
             }

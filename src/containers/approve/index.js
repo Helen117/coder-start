@@ -3,3 +3,4 @@
  */
 export ApproveList from'./approval-list';
 export RegistrationApproval from'./registration-approval';
+export MrApproval from './mr-approval'
