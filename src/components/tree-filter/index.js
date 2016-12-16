@@ -170,7 +170,11 @@ class TreeFilter extends React.Component {
 
 
     render(){
-        const {nodesData, loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType, treeFilterAction} = this.props;
+        const {loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType, treeFilterAction} = this.props;
+        let {nodesData} = this.props;
+            if (!nodesData){
+            nodesData = [];
+        }
         let nodes = this.getTreeNodes(nodesData);
         //const {filterValue} = this.state;
         const filterValue = this.getFilterValue();
