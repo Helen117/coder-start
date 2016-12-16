@@ -88,7 +88,7 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-         // console.log(file);
+          console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
              if (!(file.type === 'application/msword')) {
                  message.error('只能上传word文档',3);
