@@ -79,7 +79,7 @@ class Sidebar extends React.Component {
             }
             return (
                 <Menu.Item key={'menu' + item.id}>
-                    <Link to={link}><Icon type='user'/>{item.name}</Link>
+                    <Link to={link}><Icon type={item.icon} style={{fontSize:15}} />{item.name}</Link>
                 </Menu.Item>
             )
         });
