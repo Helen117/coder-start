@@ -72,7 +72,8 @@ class CodeFiles extends React.Component {
                         activeKey:pathData[0].pathKey,
                         showFileTree:true,
                         showCodeView:false,
-                        selectDisabled:false
+                        selectDisabled:false,
+                        filePath:''
                     })
                 }
             }
