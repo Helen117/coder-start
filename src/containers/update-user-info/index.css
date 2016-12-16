@@ -1,0 +1,38 @@
+.update_ul{
+    border: solid 1px #e5e5e5;
+}
+
+.update_li_light{
+    cursor: pointer;
+    padding: 10px 0px 0px 10px;
+    color: #2db7f5;
+}
+
+.update_li{
+    cursor: pointer;
+    padding: 10px 0px 0px 10px;
+}
+
+.ul_li_icon{
+    padding-right: 10px;
+}
+
+.dynamic_delete_button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #999;
+    transition: all .3s;
+}
+.dynamic_delete_button:hover {
+    color: #777;
+}
+.dynamic_delete_button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.add_email{
+    font-size: 24px;
+}

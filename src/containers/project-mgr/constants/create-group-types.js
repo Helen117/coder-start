@@ -1,0 +1,25 @@
+/*
+ * Copyright 2016 Asiainfo Technologies(China),Inc. All rights reserved.
+ *
+ */
+
+/**
+ * Created by william.xu on 2016/9/20
+ */
+export const GET_GROUP_INFO_SUCCESS = 'GET_GROUP_INFO_SUCCESS';
+export const CLEAR_GROUP_PROJECT_INFO = 'CLEAR_GROUP_PROJECT_INFO';
+
+export const CREATE_GROUP = 'CREATE_GROUP';
+export const CREATE_GROUP_PENDING = 'CREATE_GROUP_PENDING';
+export const CREATE_GROUP_SUCCESS = 'CREATE_GROUP_SUCCESS';
+export const CREATE_GROUP_ERROR = 'CREATE_GROUP_ERROR';
+
+export const UPDATE_GROUP = 'UPDATE_GROUP';
+export const UPDATE_GROUP_PENDING = 'UPDATE_GROUP_PENDING';
+export const UPDATE_GROUP_SUCCESS = 'UPDATE_GROUP_SUCCESS';
+export const UPDATE_GROUP_ERROR = 'UPDATE_GROUP_ERROR';
+
+export const DELETE_GROUP = 'DELETE_GROUP';
+export const DELETE_GROUP_PENDING = 'DELETE_GROUP_PENDING';
+export const DELETE_GROUP_SUCCESS = 'DELETE_GROUP_SUCCESS';
+export const DELETE_GROUP_ERROR = 'DELETE_GROUP_ERROR';

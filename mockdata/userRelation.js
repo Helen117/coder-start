@@ -1,0 +1,69 @@
+/**
+ * Created by Administrator on 2016-11-07.
+ */
+module.exports.userRelation = {
+    "success": true,
+    "errorCode": null,
+    "errorMsg": null,
+    "result": [
+        {
+            "id":1,
+            "name":"董事长",
+            "parent_id":-1,
+            "description":"",
+            "children":[
+                {
+                    "id":2,
+                    "name":"总经理",
+                    "parent_id":1,
+                    "description":"",
+                    "children":[
+                        {
+                            "id":3,
+                            "name":"客服一部",
+                            "parent_id":2,
+                            "description":"",
+                            "children":[]
+                        },
+                        {
+                            "id":4,
+                            "name":"客服二部",
+                            "parent_id":2,
+                            "description":"",
+                            "children":[]
+                        },
+                        {
+                            "id":5,
+                            "name":"客服三部",
+                            "parent_id":2,
+                            "description":"",
+                            "children":[]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id":6,
+            "name":"客服四部",
+            "parent_id":-1,
+            "description":"",
+            "children":[
+                {
+                    "id":7,
+                    "name":"客服五部",
+                    "parent_id":6,
+                    "description":"",
+                    "children":[]
+                }
+            ]
+        },
+        {
+            "id":8,
+            "name":"客服六部",
+            "parent_id":-1,
+            "description":"",
+            "children":[]
+        }
+    ]
+}
