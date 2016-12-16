@@ -118,19 +118,24 @@ class BranchesList extends React.Component {
     }
 
     render(){
-        const branch = this.props.branchesData;
-        const data = this.mapBranchTable(branch);
+        const {project,loginInfo,branchesData} = this.props;
+        const data = this.mapBranchTable(branchesData);
         const {getFieldDecorator} = this.props.form;
-        const {project} = this.props;
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        const isLoading = this.props.getBranchLoading? true: false;
+        let buttonDisable=true;
+        if(projectInfo && loginInfo){
+            if(projectInfo.owner_id==loginInfo.userId && projectInfo.id){
+                buttonDisable = false;
+            }
+        }
+
         return(
             <div style={{margin:10}}>
                 <Row >
                     <Button className="pull-right" type="primary"
-                            disabled={projectInfo.id?false:true}
+                            disabled={buttonDisable}
                             onClick={this.createBranches.bind(this,'add')}>创建分支</Button>
                 </Row>
                 <div style={{marginTop:5}}>
@@ -171,14 +176,19 @@ const columns = (self)=>[{
     title: '操作',
     dataIndex: 'key',
     width: '10%',
-    render: (text, record) => (
-        record.branch=="master"|| record.branch=="release" || record.branch=="dev"?
+    render: (text, record) => {
+        const {project,loginInfo} = self.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        return (
+        record.branch=="master"|| record.branch=="release" || record.branch=="dev"|| projectInfo.owner_id!=loginInfo.userId?
             <dev></dev>:
             <Tooltip placement="top" title="点击删除">
                 <Icon type="delete" onClick={self.deleteBranch.bind(self,record)}/>
             </Tooltip>
 
-    )
+    )}
 }]
 
 
@@ -190,6 +200,7 @@ BranchesList.contextTypes = {
 
 function mapStateToProps(state) {
     return {
+        loginInfo:state.login.profile,
         branchesData: state.branch.branchesData,
         getBranchLoading: state.branch.getBranchLoading,
         delLoading: state.branch.deleteLoading,

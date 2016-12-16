@@ -112,7 +112,6 @@ class SelectedSetInfo extends Component {
 
     render(){
         const {visible,selectedItemInfo,delLoading} = this.props;
-        console.log('visible')
         if(visible){
             const spinning = delLoading?true:false;
             const selectedProjectSet = this.getSelectedProjectSet(selectedItemInfo);

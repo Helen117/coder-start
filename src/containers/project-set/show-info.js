@@ -16,6 +16,10 @@ let showSetInfo = true;
 class ShowInfo extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            showProjectInfo:false,
+            showSetInfo: true
+        }
     }
 
     componentDidMount() {
@@ -36,9 +40,17 @@ class ShowInfo extends Component {
         if(id.indexOf("_g")>0) {
             showProjectInfo = false;
             showSetInfo = true;
+            this.setState({
+                showProjectInfo:false,
+                showSetInfo: true
+            })
         }else if(id.indexOf("_p")>0){
             showProjectInfo = true;
             showSetInfo = false;
+            this.setState({
+                showProjectInfo:true,
+                showSetInfo: false
+            })
         }
     }
 
