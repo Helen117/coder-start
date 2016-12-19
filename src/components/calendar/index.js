@@ -122,7 +122,7 @@ export default class MilestonesCalendar extends React.Component{
         if(revocable){
             return <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
                 <h4 style={{color:type=="error"?"red":""}}>
-                    <Badge status={type}/>{milestoneData.title} <Icon type="edit" />
+                    <Icon style={{marginRight:5}} type="edit" />{milestoneData.title}
                 </h4>
             </a>
         }else{
