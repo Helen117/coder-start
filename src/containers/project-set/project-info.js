@@ -10,7 +10,7 @@ import { Select,Input, Button, message, Row, notification} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import TableView from '../../components/table';
-import {getProjectInfo} from '../project-mgr/actions/create-project-action';
+import {getProjectInfo} from './project-set-action';
 
 const Option = Select.Option;
 
@@ -27,9 +27,8 @@ class SelectedProInfo extends Component {
     }
 
     componentDidMount() {
-        const {project,selectedItemInfo} = this.props
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
-        if(!this.isEmptyObject(projectInfo) && selectedItemInfo) {
+        const {selectedItemInfo} = this.props
+        if(!this.isEmptyObject(this.props.projectInfo) && selectedItemInfo) {
             const itemId = this.props.selectedItemInfo.id;
             this.callAction(itemId);
         }
@@ -59,6 +58,7 @@ class SelectedProInfo extends Component {
                 project_name: getProjectInfo.name,
                 description: getProjectInfo.description,
                 memberNum: "共" + getProjectInfo.member_count + "人",
+                current_mileston_date:getProjectInfo.current_mileston_date? new Date(parseInt(getProjectInfo.current_mileston_date)).toLocaleDateString():''
             });
         }
         return data;
@@ -66,13 +66,10 @@ class SelectedProInfo extends Component {
 
 
     render(){
-        const {project,visible} = this.props;
+        const {projectInfo,visible,projectInfoLoading} = this.props;
         if(visible) {
-            const projectInfo = project.getProjectInfo?(
-                project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
-            ):{};
             const dataSource = this.getDataSource(projectInfo);
-            const projectLoading = project.getProjectInfo?project.getProjectInfo.loading:false;
+            const projectLoading = projectInfoLoading? true: false;
             return (
                 <div style={{margin: 15}}>
                     <TableView columns={columns(this)}
@@ -90,8 +87,8 @@ class SelectedProInfo extends Component {
 const columns = (self)=>[
     {title: "项目名称", dataIndex: "project_name", key: "project_name"},
     {title: "项目描述", dataIndex: "description", key: "description"},
-    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum"},
-    {title: "下一里程碑时间节点", dataIndex: "next_milestom", key: "next_milestom"},
+    {title: "项目成员人数", dataIndex: "memberNum", key: "memberNum" ,},
+    {title: "当前里程碑计划完成时间", dataIndex: "current_mileston_date", key: "current_mileston_date",width:'20%'},
     {title: "项目状态", dataIndex: "state", key: "state"},
     {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
     {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
@@ -106,7 +103,8 @@ SelectedProInfo.contextTypes = {
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        project:state.project,
+        projectInfoLoading: state.projectSet.projectInfoLoading,
+        projectInfo: state.projectSet.projectInfo,
         selectedItemInfo: state.projectSet.selectedProjectSet,
     }
 }

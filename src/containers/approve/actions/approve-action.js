@@ -39,3 +39,30 @@ export function approveResult(data) {
         }
     }
 }
+
+
+export function MrCodeChanges(project_id,mr_id) {
+    console.log(project_id,mr_id)
+    return {
+        type: 'GET_CODE_CHANGES',
+        payload: {
+            promise: api.post('/project/mr-change', {
+                params:{
+                    project_id: project_id,
+                    mr_id: mr_id
+                }
+            })
+        }
+    }
+}
+
+export function approveMr(data) {
+    return {
+        type: 'APPROVE_MR',
+        payload: {
+            promise: api.post('/examination/mr-examine', {
+                data: data,
+            })
+        }
+    }
+}

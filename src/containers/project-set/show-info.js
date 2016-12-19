@@ -16,11 +16,14 @@ let showSetInfo = true;
 class ShowInfo extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            showProjectInfo:false,
+            showSetInfo: true
+        }
     }
 
     componentDidMount() {
         const selectedItemId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
-        console.log('调用componentDidMount',selectedItemId)
         this.isShowModel(selectedItemId)
     }
 
@@ -37,14 +40,21 @@ class ShowInfo extends Component {
         if(id.indexOf("_g")>0) {
             showProjectInfo = false;
             showSetInfo = true;
+            this.setState({
+                showProjectInfo:false,
+                showSetInfo: true
+            })
         }else if(id.indexOf("_p")>0){
             showProjectInfo = true;
             showSetInfo = false;
+            this.setState({
+                showProjectInfo:true,
+                showSetInfo: false
+            })
         }
     }
 
     render(){
-        console.log('showSetInfo',showSetInfo,'showProjectInfo',showProjectInfo)
         return(
             <div>
                 <SelectedSetInfo visible={showSetInfo}/>

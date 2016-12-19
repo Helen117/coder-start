@@ -33,7 +33,7 @@ import {RequirementInfo,EditDemand} from './containers/request';
 
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddDemand} from './containers/issues';
-import {ApproveList,RegistrationApproval} from './containers/approve';
+import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
@@ -55,6 +55,9 @@ import ProjectBuildHistory from './containers/project-compile/build-history';
 import * as Cookies from "js-cookie";
 import DevTools from "./tools/ReduxDevTools";
 
+import MainPageComponent from './components/echarts-demo/MainPageComponent.jsx';
+import EchartsComponent from './components/echarts-demo/EchartsComponent.jsx';
+
 const history = useRouterHistory(createHistory)({basename: ''});
 //const history = syncHistoryWithStore(hashHistory, store);
 const store = configureStore();
@@ -70,6 +73,7 @@ const validate = function (next, replace, callback) {
     callback();
 };
 const root = document.createElement('div');
+root.style = "min-height:100%";
 document.body.appendChild(root);
 
 // console.log = (function(oriLogFunc){
@@ -154,13 +158,18 @@ ReactDOM.render(
                         <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
                         <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
                         <Route name="transpondOperate" breadcrumbName="转派操作" path="transpondOperate" component={DevelopTransPond}/>
+                        <Route name="approveMr" breadcrumbName="代码合并审批" path="approveMr" component={MrApproval}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
-
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
+
+                    <Route path="/echarts" component={MainPageComponent}>
+                        <Route path="/echarts/:type" component={EchartsComponent}/>
+                    </Route>
+
                     <Route path="*" component={NotFound}/>
                 </Route>
             </Router>

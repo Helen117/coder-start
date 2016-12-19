@@ -34,10 +34,16 @@ module.exports = {
             {
                 test: /\.js$/,
                 loaders: ['babel'],
+                //loader: 'babel-loader?presets[]=es2015&presets[]=react',
                 exclude: /node_modules/,
                 include: __dirname
-            },
-            {
+            }, {
+                test: /\.jsx?$/,
+                loaders: ['babel'],
+                //loader: 'jsx-loader?harmony',
+                exclude: /node_modules/,
+                include: __dirname
+            }, {
                 test: /\.less?$/,
 //                loader: "style!css?module&localIdentName=[hash:base64:5]&-url"
                 loaders: [

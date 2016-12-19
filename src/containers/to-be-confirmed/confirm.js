@@ -65,7 +65,6 @@ const FormItem = Form.Item;
                 data.role = confirmList[0].role;
                 data.username = loginInfo.username;
                 data.files= this.state.fileList;
-                // console.log('接收的数据',data);
                 this.props.ConfirmAction(data)
             }
         })
@@ -88,15 +87,15 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-         // console.log(file);
+          console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
              if (!(file.type === 'application/msword')) {
-                 message.error('只能上传word文档',3);
+                 message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
                  return false;
              }
          }else{
              if (!(file.type === 'application/vnd.ms-excel')) {
-                 message.error('只能上传excel',3);
+                 message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
                  return false;
              }
          }
@@ -115,7 +114,6 @@ const FormItem = Form.Item;
                      url: reader.result
                  }]
              });
-             // console.log(reader.result);
          }.bind(this);
          reader.readAsDataURL(file);
          //reader.readAsArrayBuffer(file);

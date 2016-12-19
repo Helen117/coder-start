@@ -7,7 +7,7 @@ import {CREATE_PROJECT_SET,
     DELETE_PROJECT_SET,
     PUT_PROJECT_SET_TO_STATE,
     FETCH_PROJECT_SET_TREE,
-    FETCH_PROJECT_INFO} from './project-set-action-types';
+    GET_SET_PROJECTS} from './project-set-action-types';
 
 export function createProjectSet(projectSetData) {
     var path = '/project/create-set';
@@ -72,14 +72,29 @@ export function fetchProjectSetTree(userId) {
     }
 }
 
-export function fetchProjectMsg(userId) {
+export function getSetProject(userId) {
     var path ='/project/get-set-projects';
     return {
-        type: FETCH_PROJECT_INFO,
+        type: GET_SET_PROJECTS,
         payload: {
             promise: api.post(path, {
                 params: {
                     userId:userId
+                }
+            })
+        }
+    }
+}
+
+export function getProjectInfo(project_id,user_id) {
+    var path = '/project/info';
+    return {
+        type: 'GET_PROJECT_INFO',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    project_id: project_id,
+                    user_id:user_id
                 }
             })
         }

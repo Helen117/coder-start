@@ -99,7 +99,7 @@ class RequirementInfo extends Component {
 
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
                 list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
-                list[i].assignee = list[i].assignee_develop_name + "(开发)、" + list[i].assignee_test_name + "(测试)"
+                list[i].assignee = list[i].assignee_develop_name + "(开发)、 " + list[i].assignee_test_name + "(测试)"
 
             }
         }
@@ -181,6 +181,7 @@ RequirementInfo.prototype.columns = (self)=>[{
 }, {
     title: '指派人员',
     dataIndex: 'assignee',
+    width: '10%',
 }, {
     title: '当前状态',
     dataIndex: 'state',

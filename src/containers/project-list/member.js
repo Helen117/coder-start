@@ -27,7 +27,6 @@ class ProjectMember extends Component {
         this.state = {
             addProjectMember:false,
             accessLevel:40,
-            selectedUsers:[],
             selectedRowKeys:[],
             selectedUserIds:[]
         }
@@ -120,16 +119,17 @@ class ProjectMember extends Component {
 
     handleOk(){
         //调添加成员接口
-        const {actions,project,loginInfo} = this.props;
+        const {actions,project,loginInfo,selectedUsers} = this.props;
         let data = [],final_data={};
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        for(let i=0; i<this.state.selectedUsers.length; i++){
+        let user_ids = selectedUsers?selectedUsers.user_ids:[];
+        for(let i=0; i<user_ids.length; i++){
             data.push({
                 projectId:projectInfo.id,
                 gitlabAccessLevel:this.state.accessLevel,
-                userId:this.state.selectedUsers[i],
+                userId:user_ids[i],
             })
         }
         final_data.users = data;
@@ -146,12 +146,6 @@ class ProjectMember extends Component {
     changeSelect(value){
         this.setState({
             accessLevel:value
-        })
-    }
-
-    selectedUser(users){
-        this.setState({
-            selectedUsers:users
         })
     }
 
@@ -244,8 +238,7 @@ class ProjectMember extends Component {
                         </Select>
                     </div>
                     <UserRelation visible='true'
-                                  busiType="add-members"
-                                  onSelected={this.selectedUser.bind(this)}/>
+                                  busiType="add-members"/>
                 </Modal>
                 {comfirmRoleId(loginInfo.userId,projectMembers)?(
                     <div style={{paddingTop:'10px'}}>
@@ -269,6 +262,7 @@ function mapStateToProps(state) {
         projectMember:state.projectMember,
         project:state.project,
         projectGroup:state.projectGroup,
+        selectedUsers:state.UserRelation.selectedUsers,
     }
 }
 
