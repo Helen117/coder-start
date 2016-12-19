@@ -172,7 +172,8 @@ class CodeFiles extends React.Component {
             activeKey:pathData[0].pathKey,
             brand:value,
             showFileTree:true,
-            showCodeView:false
+            showCodeView:false,
+            filePath:''
         });
         PubSub.publish("evtClickBrand",{filePath:""});
     }
