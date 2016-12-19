@@ -86,7 +86,7 @@ class MrApproval  extends Component {
                     </span>:
                     codeChanges && codeChanges.changes.length<1?
                         <div className="null_type_div">
-                            <span><Icon type="exclamation-circle-o" />   没有代码变更</span>
+                            <span><Icon type="exclamation-circle-o" />   无代码变更</span>
                         </div>:showChanges}
             </Box>
         );
