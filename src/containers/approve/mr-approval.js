@@ -5,7 +5,7 @@
  * Created by helen on 2016/11/7.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,Form,Input,Table,Collapse,message,Spin,notification  } from 'antd';
+import { Form,Table,Collapse,message,Spin,Icon  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -83,7 +83,11 @@ class MrApproval  extends Component {
                 {codeChangesLoading?
                     <span className="filter-not-found">
                         <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>'正在加载数据...'</span></i>
-                    </span>:showChanges}
+                    </span>:
+                    codeChanges && codeChanges.changes.length<1?
+                        <div className="null_type_div">
+                            <span><Icon type="exclamation-circle-o" />   没有代码变更</span>
+                        </div>:showChanges}
             </Box>
         );
     }
