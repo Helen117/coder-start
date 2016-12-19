@@ -42,7 +42,7 @@ class EditDemand extends Component{
             }
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
-            setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
+            setFieldsValue({'assignee_test_id':selectedRow.assignee_test_id.toString()});
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
             setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,"YYYY-MM-DD")});//时间类型转换
         }

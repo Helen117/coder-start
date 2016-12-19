@@ -76,7 +76,7 @@ class RequirementInfo extends Component {
     }
 
     editDemand(type,selectedRow){
-        console.log(selectedRow)
+        //console.log(selectedRow)
         this.context.router.push({
             pathname: '/demandEdit',
             state: {editType:type,selectedRow}
@@ -213,20 +213,13 @@ RequirementInfo.prototype.columns = (self)=>[{
         return (<div>
            {/* {userLimits?
                 <div>*/}
-                    {deleteLimits ?
-                        <span>
-                            <Tooltip placement="top" title="点击删除">
-                                <a style={{marginRight: 5}}>
-                                    <Icon type="delete" onClick={self.deleteDemand.bind(self, record)}/>
-                                </a>
-                            </Tooltip>
-                            <span className="ant-divider"/>
-                        </span>: <div/>}
-                <Tooltip placement="top" title="点击修改">
-                    <a style={{marginLeft: 5}}>
-                        <Icon type="edit" onClick={self.editDemand.bind(self, 'modify', record)}/>
-                    </a>
-                </Tooltip>
+
+               <a onClick={self.editDemand.bind(self, 'modify', record)}>修改</a>
+           {deleteLimits ?
+               <span>
+                    <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
+                    <a onClick={self.deleteDemand.bind(self, record)}>删除</a>
+               </span>: <div/>}
                {/*</div>:<div/>
         }*/}
         </div>)
