@@ -46,7 +46,10 @@ class FileTree extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const { codeFile, fetchCodeStatus} = nextProps;
+        const { codeFile, fetchCodeStatus, filePath} = nextProps;
+        this.setState({
+            filePath:filePath
+        })
         if(codeFile != this.props.codeFile){
             if(fetchCodeStatus == true){
                 this.state.dataSource.splice(0,this.state.dataSource.length);
