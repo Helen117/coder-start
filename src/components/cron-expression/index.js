@@ -28,6 +28,13 @@ class CronExpression extends React.Component{
         const {expression} = nextProps;
         if(expression != this.props.expression && expression){
             this.splitCronExpression(expression);
+        }else if(this.state.visible == false && !expression){
+            const {form} = this.props;
+            form.resetFields();
+            this.setState({
+                radioValue:1,
+                isPercentHour:true
+            })
         }
     }
 
@@ -150,7 +157,6 @@ class CronExpression extends React.Component{
             let expression_desc = this.cronToDesc(hour,minute);
             return expression_desc;
         }
-
     }
 
     handleOk(){
@@ -191,6 +197,12 @@ class CronExpression extends React.Component{
         if(setCron){
             setCron(final_expression,expression_desc);
         }
+        /*const {form} = this.props;
+        form.resetFields();
+        this.setState({
+            radioValue:1,
+            isPercentHour:true
+        })*/
     }
 
     cronToDesc(hour,minute){
@@ -220,7 +232,13 @@ class CronExpression extends React.Component{
     handleCancle(){
         this.setState({
             visible:false
-        })
+        });
+        /*const {form} = this.props;
+        form.resetFields();
+        this.setState({
+            radioValue:1,
+            isPercentHour:true
+        })*/
     }
 
     percentChange(value){
