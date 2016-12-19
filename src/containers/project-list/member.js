@@ -16,6 +16,7 @@ import {findUserIdByEmail} from '../user-relation/utils';
 import {comfirmRoleId} from './util';
 import 'pubsub-js';
 import {getProjectInfo} from '../project-mgr/actions/create-project-action';
+import {setSelectedRowKeys} from '../user-relation/actions/user-relation-actions';
 
 
 const Option = Select.Option;
@@ -71,6 +72,7 @@ class ProjectMember extends Component {
         let projectId = selectedKey.id.substr(0,selectedKey.id.length-2);
         this.props.getProject(projectId,loginInfo.userId);
         actions.getProjectMembers(projectId);
+        this.props.setSelectedRowKeys([],[]);
     }
 
     transformDate(timestamp){
@@ -141,6 +143,7 @@ class ProjectMember extends Component {
         this.setState({
             addProjectMember: false
         });
+        this.props.setSelectedRowKeys([],[]);
     }
 
     changeSelect(value){
@@ -270,6 +273,7 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators({addProjectMember,getProjectMembers,deleteProjectMember},dispatch),
         getProject:bindActionCreators(getProjectInfo, dispatch),
+        setSelectedRowKeys:bindActionCreators(setSelectedRowKeys, dispatch),
     }
 }
 
