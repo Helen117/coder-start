@@ -324,7 +324,7 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
                 render(text,record){
                     let is_leader = self.isLeader(userInfoData,record);
                     return (is_leader==1?<div>{text}<Icon type="user" style={{fontSize:18,paddingLeft:'7px'}}/>
-                    </div>:<div></div>)
+                    </div>:<div>{text}</div>)
                 }},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"

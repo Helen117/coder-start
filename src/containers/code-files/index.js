@@ -188,7 +188,7 @@ class CodeFiles extends React.Component {
             )
         }):(<Option key="master">master</Option>);
 
-        return (<div>
+        return (<div style={{paddingLeft:'10px'}}>
                 {(selectNode && selectNode.isProject)?(
                     <div>
                         <Row gutter={16}>
@@ -207,10 +207,12 @@ class CodeFiles extends React.Component {
                         <Row>
                             <FileTree visible={this.state.showFileTree}
                                       filePath={this.state.filePath}
-                                      brand={this.state.brand}/>
+                                      brand={this.state.brand}
+                                      loading={this.props.loadingFileTree}/>
                             <CodeView visible={this.state.showCodeView}
                                       pathName={this.state.pathName}
-                                      filePath={this.state.filePath}/>
+                                      filePath={this.state.filePath}
+                                      loading={this.props.loadingContent}/>
                             {this.props.children}
                         </Row>
                     </div>
@@ -236,6 +238,8 @@ function mapStateToProps(state) {
         branches:state.branch.branchesData,
         project:state.project,
         selectNode: state.getGroupTree.selectNode,
+        loadingFileTree:state.getCodeFile.loadingFile,
+        loadingContent:state.getCodeFile.loadingContent,
     }
 }
 
