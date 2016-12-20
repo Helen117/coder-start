@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Breadcrumb, Row, Select, Col} from 'antd';
+import {Breadcrumb, Row, Select, Col, Alert} from 'antd';
 import {getCodeFile, getCodeContent} from './actions/code-files-actions';
 import styles from "./index.css";
 import 'pubsub-js';
@@ -25,7 +25,6 @@ class CodeFiles extends React.Component {
             showCodeView:false,
             filePath:'',
             pathName:'',
-            selectDisabled:true
         }
     }
 
@@ -37,7 +36,6 @@ class CodeFiles extends React.Component {
             this.setState({
                 pathData:pathData,
                 activeKey:pathData[0].pathKey,
-                selectDisabled:false
             })
         }
     }
@@ -72,7 +70,6 @@ class CodeFiles extends React.Component {
                         activeKey:pathData[0].pathKey,
                         showFileTree:true,
                         showCodeView:false,
-                        selectDisabled:false,
                         filePath:''
                     })
                 }
@@ -179,7 +176,7 @@ class CodeFiles extends React.Component {
     }
 
     render(){
-        const {branches} = this.props;
+        const {branches,selectNode} = this.props;
         const bread = this.state.pathData.map((item)=> {
             return (
                 <Breadcrumb.Item key={'bc-' + item.pathKey}><a onClick={this.clickTreePath.bind(this,item.path)}>{item.path}</a></Breadcrumb.Item>
@@ -191,32 +188,41 @@ class CodeFiles extends React.Component {
             )
         }):(<Option key="master">master</Option>);
 
-        return (
-            <div>
-                <Row gutter={16}>
-                    <Col span={3}>
-                        <Select id="branch" value={this.state.brand} className={styles.select}
-                                disabled={this.state.selectDisabled}
-                                onChange={this.changeSelect.bind(this)}>
-                            {branchData}
-                        </Select>
-                    </Col>
-                    <Col span={21} className={styles.v_middle}>
-                        <Breadcrumb >
-                            {bread}
-                        </Breadcrumb>
-                    </Col>
-                </Row>
-                <Row>
-                    <FileTree visible={this.state.showFileTree}
-                              filePath={this.state.filePath}
-                              brand={this.state.brand}/>
-                    <CodeView visible={this.state.showCodeView}
-                              pathName={this.state.pathName}
-                              filePath={this.state.filePath}/>
-                    {this.props.children}
-                </Row>
-            </div>
+        return (<div style={{paddingLeft:'10px'}}>
+                {(selectNode && selectNode.isProject)?(
+                    <div>
+                        <Row gutter={16}>
+                            <Col span={3}>
+                                <Select id="branch" value={this.state.brand} className={styles.select}
+                                        onChange={this.changeSelect.bind(this)}>
+                                    {branchData}
+                                </Select>
+                            </Col>
+                            <Col span={21} className={styles.v_middle}>
+                                <Breadcrumb >
+                                    {bread}
+                                </Breadcrumb>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <FileTree visible={this.state.showFileTree}
+                                      filePath={this.state.filePath}
+                                      brand={this.state.brand}
+                                      loading={this.props.loadingFileTree}/>
+                            <CodeView visible={this.state.showCodeView}
+                                      pathName={this.state.pathName}
+                                      filePath={this.state.filePath}
+                                      loading={this.props.loadingContent}/>
+                            {this.props.children}
+                        </Row>
+                    </div>
+                ):(<Alert
+                    message="请从左边的项目树中选择一个具体的项目！"
+                    description=""
+                    type="warning"
+                    showIcon
+                />)}
+        </div>
         )
     }
 }
@@ -231,6 +237,9 @@ function mapStateToProps(state) {
     return {
         branches:state.branch.branchesData,
         project:state.project,
+        selectNode: state.getGroupTree.selectNode,
+        loadingFileTree:state.getCodeFile.loadingFile,
+        loadingContent:state.getCodeFile.loadingContent,
     }
 }
 
