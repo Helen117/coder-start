@@ -44,7 +44,8 @@ class SshKeyList extends React.Component {
         }
     }
 
-    deleteSshKey(key_id){
+    onClick(key_id,e){
+        e.stopPropagation();
         const {actions,loginInfo} = this.props;
         confirm({
             title: '您是否确定要删除此SshKey？',
@@ -68,7 +69,7 @@ class SshKeyList extends React.Component {
                             <Col span={21}>{item.title}</Col>
                             <Col span={1}></Col>
                             <Col span={1}>
-                                <Icon type="delete" onClick={this.deleteSshKey.bind(this,item.id)}/>
+                                <Icon type="delete" onClick={this.onClick.bind(this,item.id)}/>
                             </Col>
                         </div>
                     );
