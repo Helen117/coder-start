@@ -42,7 +42,7 @@ class EditDemand extends Component{
             }
             setFieldsValue(selectedRow);
             setFieldsValue({'assignee_develop_id':selectedRow.assignee_develop_id.toString()});
-            setFieldsValue({'assignee_test_id':selectedRow.assign_test_id.toString()});
+            setFieldsValue({'assignee_test_id':selectedRow.assignee_test_id.toString()});
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
             setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,"YYYY-MM-DD")});//时间类型转换
         }
@@ -97,14 +97,25 @@ class EditDemand extends Component{
                 data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
                 data.files= this.state.fileList;
-                // console.log('接收的数据',data);
                 if(editType == 'add'){
                     actions.addDemand(data);
                 }else{
                     data.id = selectedRow.id;
-                    data.files= this.state.fileList&&selectedRow.files&&this.state.fileList[0].name==selectedRow.files[0]?'':this.state.fileList;
+                    data.files= this.state.fileList&&selectedRow.files&&this.state.fileList[0].name==selectedRow.files[0]?[]:this.state.fileList;
                     data.expect_due_date = data.expect_due_date.valueOf();
-                    actions.editDemand(data);
+                    var labels = data.labels && data.labels.length > 0 ? data.labels + '' : '';
+                    var filesFlag = false;
+                    if(!data.files||data.files.length==0){
+                        filesFlag = true;
+                    }
+                    if (data.title == selectedRow.title && data.description == selectedRow.description &&labels==selectedRow.label_id&& new Date(parseInt(data.expect_due_date)).toLocaleDateString() == selectedRow.expect_due_date
+                        && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assign_test_id&&filesFlag) {
+                        message.info('数据没有变更，不需提交', 2);
+                    } else {
+                        // console.log('接收的数据',data);
+                        actions.editDemand(data);
+                    }
+
                 }
 
             }
@@ -223,8 +234,8 @@ class EditDemand extends Component{
         const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
-        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow)
-        let helpMsg = ''
+        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
+        let helpMsg = '';
         if(currentMilestone) {
             if(currentMilestone.length>0){
                 helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
