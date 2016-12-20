@@ -62,13 +62,14 @@ class ProjectSetMilestonesEdit extends React.Component {
                 if(editType == 'add'){
                     this.props.createMilestone(formData);
                 }else{
-                    if(item.title==formData.title && item.description==formData.description &&
+                   /* if(item.title==formData.title && item.description==formData.description &&
                         new Date(item.due_date).toLocaleDateString()==new Date(formData.due_date.format()).toLocaleDateString()){
-                        this.errCallback('未作任何信息改动','未作任何信息改动,无需提交表单！');
-                    }else{
+                        message.error('没有改动,无需提交表单');
+
+                    }else{*/
                         formData.id = this.props.location.state.item.id;
                         this.props.updateMilestoneAction(formData);
-                    }
+                    //}
                 }
             }
         })
@@ -160,7 +161,7 @@ class ProjectSetMilestonesEdit extends React.Component {
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            {dueDateProps(<DatePicker disabledDate={this.disabledDate.bind(this)} placeholder="计划完成时间" />)}
+                            {dueDateProps(<DatePicker size='large' disabledDate={this.disabledDate.bind(this)} placeholder="计划完成时间" />)}
                         </FormItem>
 
                         {editType == 'update' ?
