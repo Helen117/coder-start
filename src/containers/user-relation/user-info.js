@@ -27,7 +27,7 @@ class UserInfo extends React.Component {
     }
 
     componentWillMount(){
-        const {userRelationState,selectNode,busiType,treeFilterState} = this.props;
+        const {userRelationState,busiType,treeFilterState} = this.props;
         let userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
@@ -41,7 +41,7 @@ class UserInfo extends React.Component {
     }
 
     insertCallback(messageInfo){
-        const { selectNode, getGroupsUsers,busiType,treeFilterState} = this.props;
+        const { getGroupsUsers,busiType,treeFilterState} = this.props;
         let selectedNodeKey = [];
         if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
             selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
@@ -56,7 +56,7 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {selectNode, moveUserInfo,deleteUserInfo,userRelationState,busiType} = nextProps;
+        const {moveUserInfo,deleteUserInfo,userRelationState,busiType} = nextProps;
         let userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData
                 ?userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
@@ -106,7 +106,7 @@ class UserInfo extends React.Component {
     }
 
     handleOk(node) {
-        const { form,loginInfo,selectNode,MoveUser,DeleteGroupUser,treeFilterState,busiType } = this.props;
+        const { form,loginInfo,MoveUser,DeleteGroupUser,treeFilterState,busiType } = this.props;
         const formData = form.getFieldsValue();
         let selectedNodeKey = [];
         if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
@@ -123,7 +123,7 @@ class UserInfo extends React.Component {
             form.resetFields();
         }else if(this.state.moreGroupVisible == true){
             //调移动接口
-            data.dest_group_id = node.id;
+            data.dest_group_id = node[0];
             MoveUser(data);
         }
     }
@@ -195,9 +195,20 @@ class UserInfo extends React.Component {
         this.props.setSelectedRowKeys(selectedRowKeys,user_ids);
     }
 
+    isLeader(dataSource,record){
+        let is_leader=0;
+        for(let i=0; i<dataSource.length; i++){
+            if(dataSource[i].email == record.email){
+                is_leader = dataSource[i].is_leader;
+                return is_leader;
+            }
+        }
+        return is_leader;
+    }
+
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,busiType,selectedUsers} = this.props;
+            moveUserInfo,busiType,selectedUsers,treeFilterState} = this.props;
 
         let getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
@@ -208,6 +219,14 @@ class UserInfo extends React.Component {
         let selectedRowKeys = selectedUsers?selectedUsers.selectedKeys:[];
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
+        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+            userRelationState['getUserInfo_'+busiType].userInfoData?
+                userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
+        let selectedMoreGroup = [];
+        let more_group_type='more-user-group';
+        if (treeFilterState[more_group_type] && treeFilterState[more_group_type].selectedNodeKey){
+            selectedMoreGroup = treeFilterState[more_group_type].selectedNodeKey;
+        }
 
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
@@ -229,7 +248,7 @@ class UserInfo extends React.Component {
                     <Row>
                         <Table style={{"paddingTop":10}}
                                columns={this.groupColumns(this,showOpt,this.data,
-                                   this.state.dataSource,this.state.filterKeys)}
+                                   userInfoData,this.state.filterKeys)}
                                dataSource={dataSource}
                                rowSelection={showOpt==true?null:rowSelection}
                                pagination={pagination}
@@ -249,6 +268,7 @@ class UserInfo extends React.Component {
                                        loading={loadingTree}
                                        confirmLoading={moveLoading?true:false}
                                        nodesData={userTreeData}
+                                       selectedMoreGroup={selectedMoreGroup}
                                        handleOk={this.handleOk.bind(this)}
                                        cancelChoose={this.handleCancel.bind(this)}/>
                     </Row>
@@ -264,20 +284,23 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKeys)=>{
+UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys)=>{
     if(showOpt==true){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
                                        filterKey="name"
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
-                                       currentData={currentData}
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
+                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name",
+                render(text,record){
+                    let is_leader = self.isLeader(userInfoData,record);
+                    return (is_leader==1?<div>{text}<Icon type="user" style={{fontSize:18,paddingLeft:'7px'}}/>
+                    </div>:<div>{text}</div>)
+                }},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
-                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
             {title:"操作",dataIndex:"operate",key:"operate",
@@ -297,13 +320,16 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,currentData,filterKey
                                        filterKey="name"
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
-                                       currentData={currentData}
-                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
+                                       filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name",
+                render(text,record){
+                    let is_leader = self.isLeader(userInfoData,record);
+                    return (is_leader==1?<div>{text}<Icon type="user" style={{fontSize:18,paddingLeft:'7px'}}/>
+                    </div>:<div>{text}</div>)
+                }},
             {title: (<TableFilterTitle id="role" title="角色"
                                        filterKey="role"
                                        filterKeys={filterKeys}
                                        dataSource={dataSource}
-                                       currentData={currentData}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
             {title: "邮箱", dataIndex: "email", key: "email"},
         ]
@@ -316,7 +342,6 @@ function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
         userRelationState:state.UserRelation,
-        selectNode:state.UserRelation.getSelectNode,
         userRelationTree:state.UserRelation.getUserRelationTree,
         moveUserInfo:state.UserRelation.moveUserRelation,
         deleteUserInfo:state.UserRelation.deleteUserRelation,

@@ -8,7 +8,7 @@ import {Form, Input, Button, Modal, notification,Select} from 'antd';
 import Box from '../../components/box';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
-import {createUserGroup, UpdateUserGroup,getUserLeader} from './actions/user-relation-actions';
+import {createUserGroup, UpdateUserGroup,getUserLeader,getUserInfo} from './actions/user-relation-actions';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -76,15 +76,11 @@ class UserGroupDetail extends React.Component {
             duration: 2
         });
         PubSub.publish("evtRefreshUserGroupTree",{});
+        /*const {selectNode} = this.props;
+        let busiType = 'user-relation';
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        this.props.getGroupsUsers(selectedUserGroup.id,busiType);*/
         this.context.router.goBack();
-    }
-
-    errCallback(message,errmessage){
-        notification.error({
-            message: message,
-            description:errmessage,
-            duration: 4
-        });
     }
 
     findLeaderName(leaderId){
@@ -166,12 +162,6 @@ class UserGroupDetail extends React.Component {
             const {setFieldsValue} = this.props.form;
             setFieldsValue({parent_id:node.name});
         }
-    }
-
-    cancelChoose(){
-        this.setState({
-            modalVisible:false,
-        })
     }
 
     render() {
@@ -277,6 +267,7 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({createUserGroup, UpdateUserGroup}, dispatch),
         getNotLeader:bindActionCreators(getUserLeader, dispatch),
+        getGroupsUsers:bindActionCreators(getUserInfo, dispatch),
     }
 }
 

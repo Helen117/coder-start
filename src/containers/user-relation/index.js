@@ -105,8 +105,12 @@ class UserRelation extends React.Component{
             selectedNodeKey = treeFilterState[busi_type].selectedNodeKey;
         }
 
-        if(selectedNodeKey.length==0 && !type){
-            message.error('请选择要修改的组织!',3);
+        if(selectedNodeKey.length==0){
+            if(type=='add'){
+                message.error('请选择父组织!',3);
+            }else{
+                message.error('请选择要修改的组织!',3);
+            }
         }else{
             this.context.router.push({
                 pathname: '/userGroupDetail',
@@ -142,7 +146,6 @@ class UserRelation extends React.Component{
     render(){
         const {userRelationTree,selectNode,deleteUserGroup,visible,treeFilterState} = this.props;
         let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        //let selectedNode = selectNode?selectNode.selectedNode:'';
         let loadingTree = userRelationTree?userRelationTree.loading:false;
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];

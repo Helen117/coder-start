@@ -63,7 +63,7 @@ export default function project(state = initialState, action = {}) {
             return {...state, deleteProject:{result: action.payload,loading:false}};
         case DELETE_PROJECT_ERROR:
             return {
-                ...state,deleteProject:{loading:true}
+                ...state,deleteProject:{loading:false}
             };
         default:
             return state;
