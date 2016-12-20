@@ -58,6 +58,7 @@ class App extends React.Component {
                             navi_key_return = "menu"+data[i].id;
                             navi_keypath_return[0] = navi_key_return;
                             find_path++;
+                            light_menubar = "menu"+menuTwo[j].id;
                             break;
                         }else if(pathName != menuTwo[j].link && menuTwo[j].subMenu.length > 0){
                             var menuTree = menuTwo[j].subMenu;
@@ -119,12 +120,10 @@ class App extends React.Component {
         }
         if(nextProps.navpath.length == 0 && key_return){//登录，刷新时更新面包屑
             home.getNotifyItems(uid);
-            var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return);
         }else if(nextProps.navpath[0] && this.props.navpath[0] && key_return
         && nextProps.navpath[0].key != _key){
             //navpath改变时调接口
-            var is_menuclick = false;
             this.props.updateNavPath(path_return, key_return);
         }
     }

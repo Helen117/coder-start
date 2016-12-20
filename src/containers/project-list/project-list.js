@@ -129,9 +129,9 @@ class ProjectList extends Component {
             dataSource = !this.isEmptyObject(groupInfo)?this.getDataSource(groupInfo):[];
             groupDesc = !this.isEmptyObject(groupInfo)?(
                 <Row>
-                    <Col span={4}>项目组名称:{groupInfo.name}</Col>
+                    <Col span={4}>项目组名称：{groupInfo.name}</Col>
                     <Col span={4}>项目组创建人：{groupInfo.owner}</Col>
-                    <Col span={16}>项目组创建目的:{groupInfo.description}</Col>
+                    <Col span={16}>项目组创建目的：{groupInfo.description}</Col>
                 </Row>
             ):(<div></div>);
         }

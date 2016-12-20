@@ -105,7 +105,7 @@ class UpdatePassword extends React.Component {
                        onBlur={this.handlePasswordBlur.bind(this)}/>);
         const comfirmNewPassword = getFieldDecorator('comfirm_password',
             {rules:[
-                {required:true, message:'请输入新密码！'},
+                {required:true, message:'请再次输入新密码！'},
                 {validator: this.comfirmNewPass.bind(this)}
             ]})(<Input type="password" placeholder="请再次输入新密码"/>);
         let showPassword = this.state.visible;
