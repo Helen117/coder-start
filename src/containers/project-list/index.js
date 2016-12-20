@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Row, notification, Modal, message, Form } from 'antd';
+import { Row, notification, Modal, message, Form, Alert, Button } from 'antd';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
@@ -176,26 +176,40 @@ class ProjectMgrSub extends React.Component{
 
         return (
             <div>
-                {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr/project-mgr-sub')?(
+                {(!showProjectList && !showProjectItem)?
+                    <div style={{paddingLeft:'10px',paddingTop:'10px'}}>
+                        <Alert
+                            message={
+                                <Row>
+                                    <span>未选择具体的项目或项目组！您只可以</span>
+                                    <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.editGroup.bind(this, 'add', null)}>新建项目组</Button>
+                                </Row>
+                            }
+                            description=""
+                            type="info"
+                            showIcon/>
+                    </div>:(<div>
+                    {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr/project-mgr-sub')?(
+                        <Row>
+                            <PopoverImg content={content}/>
+                            <Modal title="确认删除此项目组吗?"
+                                   visible={this.state.modalVisible}
+                                   onOk={this.handleOk.bind(this,groupInfo)}
+                                   confirmLoading={deleteLoading}
+                                   onCancel={this.handleCancel.bind(this)}
+                            >
+                                <p>{groupInfo?groupInfo.name:''}</p>
+                            </Modal>
+                        </Row>
+                    ):(<Row></Row>)}
                     <Row>
-                        <PopoverImg content={content}/>
-                        <Modal title="确认删除此项目组吗?"
-                               visible={this.state.modalVisible}
-                               onOk={this.handleOk.bind(this,groupInfo)}
-                               confirmLoading={deleteLoading}
-                               onCancel={this.handleCancel.bind(this)}
-                        >
-                            <p>{groupInfo?groupInfo.name:''}</p>
-                        </Modal>
+                        {showProjectList==true?(<ProjectList visible={showProjectList}
+                                                             node={node}/>):(<div></div>)}
+                        {showProjectItem==true?(<ProjectItem visible={showProjectItem}
+                                                             node={node}/>
+                        ):(<div></div>)}
                     </Row>
-                ):(<Row></Row>)}
-                <Row>
-                    {showProjectList==true?(<ProjectList visible={showProjectList}
-                                                         node={node}/>):(<div></div>)}
-                    {showProjectItem==true?(<ProjectItem visible={showProjectItem}
-                                                   node={node}/>
-                    ):(<div></div>)}
-                </Row>
+                </div>)}
             </div>
         );
     }
