@@ -81,9 +81,10 @@ class FileTree extends React.Component {
         this.setState({
             filePath:filePath
         })
-        this.props.getCodeFile(projectInfo.id,filePath,brand);
         if(type == "blob"){
             this.props.getCodeContent(projectInfo.id,filePath,brand);
+        }else{
+            this.props.getCodeFile(projectInfo.id,filePath,brand);
         }
         PubSub.publish("evtRefreshFileTree",{path:record.name,type:type,brand:brand,filePath:filePath});
     }

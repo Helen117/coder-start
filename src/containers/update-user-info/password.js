@@ -75,11 +75,15 @@ class UpdatePassword extends React.Component {
 
     handlePasswordBlur(e){
         const value = e.target.value;
+        console.log('!!value:',!!value)
+        console.log('this.state.passwordDirty---:',this.state.passwordDirty)
         this.setState({ passwordDirty: this.state.passwordDirty || !!value });
     }
 
     checkConfirm(rule, value, callback){
         const form = this.props.form;
+        console.log('value:',value)
+        console.log('this.state.passwordDirty:',this.state.passwordDirty)
         if (value && this.state.passwordDirty) {
             form.validateFields(['comfirm_password'], { force: true });
         }
