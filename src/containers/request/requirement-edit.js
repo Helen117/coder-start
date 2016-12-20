@@ -165,6 +165,16 @@ class EditDemand extends Component{
         callback();
     }
 
+    checkMatchMilestone(rule, value, callback){
+        const currentMilestone = this.props.currentMilestone;
+        console.log('currentMilestone',currentMilestone)
+        if (currentMilestone && currentMilestone.length <= 0) {
+            callback('未查询到匹配的里程碑');
+        }else{
+            callback();
+        }
+    }
+
     getMilestone(date,time){
         //console.log('date',date,time)
         const selectedProjectSet = this.props.selectedProjectSet;
@@ -234,13 +244,15 @@ class EditDemand extends Component{
         const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
-        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow)
-        let helpMsg = ''
+        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
+        let helpMsg = null, validateStatus="success";
         if(currentMilestone) {
             if(currentMilestone.length>0){
-                helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
+                validateStatus="success";
+                helpMsg = '对应里程碑：'+currentMilestone[0].title +"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
             }else{
-                helpMsg = '未查询到匹配的里程碑'
+                validateStatus="error";
+                helpMsg = '尚未建立对应的里程碑'
             }
         }
 
@@ -305,13 +317,12 @@ class EditDemand extends Component{
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      disabled={disabledEditTester}
-                                     style={{ width: 300 }}
-                                      >
+                                     style={{ width: 300 }}>
                                 {tester}
                             </Select>)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="计划完成时间" help={helpMsg}>
+                    <FormItem {...formItemLayout} label="计划完成时间" help={helpMsg} validateStatus={validateStatus} >
                         {getFieldDecorator('expect_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})
                         (<DatePicker disabledDate={this.disabledDate.bind(this)}
                                      onChange={this.getMilestone.bind(this)}

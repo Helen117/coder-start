@@ -5,9 +5,9 @@ import {GET_CONFIRM_LIST_PENDING ,
     GET_CONFIRM_LIST_SUCCESS ,
     GET_CONFIRM_LIST_ERROR,
     
-    GET_PROJECT_INFO_PENDING ,
-    GET_PROJECT_INFO_SUCCESS ,
-    GET_PROJECT_INFO_ERROR,
+    GET_MY_PROJECT_INFO_PENDING ,
+    GET_MY_PROJECT_INFO_SUCCESS ,
+    GET_MY_PROJECT_INFO_ERROR,
 
     DEVELOP_CONFIRM_PENDING ,
     DEVELOP_CONFIRM_SUCCESS ,
@@ -40,13 +40,13 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
             
             
         //get project info
-        case GET_PROJECT_INFO_PENDING:
+        case GET_MY_PROJECT_INFO_PENDING:
             return {...state, projectInfo:null,getProjectInfoLoading: true};
 
-        case GET_PROJECT_INFO_SUCCESS:
+        case GET_MY_PROJECT_INFO_SUCCESS:
             return {...state, projectInfo: action.payload, getProjectInfoLoading: false};
 
-        case GET_PROJECT_INFO_ERROR:
+        case GET_MY_PROJECT_INFO_ERROR:
             return {...state,  projectInfo:null,getProjectInfoLoading: false,};
 
 
