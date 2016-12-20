@@ -234,8 +234,8 @@ class EditDemand extends Component{
         const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
-        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow)
-        let helpMsg = ''
+        const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
+        let helpMsg = '';
         if(currentMilestone) {
             if(currentMilestone.length>0){
                 helpMsg = '对应里程碑：'+currentMilestone[0].title+"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
