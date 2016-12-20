@@ -13,7 +13,6 @@ class MoreUserGroup extends React.Component{
         super(props);
         this.state = {
             modalVisible:null,
-            selectedNode:null,
         };
     }
 
@@ -24,17 +23,11 @@ class MoreUserGroup extends React.Component{
         })
     }
 
-    onSelectNode(node){
-        this.setState({
-            selectedNode:node,
-        })
-    }
-
     handleOk(){
-        const {handleOk,form} = this.props;
-        if(this.state.selectedNode){
+        const {handleOk,form,selectedMoreGroup} = this.props;
+        if(selectedMoreGroup){
             if(handleOk){
-                handleOk(this.state.selectedNode);
+                handleOk(selectedMoreGroup);
             }
             form.resetFields();
             this.setState({
@@ -46,9 +39,9 @@ class MoreUserGroup extends React.Component{
     }
 
     cancelChoose(){
-        const {cancelChoose,form} = this.props;
+        const {cancelChoose,form,selectedMoreGroup} = this.props;
         if(cancelChoose){
-            cancelChoose(this.state.selectedNode);
+            cancelChoose(selectedMoreGroup);
         }
         form.resetFields();
         this.setState({
@@ -79,8 +72,7 @@ class MoreUserGroup extends React.Component{
                     inputPlaceholder="快速查询组织"
                     loadingMsg="正在加载组织信息..."
                     nodesData={nodesData}
-                    busiType="more-user-group"
-                    onSelect={this.onSelectNode.bind(this)}/>
+                    busiType="more-user-group"/>
             </Modal>
         )
     }

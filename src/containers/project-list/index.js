@@ -41,10 +41,15 @@ class ProjectMgrSub extends React.Component{
     }
     editProject(type, groupInfo) {
         if(!this.isEmptyObject(groupInfo)){
-            this.context.router.push({
-                pathname: '/project-detail',
-                state: {editType: type, groupInfo,}
-            });
+            const {loginInfo} = this.props;
+            if(groupInfo.id.indexOf('_g') >= 0 && groupInfo.creatorId != loginInfo.userId){
+                message.error('你不能在别人的用户组下建项目!',3);
+            }else{
+                this.context.router.push({
+                    pathname: '/project-detail',
+                    state: {editType: type, groupInfo,}
+                });
+            }
         }else{
             message.error('请选择项目所在组!',3);
         }
