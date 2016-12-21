@@ -20,7 +20,7 @@ class CodeFiles extends React.Component {
         this.state = {
             pathData:[],
             activeKey:0,
-            brand:"master",
+            brand:"dev",
             showFileTree:true,
             showCodeView:false,
             filePath:'',
@@ -61,7 +61,7 @@ class CodeFiles extends React.Component {
                 && project.getProjectInfo.projectInfo){
                 let projectInfo = project.getProjectInfo.projectInfo;
                 if(projectInfo){
-                    this.state.brand = 'master';
+                    this.state.brand = 'dev';
                     this.props.fetchBranchesData(projectInfo.id);
                     this.props.getCodeFile(projectInfo.id,"",this.state.brand);
                     const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
@@ -186,7 +186,7 @@ class CodeFiles extends React.Component {
             return (
                 <Option key={item}>{item}</Option>
             )
-        }):(<Option key="master">master</Option>);
+        }):(<Option key="dev">dev</Option>);
 
         return (<div style={{paddingLeft:'10px'}}>
                 {(selectNode && selectNode.isProject)?(
