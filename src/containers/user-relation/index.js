@@ -130,7 +130,8 @@ class UserRelation extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteUserGroup} = nextProps;
+        console.log('componentWillReceiveProps--index')
+        const {deleteUserGroup,userRelationTree,selectNode} = nextProps;
         //删除返回信息
         if(this.props.deleteUserGroup && deleteUserGroup){
             if (this.props.deleteUserGroup.deleteResult != deleteUserGroup.deleteResult
@@ -141,6 +142,15 @@ class UserRelation extends React.Component{
                 this.insertCallback("删除成功");
             }
         }
+        //修改组织后更新组织信息
+        /*let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        if(this.props.userRelationTree && userRelationTree){
+            if(this.props.userRelationTree.userTreeData != userRelationTree.userTreeData
+            && userRelationTree.userTreeData.length > 0){
+                let resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
+                this.props.getSelectNode(selectedUserGroup.id,resetGroup);
+            }
+        }*/
     }
 
     render(){

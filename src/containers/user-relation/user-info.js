@@ -56,6 +56,7 @@ class UserInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
+        console.log('componentWillReceiveProps---info')
         const {moveUserInfo,deleteUserInfo,userRelationState,busiType} = nextProps;
         let userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData
