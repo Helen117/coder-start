@@ -40,6 +40,7 @@ class GroupDetail extends React.Component {
                 formData.userId = loginInfo.userId;
                 if(editType == 'add'){
                     //调创建组的接口
+                    console.log('formData:',formData)
                     actions.createGroup(formData);
                 }else{
                     //调修改组的接口
@@ -115,7 +116,7 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldDecorator('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
-                ]})(<Input type="text" placeholder="请输入项目名称"/>);
+                ]})(<Input type="text" placeholder="请输入项目组名称"/>);
             const descriptionProps = getFieldDecorator('description',
                 {rules:[
                     {required:true, message:'请输入描述！'}

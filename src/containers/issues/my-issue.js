@@ -96,10 +96,10 @@ class MyIssueList extends Component {
             title:data.title,
             author_id:data.author_name,
             state:data.state,
-            start:data.created_at&&data.created_at.length>0?data.created_at[0]:'',
-            end:data.created_at&&data.created_at.length>0?data.created_at[1]:'',
-            due_start:data.due_date&&data.due_date.length>0?data.due_date[0]:'',
-            due_end:data.due_date&&data.due_date.length>0?data.due_date[1]:'',
+            start:data.created_at&&data.created_at.length>0?data.created_at[0].valueOf():'',
+            end:data.created_at&&data.created_at.length>0?data.created_at[1].valueOf():'',
+            due_start:data.due_date&&data.due_date.length>0?data.due_date[0].valueOf():'',
+            due_end:data.due_date&&data.due_date.length>0?data.due_date[1].valueOf():'',
         };
         actions.getMyIssue(dataList);
     }
@@ -181,6 +181,11 @@ class MyIssueList extends Component {
                     list[i].issueType ='缺陷';
                 }else{
                     list[i].issueType ='bug';
+                }
+                if(list[i].state=='opened'){
+                    list[i].status='打开';
+                }else if(list[i].state=='closed'){
+                    list[i].status='关闭';
                 }
             }
         }
@@ -367,7 +372,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         width: '9%',
     },{
         title: '状态',
-        dataIndex: 'state',
+        dataIndex: 'status',
         width: '9%',
     },{
         title: '项目',

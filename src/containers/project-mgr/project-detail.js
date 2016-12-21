@@ -206,7 +206,7 @@ class ProjectDetail extends React.Component {
                     //{validator:this.projectNameExists.bind(this)},
                 ]
                 })(<Input type="text" placeholder="请输入项目名称"/>);
-            const descriptionProps = getFieldDecorator('description',{rules:[{ required:true}]})(<Input type="textarea" />);
+            const descriptionProps = getFieldDecorator('description',{rules:[{ required:true,message:'请输入描述！'}]})(<Input type="textarea" />);
             const groupProps = getFieldDecorator('groupid',{rules:[{ required:true}]})(
                 <Select
                     showSearch

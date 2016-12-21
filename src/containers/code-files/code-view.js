@@ -3,7 +3,7 @@
  */
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {Row, input} from 'antd';
+import {Row, input, Spin} from 'antd';
 import SyntaxHighlighter from './syntaxhighlighter';
 import styles from "./index.css";
 
@@ -37,41 +37,34 @@ class CodeView extends React.Component {
 
     render(){
         const {fetchContentStatus,visible,pathName,filePath} = this.props;
-        if((fetchContentStatus || false) && (visible==true)){
+        let imgPath = '',categary='',fileName = '';
+        if(fetchContentStatus || false){
             let index = pathName.lastIndexOf('.');
-            let categary = pathName.substr(index+1,pathName.length);
-            let imgPath = '/'+filePath;
+            categary = pathName.substr(index+1,pathName.length);
+            imgPath = '/'+filePath;
+            fileName = pathName;
+        }
+        if(visible==true){
             return (
-                <div className={styles.code_view}>
-                    <Row className={styles.blob_commit_info}>
-                        <p className={styles.commit_info}>{pathName}</p>
-                    </Row>
-                    <Row>
-                        <div className={styles.blob_commit_info}>
-                            {(categary=='png' || categary=='jpg')?(
-                                <img src={imgPath}></img>
-                            ):(
-                                <SyntaxHighlighter style={this.state.style}
-                                                   showLineNumbers>
-                                    {this.state.code}
-                                </SyntaxHighlighter>
-                            )}
-                        </div>
-                    </Row>
-                </div>
-            )
-        }else if((fetchContentStatus == false) && (visible==true)){
-            return (
-                <div className={styles.code_view}>
-                    <Row className={styles.blob_commit_info}>
-                        <p className={styles.commit_info}>{pathName}</p>
-                    </Row>
-                    <Row>
-                        <div className={styles.blob_commit_info}>
-
-                        </div>
-                    </Row>
-                </div>
+                <Spin spinning={this.props.loading} tip="正在加载数据...">
+                    <div >
+                        <Row className={styles.blob_commit_info}>
+                            <p className={styles.commit_info}>{fileName}</p>
+                        </Row>
+                        <Row>
+                            <div className={styles.blob_commit_info}>
+                                {(categary=='png' || categary=='jpg')?(
+                                    <img src={imgPath}></img>
+                                ):(
+                                    <SyntaxHighlighter style={this.state.style}
+                                                       showLineNumbers>
+                                        {this.state.code}
+                                    </SyntaxHighlighter>
+                                )}
+                            </div>
+                        </Row>
+                    </div>
+                </Spin>
             )
         }else {return <div></div>}
     }

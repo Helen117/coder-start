@@ -1,18 +1,15 @@
-.code_view{
-    padding-left: 10px;
-}
+
 .blob_commit_info{
     background-color: #FAFAFA;
     border: 1px solid #e5e5e5;
+    padding-left: 10px;
 }
 .commit_info{
     padding-top: 10px;
-    padding-left: 10px;
     padding-bottom: 10px;
 }
 .select{
     width: 120px;
-    padding-left: 10px;
     padding-bottom: 10px;
 }
 .v_middle{

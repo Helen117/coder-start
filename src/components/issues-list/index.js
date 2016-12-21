@@ -103,6 +103,11 @@ export default class IssueList extends Component {
                             if(list[i].children[j].children[k].children[n].type=='demand'){
                                 list[i].children[j].children[k].children[n].issueType = "需求";
                             }
+                            if(list[i].children[j].children[k].children[n].state=='opened'){
+                                list[i].children[j].children[k].children[n].status='打开';
+                            }else if(list[i].children[j].children[k].children[n].state=='closed'){
+                                list[i].children[j].children[k].children[n].status='关闭';
+                            }
 
                             for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
                                 if(typeof(list[i].children[j].children[k].children[n].children[m].due_date)=="number") {
@@ -116,6 +121,12 @@ export default class IssueList extends Component {
                                     list[i].children[j].children[k].children[n].children[m].issueType = "缺陷";
                                 }else{
                                     list[i].children[j].children[k].children[n].children[m].issueType = "Bug";
+                                }
+
+                                if(list[i].children[j].children[k].children[n].children[m].state=='opened'){
+                                    list[i].children[j].children[k].children[n].children[m].status='打开';
+                                }else if(list[i].children[j].children[k].children[n].children[m].state=='closed'){
+                                    list[i].children[j].children[k].children[n].children[m].status='关闭';
                                 }
                             }
                         }
@@ -319,7 +330,7 @@ IssueList.prototype.issueListColumns = (self)=>[
     render:renderContent,
 },{
     title: '状态',
-    dataIndex: 'state',
+    dataIndex: 'status',
     width: '7%',
     className:'columnClass',
     render:renderContent,
