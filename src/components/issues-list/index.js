@@ -109,6 +109,8 @@ export default class IssueList extends Component {
                                 list[i].children[j].children[k].children[n].status='关闭';
                             }
 
+                            list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].label_names && list[i].children[j].children[k].children[n].label_names.length > 0 ? list[i].children[j].children[k].children[n].label_names + '' : '';
+
                             for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
                                 if(typeof(list[i].children[j].children[k].children[n].children[m].due_date)=="number") {
                                     list[i].children[j].children[k].children[n].children[m].due_date = this.getTime(list[i].children[j].children[k].children[n].children[m].due_date);
@@ -128,6 +130,7 @@ export default class IssueList extends Component {
                                 }else if(list[i].children[j].children[k].children[n].children[m].state=='closed'){
                                     list[i].children[j].children[k].children[n].children[m].status='关闭';
                                 }
+                                list[i].children[j].children[k].children[n].children[m].labels = list[i].children[j].children[k].children[n].children[m].label_names && list[i].children[j].children[k].children[n].children[m].label_names.length > 0 ? list[i].children[j].children[k].children[n].children[m].label_names + '' : '';
                             }
                         }
                     }
