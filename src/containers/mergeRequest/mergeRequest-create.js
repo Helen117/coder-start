@@ -167,7 +167,7 @@ class CreateMergeRequest extends Component {
         };
 
             return (
-                <Box title='添加MR'>
+                <Box title='创建代码合并请求'>
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                         <Row>
                             <Col span="9">

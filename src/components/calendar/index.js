@@ -20,7 +20,7 @@ export default class MilestonesCalendar extends React.Component{
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
-    editMilestone(item,date){
+    editMilestone(item){
         const milestoneEditPath = this.props.milestoneEditPath;
         this.context.router.push({
             pathname: milestoneEditPath,
@@ -114,13 +114,13 @@ export default class MilestonesCalendar extends React.Component{
         return revocable;
     }
 
-    titleDecorate(milestoneData,calendarTime){
+    titleDecorate(milestoneData){
         const id = this.props.id
 
         const revocable = this.isRevocable(milestoneData.state,id);
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date);
         if(revocable){
-            return <a onClick = {this.editMilestone.bind(this,milestoneData,calendarTime)} >
+            return <a onClick = {this.editMilestone.bind(this,milestoneData)} >
                 <h4 style={{color:type=="error"?"red":""}}>
                     <Icon style={{marginRight:5}} type="edit" />{milestoneData.title}
                 </h4>
@@ -132,13 +132,13 @@ export default class MilestonesCalendar extends React.Component{
         }
     }
 
-    getMilestoneData(milestoneData,calendarTime) {
+    getMilestoneData(milestoneData) {
         const tooltip = this.milestoneTooltip(milestoneData);
         return(
             <div style={{marginLeft:3}}>
                 <Tooltip placement="top" title={tooltip}>
                     <ul className="events">
-                         <li>{this.titleDecorate(milestoneData,calendarTime)}</li>
+                         <li>{this.titleDecorate(milestoneData)}</li>
                          <li>{milestoneData.description}</li>
                     </ul>
                 </Tooltip>
@@ -168,22 +168,23 @@ export default class MilestonesCalendar extends React.Component{
     }
 
     dateCellRender(milestoneData,value) {
-        const calendarTime = new Date(value).getTime();
-
+        const calendarTime = value.startOf('day').valueOf();
+        
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
-                const milestoneTime = milestoneData[i].due_date+60*60*24*1000;
+                const milestoneDueDate = moment(milestoneData[i].due_date).valueOf();
                 const colorId = i%6;
-                if(calendarTime < milestoneTime){
+                if(calendarTime <= milestoneDueDate){
                     let milestoneMount = null,issuesMount = null, issuesList = [];
-                    if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
-                        milestoneMount = this.getMilestoneData(milestoneData[i],calendarTime);
+                    if(calendarTime == milestoneDueDate){
+                        milestoneMount = this.getMilestoneData(milestoneData[i]);
                     }
                     for(let j=0; j<milestoneData[i].issues.length; j++ ){
-                        if(this.getTime(calendarTime) == this.getTime(milestoneData[i].issues[j].dueDate)){
+                        const issueDueDate = moment(milestoneData[i].issues[j].dueDate).startOf('day').valueOf();
+                        if(calendarTime == issueDueDate){
                             issuesList.push(milestoneData[i].issues[j])
                         }else if(milestoneData[i].issues[j].dueDate == null){
-                            if(this.getTime(calendarTime) == this.getTime(milestoneData[i].due_date)){
+                            if(calendarTime == moment(milestoneData[i].due_date).startOf('day')){
                                 issuesList.push(milestoneData[i].issues[j])
                             }
                         }
