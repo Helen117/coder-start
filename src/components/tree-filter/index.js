@@ -172,7 +172,7 @@ class TreeFilter extends React.Component {
     render(){
         const {loading, loadingMsg, inputPlaceholder, notFoundMsg, treeFilterState, busiType, treeFilterAction} = this.props;
         let {nodesData} = this.props;
-            if (!nodesData){
+        if (!nodesData){
             nodesData = [];
         }
         let nodes = this.getTreeNodes(nodesData);
@@ -182,41 +182,49 @@ class TreeFilter extends React.Component {
             nodes = this.processTreeNode(nodes, filterValue);
         }
 
-        let selectedNodeKey = [];
-        if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
-            selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
-        }
         const trProps = {
             selectable: true,
             showLine: true,
             // //selectedKeys: this.state._selectedKeys.length==0?this.props.defaultSelectedKeys:this.state._selectedKeys,
             // selectedKeys: this.props.defaultSelectedKeys,
             // defaultSelectedKeys: this.props.defaultSelectedKeys,
-            selectedKeys: selectedNodeKey,
             onSelect: this.onSelectNode.bind(this),
             defaultExpandAll: false,
             expandedKeys: [],
             filterTreeNode: this.highlightTreeNode.bind(this),
+            autoExpandParent: true,
+            onExpand: this.onExpand.bind(this)
         };
-        trProps.autoExpandParent = true;
-        trProps.onExpand = this.onExpand.bind(this);
-        if (this._expandedKeys && this._expandedKeys.length) {
-            trProps.expandedKeys = this._expandedKeys;
-            if (!filterValue){
-                treeFilterState[busiType].expandedKeys = trProps.expandedKeys;
-                treeFilterState[busiType].fireOnExpand = false;
-            }
-        }
+        // if (this._expandedKeys && this._expandedKeys.length) {
+        //     trProps.expandedKeys = this._expandedKeys;
+        //     // if (!filterValue){
+        //     //     treeFilterState[busiType].expandedKeys = trProps.expandedKeys;
+        //     //     treeFilterState[busiType].fireOnExpand = false;
+        //     // }
+        // }
         // if (this.state.fireOnExpand) {
         //     trProps.expandedKeys = this.state._expandedKeys;
         //     trProps.autoExpandParent = false;
         // }
+        // if (treeFilterState[busiType]){
+        //     trProps.expandedKeys = treeFilterState[busiType].expandedKeys;
+        //     if (treeFilterState[busiType].fireOnExpand){
+        //         trProps.autoExpandParent = false;
+        //     }else{
+        //         trProps.autoExpandParent = true;
+        //     }
+        // }
         if (treeFilterState[busiType]){
+            trProps.selectedKeys = treeFilterState[busiType].selectedNodeKey;
             trProps.expandedKeys = treeFilterState[busiType].expandedKeys;
             if (treeFilterState[busiType].fireOnExpand){
                 trProps.autoExpandParent = false;
             }else{
                 trProps.autoExpandParent = true;
+                if (this._expandedKeys && this._expandedKeys.length) {
+                    trProps.expandedKeys = this._expandedKeys;
+                    treeFilterState[busiType].expandedKeys = this._expandedKeys;
+                }
             }
         }
         const {getFieldDecorator} = this.props.form;
