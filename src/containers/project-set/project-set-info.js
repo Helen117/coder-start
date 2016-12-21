@@ -7,7 +7,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { message, Modal, Spin, Icon} from 'antd';
+import { message, Modal, Spin, Alert, Row} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PopoverImg from '../../components/popover-img';
@@ -130,18 +130,27 @@ class SelectedSetInfo extends Component {
             return (
                 <Spin spinning={spinning} tip="正在删除数据，请稍候...">
                     <div style={{margin:5}}>
-                        <PopoverImg content={content}></PopoverImg>
                         {
                             selectedProjectSet?
                                 <div>
+                                    <PopoverImg content={content}></PopoverImg>
                                     <span>项目集合：{selectedProjectSet.name}</span>
                                     <span style={{marginLeft:20}}>描述：{selectedProjectSet.description}</span>
                                     <TableView columns={columns(this)}
                                                dataSource={dataSource}
                                     ></TableView>
-                                </div>:<div className="null_type_div">
-                                <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
-                            </div>
+                                </div>:
+                                <Alert style={{margin:10}}
+                                       message={
+                                           <Row>
+                                               <span>请从左边的项目树中选择一个具体的项目或项目集，或者您也可以</span>
+                                               <a style={{marginLeft:3}} onClick={this.editProjectSet.bind(this,'add')}>创建项目集合</a>
+                                           </Row>
+                                       }
+                                       description=""
+                                       type="warning"
+                                       showIcon
+                                />
                         }
 
                     </div>

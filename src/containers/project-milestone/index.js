@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, notification, Affix, Icon, Modal, message, Popover, Input, Form } from 'antd';
+import { Alert } from 'antd';
 import {Milestones} from '../milestones'
 import moment from 'moment'
 
@@ -40,17 +40,20 @@ class ProjectMilestones extends React.Component {
         const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
         const projectName = !this.isEmptyObject(projectInfo)? projectInfo.name:'';
 
-        /*if(projectId) {*/
+        if(projectId) {
             return (
                 <Milestones projectId={projectId} projectName={projectName} defaultDate={moment()}/>
     )
-        /*}else{
+        }else{
             return(
-                <div className="null_type_div">
-                    <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
-                </div>
+                <Alert style={{margin:10}}
+                       message="请从左边的项目树中选择一个具体的项目！"
+                       description=""
+                       type="warning"
+                       showIcon
+                />
             )
-        }*/
+        }
     }
 }
 

@@ -161,11 +161,6 @@ MergeRequestList.prototype.columns = (self)=> [{
     key: 'assignee',
     width:'10%'
 },{
-    title: 'MR路径',
-    dataIndex: 'mrPath',
-    key: 'mrPath',
-    width:'15%'
-},{
     title: '创建时间',
     dataIndex: 'created_at',
     key: 'created_at',

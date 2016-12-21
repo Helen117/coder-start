@@ -209,7 +209,7 @@ class AddIssue extends Component{
     // }
 
     disabledDate(current) {
-        return current && current < moment();
+        return current && current.startOf('day') < moment().startOf('day')
     }
 
     handleCancel() {

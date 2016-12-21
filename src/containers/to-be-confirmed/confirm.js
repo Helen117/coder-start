@@ -87,7 +87,7 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-          console.log(file);
+          // console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
              if (!(file.type === 'application/msword')) {
                  message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
@@ -117,6 +117,7 @@ const FormItem = Form.Item;
          }.bind(this);
          reader.readAsDataURL(file);
          //reader.readAsArrayBuffer(file);
+         this.props.form.setFieldsValue({'files':this.state.fileList});
          return false;
      }
 
@@ -158,7 +159,7 @@ const FormItem = Form.Item;
                             {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写工时'}]})(<InputNumber min={1} max={100}/>)}
                         </FormItem>
 
-                        <FormItem {...formItemLayout}  label="文档上传" >
+                        <FormItem {...formItemLayout}  label={role == 'developer' ?"设计文档上传":"测试案例上传"}>
                             {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
                                 <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
                                     <Button type="ghost">

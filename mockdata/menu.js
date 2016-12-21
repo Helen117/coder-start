@@ -34,3 +34,5 @@ module.exports.menu ={
             {"id":26,"parentId":0,"cLevel":1,"name":"个人信息","link":"/updateUserInfo","description":"","icon":null,"subMenu":[]}
         ]
 };
+
+
