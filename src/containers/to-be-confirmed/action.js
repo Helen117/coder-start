@@ -1,7 +1,7 @@
 /**
  * Created by zhaojp on 2016/11/28.
  */
-import {GET_PROJECT_INFO,
+import {GET_MY_PROJECT_INFO,
     DEVELOP_CONFIRM,
     GET_TRANSPOND_MEMBER,
     DEVELOP_TRANSPOND,
@@ -11,7 +11,7 @@ import api from '../../api';
 export function getProjectInfo(set_id,user_id) {
     var path ='/project/demand-project';
     return {
-        type: GET_PROJECT_INFO,
+        type: GET_MY_PROJECT_INFO,
         payload: {
             promise: api.post(path, {
                 params: {

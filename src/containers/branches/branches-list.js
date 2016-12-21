@@ -26,7 +26,7 @@ class BranchesList extends React.Component {
     componentWillMount() {
         const {project} = this.props;
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
-        if(projectInfo.id) {
+        if(projectInfo && projectInfo.id) {
             if(!this.props.branchesData && !this.props.loading) {
                 this.props.fetchBranchesData(projectInfo.id);
             }

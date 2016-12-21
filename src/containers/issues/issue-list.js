@@ -115,10 +115,10 @@ class ProjectIssueList extends Component {
             author_id:data.author_name,
             state:data.state,
             labeles:data.label,
-            start:data.created_at&&data.created_at.length>0?data.created_at[0]:'',
-            end:data.created_at&&data.created_at.length>0?data.created_at[1]:'',
-            due_start:data.due_date&&data.due_date.length>0?data.due_date[0]:'',
-            due_end:data.due_date&&data.due_date.length>0?data.due_date[1]:'',
+            start:data.created_at&&data.created_at.length>0?data.created_at[0].valueOf():'',
+            end:data.created_at&&data.created_at.length>0?data.created_at[1].valueOf():'',
+            due_start:data.due_date&&data.due_date.length>0?data.due_date[0].valueOf():'',
+            due_end:data.due_date&&data.due_date.length>0?data.due_date[1].valueOf():'',
         };
         actions.getIssueList(dataList);
     }
