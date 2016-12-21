@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Icon} from 'antd';
+import { Alert} from 'antd';
 import {Milestones} from '../milestones'
 import moment from 'moment';
 import './index.less';
@@ -25,9 +25,12 @@ class ProjectSetMilestones extends React.Component {
             )
         }else{
             return (
-                <div className="null_type_div">
-                    <span><Icon type="exclamation-circle-o" />   请选择一个项目或项目集合</span>
-                </div>
+                <Alert style={{margin:10}}
+                    message="请从左边的项目树中选择一个具体的项目或项目集！"
+                    description=""
+                    type="warning"
+                    showIcon
+                />
             )
         }
     }

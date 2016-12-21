@@ -2,7 +2,7 @@
  * Created by helen on 2016/11/25.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table,message,Button,Icon,Modal,Form,Input, Tooltip ,Breadcrumb, Row,Col  } from 'antd';
+import { Table,message,Button,Icon,Modal,Form,Input, Alert ,Breadcrumb, Row,Col  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
@@ -94,7 +94,7 @@ class RequirementInfo extends Component {
                     list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
                 if (typeof(list[i].deadline_date) == "number") {
-                    list[i].deadline_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
+                    list[i].deadline_date = new Date(parseInt(list[i].deadline_date)).toLocaleDateString();
                 }
                 const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
                 const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
@@ -159,9 +159,12 @@ class RequirementInfo extends Component {
             );
         }else{
             return (
-                <div className="null_type_div">
-                    <span><Icon type="exclamation-circle-o" />   请选择一个项目集合</span>
-                </div>
+                <Alert style={{margin:10}}
+                       message="请从左边的项目树中选择一个具体的项目集！"
+                       description=""
+                       type="warning"
+                       showIcon
+                />
             )
         }
     }
