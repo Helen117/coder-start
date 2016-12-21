@@ -121,7 +121,7 @@ class ProjectSetMilestonesEdit extends React.Component {
     }
 
     disabledDate(current) {
-    return current && current < moment();
+        return current && current.startOf('day') < moment().startOf('day')
     }
 
     render(){

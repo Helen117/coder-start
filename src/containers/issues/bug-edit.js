@@ -43,7 +43,7 @@ class EditBug extends Component{
     }
 
     disabledDate(current) {
-        return current && current < moment();
+        return current && current.startOf('day') < moment().startOf('day')
     }
 
     handleSubmit(e) {
