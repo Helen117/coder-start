@@ -187,6 +187,7 @@ class MyIssueList extends Component {
                 }else if(list[i].state=='closed'){
                     list[i].status='关闭';
                 }
+                list[i].labels = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
             }
         }
         return list;
@@ -388,7 +389,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         width: '8%',
         render: (text, record, index)=> {
             if(record.state.indexOf('open')!=-1){
-                if (!record.project_id) {
+                if (!record.project_id&&record.is_sets_Issue_finished) {
                     if (record.type == 'bug') {
                         return <div>
                             <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
@@ -399,9 +400,8 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                             <br/>
                             <a onClick={self.testPass.bind(self, record)}>提交测试报告</a>
                         </div>;
-
                     }
-                }else{
+                }else if(record.project_id){
                     return <div>
                         <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
                     </div>;
