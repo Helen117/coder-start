@@ -121,7 +121,7 @@ class MergeRequestList extends React.Component {
         return(
             <div style={{margin: 10}}>
                 <Row>
-                    <Button className="pull-right" type="primary"
+                    <Button type="primary"
                             disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
                             loading={buttonLoading}
                             onClick={this.createMergeRequest.bind(this)}>

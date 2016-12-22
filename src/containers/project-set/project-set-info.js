@@ -7,7 +7,7 @@ import React,{
     Component
 } from 'react';
 import 'pubsub-js';
-import { message, Modal, Spin, Alert, Row} from 'antd';
+import { message, Modal, Spin, Alert, Row, Button} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PopoverImg from '../../components/popover-img';
@@ -144,7 +144,7 @@ class SelectedSetInfo extends Component {
                                        message={
                                            <Row>
                                                <span>请从左边的项目树中选择一个具体的项目或项目集，或者您也可以</span>
-                                               <a style={{marginLeft:3}} onClick={this.editProjectSet.bind(this,'add')}>创建项目集合</a>
+                                               <Button type="primary" size="small" style={{marginLeft:5}} onClick={this.editProjectSet.bind(this,'add')}>创建项目集合</Button>
                                            </Row>
                                        }
                                        description=""
