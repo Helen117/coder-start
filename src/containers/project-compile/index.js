@@ -74,7 +74,7 @@ class ProjectCompile extends React.Component{
         if (buildJobResult && buildJobResult != this.props.buildJobResult){
             notification.success({
                 message: '操作成功',
-                description: "成功发起执行任务，稍等几秒可以在查看执行状态！",
+                description: "成功发起执行任务，请稍等几秒查看执行状态！",
                 duration: 5
             });
         }
