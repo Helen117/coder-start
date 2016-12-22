@@ -5,7 +5,7 @@ import React,{ PropTypes } from 'react';
 import { Transfer, Button, Form ,Modal, Input,Spin, notification,message} from 'antd';
 import Box from '../../components/box';
 import TransferFilter from '../../components/transfer-filter';
-import {createProjectSet,updateProjectSet,fetchProjectSetTree,getSetProject} from './project-set-action'
+import {createProjectSet,updateProjectSet,fetchProjectSetTree,getSetProject,putSelectedTreeItemToState} from './project-set-action'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -16,6 +16,7 @@ class ProjectSetCreate extends React.Component {
     constructor(props) {
         super(props);
         this.targetKeys=[];
+        this.editProject = false;
         this.projectSetInfo = this.props.selectedProjectSet;
     }
 
@@ -32,6 +33,7 @@ class ProjectSetCreate extends React.Component {
                         if(this.props.selectedProjectSet.id == this.props.projectSetTree[i].id){
                             this.projectSetInfo.description = this.props.projectSetTree[i].description;
                             for(let j=0;j<this.props.projectSetTree[i].children.length;j++){
+                                this.targetKeys.push(this.props.projectSetTree[i].children[j].id.substring(0,this.props.projectSetTree[i].children[j].id.length-2));
                                 this.projectSetInfo.project_set.push({id:this.props.projectSetTree[i].children[j].id,
                                     name:this.props.projectSetTree[i].children[j].name})
                             }
@@ -51,6 +53,10 @@ class ProjectSetCreate extends React.Component {
         }
         if(this.props.updateResult != updateResult && updateResult){
             this.insertCallback('修改');
+            const formData = this.props.form.getFieldsValue();
+            this.projectSetInfo.name = formData.name;
+            this.projectSetInfo.description = formData.description;
+            this.props.putSelectedTreeItemToStateAction(this.projectSetInfo);
         }
 
     }
@@ -90,8 +96,8 @@ class ProjectSetCreate extends React.Component {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                formData.project_set = this.targetKeys;
                 formData.owner_id = logInfo.userId;
+                formData.project_set = this.targetKeys;
                 if(editType == 'add'){
                     this.props.createProjectSet(formData);
                 }else{
@@ -206,6 +212,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        putSelectedTreeItemToStateAction: bindActionCreators(putSelectedTreeItemToState, dispatch),
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         getSetProjectAction: bindActionCreators(getSetProject, dispatch),
         createProjectSet: bindActionCreators(createProjectSet, dispatch),

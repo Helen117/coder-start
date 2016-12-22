@@ -40,7 +40,6 @@ class GroupDetail extends React.Component {
                 formData.userId = loginInfo.userId;
                 if(editType == 'add'){
                     //调创建组的接口
-                    console.log('formData:',formData)
                     actions.createGroup(formData);
                 }else{
                     //调修改组的接口

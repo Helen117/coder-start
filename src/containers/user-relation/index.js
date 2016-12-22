@@ -130,7 +130,7 @@ class UserRelation extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteUserGroup} = nextProps;
+        const {deleteUserGroup,userRelationTree,selectNode} = nextProps;
         //删除返回信息
         if(this.props.deleteUserGroup && deleteUserGroup){
             if (this.props.deleteUserGroup.deleteResult != deleteUserGroup.deleteResult
@@ -139,6 +139,17 @@ class UserRelation extends React.Component{
                     modalVisible: false,
                 });
                 this.insertCallback("删除成功");
+            }
+        }
+        //修改组织后更新组织信息
+        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        console.log('selectedUserGroup:',selectedUserGroup)
+        if(this.props.userRelationTree && userRelationTree){
+            if(this.props.userRelationTree.userTreeData != userRelationTree.userTreeData
+            && userRelationTree.userTreeData.length > 0){
+                console.log('111')
+                //let resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
+                //this.props.getSelectNode(selectedUserGroup.id,resetGroup);
             }
         }
     }
@@ -188,7 +199,7 @@ class UserRelation extends React.Component{
                                        visible={this.state.modalVisible}
                                        onOk={this.handleOk.bind(this)}
                                        onCancel={this.handleCancel.bind(this)}
-                                       confirmLoading={deleteGroupLoading?true:false}
+                                       confirmLoading={deleteGroupLoading}
                                 >
                                     <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
                                 </Modal>

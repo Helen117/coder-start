@@ -123,7 +123,11 @@ class EditDemand extends Component{
     }
 
     disabledDate(current) {
-        return current && current < moment();
+        return current && current.startOf('day') < moment().startOf('day')
+    }
+
+    disabledDate(current) {
+        return current && current < moment()
     }
 
     developTestDistinct(checkTarget,rule, value, callback){
@@ -176,7 +180,6 @@ class EditDemand extends Component{
     }
 
     getMilestone(date,time){
-        //console.log('date',date,time)
         const selectedProjectSet = this.props.selectedProjectSet;
         const sets_id = selectedProjectSet.selectedItemId;
         const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
