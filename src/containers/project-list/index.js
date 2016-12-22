@@ -29,13 +29,18 @@ class ProjectMgrSub extends React.Component{
         if(!type && this.isEmptyObject(groupInfo)){
             message.error('请选择要修改的项目组!',3);
         }else{
-            if(groupInfo && groupInfo.id.indexOf('_g')>=0){
-                message.error('此组为用户组，不可修改!',3);
+            const {loginInfo} = this.props;
+            if(groupInfo.creatorId != loginInfo.userId){
+                message.error('你不能修改别人的项目组!',3);
             }else{
-                this.context.router.push({
-                    pathname: '/group-detail',
-                    state: {editType: type, groupInfo}
-                });
+                if(groupInfo && groupInfo.id.indexOf('_g')>=0){
+                    message.error('此组为用户组，不可修改!',3);
+                }else{
+                    this.context.router.push({
+                        pathname: '/group-detail',
+                        state: {editType: type, groupInfo}
+                    });
+                }
             }
         }
     }
@@ -56,12 +61,17 @@ class ProjectMgrSub extends React.Component{
     }
     deleteGroup(groupInfo){
         if(!this.isEmptyObject(groupInfo)){
-            if(groupInfo.children.length == 0){
-                this.setState({
-                    modalVisible: true,
-                });
+            const {loginInfo} = this.props;
+            if(groupInfo.creatorId != loginInfo.userId){
+                message.error('你不能删除别人的组织!',3);
             }else{
-                message.error('项目组不为空，不能删除!',3);
+                if(groupInfo.children.length == 0){
+                    this.setState({
+                        modalVisible: true,
+                    });
+                }else{
+                    message.error('项目组不为空，不能删除!',3);
+                }
             }
         }else{
             message.error('请选择需要删除的项目组！',3);
