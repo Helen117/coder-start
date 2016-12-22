@@ -252,11 +252,11 @@ class UserInfo extends React.Component {
                                dataSource={dataSource}
                                rowSelection={showOpt==true?null:rowSelection}
                                pagination={pagination}
-                               loading={getUserLoading?true:false}></Table>
+                               loading={getUserLoading}></Table>
                         <Modal title="确认移除此成员吗?"
                                visible={this.state.moveOutVisible}
                                onOk={this.handleOk.bind(this)}
-                               confirmLoading={removeUserLoading?true:false}
+                               confirmLoading={removeUserLoading}
                                onCancel={this.handleCancel.bind(this)}
                         >
                             <span>移除成员后，该成员再进入系统需要使用新邮箱重新注册！如果确认，请输入原因：</span>
@@ -266,7 +266,7 @@ class UserInfo extends React.Component {
                         </Modal>
                         <MoreUserGroup modalVisible={this.state.moreGroupVisible}
                                        loading={loadingTree}
-                                       confirmLoading={moveLoading?true:false}
+                                       confirmLoading={moveLoading}
                                        nodesData={userTreeData}
                                        selectedMoreGroup={selectedMoreGroup}
                                        handleOk={this.handleOk.bind(this)}

@@ -76,10 +76,10 @@ class UserGroupDetail extends React.Component {
             duration: 2
         });
         PubSub.publish("evtRefreshUserGroupTree",{});
-        /*const {selectNode} = this.props;
+        const {selectNode} = this.props;
         let busiType = 'user-relation';
         let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        this.props.getGroupsUsers(selectedUserGroup.id,busiType);*/
+        this.props.getGroupsUsers(selectedUserGroup.id,busiType);
         this.context.router.goBack();
     }
 
