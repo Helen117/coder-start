@@ -111,7 +111,7 @@ class RequirementInfo extends Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const pagination = {
-            pageSize:20,
+            pageSize:10,
         };
 
         const selectedProjectSet = this.props.selectedProjectSet;
