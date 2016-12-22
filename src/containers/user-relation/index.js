@@ -143,15 +143,16 @@ class UserRelation extends React.Component{
         }
         //修改组织后更新组织信息
         let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        //console.log('selectedUserGroup:',selectedUserGroup)
-        /*if(this.props.userRelationTree && userRelationTree){
+        if(this.props.userRelationTree && userRelationTree){
             if(this.props.userRelationTree.userTreeData != userRelationTree.userTreeData
+            && userRelationTree.userTreeData
             && userRelationTree.userTreeData.length > 0){
-                //console.log('111')
-                //let resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
-                //this.props.getSelectNode(selectedUserGroup.id,resetGroup);
+                if(selectedUserGroup != ''){
+                    let resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
+                    this.props.getSelectNode(selectedUserGroup.id,resetGroup);
+                }
             }
-        }*/
+        }
     }
 
     render(){
