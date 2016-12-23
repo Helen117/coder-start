@@ -9,7 +9,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Row, notification, Modal, message, Form, Alert, Button } from 'antd';
+import { Row, notification, Modal, message, Form, Alert, Button,Affix } from 'antd';
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
@@ -202,17 +202,17 @@ class ProjectMgrSub extends React.Component{
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr/project-mgr-sub')?(
                         <Row>
                             <PopoverImg content={content}/>
-                            <Modal title="确认删除此项目组吗?"
-                                   visible={this.state.modalVisible}
-                                   onOk={this.handleOk.bind(this,groupInfo)}
-                                   confirmLoading={deleteLoading}
-                                   onCancel={this.handleCancel.bind(this)}
-                            >
-                                <p>{groupInfo?groupInfo.name:''}</p>
-                            </Modal>
                         </Row>
-                    ):(<Row></Row>)}
+                    ):(<div/>)}
                     <Row>
+                        <Modal title="确认删除此项目组吗?"
+                               visible={this.state.modalVisible}
+                               onOk={this.handleOk.bind(this,groupInfo)}
+                               confirmLoading={deleteLoading}
+                               onCancel={this.handleCancel.bind(this)}
+                        >
+                            <p>{groupInfo?groupInfo.name:''}</p>
+                        </Modal>
                         {showProjectList==true?(<ProjectList visible={showProjectList}
                                                              node={node}/>):(<div></div>)}
                         {showProjectItem==true?(<ProjectItem visible={showProjectItem}
