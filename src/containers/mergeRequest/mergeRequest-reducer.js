@@ -80,6 +80,9 @@ export function mergeRequest(state = initialState, action = {}) {
         case FETCH_MR_LIST_ERROR:
             return {...state, mrList:null,getMrListLoading:false};
 
+        case 'CHANGE_QUERY_CONDITION':
+            return {...state, page:action.page, status:action.status};
+
         default:
             return state;
 

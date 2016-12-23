@@ -19,20 +19,30 @@ export default class PopoverImg extends React.Component{
         })
     }
 
+    getPopoverContainer(){
+        let aaa = document.getElementById('popoverContainer');
+        console.log('aaa:',aaa)
+        return document.getElementById('popoverContainer');
+    }
+
     render(){
         return(
-            <Popover
-                content={this.props.content}
-                trigger="click"
-                placement="left"
-                visible={this.state.showSettingDiv}
-                overlayStyle={this.state.showSettingDiv?{"zIndex":0}:{}}
-            >
-                <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
-                    <Icon type="setting" className={styles.setting_img} />
-                    <Icon type="down" className={styles.down_img}/>
-                </div>
-            </Popover>
+            <div id="popoverContainer"
+                style={{height:'30px',position: 'relative'}}>
+                <Popover
+                    content={this.props.content}
+                    trigger="click"
+                    placement="left"
+                    visible={this.state.showSettingDiv}
+                    //getTooltipContainer={()=>document.getElementById('popoverContainer')}
+                    overlayStyle={this.state.showSettingDiv?{"zIndex":0}:{}}
+                >
+                    <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
+                        <Icon type="setting" className={styles.setting_img} />
+                        <Icon type="down" className={styles.down_img}/>
+                    </div>
+                </Popover>
+            </div>
         )
     }
 }

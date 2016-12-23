@@ -77,3 +77,11 @@ export function createMr(data) {
         }
     }
 }
+
+export function changeQueryCondition(page,status){
+    return {
+        type: 'CHANGE_QUERY_CONDITION',
+        page: page,
+        status: status,
+    }
+}
