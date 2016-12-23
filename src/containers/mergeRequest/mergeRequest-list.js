@@ -5,17 +5,12 @@
 import React,{ PropTypes } from 'react';
 import { Button,Row, Radio, Table,notification,Alert, Col} from 'antd';
 import {bindActionCreators} from 'redux';
-import TableView from '../../components/table'
 import {connect} from 'react-redux';
-import {fetchMrListData,fetchMergeBranchData,fetchIssuesData} from './mergeRequest-action'
+import {fetchMrListData,fetchMergeBranchData,fetchIssuesData,changeQueryCondition} from './mergeRequest-action'
 
 class MergeRequestList extends React.Component {
     constructor(props) {
         super(props);
-        this.state={
-            currentPage: 1,
-            status: 'opened'
-        }
     }
 
     componentWillMount() {
@@ -24,7 +19,8 @@ class MergeRequestList extends React.Component {
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id) {
-            if(!this.props.mrList && !this.props.loading) {
+            if(!this.props.mrList || this.props.mrList.project_id!=projectInfo.id){
+                this.props.changeQueryConditionAction(1,'opened')
                 this.props.fetchMrListData(projectInfo.id,1,'opened');
             }
         }
@@ -45,11 +41,9 @@ class MergeRequestList extends React.Component {
         //点击不同项目，重新加载数据
         if(thisProId != nextProId && nextProId) {
             this.props.fetchMrListData(nextProId, 1,'opened');
-            this.setState({
-                currentPage: 1,
-                status: 'opened'
-            });
+            this.props.changeQueryConditionAction(1,'opened')
         }
+
         if(this.props.mergeBranch != mergeBranch && mergeBranch){
             if(mergeBranch.length >1){
                 const userId = this.props.loginInfo.userId;
@@ -90,15 +84,14 @@ class MergeRequestList extends React.Component {
 
     onChange(pagination, filters, sorter) {
         // 点击分页、筛选、排序时触发
-        this.setState({
-            currentPage: pagination.current
-        })
+
+        this.props.changeQueryConditionAction(pagination.current,this.props.status)
         const {project} = this.props;
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id) {
-            this.props.fetchMrListData(projectInfo.id,pagination.current,this.state.status);
+            this.props.fetchMrListData(projectInfo.id,pagination.current,this.props.status);
         }
     }
 
@@ -108,10 +101,7 @@ class MergeRequestList extends React.Component {
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id){
-            this.setState({
-                currentPage: 1,
-                status: e.target.value
-            });
+            this.props.changeQueryConditionAction(1, e.target.value);
             this.props.fetchMrListData(projectInfo.id,1,e.target.value);
         }
 
@@ -142,18 +132,17 @@ class MergeRequestList extends React.Component {
     }
 
     render(){
-        const mrList = this.props.mrList;
+        const {mrList,selectNode,project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
         const data = mrList?this.getDataSource(mrList.gitlabMergeRequests):null;
-        const {project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
         const buttonLoading = fetchIssueLoading || mergeBranchLoading;
         const pagination = {
             total: mrList?mrList.size:0,
-            current: this.state.currentPage
+            current: this.props.page
         }
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        if(this.props.project.getProjectInfo){
+        if(selectNode && selectNode.isProject){
             return(
                 <div style={{margin: 10}}>
                     <Row>
@@ -168,7 +157,7 @@ class MergeRequestList extends React.Component {
 
                         <Col span="12">
                             <div style={{textAlign:"right"}}>
-                                <Radio.Group size="default" value={this.state.status} onChange={this.handleSizeChange.bind(this)}>
+                                <Radio.Group size="default" value={this.props.status} onChange={this.handleSizeChange.bind(this)}>
                                     <Radio.Button value="opened">opened</Radio.Button>
                                     <Radio.Button value="closed">closed</Radio.Button>
                                     <Radio.Button value="merged">merged</Radio.Button>
@@ -265,13 +254,17 @@ function mapStateToProps(state) {
         issues: state.mergeRequest.Issues,
         mrList: state.mergeRequest.mrList,
         loading: state.mergeRequest.getMrListLoading,
+        status: state.mergeRequest.status,
+        page: state.mergeRequest.page,
         loginInfo:state.login.profile,
         project:state.project,
+        selectNode: state.getGroupTree.selectNode,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
+        changeQueryConditionAction: bindActionCreators(changeQueryCondition,dispatch),
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
         fetchIssuesData : bindActionCreators(fetchIssuesData,dispatch),
