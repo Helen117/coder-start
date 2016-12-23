@@ -9,12 +9,14 @@ import TableView from '../../components/table'
 import {connect} from 'react-redux';
 import {fetchMrListData,fetchMergeBranchData,fetchIssuesData} from './mergeRequest-action'
 
+let currentPage=1;
+let status = 'opened';
 class MergeRequestList extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            currentPage: 1,
-            status: 'opened'
+            currentPage: currentPage,
+            status: status
         }
     }
 
@@ -93,6 +95,7 @@ class MergeRequestList extends React.Component {
         this.setState({
             currentPage: pagination.current
         })
+        currentPage = pagination.current;
         const {project} = this.props;
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
@@ -112,6 +115,8 @@ class MergeRequestList extends React.Component {
                 currentPage: 1,
                 status: e.target.value
             });
+            currentPage = 1;
+            status = e.target.value;
             this.props.fetchMrListData(projectInfo.id,1,e.target.value);
         }
 
