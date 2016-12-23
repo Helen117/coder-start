@@ -3,15 +3,19 @@
  */
 
 import React,{ PropTypes } from 'react';
-import { Button,Row, Modal, Table,notification,Icon, Tooltip} from 'antd';
-import Box from '../../components/box';
+import { Button,Row, Radio, Table,notification,Alert, Col} from 'antd';
 import {bindActionCreators} from 'redux';
+import TableView from '../../components/table'
 import {connect} from 'react-redux';
 import {fetchMrListData,fetchMergeBranchData,fetchIssuesData} from './mergeRequest-action'
 
 class MergeRequestList extends React.Component {
     constructor(props) {
         super(props);
+        this.state={
+            currentPage: 1,
+            status: 'opened'
+        }
     }
 
     componentWillMount() {
@@ -21,7 +25,7 @@ class MergeRequestList extends React.Component {
         ):{};
         if(projectInfo.id) {
             if(!this.props.mrList && !this.props.loading) {
-                this.props.fetchMrListData(projectInfo.id);
+                this.props.fetchMrListData(projectInfo.id,1,'opened');
             }
         }
     }
@@ -39,8 +43,12 @@ class MergeRequestList extends React.Component {
         const thisProId = projectInfo.id;
         const nextProId = next_projectInfo.id;
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId){
-            this.props.fetchMrListData(nextProId);
+        if(thisProId != nextProId && nextProId) {
+            this.props.fetchMrListData(nextProId, 1,'opened');
+            this.setState({
+                currentPage: 1,
+                status: 'opened'
+            });
         }
         if(this.props.mergeBranch != mergeBranch && mergeBranch){
             if(mergeBranch.length >1){
@@ -82,12 +90,36 @@ class MergeRequestList extends React.Component {
 
     onChange(pagination, filters, sorter) {
         // 点击分页、筛选、排序时触发
+        this.setState({
+            currentPage: pagination.current
+        })
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        if(projectInfo.id) {
+            this.props.fetchMrListData(projectInfo.id,pagination.current,this.state.status);
+        }
+    }
+
+    handleSizeChange(e){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        if(projectInfo.id){
+            this.setState({
+                currentPage: 1,
+                status: e.target.value
+            });
+            this.props.fetchMrListData(projectInfo.id,1,e.target.value);
+        }
+
     }
 
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
-
 
     getDataSource(mrList){
         const data = [];
@@ -111,32 +143,64 @@ class MergeRequestList extends React.Component {
 
     render(){
         const mrList = this.props.mrList;
-        const data = this.getDataSource(mrList);
+        const data = mrList?this.getDataSource(mrList.gitlabMergeRequests):null;
         const {project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
         const buttonLoading = fetchIssueLoading || mergeBranchLoading;
-
+        const pagination = {
+            total: mrList?mrList.size:0,
+            current: this.state.currentPage
+        }
+console.log('this.state.currentPage',this.state.currentPage)
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        return(
-            <div style={{margin: 10}}>
-                <Row>
-                    <Button type="primary"
-                            disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
-                            loading={buttonLoading}
-                            onClick={this.createMergeRequest.bind(this)}>
-                        创建合并请求
-                    </Button>
-                </Row>
-                <div style={{marginTop:5}}>
-                    <Table loading = {this.props.loading}
-                           onChange={this.onChange.bind(this)}
-                           columns={this.columns(this)}
-                           dataSource={data}
-                    />
+        if(this.props.project.getProjectInfo){
+            return(
+                <div style={{margin: 10}}>
+                    <Row>
+                        <Col span="12">
+                        <Button type="primary"
+                                disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
+                                loading={buttonLoading}
+                                onClick={this.createMergeRequest.bind(this)}>
+                            创建合并请求
+                        </Button>
+                        </Col>
+
+                        <Col span="12">
+                            <div style={{textAlign:"right"}}>
+                                <Radio.Group size="default" value={this.state.status} onChange={this.handleSizeChange.bind(this)}>
+                                    <Radio.Button value="opened">opened</Radio.Button>
+                                    <Radio.Button value="closed">closed</Radio.Button>
+                                    <Radio.Button value="merged">merged</Radio.Button>
+                                    <Radio.Button value="">all</Radio.Button>
+                                </Radio.Group>
+                                </div>
+                        </Col>
+
+                    </Row>
+                    <div style={{marginTop:5}}>
+                        <Table loading = {this.props.loading}
+                               onChange={this.onChange.bind(this)}
+                               columns={this.columns(this)}
+                               dataSource={data}
+                               pagination={pagination}
+                        />
+                    </div>
                 </div>
-            </div>
-                )
+            )
+        }else{
+            return(
+                <Alert style={{margin:10}}
+                   message="请从左边的项目树中选择一个具体的项目！"
+                   description=""
+                   type="warning"
+                   showIcon
+            />
+            )
+        }
+
+
     }
 }
 
