@@ -85,3 +85,17 @@ export function changeQueryCondition(page,status){
         status: status,
     }
 }
+
+export function getCodeChanges(commitId,projectId){
+    return {
+        type: 'GET_MR_CODE_CHANGES',
+        payload: {
+            promise: api.post('/project/mr-change', {
+                params:{
+                    mr_id: commitId,
+                    project_id: projectId,
+                }
+            })
+        }
+    }
+}

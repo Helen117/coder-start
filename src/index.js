@@ -18,7 +18,7 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
-import {MergeRequestList,CreateMergeRequest} from './containers/mergeRequest';
+import {MergeRequestList,CreateMergeRequest,CodeChanges} from './containers/mergeRequest';
 import {BranchesList,CreateBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
@@ -49,7 +49,6 @@ import UpdateUserInfo from './containers/update-user-info';
 import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
-
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -162,6 +161,8 @@ ReactDOM.render(
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
+                        <Route name="codeChanges" breadcrumbName="代码变更详情" path="CodeChanges" component={CodeChanges}/>
+
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
