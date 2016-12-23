@@ -3,11 +3,35 @@
  */
 import api from '../../../api';
 
-export function fetchDataSource(projectId) {
+export function fetchProjectDeveloper(projectId) {
     return {
-        type: 'FETCH_DATA',
+        type: 'PROJECT_DEVELOPER',
         payload: {
-            promise: api.post('/project/assign', {
+            promise: api.post('/project/project-developer', {
+                params: {
+                    projectId: projectId
+                }
+            })
+        }
+    }
+}
+export function fetchProjectMilestone(projectId) {
+    return {
+        type: 'PROJECT_MILESTONE',
+        payload: {
+            promise: api.post('/project/project-milestones', {
+                params: {
+                    projectId: projectId
+                }
+            })
+        }
+    }
+}
+export function fetchProjectLabel(projectId) {
+    return {
+        type: 'PROJECT_LABEL',
+        payload: {
+            promise: api.post('/project/project-labels', {
                 params: {
                     projectId: projectId
                 }

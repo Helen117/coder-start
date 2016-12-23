@@ -35,7 +35,9 @@ class ProjectIssueList extends Component {
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
 
         if(!this.isEmptyObject(projectInfo)) {
-            actions.fetchDataSource(projectInfo.id);
+            actions.fetchProjectDeveloper(projectInfo.id);
+            actions.fetchProjectMilestone(projectInfo.id);
+            actions.fetchProjectLabel(projectInfo.id);
             getUserAction.getAllUser();
             var data = {project_id: projectInfo.id};
             actions.getIssueList(data);
@@ -81,7 +83,9 @@ class ProjectIssueList extends Component {
                 project_id:nextProId,
             };
             actions.getIssueList(data);
-            actions.fetchDataSource(nextProId);
+            actions.fetchProjectDeveloper(nextProId);
+            actions.fetchProjectMilestone(nextProId);
+            actions.fetchProjectLabel(nextProId);
         }
 
         // if(errorMsg&&errorMsg!=this.props.errors){
