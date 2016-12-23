@@ -130,7 +130,7 @@ class MergeRequestList extends React.Component {
                     mrTitle: mrList[i].title,
                     description: mrList[i].description,
                     author: mrList[i].author.name,
-                    assignee:mrList[i].assignee,
+                    assignee:mrList[i].assignee?mrList[i].assignee.name:'',
                     mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
@@ -150,7 +150,6 @@ class MergeRequestList extends React.Component {
             total: mrList?mrList.size:0,
             current: this.state.currentPage
         }
-console.log('this.state.currentPage',this.state.currentPage)
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
