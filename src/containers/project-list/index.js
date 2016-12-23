@@ -30,7 +30,7 @@ class ProjectMgrSub extends React.Component{
             message.error('请选择要修改的项目组!',3);
         }else{
             const {loginInfo} = this.props;
-            if(groupInfo.creatorId != loginInfo.userId){
+            if(!this.isEmptyObject(groupInfo) && groupInfo.creatorId != loginInfo.userId){
                 message.error('你不能修改别人的项目组!',3);
             }else{
                 if(groupInfo && groupInfo.id.indexOf('_g')>=0){
