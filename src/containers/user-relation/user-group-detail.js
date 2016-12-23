@@ -96,10 +96,7 @@ class UserGroupDetail extends React.Component {
     }
 
     componentWillMount() {
-        const {notLeaderInfo} = this.props;
-        if(!notLeaderInfo || !notLeaderInfo.notLeaderInfo){
-            this.props.getNotLeader();
-        }
+        this.props.getNotLeader();
         const {userRelationTree,selectNode} = this.props;
         let userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
