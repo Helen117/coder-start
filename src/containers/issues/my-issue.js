@@ -403,7 +403,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                     }
                 }else if(record.project_id){
                     return <div>
-                        <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
+                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
                     </div>;
                 }
             }
