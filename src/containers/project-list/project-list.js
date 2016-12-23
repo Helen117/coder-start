@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Icon, Row,Col, Button, Modal, notification, Form} from 'antd';
+import {Icon, Row,Col, Button, Modal, notification, Form,message} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -63,10 +63,15 @@ class ProjectList extends Component {
     }
 
     editProject(type, selectedRow){
-        this.context.router.push({
-            pathname: '/project-detail',
-            state: {editType: type, selectedRow}
-        });
+        const {loginInfo} = this.props;
+        if(selectedRow.owner != loginInfo.name){
+            message.error('你不能修改别人的项目!',3);
+        }else{
+            this.context.router.push({
+                pathname: '/project-detail',
+                state: {editType: type, selectedRow}
+            });
+        }
     }
 
     handleOk() {
@@ -85,10 +90,15 @@ class ProjectList extends Component {
     }
 
     deleteProject(type, selectedRow){
-        this.setState({
-            modalVisible: true,
-            selectProjectName:selectedRow.projectName
-        });
+        const {loginInfo} = this.props;
+        if(selectedRow.owner != loginInfo.name){
+            message.error('你不能删除别人的项目!',3);
+        }else{
+            this.setState({
+                modalVisible: true,
+                selectProjectName:selectedRow.projectName
+            });
+        }
     }
 
     getDataSource(groupInfo){

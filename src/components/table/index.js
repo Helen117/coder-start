@@ -20,6 +20,13 @@ export default class TableView extends Component{
         }
     }
 
+    onChange(pagination, filters, sorter){
+        const parentOnChange = this.props.onChange;
+        if(parentOnChange){
+            parentOnChange(pagination, filters, sorter);
+        }
+    }
+
     render(){
         const pagination = {
             total: this.props.dataSource.length,
@@ -38,7 +45,8 @@ export default class TableView extends Component{
                        size="middle"
                        pagination={pagination}
                        onRowClick={this.selectRow.bind(this)}
-                       loading={this.props.loading}/>
+                       loading={this.props.loading}
+                       onChange={this.onChange.bind(this)}/>
             </div>
         )
     }

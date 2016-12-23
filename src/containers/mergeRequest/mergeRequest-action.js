@@ -7,13 +7,15 @@ import {FETCH_MR_LIST,
     FETCH_ISSUES_DATA,
     CREATE_MR} from './action-types';
 
-export function fetchMrListData(projectId) {
+export function fetchMrListData(projectId,page,status) {
     return {
         type: 'FETCH_MR_LIST',
         payload: {
             promise: api.post('/project/list-mr', {
                 params: {
-                    projectId: projectId
+                    projectId: projectId,
+                    num: page,
+                    status: status
                 }
             })
         }
