@@ -74,7 +74,7 @@ class ProjectCompile extends React.Component{
         if (buildJobResult && buildJobResult != this.props.buildJobResult){
             notification.success({
                 message: '操作成功',
-                description: "成功发起执行任务！",
+                description: "成功发起执行任务，稍等几秒可以在查看执行状态！",
                 duration: 5
             });
         }
@@ -141,7 +141,11 @@ class ProjectCompile extends React.Component{
 
     execBuild(){
         const {buildJob, selectNode} = this.props;
-        buildJob(selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
+        let jobName = selectNode.node.name;
+        if (jobName){
+            jobName = jobName.substr(jobName.lastIndexOf("/") + 1);
+        }
+        buildJob(jobName + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
     }
 
     viewBuildHis(){

@@ -187,7 +187,14 @@ class MyIssueList extends Component {
                 }else if(list[i].state=='closed'){
                     list[i].status='关闭';
                 }
-                list[i].labels = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
+
+                if(list[i].labels&&list[i].labels.length>0){
+                    list[i].label_names=[];
+                    for(let j=0;j<list[i].labels.length;j++){
+                        list[i].label_names.push(list[i].labels[j].name);
+                    }
+                }
+                list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
             }
         }
         return list;
@@ -236,13 +243,7 @@ class MyIssueList extends Component {
         };
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
         let loading =this.props.updateIssueLoading?true:false;
-        const data =[{
-    'project_id':34,
-    'id':1,
-    'type':'demand',
-    'state':'opened',
-    'issue_name':'需求测试',
-}]
+
         return (
             <Spin spinning={loading}>
             <div>
@@ -357,7 +358,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         width: '9%',
     },{
         title: '问题标签',
-        dataIndex: 'labels',
+        dataIndex: 'label',
         width: '9%',
     }, {
         title: '创建人',
@@ -403,7 +404,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                     }
                 }else if(record.project_id){
                     return <div>
-                        <a onClick={self.mergeRequest.bind(self, record)}>合并代码</a>
+                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
                     </div>;
                 }
             }

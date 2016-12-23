@@ -17,13 +17,13 @@ export default function forkProject(state = initialState, action = {}) {
             };
 
         case 'FORK_PROJECT_PENDING':
-            return {...state,loading: true};
+            return {...state,loading: true,forkProject:null};
         case 'FORK_PROJECT_SUCCESS':
-            return {...state,loading: false, forkProject: action.payload};
+            return {...state,loading: false, forkProject: action.payload,errors:null};
         case 'FORK_PROJECT_ERROR':
             return {
                 ...state,
-                errors: action.payload.errorMsg, loading: false
+                errors: action.payload.errorMsg, loading: false,forkProject:null
             };
 
         case 'GET_FORK_LIST_PENDING':

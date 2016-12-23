@@ -30,6 +30,7 @@ class EditBug extends Component{
             const {setFieldsValue} = this.props.form;
             setFieldsValue({'planTime': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
             setFieldsValue({'demand': selectedRow.issue_name});
+            setFieldsValue({'due_date': moment()});
         }
     }
 
@@ -140,7 +141,7 @@ class EditBug extends Component{
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="预期完成时间" >
-                                    {getFieldDecorator('due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabledDate={this.disabledDate.bind(this)} style={{ width: 200 }}  />)}
+                                    {getFieldDecorator('due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})(<DatePicker disabled disabledDate={this.disabledDate.bind(this)} style={{ width: 200 }}  />)}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="类型" >

@@ -2,7 +2,7 @@
  * Created by zhaojp on 2016/10/8.
  */
 import React,{ PropTypes, Component } from 'react';
-import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,message } from 'antd';
+import { Col, Row, Button, Modal, Form, Input, Select,notification,Cascader,message,Upload,Icon } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -16,6 +16,7 @@ const Option = Select.Option;
 class CreateMergeRequest extends Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
     componentWillMount() {
@@ -53,7 +54,7 @@ class CreateMergeRequest extends Component {
 
     insertCallback(type){
         message.success(type);
-        this.props.fetchMrListData(this.props.mergeBranch[1].id);
+        this.props.fetchMrListData(this.props.mergeBranch[1].id,1,'opened');
         this.context.router.goBack();
     }
 
@@ -81,6 +82,7 @@ class CreateMergeRequest extends Component {
         author.userId= loginInfo.userId;
         const {form} = this.props;
         const {record} = this.props.location.state;
+        form.setFieldsValue({'developer_test_file':this.state.fileList});
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -90,6 +92,7 @@ class CreateMergeRequest extends Component {
                 data.target_project_id = mergeBranch[0].id;
                 data.author = author;
                 data.issue_id = record?record.id:data.issue_id;
+                // console.log('接收数据:',data);
                 this.props.createMr(data);
             }
         })
@@ -134,6 +137,35 @@ class CreateMergeRequest extends Component {
             this.props.form.setFieldsValue({target_branch: null});
         }
 
+    }
+
+    beforeUpload(file){
+        // console.log(file);
+
+        if (!(file.type === 'application/msword')) {
+            message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
+            return false;
+        }
+
+        if(file.size/ 1024 / 1024 > 10){
+            message.error('文件大小不能超过10M',3);
+            return false;
+        }
+        let reader = new FileReader();
+        reader.onloadend = function () {
+            this.setState({
+                fileList:[{
+                    uid: file.uid,
+                    name: file.name,
+                    status: 'done',
+                    url: reader.result
+                }]
+            });
+        }.bind(this);
+        reader.readAsDataURL(file);
+        //reader.readAsArrayBuffer(file);
+        this.props.form.setFieldsValue({'developer_test_file':this.state.fileList});
+        return false;
     }
 
 
@@ -225,6 +257,15 @@ class CreateMergeRequest extends Component {
                         <FormItem {...formItemLayout} label="审批人">
                             {getFieldDecorator('assignee.id', {rules: [{required: true, message: '不能为空'}]})
                             (<Select size="large" >{assign}</Select>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout}  label="自测报告上传">
+                            {getFieldDecorator('developer_test_file',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
+                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
+                                    <Button type="ghost">
+                                        <Icon type="upload" /> 点击上传
+                                    </Button>
+                                </Upload>)}
                         </FormItem>
 
                         <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>

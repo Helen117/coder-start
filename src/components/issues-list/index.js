@@ -99,7 +99,7 @@ export default class IssueList extends Component {
                             if(typeof(list[i].children[j].children[k].children[n].created_at)=="number")  {
                                 list[i].children[j].children[k].children[n].created_at = this.getTime(list[i].children[j].children[k].children[n].created_at);
                             }
-                            list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].labels && list[i].children[j].children[k].children[n].labels.length > 0 ? list[i].children[j].children[k].children[n].labels + '' : null;
+
                             if(list[i].children[j].children[k].children[n].type=='demand'){
                                 list[i].children[j].children[k].children[n].issueType = "需求";
                             }
@@ -109,7 +109,14 @@ export default class IssueList extends Component {
                                 list[i].children[j].children[k].children[n].status='关闭';
                             }
 
-                            list[i].children[j].children[k].children[n].labels = list[i].children[j].children[k].children[n].label_names && list[i].children[j].children[k].children[n].label_names.length > 0 ? list[i].children[j].children[k].children[n].label_names + '' : '';
+                            if(list[i].children[j].children[k].children[n].labels&&list[i].children[j].children[k].children[n].labels.length>0){
+                                list[i].children[j].children[k].children[n].label_name=[];
+                                for(let s=0;s<list[i].children[j].children[k].children[n].labels.length;s++){
+                                    list[i].children[j].children[k].children[n].label_name.push(list[i].children[j].children[k].children[n].labels[s].name);
+                                }
+                            }
+
+                            list[i].children[j].children[k].children[n].label = list[i].children[j].children[k].children[n].label_name && list[i].children[j].children[k].children[n].label_name.length > 0 ? list[i].children[j].children[k].children[n].label_name + '' : '';
 
                             for (var m = 0; m < list[i].children[j].children[k].children[n].children.length; m++) {//bug
                                 if(typeof(list[i].children[j].children[k].children[n].children[m].due_date)=="number") {
@@ -118,7 +125,8 @@ export default class IssueList extends Component {
                                 if(typeof(list[i].children[j].children[k].children[n].children[m].created_at)=="number"){
                                     list[i].children[j].children[k].children[n].children[m].created_at = this.getTime(list[i].children[j].children[k].children[n].children[m].created_at);
                                 }
-                                list[i].children[j].children[k].children[n].children[m].labels = list[i].children[j].children[k].children[n].children[m].labels && list[i].children[j].children[k].children[n].children[m].labels.length > 0 ? list[i].children[j].children[k].children[n].children[m].labels + '' : null;
+
+
                                 if(list[i].children[j].children[k].children[n].children[m].type=='defect'){
                                     list[i].children[j].children[k].children[n].children[m].issueType = "缺陷";
                                 }else{
@@ -130,7 +138,14 @@ export default class IssueList extends Component {
                                 }else if(list[i].children[j].children[k].children[n].children[m].state=='closed'){
                                     list[i].children[j].children[k].children[n].children[m].status='关闭';
                                 }
-                                list[i].children[j].children[k].children[n].children[m].labels = list[i].children[j].children[k].children[n].children[m].label_names && list[i].children[j].children[k].children[n].children[m].label_names.length > 0 ? list[i].children[j].children[k].children[n].children[m].label_names + '' : '';
+
+                                if(list[i].children[j].children[k].children[n].children[m].labels&&list[i].children[j].children[k].children[n].children[m].labels.length>0){
+                                    list[i].children[j].children[k].children[n].children[m].label_name=[];
+                                    for(let s=0;s<list[i].children[j].children[k].children[n].children[m].labels.length;s++){
+                                        list[i].children[j].children[k].children[n].children[m].label_name.push(list[i].children[j].children[k].children[n].children[m].labels[s].name);
+                                    }
+                                }
+                                list[i].children[j].children[k].children[n].children[m].label = list[i].children[j].children[k].children[n].children[m].label_name && list[i].children[j].children[k].children[n].children[m].label_name.length > 0 ? list[i].children[j].children[k].children[n].children[m].label_name + '' : '';
                             }
                         }
                     }
@@ -303,7 +318,7 @@ IssueList.prototype.issueListColumns = (self)=>[
     render:renderContent,
 },{
     title: '问题标签',
-    dataIndex: 'labels',
+    dataIndex: 'label',
     width: '7%',
     className:'columnClass',
     render:renderContent,
