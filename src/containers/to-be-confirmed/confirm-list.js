@@ -70,7 +70,7 @@ ConfirmList.prototype.columns = (self)=>[{
 
 },{
     title: '文件',
-    dataIndex: 'files',
+    dataIndex: 'filesName',
 },{
     title: '类型',
     dataIndex: 'type',
