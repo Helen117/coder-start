@@ -48,13 +48,13 @@ export default function branch(state = initialState, action = {}) {
 
         //get branch
         case FETCH_BRANCHES_PENDING:
-            return {...state, getBranchLoading: true};
+            return {...state,branchesData:null, getBranchLoading: true};
 
         case FETCH_BRANCHES_SUCCESS:
             return {...state, branchesData: action.payload, getBranchLoading: false};
 
         case FETCH_BRANCHES_ERROR:
-            return {...state, getBranchLoading: false};
+            return {...state, branchesData:null, getBranchLoading: false};
 
         default:
             return state;

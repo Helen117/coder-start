@@ -23,7 +23,7 @@ class RequirementInfo extends Component {
 
     componentWillMount() {
         const {selectedProjectSet,actions,requirementInfo} = this.props;
-        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && !requirementInfo){
+        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && (!requirementInfo || requirementInfo.project_id!=selectedProjectSet.selectedItemId)){
             actions.getDemandInfo(selectedProjectSet.selectedItemId);
         }
     }
