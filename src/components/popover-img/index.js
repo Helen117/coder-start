@@ -20,8 +20,6 @@ export default class PopoverImg extends React.Component{
     }
 
     getPopoverContainer(){
-        let aaa = document.getElementById('popoverContainer');
-        console.log('aaa:',aaa)
         return document.getElementById('popoverContainer');
     }
 
@@ -35,8 +33,7 @@ export default class PopoverImg extends React.Component{
                     placement="left"
                     visible={this.state.showSettingDiv}
                     getTooltipContainer={()=>document.getElementById('popoverContainer')}
-                    overlayStyle={this.state.showSettingDiv?
-                    {"zIndex":0,}:{}}
+                    //overlayStyle={this.state.showSettingDiv? {"zIndex":0,}:{}}
                 >
                     <div className={styles.set_div} onClick={this.clickSettingImg.bind(this)}>
                         <Icon type="setting" className={styles.setting_img} />

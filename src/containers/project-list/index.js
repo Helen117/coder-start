@@ -13,7 +13,8 @@ import { Row, notification, Modal, message, Form, Alert, Button,Affix } from 'an
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
-import PopoverImg from '../../components/popover-img';
+import PopoverImg from '../../components/popover-img/index-1';
+//import PopoverImg from '../../components/popover-img/index';
 import ProjectList from './project-list';
 import ProjectItem from './project-item';
 
@@ -200,7 +201,7 @@ class ProjectMgrSub extends React.Component{
                             showIcon/>
                     </div>:(<div>
                     {(!this.isEmptyObject(currentTwoInfo) && currentTwoInfo.link == '/project-mgr/project-mgr-sub')?(
-                        <Row>
+                        <Row style={{textAlign:'right'}}>
                             <PopoverImg content={content}/>
                         </Row>
                     ):(<div/>)}
