@@ -170,7 +170,7 @@ class MergeRequestList extends React.Component {
                                     <Radio.Button value="opened">未合并</Radio.Button>
                                     <Radio.Button value="merged">已合并</Radio.Button>
                                     <Radio.Button value="closed">已关闭</Radio.Button>
-                                    <Radio.Button value="">全部</Radio.Button>
+                                    <Radio.Button value="all">全部</Radio.Button>
                                 </Radio.Group>
                                 </div>
                         </Col>
