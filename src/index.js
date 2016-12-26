@@ -18,7 +18,7 @@ import configureStore from './store/configure-store';
 import App from './containers/app';
 import Home from './containers/home';
 import Login from './containers/login';
-import {MergeRequestList,CreateMergeRequest} from './containers/mergeRequest';
+import {MergeRequestList,CreateMergeRequest,CodeChanges} from './containers/mergeRequest';
 import {BranchesList,CreateBranches} from './containers/branches';
 import Register from './containers/register'
 import {UserList, UserDetail} from './containers/user';
@@ -34,7 +34,7 @@ import {RequirementInfo,EditDemand} from './containers/request';
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddDemand} from './containers/issues';
 import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve';
-import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
+import {ConfirmList} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
 import ProjectMilestones from './containers/project-milestone';
@@ -49,7 +49,6 @@ import UpdateUserInfo from './containers/update-user-info';
 import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
-
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -156,12 +155,12 @@ ReactDOM.render(
                         <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
                         <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
                         <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
-                        <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
-                        <Route name="transpondOperate" breadcrumbName="转派操作" path="transpondOperate" component={DevelopTransPond}/>
                         <Route name="approveMr" breadcrumbName="代码合并审批" path="approveMr" component={MrApproval}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
+                        <Route name="codeChanges" breadcrumbName="代码变更详情" path="CodeChanges" component={CodeChanges}/>
+
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

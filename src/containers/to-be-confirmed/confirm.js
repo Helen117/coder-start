@@ -60,7 +60,7 @@ const FormItem = Form.Item;
             } else {
                 const data = form.getFieldsValue();
                 data.pass = true;
-                data.task_id = this.props.location.state.record.task_id;
+                data.task_id = this.props.task_id;
                 data.demand_id = confirmList[0].demand_id;
                 data.role = confirmList[0].role;
                 data.username = loginInfo.username;
@@ -125,7 +125,6 @@ const FormItem = Form.Item;
     render() {
 
         const { getFieldDecorator } = this.props.form;
-        const {task_id} = this.props.location.state.record;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
@@ -137,11 +136,10 @@ const FormItem = Form.Item;
         const { getConfirmListLoading,getMyProjectLoading} = this.props;
         const TransferLoading = getMyProjectLoading? true: false;
         const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
-
+        if(this.props.showConfirm){
         return(
             <Box title="需求确认">
                 <Spin spinning={dataLoading} tip="正在加载数据，请稍候...">
-                    <ConfirmList task_id={task_id}/>
                     <Form horizontal>
                         {role == 'developer' ?
                             <FormItem   {...formItemLayout} label="涉及项目">
@@ -175,7 +173,10 @@ const FormItem = Form.Item;
                     </Form>
                 </Spin>
             </Box>
-        )
+        )}else{
+            return null;
+        };
+
     }
 }
 

@@ -48,13 +48,10 @@ class MergeRequestList extends React.Component {
             if(mergeBranch.length >1){
                 const userId = this.props.loginInfo.userId;
                 this.props.fetchIssuesData(mergeBranch[0].id,userId);
-            }else{
-                this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
             }
         }
 
         if(this.props.issues != issues && issues){
-            // console.log('issues',this.props.issues, issues)
             if(issues.length >0 ){
                 this.context.router.push({
                     pathname: '/CreateMergeRequest',
@@ -107,6 +104,18 @@ class MergeRequestList extends React.Component {
 
     }
 
+    getCodeChanges(record){
+        const projectId = this.props.mrList.project_id;
+        this.context.router.push({
+            pathname: '/codeChanges',
+            state: {
+                record: record,
+                projectId: projectId
+            }
+        });
+
+    }
+
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
@@ -124,7 +133,7 @@ class MergeRequestList extends React.Component {
                     mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
-                    state:mrList[i].state
+                    state:mrList[i].state=='opened'?'未合并':mrList[i].state=='merged'?'已合并':'已关闭'
                 });
             }
         }
@@ -158,10 +167,10 @@ class MergeRequestList extends React.Component {
                         <Col span="12">
                             <div style={{textAlign:"right"}}>
                                 <Radio.Group size="default" value={this.props.status} onChange={this.handleSizeChange.bind(this)}>
-                                    <Radio.Button value="opened">opened</Radio.Button>
-                                    <Radio.Button value="closed">closed</Radio.Button>
-                                    <Radio.Button value="merged">merged</Radio.Button>
-                                    <Radio.Button value="">all</Radio.Button>
+                                    <Radio.Button value="opened">未合并</Radio.Button>
+                                    <Radio.Button value="merged">已合并</Radio.Button>
+                                    <Radio.Button value="closed">已关闭</Radio.Button>
+                                    <Radio.Button value="all">全部</Radio.Button>
                                 </Radio.Group>
                                 </div>
                         </Col>
@@ -179,7 +188,7 @@ class MergeRequestList extends React.Component {
             )
         }else{
             return(
-                <Alert style={{margin:10}}
+                <Alert style={{marginLeft:10}}
                    message="请从左边的项目树中选择一个具体的项目！"
                    description=""
                    type="warning"
@@ -193,10 +202,15 @@ class MergeRequestList extends React.Component {
 }
 
 MergeRequestList.prototype.columns = (self)=> [{
-    title: 'MR名称',
+    title: '主题',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
-    width:'20%'
+    width:'20%',
+    render: (text, record, index)=> {
+        return (
+            <a onClick = {self.getCodeChanges.bind(self,record)}>{record.mrTitle}</a>
+        )
+    }
 },{
     title: '描述',
     dataIndex: 'description',
