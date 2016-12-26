@@ -7,13 +7,15 @@ import {FETCH_MR_LIST,
     FETCH_ISSUES_DATA,
     CREATE_MR} from './action-types';
 
-export function fetchMrListData(projectId) {
+export function fetchMrListData(projectId,page,status) {
     return {
         type: 'FETCH_MR_LIST',
         payload: {
             promise: api.post('/project/list-mr', {
                 params: {
-                    projectId: projectId
+                    projectId: projectId,
+                    num: page,
+                    status: status
                 }
             })
         }
@@ -71,6 +73,28 @@ export function createMr(data) {
         payload: {
             promise: api.post('/project/create-mr', {
                 data: data
+            })
+        }
+    }
+}
+
+export function changeQueryCondition(page,status){
+    return {
+        type: 'CHANGE_QUERY_CONDITION',
+        page: page,
+        status: status,
+    }
+}
+
+export function getCodeChanges(commitId,projectId){
+    return {
+        type: 'GET_MR_CODE_CHANGES',
+        payload: {
+            promise: api.post('/project/mr-change', {
+                params:{
+                    mr_id: commitId,
+                    project_id: projectId,
+                }
             })
         }
     }

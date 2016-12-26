@@ -23,7 +23,7 @@ class RequirementInfo extends Component {
 
     componentWillMount() {
         const {selectedProjectSet,actions,requirementInfo} = this.props;
-        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && !requirementInfo){
+        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && (!requirementInfo || requirementInfo.project_id!=selectedProjectSet.selectedItemId)){
             actions.getDemandInfo(selectedProjectSet.selectedItemId);
         }
     }
@@ -99,6 +99,14 @@ class RequirementInfo extends Component {
                 const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
                 const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
                 list[i].confirm_time = developer_confirm_date + tester_confirm_date;
+                if(list[i].labels&&list[i].labels.length>0){
+                    list[i].label_names=[];
+                    list[i].label_ids =[];
+                    for(let j=0;j<list[i].labels.length;j++){
+                        list[i].label_names.push(list[i].labels[j].name);
+                        list[i].label_ids.push(list[i].labels[j].id);
+                    }
+                }
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
                 list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
                 list[i].assignee = list[i].assignee_develop_name + "(开发)、 " + list[i].assignee_test_name + "(测试)"

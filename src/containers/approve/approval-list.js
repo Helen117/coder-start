@@ -41,11 +41,12 @@ class ApproveList extends Component {
         if(record.type=='领导审批'){
             pathName = '/approveRegister';
         }else if(record.type=='需求确认' ){
-            if(type=='confirm') {
+            pathName = '/confirmList'
+            /*if(type=='confirm') {
                 pathName = '/confirmOperate'
             }else{
                 pathName = '/transpondOperate'
-            }
+            }*/
         }else if(record.type=='代码合并申请'){
             pathName='/approveMr'
         }
@@ -98,13 +99,13 @@ ApproveList.prototype.columns = (self)=>[{
     title: '操作',
     dataIndex: 'key',
     render: (text, record) => (
-        record.type!="需求确认"?
-            <a onClick={self.approveDetail.bind(self,record,'')}>审批</a>:
+        /*record.type!="需求确认"?*/
+            <a onClick={self.approveDetail.bind(self,record,'')}>审批</a>/*:
             <div>
                 <a onClick={self.approveDetail.bind(self,record,'confirm')}>确认</a>
                 <span style={{marginLeft:10, marginRight:10}}className="ant-divider" />
                 <a onClick={self.approveDetail.bind(self,record,'transpond')}>转派</a>
-            </div>
+            </div>*/
 
     )
 }];

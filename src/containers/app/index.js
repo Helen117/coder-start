@@ -42,6 +42,14 @@ class App extends React.Component {
         }
     }
 
+    componentDidMount() {
+       this.intervalId = setInterval(()=>{this.props.home.getNotifyItems(this.props.uid)},5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalId);
+    }
+
     findMenuByLocation(data,pathName){//根据url找到对应的一级菜单，作为面包屑
         var navi_keypath_return = [], navi_key_return, find_path = 0, light_menubar='';
         for(var i=0; i<data.length;i++){

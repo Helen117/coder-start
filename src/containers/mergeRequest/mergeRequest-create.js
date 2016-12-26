@@ -54,7 +54,7 @@ class CreateMergeRequest extends Component {
 
     insertCallback(type){
         message.success(type);
-        this.props.fetchMrListData(this.props.mergeBranch[1].id);
+        this.props.fetchMrListData(this.props.mergeBranch[1].id,1,'opened');
         this.context.router.goBack();
     }
 

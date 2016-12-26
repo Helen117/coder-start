@@ -27,10 +27,10 @@ class ProjectList extends Component {
         };
     }
 
-    insertCallback(message){
+    insertCallback(messageInfo){
         const {loginInfo} = this.props;
         notification.success({
-            message: message,
+            message: messageInfo,
             description: '',
             duration: 1
         });

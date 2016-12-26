@@ -18,6 +18,11 @@ import {
     FETCH_MR_LIST_PENDING,
     FETCH_MR_LIST_SUCCESS,
     FETCH_MR_LIST_ERROR,
+
+    GET_MR_CODE_CHANGES_PENDING,
+    GET_MR_CODE_CHANGES_SUCCESS,
+    GET_MR_CODE_CHANGES_ERROR,
+    
 } from './action-types';
 
 
@@ -50,6 +55,8 @@ export function mergeRequest(state = initialState, action = {}) {
         case FETCH_ISSUES_DATA_ERROR:
             return {state, Issues:null, fetchIssueLoading: false };
 
+            
+        //get mr assignee people    
         case 'MR_ASSIGN_PENDING':
             return {...state,mrAssignee:null, mrAssigneeLoading:true};
 
@@ -59,6 +66,7 @@ export function mergeRequest(state = initialState, action = {}) {
         case 'MR_ASSIGN_ERROR':
             return { ...state, mrAssignee:null,mrAssigneeLoading:false, };
 
+            
         //create mr
         case CREATE_MR_PENDING:
             return {...state,createResult:null, createLoading:true};
@@ -72,13 +80,29 @@ export function mergeRequest(state = initialState, action = {}) {
 
         //get mr list
         case FETCH_MR_LIST_PENDING:
-            return {...state, mrList:null,getMrListLoading: true};
+            return {...state, mrList:null, getMrListLoading: true};
 
         case FETCH_MR_LIST_SUCCESS:
-            return {...state, mrList: action.payload,  getMrListLoading:false};
+            return {...state, mrList: action.payload, getMrListLoading:false};
 
         case FETCH_MR_LIST_ERROR:
-            return {...state, mrList:null,getMrListLoading:false};
+            return {...state, mrList:null, getMrListLoading:false};
+
+            
+        //put query condition into state    
+        case 'CHANGE_QUERY_CONDITION':
+            return {...state, page:action.page, status:action.status};
+            
+        
+         //get code changes
+        case GET_MR_CODE_CHANGES_PENDING:
+            return {...state, codeChanges:null, getCodeChangesLoading: true};
+
+        case GET_MR_CODE_CHANGES_SUCCESS:
+            return {...state, codeChanges: action.payload, getCodeChangesLoading:false};
+
+        case GET_MR_CODE_CHANGES_ERROR:
+            return {...state, codeChanges:null, getCodeChangesLoading:false};   
 
         default:
             return state;

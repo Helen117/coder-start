@@ -6,17 +6,38 @@ import { Table} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getConfirmList} from './action';
-
+import DevelopTransPond from './transpond';
+import DevelopConfirm from './confirm';
 
 
 class ConfirmList extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            showTranspod:false,
+            showConfirm:true
+        };
     }
 
+    accept(record){
+        this.setState({
+            showTranspod:false,
+            showConfirm:true
+        })
+    }
+
+
+    transpond(record){
+        this.setState({
+            showTranspod:true,
+            showConfirm:false
+        })
+    }
+
+
     componentWillMount() {
-        const task_id = this.props.task_id
+        const task_id = this.props.location.state.record.task_id;
         if(task_id){
             this.props.getConfirmListAction(task_id);
         }
@@ -37,6 +58,7 @@ class ConfirmList extends Component {
     }
 
     render() {
+        const task_id = this.props.location.state.record.task_id;
         const confirmList = this.props.confirmList;
         const loading = this.props.getConfirmListLoading?true:false;
         const data = this.getDataSource(confirmList)
@@ -49,6 +71,8 @@ class ConfirmList extends Component {
                        pagination={false}
                        loading={loading}
                 />
+                <DevelopTransPond showTranspod={this.state.showTranspod} task_id={task_id} />
+                <DevelopConfirm showConfirm={this.state.showConfirm} task_id={task_id}/>
             </div>
         );
     }
@@ -70,7 +94,7 @@ ConfirmList.prototype.columns = (self)=>[{
 
 },{
     title: '文件',
-    dataIndex: 'files',
+    dataIndex: 'filesName',
 },{
     title: '类型',
     dataIndex: 'type',
@@ -89,7 +113,20 @@ ConfirmList.prototype.columns = (self)=>[{
     dataIndex: 'due_date',
     width: '10%'
 
-}];
+}, {
+    title: '操作',
+    dataIndex: 'key',
+    width: '10%',
+    render: (text, record) => (
+        <span>
+            {self.state.showConfirm?<a onClick={self.transpond.bind(self, record)}>转派</a>
+            :<a onClick={self.accept.bind(self, record)}>确认</a>}
+
+
+        </span>
+
+    )}
+];
 
 function mapStateToProps(state) {
     return {

@@ -102,7 +102,7 @@ class FileTree extends React.Component {
     render(){
         const { fetchCodeStatus,visible } = this.props;
         const pagination = {
-            pageSize:30
+            pageSize:20
         };
         let dataSource = [];
         if(fetchCodeStatus || false){

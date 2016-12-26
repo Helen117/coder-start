@@ -3,11 +3,10 @@
  */
 
 import React,{ PropTypes } from 'react';
-import { Button,Row, Modal, Table,notification,Icon, Tooltip} from 'antd';
-import Box from '../../components/box';
+import { Button,Row, Radio, Table,notification,Alert, Col} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {fetchMrListData,fetchMergeBranchData,fetchIssuesData} from './mergeRequest-action'
+import {fetchMrListData,fetchMergeBranchData,fetchIssuesData,changeQueryCondition} from './mergeRequest-action'
 
 class MergeRequestList extends React.Component {
     constructor(props) {
@@ -20,8 +19,9 @@ class MergeRequestList extends React.Component {
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id) {
-            if(!this.props.mrList && !this.props.loading) {
-                this.props.fetchMrListData(projectInfo.id);
+            if(!this.props.mrList || this.props.mrList.project_id!=projectInfo.id){
+                this.props.changeQueryConditionAction(1,'opened')
+                this.props.fetchMrListData(projectInfo.id,1,'opened');
             }
         }
     }
@@ -39,20 +39,19 @@ class MergeRequestList extends React.Component {
         const thisProId = projectInfo.id;
         const nextProId = next_projectInfo.id;
         //点击不同项目，重新加载数据
-        if(thisProId != nextProId && nextProId){
-            this.props.fetchMrListData(nextProId);
+        if(thisProId != nextProId && nextProId) {
+            this.props.fetchMrListData(nextProId, 1,'opened');
+            this.props.changeQueryConditionAction(1,'opened')
         }
+
         if(this.props.mergeBranch != mergeBranch && mergeBranch){
             if(mergeBranch.length >1){
                 const userId = this.props.loginInfo.userId;
                 this.props.fetchIssuesData(mergeBranch[0].id,userId);
-            }else{
-                this.errCallback('无需合并','该项目是根节点，无需向其他项目合并代码');
             }
         }
 
         if(this.props.issues != issues && issues){
-            // console.log('issues',this.props.issues, issues)
             if(issues.length >0 ){
                 this.context.router.push({
                     pathname: '/CreateMergeRequest',
@@ -82,12 +81,44 @@ class MergeRequestList extends React.Component {
 
     onChange(pagination, filters, sorter) {
         // 点击分页、筛选、排序时触发
+
+        this.props.changeQueryConditionAction(pagination.current,this.props.status)
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        if(projectInfo.id) {
+            this.props.fetchMrListData(projectInfo.id,pagination.current,this.props.status);
+        }
+    }
+
+    handleSizeChange(e){
+        const {project} = this.props;
+        let projectInfo = project.getProjectInfo?(
+            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+        ):{};
+        if(projectInfo.id){
+            this.props.changeQueryConditionAction(1, e.target.value);
+            this.props.fetchMrListData(projectInfo.id,1,e.target.value);
+        }
+
+    }
+
+    getCodeChanges(record){
+        const projectId = this.props.mrList.project_id;
+        this.context.router.push({
+            pathname: '/codeChanges',
+            state: {
+                record: record,
+                projectId: projectId
+            }
+        });
+
     }
 
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
-
 
     getDataSource(mrList){
         const data = [];
@@ -98,11 +129,11 @@ class MergeRequestList extends React.Component {
                     mrTitle: mrList[i].title,
                     description: mrList[i].description,
                     author: mrList[i].author.name,
-                    assignee:mrList[i].assignee,
+                    assignee:mrList[i].assignee?mrList[i].assignee.name:'',
                     mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
-                    state:mrList[i].state
+                    state:mrList[i].state=='opened'?'未合并':mrList[i].state=='merged'?'已合并':'已关闭'
                 });
             }
         }
@@ -110,41 +141,76 @@ class MergeRequestList extends React.Component {
     }
 
     render(){
-        const mrList = this.props.mrList;
-        const data = this.getDataSource(mrList);
-        const {project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
+        const {mrList,selectNode,project,fetchIssueLoading,mergeBranchLoading,loginInfo} = this.props;
+        const data = mrList?this.getDataSource(mrList.gitlabMergeRequests):null;
         const buttonLoading = fetchIssueLoading || mergeBranchLoading;
-
+        const pagination = {
+            total: mrList?mrList.size:0,
+            current: this.props.page
+        }
         let projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        return(
-            <div style={{margin: 10}}>
-                <Row>
-                    <Button type="primary"
-                            disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
-                            loading={buttonLoading}
-                            onClick={this.createMergeRequest.bind(this)}>
-                        创建合并请求
-                    </Button>
-                </Row>
-                <div style={{marginTop:5}}>
-                    <Table loading = {this.props.loading}
-                           onChange={this.onChange.bind(this)}
-                           columns={this.columns(this)}
-                           dataSource={data}
-                    />
+        if(selectNode && selectNode.isProject){
+            return(
+                <div style={{margin: 10}}>
+                    <Row>
+                        <Col span="12">
+                        <Button type="primary"
+                                disabled={projectInfo&&projectInfo.forks_from&&projectInfo.owner_id==loginInfo.userId?false:true}
+                                loading={buttonLoading}
+                                onClick={this.createMergeRequest.bind(this)}>
+                            创建合并请求
+                        </Button>
+                        </Col>
+
+                        <Col span="12">
+                            <div style={{textAlign:"right"}}>
+                                <Radio.Group size="default" value={this.props.status} onChange={this.handleSizeChange.bind(this)}>
+                                    <Radio.Button value="opened">未合并</Radio.Button>
+                                    <Radio.Button value="merged">已合并</Radio.Button>
+                                    <Radio.Button value="closed">已关闭</Radio.Button>
+                                    <Radio.Button value="all">全部</Radio.Button>
+                                </Radio.Group>
+                                </div>
+                        </Col>
+
+                    </Row>
+                    <div style={{marginTop:5}}>
+                        <Table loading = {this.props.loading}
+                               onChange={this.onChange.bind(this)}
+                               columns={this.columns(this)}
+                               dataSource={data}
+                               pagination={pagination}
+                        />
+                    </div>
                 </div>
-            </div>
-                )
+            )
+        }else{
+            return(
+                <Alert style={{marginLeft:10}}
+                   message="请从左边的项目树中选择一个具体的项目！"
+                   description=""
+                   type="warning"
+                   showIcon
+            />
+            )
+        }
+
+
     }
 }
 
 MergeRequestList.prototype.columns = (self)=> [{
-    title: 'MR名称',
+    title: '主题',
     dataIndex: 'mrTitle',
     key: 'mrTitle',
-    width:'20%'
+    width:'20%',
+    render: (text, record, index)=> {
+        return (
+            <a onClick = {self.getCodeChanges.bind(self,record)}>{record.mrTitle}</a>
+        )
+    }
 },{
     title: '描述',
     dataIndex: 'description',
@@ -202,13 +268,17 @@ function mapStateToProps(state) {
         issues: state.mergeRequest.Issues,
         mrList: state.mergeRequest.mrList,
         loading: state.mergeRequest.getMrListLoading,
+        status: state.mergeRequest.status,
+        page: state.mergeRequest.page,
         loginInfo:state.login.profile,
         project:state.project,
+        selectNode: state.getGroupTree.selectNode,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
+        changeQueryConditionAction: bindActionCreators(changeQueryCondition,dispatch),
         fetchMrListData : bindActionCreators(fetchMrListData,dispatch),
         fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
         fetchIssuesData : bindActionCreators(fetchIssuesData,dispatch),
