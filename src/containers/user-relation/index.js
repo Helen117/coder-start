@@ -8,7 +8,8 @@ import {Row, Col, message, Modal, Form, notification} from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getUserRelationTree} from './actions/user-relation-actions';
 import {getSelectNode} from './actions/user-relation-actions';
-import PopoverImg from '../../components/popover-img';
+//import PopoverImg from '../../components/popover-img';
+import PopoverImg from '../../components/popover-img/index-1';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {setUserGroupDelete} from './actions/user-relation-actions';
@@ -194,16 +195,8 @@ class UserRelation extends React.Component{
                 <Col span={18}>
                     {
                         visible=='true'?<div></div>:(
-                            <Row>
+                            <Row style={{textAlign:'right'}}>
                                 <PopoverImg content={content}/>
-                                <Modal title="确认删除此组织吗?"
-                                       visible={this.state.modalVisible}
-                                       onOk={this.handleOk.bind(this)}
-                                       onCancel={this.handleCancel.bind(this)}
-                                       confirmLoading={deleteGroupLoading}
-                                >
-                                    <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
-                                </Modal>
                             </Row>
                         )
                     }
@@ -212,6 +205,14 @@ class UserRelation extends React.Component{
                                   selectedNode={selectedNodeKey[0]}
                                   visible={visible}
                                   busiType={busi_type}/>
+                        <Modal title="确认删除此组织吗?"
+                               visible={this.state.modalVisible}
+                               onOk={this.handleOk.bind(this)}
+                               onCancel={this.handleCancel.bind(this)}
+                               confirmLoading={deleteGroupLoading}
+                        >
+                            <p>{selectedUserGroup?selectedUserGroup.name:""}</p>
+                        </Modal>
                         {this.props.children}
                     </Row>
                 </Col>
