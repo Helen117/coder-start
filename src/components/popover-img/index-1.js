@@ -31,7 +31,7 @@ export default class PopoverImg extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div style={{display: 'inline',float:'right'}}>
+                <div className={styles.tooltip_container}>
                     <ToolTipDiv content={this.props.content}
                         visible={this.state.showContent}/>
                 </div>

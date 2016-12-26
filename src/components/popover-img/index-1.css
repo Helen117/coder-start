@@ -25,15 +25,22 @@
     background-color: white;
     position: relative;
     min-width: 200px;
-    border:1px solid lightgray;
+    border:1px solid #EEEEEE;
+    border-radius:5px;
+    box-shadow: -1px 2px 5px #EEEEEE;
 }
 
 .tooltip_div:after{
     content:'';
     position:absolute;
-    border:8px solid transparent;
-    border-left-color:lightgray;
+    border:7px solid transparent;
+    border-left-color:#EEEEEE;
     left:100%;
     top:25%
+}
+
+.tooltip_container{
+    display:inline;
+    float:right;
 }
 

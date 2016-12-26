@@ -87,7 +87,7 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-          // console.log(file);
+           //console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
              if (!(file.type === 'application/msword')) {
                  message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
