@@ -37,6 +37,8 @@ import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve'
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
+import ToDoListStatistics from './containers/report';
+
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
@@ -132,7 +134,7 @@ ReactDOM.render(
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
-
+                        <Route name="report" breadcrumbName="报表" path="report" component={ToDoListStatistics}/>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
