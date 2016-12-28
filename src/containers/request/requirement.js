@@ -50,10 +50,10 @@ class RequirementInfo extends Component {
     }
 
     handleDelete() {
-        const demand_id = this.state.delRecord.id;
+        const request_id = this.state.delRecord.id;
         const deleteRequestInfoAction = this.props.actions.deleteRequestInfo;
         const userId = this.props.loginInfo.userId
-        deleteRequestInfoAction(demand_id,userId);
+        deleteRequestInfoAction(request_id,userId);
     }
 
     handleCancel() {
@@ -74,7 +74,7 @@ class RequirementInfo extends Component {
 
     editRequest(type,selectedRow){
         this.context.router.push({
-            pathname: '/demandEdit',
+            pathname: '/requestEdit',
             state: {editType:type,selectedRow}
         });
 
@@ -102,7 +102,7 @@ class RequirementInfo extends Component {
                 }
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
                 list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
-                list[i].assignee = list[i].assignee_develop_name + "(开发)、 " + list[i].assignee_test_name + "(测试)"
+                list[i].assignee = list[i].assignee_develop_name + "（开发）、 " + list[i].assignee_test_name + "（测试）"
 
             }
         }
@@ -178,7 +178,7 @@ RequirementInfo.prototype.columns = (self)=>[{
 }, {
     title: '指派人员',
     dataIndex: 'assignee',
-    width: '10%',
+    width: '12%',
 }, {
     title: '当前状态',
     dataIndex: 'state',

@@ -24,11 +24,18 @@ class RequirementConditionList extends Component {
     }
 
     componentWillMount() {
-        const {selectedProjectSet, actions, requirementInfo} = this.props;
-        if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && (!requirementInfo || requirementInfo.project_id != selectedProjectSet.selectedItemId)) {
-            const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
-            this.loadQueryOption(this.currentPage,queryCondition);
-            actions.getRequestInfo(this.currentPage, queryCondition);
+        const {selectedProjectSet, actions, requirementInfo,form,condition,loading} = this.props;
+        if(condition){
+            form.setFieldsValue(condition);
+        }
+        if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && ( !requirementInfo || requirementInfo.setsId != selectedProjectSet.selectedItemId)) {
+            if(!loading){
+                console.log('componentWillMount',requirementInfo,selectedProjectSet)
+                const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
+                this.loadQueryOption(this.currentPage,queryCondition);
+                actions.getRequestInfo(this.currentPage, queryCondition);
+            }
+
         }
     }
 
@@ -38,6 +45,7 @@ class RequirementConditionList extends Component {
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
+            console.log('componentWillReceiveProps')
             this.handleReset();
             const queryCondition = {sets_id: nextSetId};
             this.loadQueryOption(this.currentPage,queryCondition);
@@ -48,6 +56,7 @@ class RequirementConditionList extends Component {
     loadQueryOption(currentPage, queryCondition){
         const actions = this.props.actions;
         actions.requestQueryCondition(currentPage, queryCondition);
+        this.props.actions.getMilestoneByName(queryCondition.sets_id,'');
         actions.getDeveloperInfo(queryCondition.sets_id,'set',30);
         actions.getTesterInfo(queryCondition.sets_id,'set',20);
     }
@@ -60,27 +69,14 @@ class RequirementConditionList extends Component {
     handleSubmit(e) {
         e.preventDefault();
         const {actions,selectedProjectSet,form} = this.props;
-        const data = form.getFieldsValue();
-        data.project_id = selectedProjectSet.selectedItemId;
-        if(data.expect_due_date){
-            data.expect_due_date_start = data.expect_due_date[0].valueOf();
-            data.expect_due_date_end = data.expect_due_date[1].valueOf();
+        const condition = form.getFieldsValue();
+        condition.sets_id = selectedProjectSet.selectedItemId;
+        if(condition.expect_due_date){
+            condition.expect_due_date_start = condition.expect_due_date[0].valueOf();
+            condition.expect_due_date_end = condition.expect_due_date[1].valueOf();
         }
-         console.log('查询条件',data);
-         /*actions.requestQueryCondition(1, data);
-        actions.getRequestInfo(1, data);*/
-    }
-
-
-    handleChange(value, lable){
-        const {selectedProjectSet} = this.props;
-        if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 ) {
-            setTimeout(() => {
-                console.log('里程碑搜物内容修改',value,lable)
-                const id =selectedProjectSet.selectedItemId
-                this.props.actions.getMilestoneByName(id, value);
-            }, 1000);
-        }
+        actions.requestQueryCondition(this.currentPage, condition);
+        actions.getRequestInfo(this.currentPage, condition);
     }
 
     render(){
@@ -93,15 +89,7 @@ class RequirementConditionList extends Component {
         const { getFieldDecorator } = this.props.form;
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
-        let autoCompleteMilestone = [];
-        if(matchMilestone){
-            for(let i=0; i<matchMilestone.length; i++){
-                autoCompleteMilestone.push({
-                    key:matchMilestone[i].id,
-                    label: matchMilestone[i].title,
-                })
-            }
-        }
+        const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
         if(projectId) {
             return(
                 <div style={{marginLeft:'10px'}}>
@@ -112,17 +100,20 @@ class RequirementConditionList extends Component {
                                     <Col sm={7}>
                                         <FormItem label="里程碑" {...formItemLayout} >
                                             {getFieldDecorator('sets_milestone_id')(
-                                                <AutoComplete
-                                                    dataSource={autoCompleteMilestone}
-                                                    onChange={this.handleChange.bind(this)}
-                                                    placeholder="请输入里程碑名称"
-                                                />)}
+                                                <Select showSearch
+                                                        showArrow={false}
+                                                        allowClear={true}
+                                                        placeholder="请输入里程碑名称"
+                                                        optionFilterProp="children"
+                                                        notFoundContent="无法找到">
+                                                    {milestone}
+                                                </Select>)}
                                         </FormItem>
                                     </Col>
                                     <Col sm={8}>
                                         <FormItem label="需求名称" {...formItemLayout} >
                                             {getFieldDecorator('title')(
-                                                <Input  placeholder="请选择实施人"/>
+                                                <Input  placeholder="请输入需求名称"/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -138,7 +129,7 @@ class RequirementConditionList extends Component {
                                 <Row gutter={16}>
                                     <Col sm={7}>
                                         <FormItem label="开发人员" {...formItemLayout} >
-                                            {getFieldDecorator('assignee_develop_name')(
+                                            {getFieldDecorator('assignee_develop_id')(
                                                 <Select showSearch
                                                         showArrow={false}
                                                         allowClear={true}
@@ -151,7 +142,7 @@ class RequirementConditionList extends Component {
                                         </Col>
                                     <Col sm={8}>
                                         <FormItem label="测试人员" {...formItemLayout} >
-                                            {getFieldDecorator('assignee_test_name')(
+                                            {getFieldDecorator('assignee_test_id')(
                                                 <Select showSearch
                                                         showArrow={false}
                                                         allowClear={true}
@@ -197,11 +188,15 @@ class RequirementConditionList extends Component {
 
 function mapStateToProps(state) {
     return {
+        requirementInfo: state.request.requirementInfo,
         loginInfo:state.login.profile,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         developerInfo: state.request.developer,
         testerInfo: state.request.tester,
-        matchMilestone: state.request.matchMilestone
+        matchMilestone: state.request.matchMilestone,
+        page: state.request.page,
+        condition: state.request.queryCondition,
+        loading: state.request.loading,
     };
 }
 

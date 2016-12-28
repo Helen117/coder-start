@@ -26,8 +26,9 @@ export function editRequest(message) {
 
 
 export function getRequestInfo(page, queryCondition) {
-    queryCondition.page = page;
     console.log('request查询条件',page, queryCondition);
+
+    queryCondition.page = page;
     return {
         type: 'FETCH_REQUIREMENT_INFO',
         payload: {
@@ -112,7 +113,7 @@ export function getMilestoneByName(sets_id,milestone_name) {
     return {
         type: 'GET_MILESTONE_BY_NAME',
         payload: {
-            promise: api.post('/project/list-demand-forname', {
+            promise: api.post('/project/list-milestone-forname', {
                 params: {
                     sets_id: sets_id,
                     milestone_name: milestone_name
@@ -122,22 +123,22 @@ export function getMilestoneByName(sets_id,milestone_name) {
     }
 }
 
-export function requestQueryCondition(page,condition){
+export function requestQueryCondition(page,queryCondition){
     return {
         type: 'REQUEST_QUERY_CONDITION',
         page: page,
-        condition: condition,
+        queryCondition: queryCondition,
     }
 }
 
 
-export function getTesterWorkload(userId,due_date) {
+export function getTesterWorkload(user_id,due_date) {
     return {
         type: 'GET_TESTER_WORKLOAD',
         payload: {
-            promise: api.post('/project/assign-list', {
+            promise: api.post('/project/task-num', {
                 params: {
-                    userId: userId,
+                    user_id: user_id,
                     due_date:due_date,
                 }
             })
@@ -146,13 +147,13 @@ export function getTesterWorkload(userId,due_date) {
 }
 
 
-export function getDeveloperWorkload(userId,due_date) {
+export function getDeveloperWorkload(user_id,due_date) {
     return {
         type: 'GET_DEVELOPER_WORKLOAD',
         payload: {
-            promise: api.post('/project/assign-list', {
+            promise: api.post('/project/task-num', {
                 params: {
-                    userId: userId,
+                    user_id: user_id,
                     due_date:due_date,
                 }
             })

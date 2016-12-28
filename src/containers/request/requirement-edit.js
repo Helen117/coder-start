@@ -65,20 +65,24 @@ class EditRequest extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-
+        const actions = this.props.actions;
         const {editRequestResult, addRequestResult} = nextProps;
         if (this.props.editRequestResult != editRequestResult && editRequestResult ) {
+            actions.getRequestInfo(this.props.page, this.props.condition);
+            console.log('this.props.page, this.props.condition',this.props.page, this.props.condition)
             this.sucCallback('修改成功')
         }
+
         if(this.props.addRequestResult != addRequestResult && addRequestResult){
+            const queryCondition = {sets_id: this.props.selectedProjectSet.selectedItemId}
+            actions.requestQueryCondition(1, queryCondition);
+            actions.getRequestInfo(1, queryCondition);
             this.sucCallback('新建成功')
         }
     }
 
     sucCallback(type){
         message.success(type);
-        const {actions,selectedProjectSet} = this.props;
-        actions.getRequestInfo(selectedProjectSet.selectedItemId);
         this.props.home.getNotifyItems(this.props.loginInfo.userId);
         this.context.router.goBack();
     }
@@ -141,28 +145,38 @@ class EditRequest extends Component{
         }
     }
 
-    getAssigneeWorkload(){
+    getAssigneeWorkload(value,type){
         const formData = this.props.form.getFieldsValue();
-        if(formData.expect_due_date && formData.assignee_develop_id){
-            this.props.actions.getDeveloperWorkload(formData.assignee_develop_id,formData.expect_due_date.valueOf());
+        console.log()
+        if(formData.expect_due_date && value && type=='developer'){
+            this.props.actions.getDeveloperWorkload(value,formData.expect_due_date.valueOf());
         }
-        if(formData.expect_due_date && formData.assignee_test_id){
-            this.props.actions.getTesterWorkload(formData.assignee_test_id,formData.expect_due_date.valueOf());
+        else if(formData.expect_due_date && value && type=='tester'){
+            this.props.actions.getTesterWorkload(value,formData.expect_due_date.valueOf());
+        }
+    }
+
+    getWorkloadByDate(value){
+        const formData = this.props.form.getFieldsValue();
+        if(formData.assignee_develop_id && value ){
+            this.props.actions.getDeveloperWorkload(formData.assignee_develop_id,value.valueOf());
+        }
+        if(formData.assignee_test_id && value ){
+            this.props.actions.getTesterWorkload(formData.assignee_test_id,value.valueOf());
         }
     }
 
     changeDeveloper(value) {
         this.setState({ developDirty: this.state.developDirty || !! value });
-        this.getAssigneeWorkload();
+        this.getAssigneeWorkload(value,'developer');
     }
 
     changeTester(value){
-        this.getAssigneeWorkload();
+        this.getAssigneeWorkload(value,'tester');
     }
 
     checkTest(rule, value, callback){
         const form = this.props.form;
-        const id = form.getFieldValue('assignee_test_id');
         if (value && value == form.getFieldValue('assignee_develop_id')) {
             callback('开发和测试不能指定同一人');
         } else {
@@ -194,7 +208,7 @@ class EditRequest extends Component{
         const sets_id = selectedProjectSet.selectedItemId;
         const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
         this.props.actions.getCurrentMilestone(sets_id,due_date);
-        this.getAssigneeWorkload();
+        this.getWorkloadByDate(date);
     }
 
     handleCancel() {
@@ -317,7 +331,8 @@ class EditRequest extends Component{
                                      disabled={disabledEditDeveloper}
                                      onChange={this.changeDeveloper.bind(this)}>
                                 {developer}
-                            </Select>)}{this.props.developerWorkloder}
+                            </Select>)}
+                        {this.props.developerWorkloder?<span>  开发在该里程碑下有待办任务 {this.props.developerWorkloder.taskNum} 项</span>:<div/>}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="测试人员" >
@@ -335,6 +350,7 @@ class EditRequest extends Component{
                                      onChange={this.changeTester.bind(this)}>
                                 {tester}
                             </Select>)}
+                        {this.props.testerWorkloader?<span>  测试在该里程碑下有待办任务 {this.props.testerWorkloader.taskNum} 项</span>:<div/>}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间" help={helpMsg} validateStatus={validateStatus} >
@@ -393,6 +409,9 @@ function mapStateToProps(state) {
         testerInfo: state.request.tester,
         currentMilestone: state.request.currentMilestone,
         developerWorkloder: state.request.developerWorkloder,
+        testerWorkloader: state.request.testerWorkloader,
+        page: state.request.page,
+        condition: state.request.queryCondition,
     };
 }
 
