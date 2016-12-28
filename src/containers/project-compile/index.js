@@ -119,8 +119,9 @@ class ProjectCompile extends React.Component{
                     });
                     return;
                 }
+                let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
                 saveJob({
-                    jobName:selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
+                    jobName:jobName + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
                     trigger:form.getFieldValue('trigger'),
                     pipelineScript: pipelineScript
                 });
