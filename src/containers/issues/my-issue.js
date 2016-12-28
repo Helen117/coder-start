@@ -203,6 +203,13 @@ class MyIssueList extends Component {
                     }
                 }
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
+                if(list[i].assignee_developer_or_tester){
+                    if(list[i].project_id){
+                        list[i].developer_or_tester = list[i].assignee_developer_or_tester.name+'(测试)';
+                    }else{
+                        list[i].developer_or_tester = list[i].assignee_developer_or_tester.name+'(开发)';
+                    }
+                }
             }
         }
         return list;
@@ -355,47 +362,51 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     {
         title: '里程碑',
         dataIndex: 'milestone_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '问题类型',
         dataIndex: 'issueType',
-        width: '9%',
+        width: '8%',
     },{
         title: '问题名称',
         dataIndex: 'issue_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '描述',
         dataIndex: 'description',
-        width: '9%',
+        width: '8%',
     },{
         title: '问题标签',
         dataIndex: 'label',
-        width: '9%',
+        width: '8%',
     }, {
         title: '创建人',
         dataIndex: 'author_name',
-        width: '9%',
+        width: '8%',
+    }, {
+        title: '开发/测试',
+        dataIndex: 'developer_or_tester',
+        width: '8%',
     }, {
         title: '问题创建时间',
         dataIndex: 'created_at',
-        width: '9%',
+        width: '8%',
     }, {
         title: '计划完成时间',
         dataIndex: 'due_date',
-        width: '9%',
+        width: '8%',
     },{
         title: '状态',
         dataIndex: 'status',
-        width: '9%',
+        width: '8%',
     },{
         title: '项目',
         dataIndex: 'project_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '项目集',
         dataIndex: 'sets_name',
-        width: '9%',
+        width: '8%',
     }, {
         title: '操作',
         dataIndex: 'key',
