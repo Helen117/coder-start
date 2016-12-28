@@ -114,7 +114,7 @@ class MyIssueList extends Component {
     modifyConfirm(record) {
         record.task_id ='';
         this.context.router.push({
-            pathname: '/confirmOperate',
+            pathname: '/confirmList',
             state: {record}
         });
     }

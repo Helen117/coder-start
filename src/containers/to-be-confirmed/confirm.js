@@ -23,24 +23,16 @@ const FormItem = Form.Item;
     }
 
     componentWillMount() {
-        const {record} = this.props.location.state;
-        if(record.task_id){
-            this.props.getConfirmListAction(record.task_id);
-        }else {
-            this.props.getDemandListAction(record.sets_issue_id);
-        }
+
     }
 
      componentWillReceiveProps(nextProps) {
          const {confirmList,confirmResult,demandInfo} = nextProps;
-         const {record} = this.props.location.state;
          if(this.props.confirmList != confirmList && confirmList) {
                  this.props.getProjectInfoAction(confirmList[0].set_id, this.props.loginInfo.userId)
          }
          if(this.props.demandInfo != demandInfo && demandInfo){
-             if(!record.task_id){
-                 this.props.getDemandProjectInfoAction(record.sets_issue_id);
-             }
+             this.props.getDemandProjectInfoAction(demandInfo.id);
              this.props.getProjectInfoAction(demandInfo.sets_id, this.props.loginInfo.userId);
          }
 
@@ -59,23 +51,9 @@ const FormItem = Form.Item;
     handleChange(targetKeys){
         this.targetKeys = targetKeys;
     }
-     getDataSource(confirmList){
-         if(confirmList){
-             for(let i=0; i<confirmList.length; i++){
-                 confirmList[i].created_at = new Date(confirmList[i].created_at).toLocaleDateString();
-                 confirmList[i].due_date = new Date(confirmList[i].due_date).toLocaleDateString();
-                 if (confirmList[i].type == 'demand') {
-                     confirmList[i].type = '需求';
-                 }
-             }
-         }
-         return confirmList;
-     }
-
 
     approve(){
-        const {form,confirmList,loginInfo} = this.props;
-        const {record} = this.props.location.state;
+        const {form,confirmList,loginInfo,demandInfo} = this.props;
         form.setFieldsValue({'files':this.state.fileList});
 
         form.validateFields((errors, values) => {
@@ -83,9 +61,9 @@ const FormItem = Form.Item;
                 return;
             } else {
                 const data = form.getFieldsValue();
-                if(record.task_id){
+                if(this.props.task_id){
                     data.pass = true;
-                    data.task_id = record.task_id;
+                    data.task_id = this.props.task_id;
                     data.demand_id = confirmList[0].demand_id;
                     data.role = confirmList[0].role;
                     data.username = loginInfo.username;
@@ -93,7 +71,7 @@ const FormItem = Form.Item;
                     this.props.ConfirmAction(data)
                 }else{
                     data.assigned_id = loginInfo.userId;
-                    data.demand_id=record.sets_issue_id;
+                    data.demand_id=demandInfo.id;
                     this.props.developerUpdateConfirmAction(data);
                 }
             }
@@ -154,12 +132,9 @@ const FormItem = Form.Item;
 
     render() {
 
-        const confirmList = this.props.confirmList;
-        const loading = this.props.getConfirmListLoading?true:false;
-        let data = this.getDataSource(confirmList)
+
 
         const { getFieldDecorator } = this.props.form;
-        const {record} = this.props.location.state;
         let role = this.props.confirmList?this.props.confirmList[0].role:'';
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -173,24 +148,15 @@ const FormItem = Form.Item;
         const { getConfirmListLoading,getMyProjectLoading} = this.props;
         const TransferLoading = getMyProjectLoading? true: false;
         const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
-        if(!record.task_id){
-            data = [{
-                'name':record.issue_name,
-                'description':record.description,
-                'type':record.issueType,
-                'filesName':this.props.demandInfo?this.props.demandInfo.files:'',
-                'author':record.author_name,
-                'created_at':record.created_at,
-                'due_date':record.due_date
-            }];
+        if(!this.props.task_id){
             role ='developer';
         }else{
             targetKeys=[]
         }
+        if(this.props.showConfirm){
         return(
             <Box title="需求确认">
                 <Spin spinning={dataLoading} tip="正在加载数据，请稍候...">
-                    <ConfirmList data={data}/>
                     <Form horizontal>
                         {role == 'developer' ?
                             <FormItem   {...formItemLayout} label="涉及项目">
@@ -224,7 +190,10 @@ const FormItem = Form.Item;
                     </Form>
                 </Spin>
             </Box>
-        )
+        )}else{
+            return null;
+        };
+
     }
 }
 
@@ -233,25 +202,6 @@ DevelopConfirm.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
-
-// DevelopConfirm.prototype.columns = (self)=>[{
-//     title: '工单名称',
-//     dataIndex: 'name',
-//     width: '20%',
-// },{
-//     title: '内容',
-//     dataIndex: 'description',
-//     width: '20%',
-// },{
-//     title: '计划上线时间',
-//     dataIndex: 'due_date',
-//     width: '20%',
-// }, {
-//     title: '负责人',
-//     dataIndex: 'director',
-//     width: '20%',
-// }];
-
 
 function mapStateToProps(state) {
     return {
@@ -273,8 +223,6 @@ function mapDispatchToProps(dispatch) {
         ConfirmAction: bindActionCreators(developConfirm, dispatch),
         getApproveListAction: bindActionCreators(getApproveList, dispatch),
         home:bindActionCreators(home, dispatch),
-        getConfirmListAction: bindActionCreators(getConfirmList, dispatch),
-        getDemandListAction: bindActionCreators(getDemandList, dispatch),
         developerUpdateConfirmAction: bindActionCreators(developerUpdateConfirm, dispatch),
         getDemandProjectInfoAction: bindActionCreators(getDemandProjectInfo, dispatch),
     }

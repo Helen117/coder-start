@@ -126,10 +126,6 @@ class EditDemand extends Component{
         return current && current.startOf('day') < moment().startOf('day')
     }
 
-    disabledDate(current) {
-        return current && current < moment()
-    }
-
     developTestDistinct(checkTarget,rule, value, callback){
         if (!value) {
             callback();

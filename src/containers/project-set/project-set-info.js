@@ -10,7 +10,8 @@ import 'pubsub-js';
 import { message, Modal, Spin, Alert, Row, Button} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import PopoverImg from '../../components/popover-img';
+//import PopoverImg from '../../components/popover-img';
+import PopoverImg from '../../components/popover-img/index-1';
 import TableView from '../../components/table';
 import {deleteProjectSet,fetchProjectSetTree} from './project-set-action';
 
@@ -133,7 +134,9 @@ class SelectedSetInfo extends Component {
                         {
                             selectedProjectSet?
                                 <div>
-                                    <PopoverImg content={content}></PopoverImg>
+                                    <Row style={{textAlign:'right'}}>
+                                        <PopoverImg content={content}></PopoverImg>
+                                    </Row>
                                     <span>项目集合：{selectedProjectSet.name}</span>
                                     <span style={{marginLeft:20}}>描述：{selectedProjectSet.description}</span>
                                     <TableView columns={columns(this)}

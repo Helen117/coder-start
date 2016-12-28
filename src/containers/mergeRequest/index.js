@@ -3,3 +3,4 @@
  */
 export MergeRequestList from './mergeRequest-list';
 export CreateMergeRequest from './mergeRequest-create';
+export CodeChanges from './mergeRequest-code-changes'

@@ -21,6 +21,7 @@ export default class TransferFilter extends React.Component {
         const dataSource = nextProps.dataSource;
         const targetData = nextProps.targetKeys;
         if(dataSource&&dataSource!=this.props.dataSource ){
+            // console.log(dataSource,targetData)
             this.getMock(dataSource,targetData);
         }
 

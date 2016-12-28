@@ -191,18 +191,18 @@ class CodeFiles extends React.Component {
         return (<div style={{paddingLeft:'10px'}}>
                 {(selectNode && selectNode.isProject)?(
                     <div>
-                        <Row gutter={16}>
-                            <Col span={3}>
+                        <Row>
+                            <div style={{display: 'inline',float:'left'}}>
                                 <Select id="branch" value={this.state.brand} className={styles.select}
                                         onChange={this.changeSelect.bind(this)}>
                                     {branchData}
                                 </Select>
-                            </Col>
-                            <Col span={21} className={styles.v_middle}>
+                            </div>
+                            <div style={{display: 'inline',float:'left',padding:'3px 0px 0px 10px'}}>
                                 <Breadcrumb >
                                     {bread}
                                 </Breadcrumb>
-                            </Col>
+                            </div>
                         </Row>
                         <Row>
                             <FileTree visible={this.state.showFileTree}
