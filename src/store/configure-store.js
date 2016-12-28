@@ -29,6 +29,7 @@ import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/hom
 import projectCompile from '../containers/project-compile/reducer';
 import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
 import treeFilter from '../components/tree-filter/reducer';
+import report from '../containers/report/report-reducer';
 
 const reducer = combineReducers({
     login,
@@ -57,7 +58,8 @@ const reducer = combineReducers({
     label,
     UpdateUserInfo,
     consernProject,
-    treeFilter
+    treeFilter,
+    report
 })
 
 

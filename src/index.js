@@ -29,14 +29,16 @@ import ForkList from './containers/fork';
 import {ProjectSetCreate,ProjectSetTree,ShowInfo} from './containers/project-set';
 import ProjectSetMilestones from './containers/project-set-milestone';
 
-import {RequirementInfo,EditDemand} from './containers/request';
+import {RequirementConditionList,EditRequest} from './containers/request';
 
 import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
-import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddDemand} from './containers/issues';
+import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddRequest} from './containers/issues';
 import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve';
-import {ConfirmList} from './containers/to-be-confirmed';
+import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
+import ToDoListStatistics from './containers/report';
+
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
 import CodeFiles from './containers/code-files/index';
@@ -115,7 +117,7 @@ ReactDOM.render(
                             <Route name="projectMgrSub" breadcrumbName="项目列表" path="project-mgr-sub" component={ProjectMgrSub}/>
                             <Route name="milestones" breadcrumbName="里程碑" path="milestones" component={ProjectMilestones}/>
                             <Route name="issueList" breadcrumbName="项目问题管理" path="issue" component={ProjectIssueList}/>
-                            <Route name="addDemand" breadcrumbName="项目需求管理" path="add-demand" component={AddDemand}/>
+                            <Route name="addRequest" breadcrumbName="项目需求管理" path="add-request" component={AddRequest}/>
                             <Route name="branches" breadcrumbName="分支管理" path="branches" component={BranchesList}/>
                             <Route name="mergeRequestList" breadcrumbName="MR管理" path="mergeRequest" component={MergeRequestList}/>
                             <Route name="codeFile" breadcrumbName="项目代码" path="code-file" component={CodeFiles}>
@@ -131,18 +133,18 @@ ReactDOM.render(
                         </Route>
                         <Route name="userGroupDetail" breadcrumbName="新修组织" path="userGroupDetail" component={UserGroupDetail}/>
                         <Route name="myIssueList" breadcrumbName="我的问题" path="myIssue" component={MyIssueList}/>
-
+                        <Route name="report" breadcrumbName="报表" path="report" component={ToDoListStatistics}/>
                         <Route name="groupDetail" breadcrumbName="项目组明细" path="group-detail" component={GroupDetail}/>
                         <Route name="projectDetail" breadcrumbName="项目明细" path="project-detail" component={ProjectDetail}/>
                         <Route name="forkList" breadcrumbName="ForkList信息" path="forkList" component={ForkList}/>
                         <Route name="ProjectSetTree" breadcrumbName="项目集合管理" path="projectSetTree" component={ProjectSetTree}>
-                            <Route name="request" breadcrumbName="需求管理" path="request" component={RequirementInfo}/>
+                            <Route name="request" breadcrumbName="需求管理" path="request" component={RequirementConditionList}/>
                             <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={ShowInfo}/>
                             <Route name="ProjectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={ProjectSetMilestones}/>
                         </Route>
                         <Route name="label" breadcrumbName="Label列表" path="label" component={Labels}/>
                         <Route name="labelEdit" breadcrumbName="Label编辑" path="labelEdit" component={LabelEdit}/>
-                        <Route name="demandEdit" breadcrumbName="需求编辑" path="demandEdit" component={EditDemand}/>
+                        <Route name="requestEdit" breadcrumbName="需求编辑" path="requestEdit" component={EditRequest}/>
 
                         <Route name="ProjectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={ProjectSetCreate}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
@@ -155,6 +157,8 @@ ReactDOM.render(
                         <Route name="approveList" breadcrumbName="待审批" path="approveList" component={ApproveList}/>
                         <Route name="approveRegister" breadcrumbName="注册审批" path="approveRegister" component={RegistrationApproval}/>
                         <Route name="confirmList" breadcrumbName="待确认事项" path="confirmList" component={ConfirmList}/>
+                        <Route name="confirmOperate" breadcrumbName="待确认操作" path="confirmOperate" component={DevelopConfirm}/>
+                        <Route name="transpondOperate" breadcrumbName="转派操作" path="transpondOperate" component={DevelopTransPond}/>
                         <Route name="approveMr" breadcrumbName="代码合并审批" path="approveMr" component={MrApproval}/>
                         <Route name="updateUserInfo" breadcrumbName="修改人员" path="updateUserInfo" component={UpdateUserInfo}></Route>
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>

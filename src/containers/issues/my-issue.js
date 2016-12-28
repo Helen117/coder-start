@@ -111,6 +111,14 @@ class MyIssueList extends Component {
         });
     }
 
+    modifyConfirm(record) {
+        record.task_id ='';
+        this.context.router.push({
+            pathname: '/confirmList',
+            state: {record}
+        });
+    }
+
     mergeRequest(record){
         const {fetchMergeBranchData,loginInfo} = this.props;
         fetchMergeBranchData('',record.project_id,loginInfo.userId);
@@ -202,7 +210,11 @@ class MyIssueList extends Component {
 
     rowClassName(record,index) {
         if (record.state == 'opened') {
-            return styles.open;
+            if(record.type=='demand'){
+                return styles.open;
+            }else{
+                return styles.bug;
+            }
         }
         if (record.state == 'closed') {
             return styles.close;
@@ -405,6 +417,8 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                 }else if(record.project_id){
                     return <div>
                         <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
+                        <br/>
+                        <a onClick={self.modifyConfirm.bind(self, record)}>修改</a>
                     </div>;
                 }
             }
