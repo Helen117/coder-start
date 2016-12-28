@@ -23,9 +23,35 @@ export function getProjectInfo(set_id,user_id) {
     }
 }
 
+export function getDemandProjectInfo(demand_id) {
+    var path ='/project/demand-projects';
+    return {
+        type: 'GET_DEMAND_PROJECT_INFO',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    demand_id: demand_id
+                }
+            })
+        }
+    }
+}
+
 
 export function developConfirm(data) {
     var path ='/examination/demand-examine';
+    return {
+        type: DEVELOP_CONFIRM,
+        payload: {
+            promise: api.post(path, {
+                data: data
+            })
+        }
+    }
+}
+
+export function developerUpdateConfirm(data) {
+    var path ='/project/update-accept-demand';
     return {
         type: DEVELOP_CONFIRM,
         payload: {
@@ -51,6 +77,19 @@ export function getConfirmList(task_id) {
     }
 }
 
+export function getDemandList(demand_id) {
+    var path ='/project/one-demand';
+    return {
+        type: 'GET_DEMAND_INFO',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    demand_id: demand_id,
+                }
+            })
+        }
+    }
+}
 
 export function getTranspondMember(id,type,role) {
     var path ='/project/assign-list';
