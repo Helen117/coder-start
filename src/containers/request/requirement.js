@@ -22,22 +22,11 @@ class RequirementInfo extends Component {
     }
 
     componentWillMount() {
-        const {selectedProjectSet,actions,requirementInfo} = this.props;
-        if(selectedProjectSet&& selectedProjectSet.id.indexOf('g')!=-1 && (!requirementInfo || requirementInfo.project_id!=selectedProjectSet.selectedItemId)){
-            actions.getDemandInfo(selectedProjectSet.selectedItemId);
-        }
+
     }
 
     componentWillReceiveProps(nextProps) {
-
-        const {actions,selectedProjectSet} = this.props;
         const {deleteResult} = nextProps;
-        const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
-        const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
-        //点击不同项目集，重新加载数据
-        if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            actions.getDemandInfo(nextSetId);
-        }
         if(this.props.deleteResult != deleteResult && deleteResult){
             this.setState({
                 modalVisible: false,
@@ -49,22 +38,22 @@ class RequirementInfo extends Component {
 
     sucCallback(type){
         message.success(type);
-        this.props.actions.getDemandInfo(this.props.selectedProjectSet.selectedItemId);
+        this.props.actions.getRequestInfo(this.props.page, this.props.condition);
         this.props.form.resetFields();
     }
 
-    deleteDemand(record){
+    deleteRequest(record){
         this.setState({
             modalVisible: true,
             delRecord: record
         });
     }
 
-    handleOk(groupInfo) {
+    handleDelete() {
         const demand_id = this.state.delRecord.id;
-        const deleteDemandInfoAction = this.props.actions.deleteDemandInfo;
+        const deleteRequestInfoAction = this.props.actions.deleteRequestInfo;
         const userId = this.props.loginInfo.userId
-        deleteDemandInfoAction(demand_id,userId);
+        deleteRequestInfoAction(demand_id,userId);
     }
 
     handleCancel() {
@@ -75,8 +64,15 @@ class RequirementInfo extends Component {
 
     }
 
-    editDemand(type,selectedRow){
-        //console.log(selectedRow)
+    changePage(pagination, filters, sorter) {
+        const {actions} = this.props;
+        console.log('this.props.condition',this.props.condition)
+        actions.requestQueryCondition(pagination.current, this.props.condition);
+        actions.getRequestInfo(pagination.current, this.props.condition);
+    }
+
+
+    editRequest(type,selectedRow){
         this.context.router.push({
             pathname: '/demandEdit',
             state: {editType:type,selectedRow}
@@ -87,18 +83,15 @@ class RequirementInfo extends Component {
     getDataSources(list){
         if(list&&list.length>0) {
             for (var i = 0; i < list.length; i++) {
-                if (typeof(list[i].update_at) == "number") {
-                    list[i].update_at = new Date(parseInt(list[i].update_at)).toLocaleDateString();
-                }
                 if (typeof(list[i].expect_due_date) == "number") {
                     list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
                 }
                 if (typeof(list[i].deadline_date) == "number") {
                     list[i].deadline_date = new Date(parseInt(list[i].deadline_date)).toLocaleDateString();
                 }
-                const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
+                /*const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
                 const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
-                list[i].confirm_time = developer_confirm_date + tester_confirm_date;
+                list[i].confirm_time = developer_confirm_date + tester_confirm_date;*/
                 if(list[i].labels&&list[i].labels.length>0){
                     list[i].label_names=[];
                     list[i].label_ids =[];
@@ -117,64 +110,55 @@ class RequirementInfo extends Component {
     }
 
     render() {
+        const {requirementListData} = this.props
         const {getFieldDecorator} = this.props.form;
+        const dataSource = requirementListData?this.getDataSources(requirementListData.sets_Demands):[];
         const pagination = {
-            pageSize:10,
-        };
-
-        const selectedProjectSet = this.props.selectedProjectSet;
-        const projectId = selectedProjectSet? selectedProjectSet.id.indexOf('g')!=-1:'';
-        if(projectId) {
-            return (
-                <div style={{margin:10}}>
-                    <Row>
-                        <Col span={12}>
-                            <Breadcrumb>
-                                <Breadcrumb.Item >
-                                    <Icon type="home" />
-                                    <span>{selectedProjectSet.name}</span>
-                                </Breadcrumb.Item>
-                            </Breadcrumb>
-                        </Col>
-                        <Col span={12}>
-                            <div style={{textAlign:"right"}}>
-                                <Button style={{marginBottom:5}} type="primary"
-                                        onClick={this.editDemand.bind(this, 'add', null)}>
-                                    创建需求
-                                </Button>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Table columns={this.columns(this)}
-                           dataSource={this.getDataSources(this.props.requirementInfo)}
-                           size="middle"
-                           pagination={pagination}
-                           loading={this.props.loading} />
-                    <Modal title="确认删除此需求吗?"
-                           visible={this.state.modalVisible}
-                           onOk={this.handleOk.bind(this)}
-                           confirmLoading={this.props.deleteLoading}
-                           onCancel={this.handleCancel.bind(this)}
-                    >
-                        <p>如果确认此操作，请在下框输入原因：</p>
-                        <Form>
-                            <FormItem>
-                                {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
-                            </FormItem>
-                        </Form>
-                    </Modal>
-                </div>
-            );
-        }else{
-            return (
-                <Alert style={{margin:10}}
-                       message="请从左边的项目树中选择一个具体的项目集！"
-                       description=""
-                       type="warning"
-                       showIcon
-                />
-            )
+            total: requirementListData?requirementListData.size: 0,
+            current: this.props.page
         }
+        const selectedProjectSet = this.props.selectedProjectSet;
+        return (
+            <div style={{margin:10}}>
+                <Row>
+                    <Col span={12}>
+                        <Breadcrumb>
+                            <Breadcrumb.Item >
+                                <Icon type="home" />
+                                <span>{selectedProjectSet.name}</span>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
+                    </Col>
+                    <Col span={12}>
+                        <div style={{textAlign:"right"}}>
+                            <Button style={{marginBottom:5}} type="primary"
+                                    onClick={this.editRequest.bind(this, 'add', null)}>
+                                创建需求
+                            </Button>
+                        </div>
+                    </Col>
+                </Row>
+                <Table columns={this.columns(this)}
+                       dataSource={dataSource}
+                       size="middle"
+                       pagination={pagination}
+                       onChange={this.changePage.bind(this)}
+                       loading={this.props.loading} />
+                <Modal title="确认删除此需求吗?"
+                       visible={this.state.modalVisible}
+                       onOk={this.handleDelete.bind(this)}
+                       confirmLoading={this.props.deleteLoading}
+                       onCancel={this.handleCancel.bind(this)}
+                >
+                    <p>如果确认此操作，请在下框输入原因：</p>
+                    <Form>
+                        <FormItem>
+                            {getFieldDecorator('result')(<Input type="textarea" rows={4} />)}
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
+        );
     }
 }
 
@@ -204,12 +188,12 @@ RequirementInfo.prototype.columns = (self)=>[{
 },{
     title: '创建人',
     dataIndex: 'author',
-}, {
+}/*, {
     title: '需求确认时间',
     dataIndex: 'confirm_time',
     width: '12%',
 
-}, {
+}*/, {
     title: '计划完成时间',
     dataIndex: 'expect_due_date',
 },{
@@ -221,17 +205,15 @@ RequirementInfo.prototype.columns = (self)=>[{
     width: '10%',
     render: (text, record) => {
         const userLimits = self.props.loginInfo.name == record.author? true: false;
-        const deleteLimits = record.developer_confirm_date || record.tester_confirm_date? false: true;
-        //console.log('self.props.loginInfo.name',self.props.loginInfo.name,record.author)
+        const deleteLimits = record.state=='待确认'?  true: false;
         return (<div>
            {/* {userLimits?
                 <div>*/}
-
-               <a onClick={self.editDemand.bind(self, 'modify', record)}>修改</a>
+               <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
            {deleteLimits ?
                <span>
                     <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
-                    <a onClick={self.deleteDemand.bind(self, record)}>删除</a>
+                    <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
                </span>: <div/>}
                {/*</div>:<div/>
         }*/}
@@ -246,9 +228,11 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         loading:state.request.loading,
-        requirementInfo: state.request.requirementInfo,
+        requirementListData: state.request.requirementInfo,
         deleteResult: state.request.deleteResult,
         deleteLoading: state.request.deleteLoading,
+        page: state.request.page,
+        condition: state.request.queryCondition,
     };
 }
 

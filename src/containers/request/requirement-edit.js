@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
 
-class EditDemand extends Component{
+class EditRequest extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -66,11 +66,11 @@ class EditDemand extends Component{
 
     componentWillReceiveProps(nextProps) {
 
-        const {editDemandResult, addDemandResult} = nextProps;
-        if (this.props.editDemandResult != editDemandResult && editDemandResult ) {
+        const {editRequestResult, addRequestResult} = nextProps;
+        if (this.props.editRequestResult != editRequestResult && editRequestResult ) {
             this.sucCallback('修改成功')
         }
-        if(this.props.addDemandResult != addDemandResult && addDemandResult){
+        if(this.props.addRequestResult != addRequestResult && addRequestResult){
             this.sucCallback('新建成功')
         }
     }
@@ -78,7 +78,7 @@ class EditDemand extends Component{
     sucCallback(type){
         message.success(type);
         const {actions,selectedProjectSet} = this.props;
-        actions.getDemandInfo(selectedProjectSet.selectedItemId);
+        actions.getRequestInfo(selectedProjectSet.selectedItemId);
         this.props.home.getNotifyItems(this.props.loginInfo.userId);
         this.context.router.goBack();
     }
@@ -98,7 +98,7 @@ class EditDemand extends Component{
                 data.sid = selectedProjectSet.selectedItemId;
                 data.files= this.state.fileList;
                 if(editType == 'add'){
-                    actions.addDemand(data);
+                    actions.addRequest(data);
                 }else{
                     data.id = selectedRow.id;
                     data.files= this.state.fileList&&selectedRow.files&&this.state.fileList[0].name==selectedRow.files[0]?[]:this.state.fileList;
@@ -113,7 +113,7 @@ class EditDemand extends Component{
                         message.info('数据没有变更，不需提交', 2);
                     } else {
                         // console.log('接收的数据',data);
-                        actions.editDemand(data);
+                        actions.editRequest(data);
                     }
 
                 }
@@ -141,12 +141,26 @@ class EditDemand extends Component{
         }
     }
 
-    handleChangeBlur(value) {
+    getAssigneeWorkload(){
+        const formData = this.props.form.getFieldsValue();
+        if(formData.expect_due_date && formData.assignee_develop_id){
+            this.props.actions.getDeveloperWorkload(formData.assignee_develop_id,formData.expect_due_date.valueOf());
+        }
+        if(formData.expect_due_date && formData.assignee_test_id){
+            this.props.actions.getTesterWorkload(formData.assignee_test_id,formData.expect_due_date.valueOf());
+        }
+    }
+
+    changeDeveloper(value) {
         this.setState({ developDirty: this.state.developDirty || !! value });
+        this.getAssigneeWorkload();
+    }
+
+    changeTester(value){
+        this.getAssigneeWorkload();
     }
 
     checkTest(rule, value, callback){
-
         const form = this.props.form;
         const id = form.getFieldValue('assignee_test_id');
         if (value && value == form.getFieldValue('assignee_develop_id')) {
@@ -179,7 +193,8 @@ class EditDemand extends Component{
         const selectedProjectSet = this.props.selectedProjectSet;
         const sets_id = selectedProjectSet.selectedItemId;
         const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
-        this.props.actions.getCurrentMilestone(sets_id,due_date)
+        this.props.actions.getCurrentMilestone(sets_id,due_date);
+        this.getAssigneeWorkload();
     }
 
     handleCancel() {
@@ -240,9 +255,9 @@ class EditDemand extends Component{
     render() {
         const {editType,selectedRow} = this.props.location.state;
         const { getFieldDecorator } = this.props.form;
-        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editDemandLoading,addDemandLoading,currentMilestone} = this.props;
+        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editRequestLoading,addRequestLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
-        const buttonLoading = editDemandLoading||addDemandLoading ?true: false;
+        const buttonLoading = editRequestLoading||addRequestLoading ?true: false;
         const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
         let helpMsg = null, validateStatus="success";
         if(currentMilestone) {
@@ -300,9 +315,9 @@ class EditDemand extends Component{
                                      notFoundContent="无法找到"
                                      style={{ width: 300 }}
                                      disabled={disabledEditDeveloper}
-                                     onChange={this.handleChangeBlur.bind(this)}>
+                                     onChange={this.changeDeveloper.bind(this)}>
                                 {developer}
-                            </Select>)}
+                            </Select>)}{this.props.developerWorkloder}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="测试人员" >
@@ -316,7 +331,8 @@ class EditDemand extends Component{
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      disabled={disabledEditTester}
-                                     style={{ width: 300 }}>
+                                     style={{ width: 300 }}
+                                     onChange={this.changeTester.bind(this)}>
                                 {tester}
                             </Select>)}
                     </FormItem>
@@ -352,25 +368,23 @@ class EditDemand extends Component{
 }
 
 
-EditDemand.contextTypes = {
+EditRequest.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
 
-EditDemand = Form.create()(EditDemand);
+EditRequest = Form.create()(EditRequest);
 
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
         selectedProjectSet: state.projectSet.selectedProjectSet,
-        editDemandLoading: state.request.editDemandLoading,
-        editDemandResult: state.request.editDemandResult,
-        editDemandError: state.request.editDemandError,
-        addDemandResult: state.request.addDemandResult,
-        addDemandLoading: state.request.addDemandLoading,
-        addDemandError: state.request.addDemandError,
+        editRequestLoading: state.request.editRequestLoading,
+        editRequestResult: state.request.editRequestResult,
+        addRequestResult: state.request.addRequestResult,
+        addRequestLoading: state.request.addRequestLoading,
         labelLoading: state.request.getLabelLoading,
         labelInfo: state.request.label,
         developerLoading: state.request.getDeveloperLoading,
@@ -378,6 +392,7 @@ function mapStateToProps(state) {
         testerLoading: state.request.getTesterLoading,
         testerInfo: state.request.tester,
         currentMilestone: state.request.currentMilestone,
+        developerWorkloder: state.request.developerWorkloder,
     };
 }
 
@@ -388,4 +403,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditDemand);
+export default connect(mapStateToProps,mapDispatchToProps)(EditRequest);
