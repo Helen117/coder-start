@@ -210,7 +210,11 @@ class MyIssueList extends Component {
 
     rowClassName(record,index) {
         if (record.state == 'opened') {
-            return styles.open;
+            if(record.type=='demand'){
+                return styles.open;
+            }else{
+                return styles.bug;
+            }
         }
         if (record.state == 'closed') {
             return styles.close;

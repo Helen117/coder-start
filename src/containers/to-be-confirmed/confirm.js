@@ -95,7 +95,7 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-          // console.log(file);
+          console.log(file);
          if(this.props.confirmList&&this.props.confirmList[0].role=='tester'){
              if (!(file.type === 'application/vnd.ms-excel')) {
                  message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
