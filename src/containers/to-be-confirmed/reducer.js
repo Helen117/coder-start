@@ -30,7 +30,7 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
     switch (action.type) {
         //get confirm list
         case GET_CONFIRM_LIST_PENDING:
-            return {...state, getConfirmListLoading: true,confirmList:null};
+            return {...state, getConfirmListLoading: true,confirmList:null,demand:null};
 
         case GET_CONFIRM_LIST_SUCCESS:
             return {...state, confirmList: action.payload, getConfirmListLoading: false};
@@ -39,7 +39,7 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
             return {...state,  getConfirmListLoading: false,confirmList:null};
 
         case 'GET_DEMAND_INFO_PENDING':
-            return {...state, getDemandLoading: true,demand:null};
+            return {...state, getDemandLoading: true,demand:null,confirmList:null};
 
         case 'GET_DEMAND_INFO_SUCCESS':
             return {...state, demand: action.payload, getDemandLoading: false};

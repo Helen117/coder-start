@@ -1,9 +1,6 @@
 /**
  * Created by helen on 2016/11/23.
  */
-/**
- * Created by helen on 2016/11/7.
- */
 import React, {PropTypes,Component} from 'react';
 import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon,Modal,Input } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
@@ -35,12 +32,15 @@ const FormItem = Form.Item;
     }
 
      componentWillReceiveProps(nextProps) {
-         const {confirmList,confirmResult,demandInfo} = nextProps
+         const {confirmList,confirmResult,demandInfo} = nextProps;
+         const {record} = this.props.location.state;
          if(this.props.confirmList != confirmList && confirmList) {
                  this.props.getProjectInfoAction(confirmList[0].set_id, this.props.loginInfo.userId)
          }
          if(this.props.demandInfo != demandInfo && demandInfo){
-             this.props.getDemandProjectInfoAction(this.props.location.state.record.sets_issue_id);
+             if(!record.task_id){
+                 this.props.getDemandProjectInfoAction(record.sets_issue_id);
+             }
              this.props.getProjectInfoAction(demandInfo.sets_id, this.props.loginInfo.userId);
          }
 
@@ -94,7 +94,6 @@ const FormItem = Form.Item;
                 }else{
                     data.assigned_id = loginInfo.userId;
                     data.demand_id=record.sets_issue_id;
-                    console.log(data);
                     this.props.developerUpdateConfirmAction(data);
                 }
             }
@@ -119,14 +118,14 @@ const FormItem = Form.Item;
 
      beforeUpload(file){
           // console.log(file);
-         if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
-             if (!(file.type === 'application/msword')) {
-                 message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
+         if(this.props.confirmList&&this.props.confirmList[0].role=='tester'){
+             if (!(file.type === 'application/vnd.ms-excel')) {
+                 message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
                  return false;
              }
          }else{
-             if (!(file.type === 'application/vnd.ms-excel')) {
-                 message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
+             if (!(file.type === 'application/msword')) {
+                 message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
                  return false;
              }
          }
@@ -185,6 +184,7 @@ const FormItem = Form.Item;
                 'due_date':record.due_date
             }];
             role ='developer';
+        }else{
             targetKeys=[]
         }
         return(
