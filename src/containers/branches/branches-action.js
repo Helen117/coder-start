@@ -29,7 +29,7 @@ export function createBranch(data) {
     }
 }
 
-export function deleteBranch(branch,project_id,result) {
+export function deleteBranch(branch,project_id,result,username) {
     return {
         type: 'DELETE_BRANCHES',
         payload: {
@@ -37,7 +37,8 @@ export function deleteBranch(branch,project_id,result) {
                 params: {
                     branch_name: branch,
                     project_id: project_id,
-                    result: result
+                    result: result,
+                    username: username
                 }
 
             })
