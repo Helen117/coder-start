@@ -204,16 +204,17 @@ RequirementInfo.prototype.columns = (self)=>[{
     width: '10%',
     render: (text, record) => {
         const userLimits = self.props.loginInfo.name == record.author? true: false;
-        const updateLimits = record.state=='进行中'?  true: false;
-        const deleteLimits = record.state=='待确认'?  true: false;
+        const updateLimits = record.state=='已完成'?  true: false;
+        const deleteLimits = record.state=='进行中'?  true: false;
         return (<div>
 
-            {updateLimits?<a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>:
-           deleteLimits ?
+            {record.state=='已完成'?<div/>:
+            record.state=='进行中'?<a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>:
                <span>
+                   <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
                     <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
                     <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
-               </span>: <div/>}
+               </span>}
         </div>)
 
     }
