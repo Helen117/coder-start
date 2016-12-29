@@ -22,10 +22,10 @@ export default class MyBox extends React.Component{
             <div className="ant-layout-content">
                 <div className="ant-layout-content-header">
                     <Row>
-                        <Col span={12}>
+                        <Col span={10}>
                             <span>{title}</span>
                         </Col>
-                        <Col span={12} style={{textAlign:'right'}}>
+                        <Col span={14} style={{textAlign:'right'}}>
                             {action}
                         </Col>
                     </Row>

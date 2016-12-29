@@ -53,6 +53,7 @@ import UpdateUserInfo from './containers/update-user-info';
 import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
+import ProjectCompile2 from './containers/project-compile/index2';
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -128,6 +129,7 @@ ReactDOM.render(
                             </Route>
                             <Route name="projectCompile" path="project-compile" component={ProjectCompile}/>
                             <Route name="projectBuildHistory" path="project-build-history" component={ProjectBuildHistory}/>
+                            <Route name="projectCompile2" path="project-compile2" component={ProjectCompile2}/>
 
                         </Route>
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
