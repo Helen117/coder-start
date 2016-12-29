@@ -46,13 +46,7 @@ class EditRequest extends Component{
             setFieldsValue({'labels':selectedRow.label_id.split(',')});
             setFieldsValue({'expect_due_date': moment(selectedRow.expect_due_date,"YYYY-MM-DD")});//时间类型转换
         }
-        if(!selectedProjectSet){
-            notification.error({
-                message: '未选择项目集',
-                description:'请先先选择一个项目集！',
-                duration: 2
-            });
-        }else{
+        if(selectedProjectSet){
             var id = selectedProjectSet.selectedItemId;
             actions.getLabelInfo();
             actions.getDeveloperInfo(id,'set',30);
@@ -69,7 +63,6 @@ class EditRequest extends Component{
         const {editRequestResult, addRequestResult} = nextProps;
         if (this.props.editRequestResult != editRequestResult && editRequestResult ) {
             actions.getRequestInfo(this.props.page, this.props.condition);
-            console.log('this.props.page, this.props.condition',this.props.page, this.props.condition)
             this.sucCallback('修改成功')
         }
 
@@ -147,7 +140,6 @@ class EditRequest extends Component{
 
     getAssigneeWorkload(value,type){
         const formData = this.props.form.getFieldsValue();
-        console.log()
         if(formData.expect_due_date && value && type=='developer'){
             this.props.actions.getDeveloperWorkload(value,formData.expect_due_date.valueOf());
         }
