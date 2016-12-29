@@ -38,6 +38,8 @@ import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-co
 import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
 import ToDoListStatistics from './containers/report';
+import BusinessDemandStatistics from './containers/report/businessDemand';
+import TeamMemberDemandProportion from './containers/report/teamMemberDemand';
 
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
@@ -168,7 +170,8 @@ ReactDOM.render(
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
-
+                    <Route name="report" breadcrumbName="业务范畴需求报表" path="businessDemandReport" component={BusinessDemandStatistics}/>
+                    <Route name="report" breadcrumbName="团队成员需求占比报表" path="teamMemberDemandProportion" component={TeamMemberDemandProportion}/>
                     <Route path="/echarts" component={MainPageComponent}>
                         <Route path="/echarts/:type" component={EchartsComponent}/>
                     </Route>
