@@ -90,6 +90,7 @@ class EditRequest extends Component{
             } else {
                 const {selectedRow,editType} = this.props.location.state;
                 const data = form.getFieldsValue();
+                data.expect_due_date = data.expect_due_date.valueOf();
                 data.author_id = loginInfo.userId;
                 data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
