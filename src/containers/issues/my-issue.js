@@ -229,7 +229,9 @@ class MyIssueList extends Component {
     }
 
     beforeUpload(file){
-        if (!(file.type === 'application/vnd.ms-excel')) {
+        var len = file.name.length;
+        // if (!(file.type === 'application/vnd.ms-excel')) {
+        if (!(file.name.substr(len-4,4).toLowerCase()=='.xls')) {
             message.error('上传的测试报告限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
             return false;
         }

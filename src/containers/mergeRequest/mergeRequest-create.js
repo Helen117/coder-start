@@ -141,8 +141,9 @@ class CreateMergeRequest extends Component {
 
     beforeUpload(file){
         // console.log(file);
-
-        if (!(file.type === 'application/msword')) {
+        var len = file.name.length;
+        // if (!(file.type === 'application/msword')) {
+        if (!(file.name.substr(len-4,4).toLowerCase() == '.doc')) {
             message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
             return false;
         }
