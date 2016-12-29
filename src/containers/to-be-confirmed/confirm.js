@@ -27,13 +27,16 @@ const FormItem = Form.Item;
     }
 
      componentWillReceiveProps(nextProps) {
-         const {confirmList,confirmResult,demandInfo} = nextProps;
+         const {confirmList,confirmResult,demandInfo,getDemandProjectInfo} = nextProps;
          if(this.props.confirmList != confirmList && confirmList) {
                  this.props.getProjectInfoAction(confirmList[0].set_id, this.props.loginInfo.userId)
          }
          if(this.props.demandInfo != demandInfo && demandInfo){
              this.props.getDemandProjectInfoAction(demandInfo.id);
-             this.props.getProjectInfoAction(demandInfo.sets_id, this.props.loginInfo.userId);
+         }
+
+         if(this.props.demandInfo&&getDemandProjectInfo&&getDemandProjectInfo!=this.props.getDemandProjectInfo){
+             this.props.getProjectInfoAction(this.props.demandInfo.sets_id, this.props.loginInfo.userId);
          }
 
          if(this.props.confirmResult != confirmResult && confirmResult){
