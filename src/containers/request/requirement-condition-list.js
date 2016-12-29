@@ -120,7 +120,7 @@ class RequirementConditionList extends Component {
                                             {getFieldDecorator('state')(<Select allowClear={true}>
                                                 <Option value="待确认">待确认</Option>
                                                 <Option value="进行中">进行中</Option>
-                                                <Option value="进行中">已完成</Option>
+                                                <Option value="已完成">已完成</Option>
                                             </Select>)}
                                         </FormItem>
                                      </Col>
