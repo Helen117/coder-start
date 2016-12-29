@@ -37,8 +37,8 @@ class EditBug extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {addDemandResult} = nextProps;
-        if(this.props.addDemandResult != addDemandResult && addDemandResult){
+        const {addRequestResult} = nextProps;
+        if(this.props.addRequestResult != addRequestResult && addRequestResult){
             message.success('提交成功');
             this.props.home.getNotifyItems(this.props.loginInfo.userId);
             this.context.router.goBack();
@@ -53,6 +53,12 @@ class EditBug extends Component{
         e.preventDefault();
         const {actions, form, loginInfo} = this.props;
         const {selectedRow} = this.props.location.state;
+        var labels =[];
+        if(selectedRow.labels&&selectedRow.labels.length>0){
+            for(let j=0;j<selectedRow.labels.length;j++){
+                labels.push(selectedRow.labels[j].id);
+            }
+        }
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
@@ -61,7 +67,7 @@ class EditBug extends Component{
                 data.type='bug';
                 data.author_id = loginInfo.userId;
                 data.sm_id=selectedRow.milestone_id;
-                data.labels=selectedRow.labels;
+                data.labels=labels;
                 data.parent_id = selectedRow.sets_issue_id;
                 if(new Date(data.due_date).toLocaleDateString()!=new Date(data.planTime).toLocaleDateString()&&data.due_date>data.planTime){
                     message.error('Bug预期完成时间不能大于关联工单上线时间！',3);
@@ -78,7 +84,7 @@ class EditBug extends Component{
                     data.repairFlg=1;
                 }
                 // console.log('收到表单值：', data);
-                actions.addDemand(data);
+                actions.addRequest(data);
             }
         })
     }
@@ -240,7 +246,7 @@ class EditBug extends Component{
                             </Col>
                         </Row>
                         <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
-                            <Button type="primary" htmlType="submit" loading={this.props.addDemandLoading}>提交</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.addRequestLoading}>提交</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>
@@ -265,9 +271,8 @@ function mapStateToProps(state) {
         developerLoading:state.request.getDeveloperLoading,
         developerInfo:state.request.developer,
         loginInfo:state.login.profile,
-        addDemandResult: state.request.addDemandResult,
-        addDemandLoading: state.request.addDemandLoading,
-        addDemandError: state.request.addDemandError,
+        addRequestResult: state.request.addRequestResult,
+        addRequestLoading: state.request.addRequestLoading,
     };
 }
 
