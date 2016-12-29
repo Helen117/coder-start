@@ -20,12 +20,11 @@ class ProjectSetCreate extends React.Component {
         this.projectSetInfo = this.props.selectedProjectSet;
     }
 
-    componentWillMount(){
-        const userId = this.props.logInfo.userId;
-        this.props.getSetProjectAction(userId);
-    }
     componentDidMount() {
-        if(this.props.location.state.editType != 'add'){
+        const {logInfo} = this.props;
+        const userId = logInfo.userId;
+        const editType = this.props.location.state.editType
+        if(editType != 'add'){
             if(this.projectSetInfo){
                 this.projectSetInfo.project_set = [];
                 if(this.props.projectSetTree){
@@ -43,6 +42,9 @@ class ProjectSetCreate extends React.Component {
                 }
             }
             this.props.form.setFieldsValue(this.projectSetInfo);
+            this.props.getSetProjectAction(userId,this.projectSetInfo.project_set,editType);
+        }else{
+            this.props.getSetProjectAction(userId,[],editType);
         }
     }
 
@@ -147,28 +149,6 @@ class ProjectSetCreate extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        let targetKeys=[],dataSource=[];
-        let projectInfo = this.props.projectInfo;
-        if(projectInfo){
-            for(let i=0; i<projectInfo.length; i++){
-                const data = {
-                    key: projectInfo[i].id,
-                    name: projectInfo[i].name,
-                };
-                dataSource.push(data);
-            }
-            if(editType=='update'){
-                const targetData = this.projectSetInfo.project_set;
-                for(let i=0; i<targetData.length; i++){
-                    const data = {
-                        key: targetData[i].id.substring(0,targetData[i].id.length-2),
-                        name: targetData[i].name,
-                    };
-                    dataSource.push(data);
-                    targetKeys.push(data.key);
-                }
-            }
-        }
         return (
             <Box title={editType == 'add' ? '创建项目集合' : '修改项目集合'}>
                 <Spin spinning={updateLoading} tip="正在保存数据" >
@@ -185,11 +165,11 @@ class ProjectSetCreate extends React.Component {
                         <FormItem   {...formItemLayout} label="项目">
                                 <Spin spinning={createLoading}>
                                     {getFieldDecorator('project_set')
-                                    (<TransferFilter dataSource = {dataSource}
+                                    (<TransferFilter dataSource = {this.props.dataSource}
                                                       onChange={this.handleChange.bind(this)}
                                                       loadingProMsg={getProjectInfoLoading}
                                                       fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                      targetKeys = {targetKeys}/>)}
+                                                      targetKeys = {this.props.targetKeys}/>)}
                                 </Spin>
                         </FormItem>
 
@@ -228,6 +208,8 @@ function mapStateToProps(state) {
         updateLoading: state.projectSet.updateLoading,
         projectSetTree: state.projectSet.projectSetTree,
         selectedProjectSet: state.projectSet.selectedProjectSet,
+        dataSource: state.projectSet.dataSource,
+        targetKeys: state.projectSet.targetKeys,
 
     }
 }

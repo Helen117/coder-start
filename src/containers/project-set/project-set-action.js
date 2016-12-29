@@ -72,10 +72,12 @@ export function fetchProjectSetTree(userId) {
     }
 }
 
-export function getSetProject(userId) {
+export function getSetProject(userId, selectedProjectSet, editType) {
     var path ='/project/get-set-projects';
     return {
         type: GET_SET_PROJECTS,
+        meta:{selectedProjectSet: selectedProjectSet,
+            editType: editType},
         payload: {
             promise: api.post(path, {
                 params: {

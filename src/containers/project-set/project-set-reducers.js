@@ -79,10 +79,29 @@ export function projectSet(state = initialState, action = {}) {
 
         // get projects in set
         case GET_SET_PROJECTS_PENDING:
-            return {...state,getProjectInfoLoading: true};
+            return {...state,getProjectInfoLoading: true, dataSource:[], targetKeys:[]};
 
         case GET_SET_PROJECTS_SUCCESS:
-            return {...state,projectInfo: action.payload, getProjectInfoLoading: false};
+            let targetKeys=[],dataSource=[];
+            for(let i=0; i<action.payload.length; i++){
+                const data = {
+                    id: action.payload[i].id,
+                    name: action.payload[i].name,
+                };
+                dataSource.push(data);
+            }
+            if(action.meta.editType != 'add'){
+                for(let i=0; i<action.meta.selectedProjectSet.length; i++){
+                    const id = action.meta.selectedProjectSet[i].id.substring(0,action.meta.selectedProjectSet[i].id.length-2);
+                    const data = {
+                        id: id,
+                        name: action.meta.selectedProjectSet[i].name,
+                    };
+                    dataSource.push(data);
+                    targetKeys.push(id);
+                }
+            }
+            return {...state,projectInfo: action.payload, getProjectInfoLoading: false, dataSource:dataSource,targetKeys:targetKeys};
 
         case GET_SET_PROJECTS_ERROR:
             return {...state, getProjectInfoLoading: false, errMessage:action.payload.errMessage};

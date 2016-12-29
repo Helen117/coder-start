@@ -66,7 +66,6 @@ class RequirementInfo extends Component {
 
     changePage(pagination, filters, sorter) {
         const {actions} = this.props;
-        console.log('this.props.condition',this.props.condition)
         actions.requestQueryCondition(pagination.current, this.props.condition);
         actions.getRequestInfo(pagination.current, this.props.condition);
     }
@@ -205,18 +204,16 @@ RequirementInfo.prototype.columns = (self)=>[{
     width: '10%',
     render: (text, record) => {
         const userLimits = self.props.loginInfo.name == record.author? true: false;
+        const updateLimits = record.state=='进行中'?  true: false;
         const deleteLimits = record.state=='待确认'?  true: false;
         return (<div>
-           {/* {userLimits?
-                <div>*/}
-               <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
-           {deleteLimits ?
+
+            {updateLimits?<a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>:
+           deleteLimits ?
                <span>
                     <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
                     <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
                </span>: <div/>}
-               {/*</div>:<div/>
-        }*/}
         </div>)
 
     }

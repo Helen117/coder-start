@@ -30,7 +30,6 @@ class RequirementConditionList extends Component {
         }
         if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && ( !requirementInfo || requirementInfo.setsId != selectedProjectSet.selectedItemId)) {
             if(!loading){
-                console.log('componentWillMount',requirementInfo,selectedProjectSet)
                 const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
                 this.loadQueryOption(this.currentPage,queryCondition);
                 actions.getRequestInfo(this.currentPage, queryCondition);
@@ -45,7 +44,6 @@ class RequirementConditionList extends Component {
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            console.log('componentWillReceiveProps')
             this.handleReset();
             const queryCondition = {sets_id: nextSetId};
             this.loadQueryOption(this.currentPage,queryCondition);
@@ -122,6 +120,7 @@ class RequirementConditionList extends Component {
                                             {getFieldDecorator('state')(<Select allowClear={true}>
                                                 <Option value="待确认">待确认</Option>
                                                 <Option value="进行中">进行中</Option>
+                                                <Option value="进行中">已完成</Option>
                                             </Select>)}
                                         </FormItem>
                                      </Col>
