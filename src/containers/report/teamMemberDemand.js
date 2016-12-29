@@ -17,7 +17,7 @@ class TeamMemberDemandProportion extends Component {
 
     componentWillMount(){
         const { actions } = this.props;
-        actions.fetchToDoList();
+        actions.fetchreportData();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -78,7 +78,7 @@ class TeamMemberDemandProportion extends Component {
 
     render() {
         return(
-            <Box title="从业务范畴视角查看一个里程碑中的需求执行情况">
+            <Box title="从团队leader视角展示当前团队成员的需求、超时工单和缺陷的占比情况分析">
                 <ReactEcharts
                     option={this.getOption()}
                     style={{height: '350px', width: '80%'}}
@@ -93,8 +93,8 @@ class TeamMemberDemandProportion extends Component {
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        toDoList:state.report.toDoList,
-        loading:state.report.getToDoListPending,
+        reportData:state.report.reportData,
+        loading:state.report.getReportDataPending,
     };
 }
 
