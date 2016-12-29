@@ -101,6 +101,7 @@ class EditRequest extends Component{
                 data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
                 data.files= this.state.fileList;
+                // console.log('接收的数据',data);
                 if(editType == 'add'){
                     actions.addRequest(data);
                 }else{
@@ -113,7 +114,7 @@ class EditRequest extends Component{
                         filesFlag = true;
                     }
                     if (data.title == selectedRow.title && data.description == selectedRow.description &&labels==selectedRow.label_id&& new Date(parseInt(data.expect_due_date)).toLocaleDateString() == selectedRow.expect_due_date
-                        && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assign_test_id&&filesFlag) {
+                        && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assignee_test_id&&filesFlag) {
                         message.info('数据没有变更，不需提交', 2);
                     } else {
                         // console.log('接收的数据',data);

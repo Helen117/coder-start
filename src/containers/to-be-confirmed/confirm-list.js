@@ -128,13 +128,15 @@ ConfirmList.prototype.columns = (self)=>[{
     title: '操作',
     dataIndex: 'key',
     width: '10%',
-    render: (text, record) => (
-        <span>
-            {self.state.showConfirm?<a onClick={self.transpond.bind(self, record)}>转派</a>
-            :<a onClick={self.accept.bind(self, record)}>确认</a>}
-        </span>
-    )}
-];
+    render: (text, record) => {
+        if(self.props.location.state.record.task_id){
+            return(
+                self.state.showConfirm?<a onClick={self.transpond.bind(self, record)}>转派</a>
+                            :<a onClick={self.accept.bind(self, record)}>确认</a>
+            )
+        }
+    }
+}];
 
 
 function mapStateToProps(state) {
