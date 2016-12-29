@@ -126,7 +126,7 @@ class CreateMergeRequest extends Component {
     //修改源分支内容，目标分支跟着改变
     changeTargetBranch(value){
         const targetBranches = this.props.mergeBranch?this.props.mergeBranch[1].branches:[]
-        let i=0
+        let i=0;
         for(i=0; i<targetBranches.length; i++){
             if(value == targetBranches[i]){
                 this.props.form.setFieldsValue({target_branch: targetBranches[i]});

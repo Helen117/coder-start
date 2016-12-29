@@ -20,11 +20,10 @@ export default class TransferFilter extends React.Component {
     componentWillReceiveProps(nextProps) {
         const dataSource = nextProps.dataSource;
         const targetData = nextProps.targetKeys;
-        if(dataSource&&dataSource!=this.props.dataSource ){
-            // console.log(dataSource,targetData)
+
+        if(dataSource && dataSource!=this.props.dataSource ){
             this.getMock(dataSource,targetData);
         }
-
     }
 
     getMock(dataSource,targetData) {
@@ -73,6 +72,7 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
+        console.log('render',this.state.targetKeys)
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer

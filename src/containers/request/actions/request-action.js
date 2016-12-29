@@ -26,8 +26,6 @@ export function editRequest(message) {
 
 
 export function getRequestInfo(page, queryCondition) {
-    console.log('request查询条件',page, queryCondition);
-
     queryCondition.page = page;
     return {
         type: 'FETCH_REQUIREMENT_INFO',
