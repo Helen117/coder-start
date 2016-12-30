@@ -229,7 +229,7 @@ class TreeFilter extends React.Component {
         }
         const {getFieldDecorator} = this.props.form;
         return(
-            <div style={{border: "1px solid #e5e5e5", padding:10}}>
+            <div style={{border: "1px solid #D9D9D9", padding:10}}>
                 {getFieldDecorator('filterValue',
                     {rules:[
                     ]})(<Input placeholder={inputPlaceholder} onChange={this.onInputChange.bind(this)}/>)}
