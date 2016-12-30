@@ -10,11 +10,12 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import 'pubsub-js';
-import {Form, Input, Button, Alert, notification, Row, Col, Spin, Radio, Steps} from 'antd';
+import {Form, Input, Button, Select, Alert, notification, Row, Col, Spin, Radio, Steps, Icon, Timeline} from 'antd';
 import Box from '../../components/box';
 import './index.less';
 import CronExpression from '../../components/cron-expression';
 import PipelineScriptEditor from './pipeline-script-editor';
+import DeployConfig from './deploy-config';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/shell/shell';
 
@@ -37,7 +38,10 @@ class ProjectCompile2 extends React.Component{
     }
     componentDidMount(){
         const cm = this.refs.buildStageEditor.getCodeMirror();
-        cm.setSize(300, 100);
+        cm.setSize(null, 100);
+
+        const cm2 = this.refs.packageStageEditor.getCodeMirror();
+        cm2.setSize(null, 100);
     }
     componentWillUnmount(){
     }
@@ -103,93 +107,92 @@ class ProjectCompile2 extends React.Component{
             labelCol: {span: 3},
             wrapperCol: {span: 20},
         };
-        const selectBranchAction =
-            <div>
-                <label>选择项目分支：</label>
-                <RadioGroup style={{paddingRight:10}}>
-                    <RadioButton value="a">dev</RadioButton>
-                    <RadioButton value="b">release</RadioButton>
-                    <RadioButton value="c">master</RadioButton>
-                </RadioGroup>
-                <PipelineScriptEditor />
-            </div>
+
+        const action = <PipelineScriptEditor />;
 
         return (
-            <Box title={title} action={selectBranchAction}>
-                    <Spin spinning={saveLoading} tip="正在保存编译发布配置...">
-                        <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                            <FormItem {...formItemLayout} label="配置执行调度">
-                                <Row gutter={10}>
-                                    <Col span={21}>
-                                        {getFieldDecorator('triggerDesc',
+            <Box title={title} action={action}>
+                <Spin spinning={saveLoading} tip="正在保存编译发布配置...">
+                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                        <FormItem {...formItemLayout} label="选择项目分支">
+                            <RadioGroup style={{paddingRight:10}}>
+                                <Radio value="a">dev</Radio>
+                                <Radio value="b">release</Radio>
+                                <Radio value="c">master</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="配置执行调度">
+                            <Row gutter={10}>
+                                <Col span={21}>
+                                    {getFieldDecorator('triggerDesc',
+                                        {rules:[
+                                            {required:false, message:'请设置调度'}
+                                        ]})(<Input disabled type="text" placeholder="请设置调度"/>)}
+                                </Col>
+                                <Col span={3}>
+                                    <CronExpression ref="cron" expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
+                                </Col>
+                            </Row>
+                        </FormItem>
+                        <FormItem style={{display:'none'}}>
+                            <Row >
+                                <Col span={21}>
+                                    {getFieldDecorator('trigger',
+                                        {rules:[
+                                            {required:true, message:'请设置调度'}
+                                        ]})(<Input type="text" placeholder="请设置调度"/>)}
+                                </Col>
+                            </Row>
+                        </FormItem>
+                        <Box title="具体配置如下步骤">
+                            <Steps direction="vertical" size='small' current={-1}>
+                                <Step title="更新代码" description={
+                                    <FormItem {...formItemLayout} label="Git仓库URL:">
+                                        {getFieldDecorator('gitUrl',
                                             {rules:[
-                                                {required:true, message:'请设置调度'}
-                                            ]})(<Input disabled type="text" placeholder="请设置调度"/>)}
-                                    </Col>
-                                    <Col span={3}>
-                                        <CronExpression ref="cron" expression={getFieldValue('trigger')} setCron={this.setCron.bind(this)}/>
-                                    </Col>
-                                </Row>
-                            </FormItem>
-                            <FormItem style={{display:'none'}}>
-                                <Row >
-                                    <Col span={21}>
-                                        {getFieldDecorator('trigger',
-                                            {rules:[
-                                                {required:true, message:'请设置调度'}
-                                            ]})(<Input type="text" placeholder="请设置调度"/>)}
-                                    </Col>
-                                </Row>
-                            </FormItem>
-                            <Box title="具体配置步骤">
-                                <Steps direction="vertical" size='small' current={-1}>
-                                    <Step title="更新代码" description={
-                                        <FormItem {...formItemLayout} label="Git仓库URL:">
-                                            {getFieldDecorator('gitUrl',
-                                                {rules:[
-                                                    {required:true, message:'请输入Git仓库URL'}
-                                                ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
-                                        </FormItem>
-                                    } />
-                                    <Step title="编译" description={
-                                        <FormItem {...formItemLayout} label="编译脚本">
-                                            <CodeMirror ref="buildStageEditor"
-                                                        onChange={this.updateCode.bind(this)}
-                                                        options={{...options, mode: 'shell'}}
-                                                        interact={this.interact} />
-                                        </FormItem>
-                                    } />
-                                    <Step title="生成单元测试案例" description="" />
-                                    <Step title="代码质量扫描" description="" />
-                                    <Step title="单元测试" description="" />
-                                    <Step title="打包" description={
-                                        <FormItem {...formItemLayout} label="打包脚本">
-                                            <CodeMirror ref="packageStageEditor"
-                                                        onChange={this.updateCode.bind(this)}
-                                                        options={{...options, mode:'shell'}}
-                                                        interact={this.interact} />
-                                        </FormItem>
-                                    } />
-                                    <Step title="生成镜像" description="" />
-                                    <Step title="发布" description={
-                                        <div>
-                                            <FormItem {...formItemLayout} label="ssh server配置,包括主机ip，用户名、密码">
-                                            </FormItem>
-                                            <FormItem {...formItemLayout} label="scp操作：指定源文件，目标目录">
-                                            </FormItem>
-                                            <FormItem {...formItemLayout} label="ssh操作：目标脚本">
-                                            </FormItem>
-                                        </div>
+                                                {required:true, message:'请输入Git仓库URL'}
+                                            ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
+                                    </FormItem>
+                                } />
+                                <Step title="编译" description={
+                                    <FormItem {...formItemLayout} label="编译脚本">
+                                        <CodeMirror ref="buildStageEditor"
+                                                    onChange={this.updateCode.bind(this)}
+                                                    options={{...options, mode: 'shell'}}
+                                                    interact={this.interact} />
+                                    </FormItem>
+                                } />
+                                <Step title="生成单元测试案例" description="" />
+                                <Step title="代码质量扫描" description="" />
+                                <Step title="单元测试" description="" />
+                                <Step title="打包" description={
+                                    <FormItem {...formItemLayout} label="打包脚本">
+                                        <CodeMirror ref="packageStageEditor"
+                                                    onChange={this.updateCode.bind(this)}
+                                                    options={{...options, mode:'shell'}}
+                                                    interact={this.interact} />
+                                    </FormItem>
+                                } />
+                                <Step title="生成镜像" description="" />
+                                <Step title="发布" description={
+                                    <Box title="填写发布配置信息" action={<Button type="ghost" icon="plus">添加发布配置</Button>}>
+                                        <Box title="发布配置1">
+                                            <DeployConfig />
+                                        </Box>
+                                        <Box title="发布配置2" action={<Button type="ghost" icon="minus">删除该配置</Button>}>
+                                            <DeployConfig />
+                                        </Box>
+                                    </Box>
 
-                                    } />
-                                    <Step title="执行自动化测试" description="" />
-                                </Steps>
-                            </Box>
-                            <FormItem wrapperCol={{span: 16, offset: 3}} style={{marginTop: 0}}>
-                                <Button type="primary" htmlType="submit">保存</Button>
-                            </FormItem>
-                        </Form>
-                    </Spin>
+                                } />
+                                <Step title="执行自动化测试" description="" />
+                            </Steps>
+                        </Box>
+                        <FormItem wrapperCol={{span: 16, offset: 3}} style={{marginTop: 0}}>
+                            <Button type="primary" htmlType="submit">保存</Button>
+                        </FormItem>
+                    </Form>
+                </Spin>
             </Box>
         );
     }
