@@ -133,6 +133,7 @@ class MyIssueList extends Component {
         const {actions,loginInfo} = this.props;
         var data = {
             devops_issues_key : record.devops_issues_key,
+            demand_id:record.sets_issue_id,
             author_id:loginInfo.userId,
             state_event : 'close',
         };
@@ -374,7 +375,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     },{
         title: '问题类型',
         dataIndex: 'issueType',
-        width: '8%',
+        width: '6%',
     },{
         title: '问题名称',
         dataIndex: 'issue_name',
@@ -382,7 +383,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     },{
         title: '描述',
         dataIndex: 'description',
-        width: '8%',
+        width: '10%',
     },{
         title: '问题标签',
         dataIndex: 'label',
@@ -406,7 +407,7 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     },{
         title: '状态',
         dataIndex: 'status',
-        width: '8%',
+        width: '5%',
     },{
         title: '项目',
         dataIndex: 'project_name',
@@ -418,27 +419,27 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     }, {
         title: '操作',
         dataIndex: 'key',
-        width: '8%',
+        width: '10%',
         render: (text, record, index)=> {
             if(record.state.indexOf('open')!=-1){
-                if (!record.project_id&&record.is_sets_Issue_finished) {
+                if(record.project_id){
+                    return <div>
+                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
+                        <br/>
+                        <a onClick={self.modifyConfirm.bind(self, record)}>修改设计内容</a>
+                    </div>;
+                }else{
                     if (record.type == 'bug') {
                         return <div>
                             <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
                         </div>;
-                    } else {
+                    } else if(record.is_sets_Issue_finished){
                         return <div>
-                            <a onClick={self.editBug.bind(self,record)}>开Bug票</a>
+                            <a onClick={self.editBug.bind(self,record)}>开Bug</a>
                             <br/>
                             <a onClick={self.testPass.bind(self, record)}>提交测试报告</a>
                         </div>;
                     }
-                }else if(record.project_id){
-                    return <div>
-                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
-                        <br/>
-                        <a onClick={self.modifyConfirm.bind(self, record)}>修改</a>
-                    </div>;
                 }
             }
         }
