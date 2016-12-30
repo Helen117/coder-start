@@ -10,7 +10,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import 'pubsub-js';
-import {Form, Input, Button, Select, Alert, notification, Row, Col, Spin, Radio, Steps, Icon, Timeline} from 'antd';
+import {Form, Input, Button, Select, Alert, notification, Row, Col, Spin, Radio, Steps, Icon, Timeline, Affix} from 'antd';
 import Box from '../../components/box';
 import './index.less';
 import CronExpression from '../../components/cron-expression';
@@ -188,8 +188,10 @@ class ProjectCompile2 extends React.Component{
                                 <Step title="执行自动化测试" description="" />
                             </Steps>
                         </Box>
-                        <FormItem wrapperCol={{span: 16, offset: 3}} style={{marginTop: 0}}>
-                            <Button type="primary" htmlType="submit">保存</Button>
+                        <FormItem wrapperCol={{span: 24, offset: 21}} style={{marginTop: 0}}>
+                            <Affix offsetBottom={0}>
+                                <Button type="primary" htmlType="submit">保存配置</Button>
+                            </Affix>
                         </FormItem>
                     </Form>
                 </Spin>
