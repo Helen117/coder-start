@@ -20,6 +20,7 @@ class MergeRequestList extends React.Component {
         ):{};
         if(projectInfo.id) {
             if(!this.props.mrList || this.props.mrList.project_id!=projectInfo.id){
+                console.log('componentWillMount')
                 this.props.changeQueryConditionAction(1,'opened')
                 this.props.fetchMrListData(projectInfo.id,1,'opened');
             }
