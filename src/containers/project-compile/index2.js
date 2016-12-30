@@ -190,7 +190,7 @@ class ProjectCompile2 extends React.Component{
                         </Box>
                         <FormItem wrapperCol={{span: 24, offset: 21}} style={{marginTop: 0}}>
                             <Affix offsetBottom={0}>
-                                <Button type="primary" htmlType="submit">保存</Button>
+                                <Button type="primary" htmlType="submit">保存配置</Button>
                             </Affix>
                         </FormItem>
                     </Form>
