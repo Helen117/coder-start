@@ -236,7 +236,9 @@ class EditRequest extends Component{
     }
 
     beforeUpload(file){
-        if (!(file.type === 'application/msword')) {
+        var len = file.name.length;
+        // if (!(file.type === 'application/msword')) {
+        if (!(file.name.substr(len-4,4).toLowerCase() == '.doc')) {
             message.error('上传的需求文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
             return false;
         }

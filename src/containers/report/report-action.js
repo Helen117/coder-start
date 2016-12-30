@@ -2,11 +2,15 @@
  * Created by helen on 2016/12/27.
  */
 import api from '../../api';
-export function fetchToDoList() {
+export function fetchReportData(milestoneId) {
     return {
-        type: 'FETCH_TO_DO_LIST',
+        type: 'FETCH_REPORT_DATA',
         payload: {
-            promise: api.post('/project/fork-list')
+            promise: api.post('/report/labels',{
+                params: {
+                    id: milestoneId,
+                }
+            })
         }
     }
 }
