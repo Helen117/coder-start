@@ -3,6 +3,7 @@
  */
 import React, {PropTypes,Component} from 'react';
 import { Table} from 'antd';
+import Box from '../../components/box'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {getConfirmList,getDemandList} from './action';
@@ -75,7 +76,7 @@ class ConfirmList extends Component {
             }];
         }
         return(
-            <div style={{margin:10}}>
+            <Box title="待确认事项" >
                 <Table columns={this.columns(this)}
                        dataSource={data}
                        bordered
@@ -85,7 +86,7 @@ class ConfirmList extends Component {
                 />
                 <DevelopTransPond showTranspod={this.state.showTranspod} task_id={task_id}/>
                 <DevelopConfirm showConfirm={this.state.showConfirm} task_id={task_id}/>
-            </div>
+            </Box>
         );
     }
 }
