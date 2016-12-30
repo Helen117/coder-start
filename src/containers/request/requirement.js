@@ -212,12 +212,11 @@ RequirementInfo.prototype.columns = (self)=>[{
         return (<div>
 
             {record.state=='已完成'?<div/>:
-            record.state=='进行中'?<a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>:
-               <span>
-                   <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
+            record.state=='待确认'?<span> <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
                     <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
                     <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
-               </span>}
+               </span>: <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
+               }
         </div>)
 
     }

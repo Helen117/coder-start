@@ -119,8 +119,13 @@ class RequirementConditionList extends Component {
                                         <FormItem label="状态" {...formItemLayout}>
                                             {getFieldDecorator('state')(<Select allowClear={true}>
                                                 <Option value="待确认">待确认</Option>
-                                                <Option value="进行中">进行中</Option>
+                                                <Option value="测试已确认">测试已确认</Option>
+                                                <Option value="开发中">开发中</Option>
+                                                <Option value="测试中">测试中</Option>
+                                                <Option value="bug待确认">bug待确认</Option>
+                                                <Option value="修复bug中">修复bug中</Option>
                                                 <Option value="已完成">已完成</Option>
+
                                             </Select>)}
                                         </FormItem>
                                      </Col>
