@@ -174,7 +174,10 @@ RequirementInfo.prototype.columns = (self)=>[{
 },{
     title: '需求名称',
     dataIndex: 'title',
-}, {
+},  {
+    title: '描述',
+    dataIndex: 'description',
+},{
     title: '指派人员',
     dataIndex: 'assignee',
     width: '12%',
@@ -185,8 +188,8 @@ RequirementInfo.prototype.columns = (self)=>[{
     title: '业务范畴',
     dataIndex: 'label',
 },{
-    title: '创建人',
-    dataIndex: 'author',
+    title: '文件',
+    dataIndex: 'files',
 }/*, {
     title: '需求确认时间',
     dataIndex: 'confirm_time',
