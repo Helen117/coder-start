@@ -40,6 +40,7 @@ import {LabelEdit,Labels} from './containers/label';
 import ToDoListStatistics from './containers/report';
 import BusinessDemandStatistics from './containers/report/businessDemand';
 import TeamMemberDemandProportion from './containers/report/teamMemberDemand';
+import manageViewDemandRank from './containers/report/manageViewDemandRank';
 
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
@@ -146,6 +147,8 @@ ReactDOM.render(
                             <Route name="projectSetInfo" breadcrumbName="项目集合信息" path="projectSetInfo" component={ShowInfo}/>
                             <Route name="ProjectSetMilestones" breadcrumbName="项目集合里程碑" path="projectSetMilestones" component={ProjectSetMilestones}/>
                             <Route name="report" breadcrumbName="业务范畴需求报表" path="businessDemandReport" component={BusinessDemandStatistics}/>
+                            <Route name="report" breadcrumbName="团队成员需求占比报表" path="teamMemberDemandProportion" component={TeamMemberDemandProportion}/>
+                            <Route name="report" breadcrumbName="管理统计角度工单缺陷排名报表" path="manageViewDemandRank" component={manageViewDemandRank}/>
                         </Route>
                         <Route name="label" breadcrumbName="Label列表" path="label" component={Labels}/>
                         <Route name="labelEdit" breadcrumbName="Label编辑" path="labelEdit" component={LabelEdit}/>
@@ -174,7 +177,6 @@ ReactDOM.render(
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
 
-                    <Route name="report" breadcrumbName="团队成员需求占比报表" path="teamMemberDemandProportion" component={TeamMemberDemandProportion}/>
                     <Route path="/echarts" component={MainPageComponent}>
                         <Route path="/echarts/:type" component={EchartsComponent}/>
                     </Route>
