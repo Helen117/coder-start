@@ -37,6 +37,19 @@ const FormItem = Form.Item;
 
          if(this.props.demandInfo&&getDemandProjectInfo&&getDemandProjectInfo!=this.props.getDemandProjectInfo){
              this.props.getProjectInfoAction(this.props.demandInfo.sets_id, this.props.loginInfo.userId);
+             if(getDemandProjectInfo.length>0){
+                 this.setState({
+                     fileList:[{
+                         uid: -1,
+                         name: getDemandProjectInfo[0].file_name,
+                         status: 'done',
+                         url:''
+                     }]
+                 });
+                 this.props.form.setFieldsValue({'files':this.state.fileList});
+                 this.props.form.setFieldsValue({'design_work_time':getDemandProjectInfo[0].design_work_time});
+                 this.props.form.setFieldsValue({'projects':getDemandProjectInfo.map(data => data.id)});
+             }
          }
 
          if(this.props.confirmResult != confirmResult && confirmResult){

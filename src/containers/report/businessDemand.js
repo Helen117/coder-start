@@ -5,8 +5,11 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import { Button,Form,Select,Alert} from 'antd';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
+
+const FormItem = Form.Item;
 
 class BusinessDemandStatistics extends Component {
     constructor(props) {
@@ -50,7 +53,7 @@ class BusinessDemandStatistics extends Component {
             //     }
             // },
             grid: {
-                left: '20%',
+                left: '10%',
                 right: '15%',
                 bottom: '3%',
                 containLabel: true
@@ -105,24 +108,56 @@ class BusinessDemandStatistics extends Component {
     }
 
     render() {
-        return(
-            <Box title="从业务范畴视角查看一个里程碑中的需求执行情况">
-                <ReactEcharts
-                    option={this.getOption()}
-                    style={{height: '350px', width: '80%'}}
-                    theme="my_theme"
-                />
-            </Box>
-        );
+        const { getFieldDecorator } = this.props.form;
+        const selectedProjectSet = this.props.selectedProjectSet;
+        console.log(selectedProjectSet);
+        const projectId = selectedProjectSet? selectedProjectSet.id:'';
+        if(projectId) {
+            return(
+                <Box title="从业务范畴视角查看一个里程碑中的需求执行情况">
+                    <Form horizontal  >
+                        <FormItem>
+                            {getFieldDecorator('milestone')(
+                                <Select showSearch
+                                        showArrow={false}
+                                        allowClear={true}
+                                        placeholder="请选择一个里程碑"
+                                        optionFilterProp="children"
+                                        notFoundContent="无法找到"
+                                        style={{marginLeft:'380px',width: '200px'}}>
 
+                                </Select>)
+                            }
+                        </FormItem>
+                    </Form>
+                    <ReactEcharts
+                        option={this.getOption()}
+                        style={{height: '350px', width: '100%'}}
+                        theme="my_theme"
+                    />
+                </Box>
+            );
+        }else{
+            return (
+                <Alert style={{margin:10}}
+                       message="请从左边的项目树中选择一个具体的项目或项目集！"
+                       description=""
+                       type="warning"
+                       showIcon
+                />
+            )
+        }
     }
 }
+
+BusinessDemandStatistics = Form.create()(BusinessDemandStatistics);
 
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
         reportData:state.report.reportData,
         loading:state.report.getReportDataPending,
+        selectedProjectSet: state.projectSet.selectedProjectSet,
     };
 }
 

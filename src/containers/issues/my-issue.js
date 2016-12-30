@@ -96,6 +96,7 @@ class MyIssueList extends Component {
             title:data.title,
             author_id:data.author_name,
             state:data.state,
+            type:data.type,
             start:data.created_at&&data.created_at.length>0?data.created_at[0].valueOf():'',
             end:data.created_at&&data.created_at.length>0?data.created_at[1].valueOf():'',
             due_start:data.due_date&&data.due_date.length>0?data.due_date[0].valueOf():'',
@@ -296,6 +297,13 @@ class MyIssueList extends Component {
                                 </Col>
 
                                 <Col sm={6}>
+                                    <FormItem label="类型" {...formItemLayout}>
+                                        {getFieldDecorator('type')(<Select allowClear={true}>
+                                            <Option value="demand">需求</Option>
+                                            <Option value="bug">bug</Option>
+                                        </Select>)}
+                                    </FormItem>
+
                                     <FormItem label="创建人"{...formItemLayout}>
                                         {getFieldDecorator('author_name')(
                                             <Select showSearch
@@ -316,25 +324,6 @@ class MyIssueList extends Component {
                                     <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
                                 </Col>
                             </Row>
-
-                            <Modal title="上传测试文档" visible={this.state.visible}
-                                   confirmLoading={this.props.updateIssueLoading}
-                                   onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
-                            >
-                                <FormItem {...formItemLayout} label="工时" >
-                                    {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                                </FormItem>
-
-                                <FormItem {...formItemLayout}  label="文档上传" >
-                                    {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
-                                        <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
-                                            <Button type="ghost">
-                                                <Icon type="upload" /> 点击上传
-                                            </Button>
-                                        </Upload>)}
-                                </FormItem>
-                            </Modal>
-
                         </Form>
                     </Panel>
                 </Collapse>
@@ -345,6 +334,23 @@ class MyIssueList extends Component {
                             rowClassName={this.rowClassName}
                     >
                     </Table>
+                    <Modal title="上传测试文档" visible={this.state.visible}
+                           confirmLoading={this.props.updateIssueLoading}
+                           onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
+                    >
+                        <FormItem {...formItemLayout} label="工时" >
+                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout}  label="文档上传" >
+                            {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
+                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
+                                    <Button type="ghost">
+                                        <Icon type="upload" /> 点击上传
+                                    </Button>
+                                </Upload>)}
+                        </FormItem>
+                    </Modal>
                 </Box>
             </div>
             </Spin>
