@@ -169,10 +169,9 @@ export default class MilestonesCalendar extends React.Component{
 
     dateCellRender(milestoneData,value) {
         const calendarTime = value.startOf('day').valueOf();
-        
         if(milestoneData) {
             for (let i = 0; i < milestoneData.length; i++) {
-                const milestoneDueDate = moment(milestoneData[i].due_date).valueOf();
+                const milestoneDueDate = moment(milestoneData[i].due_date).startOf('day').valueOf();
                 const colorId = i%6;
                 if(calendarTime <= milestoneDueDate){
                     let milestoneMount = null,issuesMount = null, issuesList = [];

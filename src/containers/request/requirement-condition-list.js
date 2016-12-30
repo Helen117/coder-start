@@ -69,7 +69,7 @@ class RequirementConditionList extends Component {
         const {actions,selectedProjectSet,form} = this.props;
         const condition = form.getFieldsValue();
         condition.sets_id = selectedProjectSet.selectedItemId;
-        if(condition.expect_due_date){
+        if(condition.expect_due_date && condition.expect_due_date.length>0){
             condition.expect_due_date_start = condition.expect_due_date[0].valueOf();
             condition.expect_due_date_end = condition.expect_due_date[1].valueOf();
         }
