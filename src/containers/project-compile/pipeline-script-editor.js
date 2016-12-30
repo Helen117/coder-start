@@ -14,7 +14,7 @@ class PipelineScriptEditor extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            visible:false,
+            visible:false
         }
     }
 
@@ -48,7 +48,7 @@ class PipelineScriptEditor extends React.Component{
     render(){
         const formItemLayout = {
             labelCol: {span: 3},
-            wrapperCol: {span: 20},
+            wrapperCol: {span: 24},
         };
         var options = {
             lineNumbers: true,
@@ -58,12 +58,13 @@ class PipelineScriptEditor extends React.Component{
 
         return (
             <div style={{display: "inline-block"}}>
-                <Button type="ghost" size="default">编辑脚本</Button>
+                <Button type="ghost" size="default" onClick={this.showModal.bind(this)}>编辑脚本</Button>
                 <Modal title="编辑Jenkins Pipeline脚本"
+                       width={800}
                        visible={this.state.visible}
                        onOk={this.handleOk.bind(this)}
                        onCancel={this.handleCancle.bind(this)}>
-                    <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="}>
+                    <FormItem {...formItemLayout} label="" extra={"注：脚本中需要传递的projectId="}>
                         <CodeMirror ref="editor"
                                     onChange={this.updateCode.bind(this)}
                                     options={options}
