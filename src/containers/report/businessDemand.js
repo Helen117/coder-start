@@ -135,7 +135,6 @@ class BusinessDemandStatistics extends Component {
                             {getFieldDecorator('milestone')(
                                 <Select showSearch
                                         showArrow={false}
-                                        allowClear={true}
                                         placeholder="请选择一个里程碑"
                                         optionFilterProp="children"
                                         notFoundContent="无法找到"
