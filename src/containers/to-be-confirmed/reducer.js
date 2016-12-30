@@ -39,7 +39,7 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
             return {...state,  getConfirmListLoading: false,confirmList:null};
 
         case 'GET_DEMAND_INFO_PENDING':
-            return {...state, getDemandLoading: true,demand:null,confirmList:null};
+            return {...state, getDemandLoading: true,demand:null,confirmList:null,demandProjectInfo:null};
 
         case 'GET_DEMAND_INFO_SUCCESS':
             return {...state, demand: action.payload, getDemandLoading: false};

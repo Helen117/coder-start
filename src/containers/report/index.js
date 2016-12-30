@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
 
-class ToDoListStatistics extends Component {
+class reportDataStatistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ class ToDoListStatistics extends Component {
 
     componentWillMount(){
         const { actions } = this.props;
-        actions.fetchToDoList();
+        actions.fetchReportData();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -57,7 +57,7 @@ class ToDoListStatistics extends Component {
             xAxis : [
                 {
                     type : 'category',
-                    // data :this.props.toDoList?this.props.toDoList.map(data => data.name):['孙磊','毕佩珊','赵婧萍','张亚军','刘仁权','钟天生','徐卫忠']
+                    // data :this.props.reportData?this.props.reportData.map(data => data.name):['孙磊','毕佩珊','赵婧萍','张亚军','刘仁权','钟天生','徐卫忠']
                     data :['孙磊','毕佩珊','赵婧萍','张亚军','刘仁权','钟天生','徐卫忠']
                 }
             ],
@@ -78,7 +78,7 @@ class ToDoListStatistics extends Component {
                     barCategoryGap  : 10,
                     type:'bar',
                     itemStyle: {normal: {color:'#0098d9'}},
-                    // data:this.props.toDoList?this.props.toDoList.map(data => data.value):[2, 3, 3, 5, 0, 4, 1]
+                    // data:this.props.reportData?this.props.reportData.map(data => data.value):[2, 3, 3, 5, 0, 4, 1]
                     data:[2, 3, 3, 5, 0, 4, 1]
                 },
                 {
@@ -110,8 +110,8 @@ class ToDoListStatistics extends Component {
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        toDoList:state.report.toDoList,
-        loading:state.report.getToDoListPending,
+        reportData:state.report.reportData,
+        loading:state.report.getReportDataPending,
     };
 }
 
@@ -121,4 +121,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(ToDoListStatistics);
+export default connect(mapStateToProps,mapDispatchToProps)(reportDataStatistics);
