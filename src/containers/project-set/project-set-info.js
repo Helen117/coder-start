@@ -138,7 +138,9 @@ class SelectedSetInfo extends Component {
                                         <PopoverImg content={content}></PopoverImg>
                                     </Row>
                                     <span>项目集合：{selectedProjectSet.name}</span>
-                                    <span style={{marginLeft:20}}>描述：{selectedProjectSet.description}</span>
+                                    <span style={{marginLeft:30}}>描述：{selectedProjectSet.description}</span>
+                                    <span style={{marginLeft:30}}>创建人：{selectedProjectSet.creator}</span>
+
                                     <TableView columns={columns(this)}
                                                dataSource={dataSource}
                                     ></TableView>
