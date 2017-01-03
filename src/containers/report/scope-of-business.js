@@ -155,7 +155,7 @@ class BusinessDemandStatistics extends Component {
         }else{
             return (
                 <Alert style={{margin:10}}
-                       message="请从左边的项目树中选择一个具体的项目或项目集！"
+                       message="请从左边的项目树中选择一个具体的项目集！"
                        description=""
                        type="warning"
                        showIcon

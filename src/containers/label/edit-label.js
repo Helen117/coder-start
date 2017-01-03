@@ -55,6 +55,7 @@ class LabelEdit extends Component{
                         message.info('数据没有变更，不需提交', 2);
                     }else {
                         data.id = selectedRow.id;
+                        data.reason = data.modifyReason;
                         actions.updateLabel(data);
                     }
                 }
@@ -79,7 +80,7 @@ class LabelEdit extends Component{
         };
 
         const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="标签修改原因" >
-            {getFieldDecorator('reason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
+            {getFieldDecorator('modifyReason',{rules:[{ required:true,message:'不能为空'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
 
         return (

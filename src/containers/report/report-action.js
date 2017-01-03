@@ -14,3 +14,16 @@ export function fetchReportData(milestoneId) {
         }
     }
 }
+
+export function fetchMemberInfo(milestoneId) {
+    return {
+        type: 'FETCH_MEMBER',
+        payload: {
+            promise: api.post('/project/milestone-developer',{
+                params: {
+                    milestone_id: milestoneId,
+                }
+            })
+        }
+    }
+}
