@@ -22,7 +22,10 @@ import {
     PROJECT_COMPILE_BUILD_LIST_ERROR,
     PROJECT_COMPILE_CODE_CHANGES_PENDING,
     PROJECT_COMPILE_CODE_CHANGES_SUCCESS,
-    PROJECT_COMPILE_CODE_CHANGES_ERROR
+    PROJECT_COMPILE_CODE_CHANGES_ERROR,
+    PROJECT_COMPILE_STAGES_PENDING,
+    PROJECT_COMPILE_STAGES_SUCCESS,
+    PROJECT_COMPILE_STAGES_ERROR
 } from './action';
 
 const initialState = {
@@ -91,6 +94,19 @@ export default function projectCompile(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.errorMsg,
                 buildList:{codeChangesLoading:false}
+            };
+
+
+        //get stages
+        case PROJECT_COMPILE_STAGES_PENDING:
+            return {...state, stageList:{stageLoading:true}};
+        case PROJECT_COMPILE_STAGES_SUCCESS:
+            return {...state, stageList: {...action.payload, stageLoading:false}};
+        case PROJECT_COMPILE_STAGES_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                stageList:{stageLoading:false}
             };
 
         default:

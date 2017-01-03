@@ -109,3 +109,21 @@ export function getCodeChanges(projectId, gitCommitId, lastGitCommitId) {
         }
     }
 }
+
+
+export const PROJECT_COMPILE_STAGES = 'PROJECT_COMPILE_STAGES';
+export const PROJECT_COMPILE_STAGES_PENDING = 'PROJECT_COMPILE_STAGES_PENDING';
+export const PROJECT_COMPILE_STAGES_SUCCESS = 'PROJECT_COMPILE_STAGES_SUCCESS';
+export const PROJECT_COMPILE_STAGES_ERROR = 'PROJECT_COMPILE_STAGES_ERROR';
+
+export function getStageList() {
+    var path = '/getStageList';
+    return {
+        type: PROJECT_COMPILE_STAGES,
+        payload: {
+            promise: api.get(path, {
+                urlType:'ci'
+            })
+        }
+    }
+}
