@@ -38,13 +38,6 @@ class PersonalCodeManageReport extends Component {
         }
     }
 
-    fetchData(value){
-        const { actions } = this.props;
-        if(value){
-            actions.fetchReportData(value);
-        }
-    }
-
     getOption() {
         const option = {
             // title: {
@@ -116,8 +109,24 @@ class PersonalCodeManageReport extends Component {
         return option;
     }
 
+
+    fetchMember(value){
+        const { actions } = this.props;
+        if(value){
+            actions.fetchMemberInfo(value);
+        }
+    }
+
     handleSubmit(e) {
         e.preventDefault();
+        const {actions,form,loginInfo} = this.props;
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+
+            }
+        })
     }
 
     render() {
@@ -126,10 +135,12 @@ class PersonalCodeManageReport extends Component {
             labelCol: { span: 8 },
             wrapperCol: { span: 14 },
         };
-        const {selectedProjectSet,matchMilestone} = this.props;
+        const {selectedProjectSet,matchMilestone,matchMember} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+
+        const member = matchMember?matchMember.map(data => <Option key={data.userId}>{data.name}</Option>):[];
 
         if(projectId) {
             return(
@@ -144,7 +155,7 @@ class PersonalCodeManageReport extends Component {
                                                 placeholder="请选择一个里程碑"
                                                 optionFilterProp="children"
                                                 notFoundContent="无法找到"
-                                                onSelect={this.fetchData.bind(this)}
+                                                onSelect={this.fetchMember.bind(this)}
                                                 style={{width: '200px'}}>
                                             {milestone}
                                         </Select>)
@@ -159,8 +170,8 @@ class PersonalCodeManageReport extends Component {
                                                 placeholder="请选择一个成员"
                                                 optionFilterProp="children"
                                                 notFoundContent="无法找到"
-                                                onSelect={this.fetchData.bind(this)}
                                                 style={{width: '200px'}}>
+                                            {member}
                                         </Select>)
                                     }
                                 </FormItem>
@@ -180,7 +191,7 @@ class PersonalCodeManageReport extends Component {
         }else{
             return (
                 <Alert style={{margin:10}}
-                       message="请从左边的项目树中选择一个具体的项目或项目集！"
+                       message="请从左边的项目树中选择一个具体的项目集！"
                        description=""
                        type="warning"
                        showIcon
@@ -199,6 +210,7 @@ function mapStateToProps(state) {
         loading:state.report.getReportDataPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
+        matchMember: state.report.member,
     };
 }
 

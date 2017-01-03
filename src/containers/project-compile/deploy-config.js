@@ -32,23 +32,33 @@ class DeployConfig extends React.Component{
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout2} label="目标服务器">
-                            <Row>
-                                <Col span={18}>
-                                    {getFieldDecorator('targetServer', {
-                                        rules: [
-                                            { required: true, message: '请选择发布的目标服务器!' },
-                                        ],
-                                    })(
-                                        <Select placeholder="请选择发布的目标服务器">
-                                            <Option value="server1">root@10.10.147.189</Option>
-                                            <Option value="server2">root@10.10.147.190</Option>
-                                        </Select>
-                                    )}
-                                </Col>
-                                <Col span={4}>
-                                    <Button style={{marginLeft:0}} type="ghost" icon="edit">编辑</Button>
-                                </Col>
-                            </Row>
+                            {getFieldDecorator('targetServer', {
+                                rules: [
+                                    { required: true, message: '请选择发布的目标服务器!' },
+                                ],
+                            })(
+                                <Select placeholder="请选择发布的目标服务器">
+                                    <Option value="server1">root@10.10.147.189</Option>
+                                    <Option value="server2">root@10.10.147.190</Option>
+                                </Select>
+                            )}
+                            {/*<Row>*/}
+                                {/*<Col span={18}>*/}
+                                    {/*{getFieldDecorator('targetServer', {*/}
+                                        {/*rules: [*/}
+                                            {/*{ required: true, message: '请选择发布的目标服务器!' },*/}
+                                        {/*],*/}
+                                    {/*})(*/}
+                                        {/*<Select placeholder="请选择发布的目标服务器">*/}
+                                            {/*<Option value="server1">root@10.10.147.189</Option>*/}
+                                            {/*<Option value="server2">root@10.10.147.190</Option>*/}
+                                        {/*</Select>*/}
+                                    {/*)}*/}
+                                {/*</Col>*/}
+                                {/*<Col span={4}>*/}
+                                    {/*<Button style={{marginLeft:0}} type="ghost" icon="edit">编辑</Button>*/}
+                                {/*</Col>*/}
+                            {/*</Row>*/}
                         </FormItem>
                     </Col>
                 </Row>
@@ -84,15 +94,12 @@ class DeployConfig extends React.Component{
                 <Row>
                     <Col span={24}>
                         <FormItem {...formItemLayout} label={<span>
-                            执行的脚本&nbsp;
-                            <Tooltip title="多个脚本可以使用分号分割">
-                                <Icon type="question-circle-o" />
-                            </Tooltip>
+                            执行的脚本
                         </span>}>
                             {getFieldDecorator('execCommand',
                                 {rules:[
                                     {required:true, message:'请输入在目标服务器上执行的脚本'}
-                                ]})(<Input type="text" placeholder="请输入在目标服务器上执行的脚本"/>)}
+                                ]})(<Input type="textarea" rows={3} placeholder="请输入在目标服务器上执行的脚本"/>)}
                         </FormItem>
                     </Col>
                 </Row>
