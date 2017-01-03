@@ -80,7 +80,7 @@ export default class MilestonesCalendar extends React.Component{
         }else if(type == 'error'){
             issueState = "已超时"
         }else{
-            issueState = "新建"
+            issueState = "进行中"
         }
         return(
             <div>

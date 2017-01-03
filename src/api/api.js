@@ -84,7 +84,7 @@ class _Api {
                                     notification.error({
                                         message: "出错啦",
                                         description: "会话过期，系统即将跳转到登录界面",
-                                        duration: 5,
+                                        duration: 3,
                                         onClose: ()=>{
                                             Cookies.remove('uid');
                                             Cookies.remove('profile');

@@ -18,12 +18,16 @@ export default class MyBox extends React.Component{
 
     render(){
         const {title, action} = this.props;
+        let {classType} = this.props;
+        if (!classType){
+            classType = 'bd';
+        }
         return (
             <div className="ant-layout-content">
-                <div className="ant-layout-content-header">
+                <div className={`ant-layout-content-header ${classType}`}>
                     <Row>
                         <Col span={16}>
-                            <span>{title}</span>
+                            <span className="title">{title}</span>
                         </Col>
                         <Col span={8} style={{textAlign:'right'}}>
                             {action}

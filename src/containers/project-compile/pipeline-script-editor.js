@@ -14,7 +14,22 @@ class PipelineScriptEditor extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            visible:false,
+            visible:false
+        }
+    }
+
+    componentDidMount(){
+        // const cm = this.refs.editor.getCodeMirror();
+        // cm.setSize(null, 500);
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if (!prevState.visible){
+            //当modal的visible=true时，可以通过refs获取对象句柄，此时prevState.visible=false
+            const editor = this.refs.editor;
+            if (editor){
+                editor.getCodeMirror().setSize(null, 200);
+            }
         }
     }
 
@@ -25,6 +40,7 @@ class PipelineScriptEditor extends React.Component{
     }
 
     handleOk(){
+        console.log(this.props.projectName, this.refs.editor.getCodeMirror().getValue().trim());
         this.setState({
             visible:false
         });
@@ -46,9 +62,10 @@ class PipelineScriptEditor extends React.Component{
     }
 
     render(){
+        const {script} = this.props;
         const formItemLayout = {
             labelCol: {span: 3},
-            wrapperCol: {span: 20},
+            wrapperCol: {span: 24},
         };
         var options = {
             lineNumbers: true,
@@ -58,13 +75,16 @@ class PipelineScriptEditor extends React.Component{
 
         return (
             <div style={{display: "inline-block"}}>
-                <Button type="ghost" size="default">编辑脚本</Button>
+                <Button type="dashed" size="default" onClick={this.showModal.bind(this)}>编辑脚本</Button>
                 <Modal title="编辑Jenkins Pipeline脚本"
+                       width={800}
                        visible={this.state.visible}
+                       okText="保存"
                        onOk={this.handleOk.bind(this)}
                        onCancel={this.handleCancle.bind(this)}>
-                    <FormItem {...formItemLayout} label="编译发布脚本" extra={"注：脚本中需要传递的projectId="}>
+                    <FormItem {...formItemLayout} label="" extra={"注：脚本中需要传递的projectId="}>
                         <CodeMirror ref="editor"
+                                    value={script}
                                     onChange={this.updateCode.bind(this)}
                                     options={options}
                                     interact={this.interact} />
@@ -78,4 +98,16 @@ class PipelineScriptEditor extends React.Component{
 
 }
 
-export default PipelineScriptEditor = Form.create({withRef:true})(PipelineScriptEditor);
+
+PipelineScriptEditor.propTypes = {
+    script: PropTypes.string,
+    projectName: PropTypes.string
+};
+
+PipelineScriptEditor.defaultProps = {
+    script: '',
+    projectName: ''
+};
+
+//export default PipelineScriptEditor = Form.create({withRef:true})(PipelineScriptEditor);
+export default PipelineScriptEditor;
