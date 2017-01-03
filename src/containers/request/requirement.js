@@ -79,6 +79,19 @@ class RequirementInfo extends Component {
 
     }
 
+    stateTranslate(state){
+        switch(state){
+            case 'open': return '待确认';
+            case 'test_confirmed_running': return '测试已确认';
+            case 'develop_running': return '开发中';
+            case 'test_running': return '测试中';
+            case 'bug_to_be_confirmed_running': return 'bug待确认';
+            case 'bug_fixing_running': return '修复bug中';
+            case 'finished': return '已完成';
+            default: return state;
+        }
+    }
+
     getDataSources(list){
         if(list&&list.length>0) {
             for (var i = 0; i < list.length; i++) {
@@ -101,8 +114,7 @@ class RequirementInfo extends Component {
                 }
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
                 list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
-                list[i].assignee = list[i].assignee_develop_name + "（开发）、 " + list[i].assignee_test_name + "（测试）"
-
+                list[i].state= this.stateTranslate(list[i].state);
             }
         }
         return list;
@@ -180,7 +192,17 @@ RequirementInfo.prototype.columns = (self)=>[{
 },{
     title: '指派人员',
     dataIndex: 'assignee',
-    width: '12%',
+    width: '10%',
+    render: (text, record) => (
+        <ul>
+            <li>
+                开发：{record.assignee_develop_name},
+            </li>
+            <li>
+                测试：{record.assignee_test_name}
+            </li>
+        </ul>
+    )
 }, {
     title: '当前状态',
     dataIndex: 'state',
@@ -204,7 +226,7 @@ RequirementInfo.prototype.columns = (self)=>[{
 },{
     title: '操作',
     dataIndex: 'key',
-    width: '10%',
+    width: '8%',
     render: (text, record) => {
         const userLimits = self.props.loginInfo.name == record.author? true: false;
         const updateLimits = record.state=='已完成'?  true: false;
