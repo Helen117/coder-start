@@ -3,10 +3,11 @@
  */
 
 import React, {PropTypes} from 'react';
-import {Form, Input, Button, Select, Alert, notification, Row, Col, Spin, Radio, Steps, Icon, Timeline} from 'antd';
+import {Form, Input, Button, Select, Row, Col, Icon, Tooltip} from 'antd';
 
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class DeployConfig extends React.Component{
 
@@ -53,7 +54,18 @@ class DeployConfig extends React.Component{
                 </Row>
                 <Row>
                     <Col span={12}>
-                        <FormItem {...formItemLayout2} label="发布的文件">
+                        <FormItem {...formItemLayout2} label={<span>
+                            发布的文件&nbsp;
+                            <Tooltip title={<div>
+                                <p>支持通配符，举例说明如下：</p>
+                                <p>target 表示target目录或文件</p>
+                                <p>target/test 表示target目录下test文件</p>
+                                <p>target/* 表示target目录下所有文件</p>
+                                <p>target/**/*.txt 表示target子目录下所有txt文件</p>
+                            </div>}>
+                                <Icon type="question-circle-o" />
+                            </Tooltip>
+                        </span>}>
                             {getFieldDecorator('sourcePath',
                                 {rules:[
                                     {required:true, message:'请输入需发布的文件或目录'}
@@ -61,7 +73,7 @@ class DeployConfig extends React.Component{
                         </FormItem>
                     </Col>
                     <Col span={12}>
-                        <FormItem {...formItemLayout2} label="远程目录">
+                        <FormItem {...formItemLayout2} label="服务器目录">
                             {getFieldDecorator('targetPath',
                                 {rules:[
                                     {required:true, message:'请输入发布到目标服务器的目录'}
@@ -71,7 +83,12 @@ class DeployConfig extends React.Component{
                 </Row>
                 <Row>
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="执行的脚本">
+                        <FormItem {...formItemLayout} label={<span>
+                            执行的脚本&nbsp;
+                            <Tooltip title="多个脚本可以使用分号分割">
+                                <Icon type="question-circle-o" />
+                            </Tooltip>
+                        </span>}>
                             {getFieldDecorator('execCommand',
                                 {rules:[
                                     {required:true, message:'请输入在目标服务器上执行的脚本'}
