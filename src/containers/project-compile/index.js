@@ -27,7 +27,7 @@ class ProjectCompile extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            isProject: true
+            // isProject: true
         };
     }
 

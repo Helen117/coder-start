@@ -43,7 +43,7 @@ class ForkList extends Component {
 
         const list =forkList?forkList.map(data => <li key={data.id}>
             <div className={styles.forks_list} >
-                <span>{data.author_name}/{data.project_name}</span>
+                <span>{data.path} #forked at {new Date(parseInt(data.forked_at)).toLocaleDateString()} by {data.author_name}</span>
                 <p>
                     {data.description}
                 </p>
