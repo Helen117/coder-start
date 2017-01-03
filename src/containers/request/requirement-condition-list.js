@@ -124,7 +124,7 @@ class RequirementConditionList extends Component {
                                                 <Option value="test_running">测试中</Option>
                                                 <Option value="bug_to_be_confirmed_running">bug待确认</Option>
                                                 <Option value="bug_fixing_running">修复bug中</Option>
-                                                <Option value="finished">已完成</Option>
+                                                <Option value="closed">已完成</Option>
                                             </Select>)}
                                         </FormItem>
                                      </Col>

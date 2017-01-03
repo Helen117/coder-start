@@ -87,7 +87,7 @@ class RequirementInfo extends Component {
             case 'test_running': return '测试中';
             case 'bug_to_be_confirmed_running': return 'bug待确认';
             case 'bug_fixing_running': return '修复bug中';
-            case 'finished': return '已完成';
+            case 'closed': return '已完成';
             default: return state;
         }
     }
