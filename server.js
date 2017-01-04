@@ -18,16 +18,18 @@ const fileTree = require('./mockdata/fileTree');
 const user_ = require('./mockdata/user');
 var login = user_.login;
 var user = user_.user;
-const mygroup = require('./mockdata/mygroup.json');
+const performance = require('./mockdata/performance.json');
 
 //const projectList = require('./mockdata/project');
 const group = require('./mockdata/group.json');
 
-const project_ = require('./mockdata/project');
-const project = project_.projectList.result;
+const demand = require('./mockdata/demand.json');
+
+const milstone_ = require('./mockdata/setsMilestone');
+const setsMilestone = milstone_.milstone;
 
 const virtual_project_ = require('./mockdata/project_set_tree');
-const virtual_project = virtual_project_.projectSetTree.result;
+const virtual_project = virtual_project_.projectSetTree;
 
 const projectMgr = require('./mockdata/project-mgr');
 const groupTree = projectMgr.groupTree;
@@ -53,7 +55,7 @@ var issueList = issueList_.issueList;
 
 const forks =require('./mockdata/forks.json');
 
-const star_list =require('./mockdata/start_list.json');
+const report =require('./mockdata/report.json');
 
 const userInfo =require('./mockdata/userInfo.json');
 
@@ -119,8 +121,12 @@ app.post('/gitlab/issue/notes', function (req, res) {
         res.json(issueNotes);
 });
 
-app.post('/gitlab/project/project-issues', function (req, res) {
+app.post('/gitlab/project/issues', function (req, res) {
     res.json(issueList);
+});
+
+app.post('/gitlab/project/list-demand', function (req, res) {
+    res.json(demand);
 });
 
 app.post('/gitlab/issue/add-note', function (req, res) {
@@ -142,8 +148,8 @@ app.post('/gitlab/service-groups/users', function (req, res) {
     res.json(userInfoData);
 });
 
-app.post('/gitlab/mygroup', function (req, res) {
-    res.json(mygroup);
+app.post('/gitlab/user/performance', function (req, res) {
+    res.json(performance);
 });
 
 
@@ -152,11 +158,19 @@ app.get('/gitlab/user/1', function (req, res) {
     res.json(user);
 });
 
-app.post('/gitlab/project', function (req, res) {
-    res.json(project);
+app.post('/gitlab/project/issue-backlog', function (req, res) {
+    res.json({"success":true,"errorCode":null,"errorMsg":null,"result":[]});
 });
 
-app.post('/gitlab/ProjectSetTree', function (req, res) {
+app.post('/gitlab/project/list-milestone-forname', function (req, res) {
+    res.json(setsMilestone);
+});
+
+app.post('/gitlab/user/notify-num', function (req, res) {
+    res.json({"success":true,"errorCode":null,"errorMsg":null,"result":{"todo":0,"milestone":0,"total":0,"examination":0}});
+});
+
+app.post('/gitlab/project/sets', function (req, res) {
     res.json(virtual_project);
 });
 
@@ -199,8 +213,8 @@ app.post('/gitlab/user/all', function (req, res) {
     res.json(userInfo);
 });
 
-app.post('/gitlab/project/star-list', function (req, res) {
-    res.json(star_list);
+app.post('/gitlab/report/labels', function (req, res) {
+    res.json(report);
 });
 
 app.post('/gitlab/groups/user', function (req, res) {

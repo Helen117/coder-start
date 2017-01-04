@@ -43,9 +43,9 @@ class ForkList extends Component {
 
         const list =forkList?forkList.map(data => <li key={data.id}>
             <div className={styles.forks_list} >
-                <span>{data.path} #forked at {new Date(parseInt(data.forked_at)).toLocaleDateString()} by {data.author_name}</span>
+                <span><strong>{data.path}</strong> #forked at {new Date(parseInt(data.forked_at)).toLocaleDateString()} by {data.author_name}</span>
                 <p>
-                    {data.description}
+                    {data.create_date?new Date(parseInt(data.create_date)).toLocaleString():''}最近一次申请合并代码：<span style={{color:'#579FE9'}}>{data.description}</span>
                 </p>
             </div>
         </li>):[];
