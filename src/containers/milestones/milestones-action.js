@@ -6,7 +6,8 @@ import {CREATE_MILESTONES,
     UPDATE_MILESTONES,
     ACQUIRE_MILESTONES,
     ACQUIRE_MILESTONES_ISSUES,
-    PUT_MILESTONES_PROID} from './milestones-action-types'
+    PUT_MILESTONES_PROID,
+    ACQUIRE_MILESTONES_REQUEST} from './milestones-action-types'
 
 export function createMilestone(milestoneData) {
     var path = '/project/create-milestone';
@@ -63,6 +64,23 @@ export function getMilestonesIssues(milestonesId,setId,projectId,state,due_end) 
                     milestone_id: milestonesId,
                     state: state,
                     due_end: due_end
+                }
+            })
+        }
+    }
+}
+
+export function getMilestonesRequest(page,queryCondition) {
+    return {
+        type: 'ACQUIRE_MILESTONES_REQUEST',
+        payload: {
+            promise: api.post('/project/list-demand', {
+                data: {
+                    page: page,
+                    sets_milestone_id: queryCondition.milestonesId,
+                    state: queryCondition.state,
+                    sets_id: queryCondition.setId,
+                    expired_date: queryCondition.due_end
                 }
             })
         }

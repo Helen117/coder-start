@@ -6,6 +6,7 @@ import { Table,message,Button,Icon,Modal,Form,Input, Alert ,Breadcrumb, Row,Col 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
+import RequestList from '../../components/request-list';
 import * as request from './actions/request-action';
 
 
@@ -25,6 +26,13 @@ class RequirementInfo extends Component {
 
     }
 
+    editRequest(type,selectedRow){
+        this.context.router.push({
+            pathname: '/requestEdit',
+            state: {editType:type,selectedRow}
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
         const {deleteResult} = nextProps;
         if(this.props.deleteResult != deleteResult && deleteResult){
@@ -33,7 +41,6 @@ class RequirementInfo extends Component {
             });
             this.sucCallback('删除成功');
         }
-
     }
 
     sucCallback(type){
@@ -70,64 +77,9 @@ class RequirementInfo extends Component {
         actions.getRequestInfo(pagination.current, this.props.condition);
     }
 
-
-    editRequest(type,selectedRow){
-        this.context.router.push({
-            pathname: '/requestEdit',
-            state: {editType:type,selectedRow}
-        });
-
-    }
-
-    stateTranslate(state){
-        switch(state){
-            case 'open': return '待确认';
-            case 'test_confirmed_running': return '测试已确认';
-            case 'develop_running': return '开发中';
-            case 'test_running': return '测试中';
-            case 'bug_to_be_confirmed_running': return 'bug待确认';
-            case 'bug_fixing_running': return '修复bug中';
-            case 'closed': return '已完成';
-            default: return state;
-        }
-    }
-
-    getDataSources(list){
-        if(list&&list.length>0) {
-            for (var i = 0; i < list.length; i++) {
-                if (typeof(list[i].expect_due_date) == "number") {
-                    list[i].expect_due_date = new Date(parseInt(list[i].expect_due_date)).toLocaleDateString();
-                }
-                if (typeof(list[i].deadline_date) == "number") {
-                    list[i].deadline_date = new Date(parseInt(list[i].deadline_date)).toLocaleDateString();
-                }
-                /*const developer_confirm_date=list[i].developer_confirm_date? new Date(parseInt(list[i].developer_confirm_date)).toLocaleDateString() + "(开发) ":'';
-                const tester_confirm_date=list[i].tester_confirm_date? new Date(parseInt(list[i].tester_confirm_date)).toLocaleDateString() + "(测试)":'';
-                list[i].confirm_time = developer_confirm_date + tester_confirm_date;*/
-                if(list[i].labels&&list[i].labels.length>0){
-                    list[i].label_names=[];
-                    list[i].label_ids =[];
-                    for(let j=0;j<list[i].labels.length;j++){
-                        list[i].label_names.push(list[i].labels[j].name);
-                        list[i].label_ids.push(list[i].labels[j].id);
-                    }
-                }
-                list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
-                list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
-                list[i].state= this.stateTranslate(list[i].state);
-            }
-        }
-        return list;
-    }
-
     render() {
         const {requirementListData} = this.props
         const {getFieldDecorator} = this.props.form;
-        const dataSource = requirementListData?this.getDataSources(requirementListData.sets_Demands):[];
-        const pagination = {
-            total: requirementListData?requirementListData.size: 0,
-            current: this.props.page
-        }
         const selectedProjectSet = this.props.selectedProjectSet;
         return (
             <div style={{margin:10}}>
@@ -149,12 +101,13 @@ class RequirementInfo extends Component {
                         </div>
                     </Col>
                 </Row>
-                <Table columns={this.columns(this)}
-                       dataSource={dataSource}
-                       size="middle"
-                       pagination={pagination}
+                <RequestList
+                       requirementListData={requirementListData}
                        onChange={this.changePage.bind(this)}
-                       loading={this.props.loading} />
+                       loading={this.props.loading}
+                       deleteRequest={this.deleteRequest.bind(this)}
+                       page={this.props.page}
+                       editable={true}/>
                 <Modal title="确认删除此需求吗?"
                        visible={this.state.modalVisible}
                        onOk={this.handleDelete.bind(this)}
@@ -178,72 +131,6 @@ RequirementInfo.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
-
-
-RequirementInfo.prototype.columns = (self)=>[{
-    title: '里程碑',
-    dataIndex: 'milestone_name',
-},{
-    title: '需求名称',
-    dataIndex: 'title',
-},  {
-    title: '描述',
-    dataIndex: 'description',
-},{
-    title: '指派人员',
-    dataIndex: 'assignee',
-    width: '10%',
-    render: (text, record) => (
-        <ul>
-            <li>
-                开发：{record.assignee_develop_name},
-            </li>
-            <li>
-                测试：{record.assignee_test_name}
-            </li>
-        </ul>
-    )
-}, {
-    title: '当前状态',
-    dataIndex: 'state',
-},{
-    title: '业务范畴',
-    dataIndex: 'label',
-},{
-    title: '文件',
-    dataIndex: 'files',
-}/*, {
-    title: '需求确认时间',
-    dataIndex: 'confirm_time',
-    width: '12%',
-
-}*/, {
-    title: '计划完成时间',
-    dataIndex: 'expect_due_date',
-},{
-    title: '期望上线时间',
-    dataIndex: 'deadline_date',
-},{
-    title: '操作',
-    dataIndex: 'key',
-    width: '8%',
-    render: (text, record) => {
-        const userLimits = self.props.loginInfo.name == record.author? true: false;
-        const updateLimits = record.state=='已完成'?  true: false;
-        const deleteLimits = record.state=='进行中'?  true: false;
-        return (<div>
-
-            {record.state=='已完成'?<div/>:
-            record.state=='待确认'?<span> <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
-                    <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
-                    <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
-               </span>: <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
-               }
-        </div>)
-
-    }
-}];
-
 
 function mapStateToProps(state) {
     return {

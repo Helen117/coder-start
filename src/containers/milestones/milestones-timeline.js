@@ -80,7 +80,7 @@ class Milestones extends React.Component {
 
                     <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
                                         milestoneData = {milestoneData}
-                                        milestonesDetailPath="/projectSetMilestonesDetail"
+                                        milestonesDetailPath={this.props.milestoneDetailPath}
                                         milestoneEditPath="/projectSetMilestonesEdit"
                                         projectId = {projectId}
                                         id = {id}

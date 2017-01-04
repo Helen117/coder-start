@@ -217,7 +217,7 @@ function mapStateToProps(state) {
         navpath: state.menu.navpath,
         projectGroup:state.projectGroup,
         getMenuBarInfo:state.getMenuBarInfo,
-        notifyItems:state.getNotifyItems.notifyItems,
+        notifyItems:state.acqPerformanceMsg.notifyItems,
     }
 }
 

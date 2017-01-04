@@ -5,3 +5,4 @@
 export Milestones from './milestones-timeline';
 export ProjectSetMilestonesDetail from './milestones-table';
 export ProjectSetMilestonesEdit from './milestones-edit';
+export MilestoneRequest from './milestone-request'

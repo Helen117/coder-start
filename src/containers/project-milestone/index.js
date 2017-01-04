@@ -39,10 +39,13 @@ class ProjectMilestones extends React.Component {
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
         const projectName = !this.isEmptyObject(projectInfo)? projectInfo.name:'';
-
+        const milestoneDetailPath = "/projectSetMilestonesDetail";
         if(projectId) {
             return (
-                <Milestones projectId={projectId} projectName={projectName} defaultDate={moment()}/>
+                <Milestones projectId={projectId}
+                            projectName={projectName}
+                            defaultDate={moment()}
+                            milestoneDetailPath={milestoneDetailPath}/>
     )
         }else{
             return(

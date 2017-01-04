@@ -45,8 +45,8 @@ class BranchMerge extends React.Component {
         if(set_id) {
             return(
                 <div style={{textAlign:"right"}}>
-                    <Button type="primary"  onClick={this.pushCodeToRelease.bind(this,user_id,set_id)}>release</Button>
-                    <Button type="primary"  onClick={this.pushCodeToMaster.bind(this,user_id,set_id)}>master</Button>
+                    <Button type="primary" loading={this.props.codeToReleaseLoading} onClick={this.pushCodeToRelease.bind(this,user_id,set_id)}>release</Button>
+                    <Button type="primary" loading={this.props.codeToMasterLoading} onClick={this.pushCodeToMaster.bind(this,user_id,set_id)}>master</Button>
                 </div>
             )
         }else{

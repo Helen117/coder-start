@@ -25,12 +25,12 @@ import getCodeFile from '../containers/code-files/reducers/code-files-reducer';
 import UserRelation from '../containers/user-relation/reducers/user-relation-reducer';
 import {projectMember} from '../containers/project-list/reducers/project-member-reducer';
 import {toBeConfirmedItem} from '../containers/to-be-confirmed/reducer'
-import {acqPerformanceMsg,acqMyIssueList,getNotifyItems} from '../containers/home/reducers/home-reducer';
+import {acqPerformanceMsg} from '../containers/home/reducers/home-reducer';
 import projectCompile from '../containers/project-compile/reducer';
 import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-info-reducer';
 import treeFilter from '../components/tree-filter/reducer';
 import report from '../containers/report/report-reducer';
-import branchMerge from '../containers/branchMerge/reducers'
+import branchMerge from '../containers/branchMerge/reducers';
 const reducer = combineReducers({
     login,
     menu,
@@ -51,16 +51,14 @@ const reducer = combineReducers({
     projectMember,
     request,
     acqPerformanceMsg,
-    acqMyIssueList,
     toBeConfirmedItem,
-    getNotifyItems,
     projectCompile,
     label,
     UpdateUserInfo,
     consernProject,
     treeFilter,
     report,
-    branchMerge
+    branchMerge,
 })
 
 

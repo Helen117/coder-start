@@ -21,6 +21,10 @@ class ApproveList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const {loginInfo,actions} = this.props;
+        if( this.props.location != nextProps.location){
+            actions.getApproveList(loginInfo.username);
+        }
         // const {errors} = nextProps;
         // if(errors&&errors!=this.props.errors){
         //     // message.error('获取待审批列表失败！'+errors,3);
