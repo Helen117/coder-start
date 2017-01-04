@@ -56,7 +56,7 @@ import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
 import ProjectCompile2 from './containers/project-compile/index2';
-import {BranchMerge} from './containers/BranchMerge'
+import {BranchMerge} from './containers/branchMerge'
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
