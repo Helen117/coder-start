@@ -74,10 +74,6 @@ export default function request(state = initialState, action = {}) {
             return {...state, matchMilestone: null, matchMilestoneLoading: false};
 
 
-        //put query condition into state
-        case 'REQUEST_QUERY_CONDITION':
-            return {...state, queryCondition: action.queryCondition, page:action.page};
-
         //get developer workload
         case 'GET_DEVELOPER_WORKLOAD_PENDING':
             return {...state, developerWorkloder: null};
@@ -94,6 +90,10 @@ export default function request(state = initialState, action = {}) {
             return {...state, testerWorkloader: action.payload};
         case 'GET_TESTER_WORKLOAD_ERROR':
             return {...state, testerWorkloader: null};
+
+        //put query condition into state
+        case 'REQUEST_QUERY_CONDITION':
+            return {...state, queryCondition: action.queryCondition, page: action.page};
 
         default:
             return state;

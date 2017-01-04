@@ -36,6 +36,7 @@ class MyIssueList extends Component {
             dataList.assigned_id=loginInfo.userId;
         }
         actions.getMyIssue(dataList);
+
     }
 
     componentDidMount() {

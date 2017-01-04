@@ -17,7 +17,7 @@ import {
     NewIssueList
 } from '../../components/dashboard';
 import {connect} from 'react-redux';
-import {acqPerformanceMsg,acqMyIssueList} from './actions/home-action'
+import {acqPerformanceMsg,acqMyIssueList,acqUserRanking} from './actions/home-action'
 //const Panel = Collapse.Panel;
 
 //import PanelBox from '../../components/panel-box';
@@ -35,6 +35,7 @@ class Home extends React.Component {
     componentWillMount() {
         this.props.acqPerformanceMsgAction(this.props.loginInfo.userId);
         this.props.acqMyIssueListAction(this.props.loginInfo.userId,'opened');
+        this.props.acqUserRankingAction(this.props.loginInfo.userId);
     }
     componentDidMount(){
     }
@@ -58,18 +59,21 @@ class Home extends React.Component {
 
     render() {
 
-        const {performanceMsg,myIssueListLoading,performanceMsgLoading} = this.props;
+        const {performanceMsg,myIssueListLoading,performanceMsgLoading,myRank,myRankLoading} = this.props;
         const params = {
             assigned_id: this.props.loginInfo.userId,
             state:'open_reopened',
             to_do_issues_type:'today_or_all',
         };
-        let finished=0,unfinished=0;
+        let finished=0,unfinished=0,rank=0;
         if(performanceMsg){
             finished = performanceMsg.finish;
             unfinished = performanceMsg.unfinish
         }
-        const loading = (performanceMsgLoading|| myIssueListLoading)? true: false;
+        if(myRank){
+            rank = myRank[0];
+        }
+        const loading = (performanceMsgLoading|| myIssueListLoading || myRankLoading)? true: false;
         return (
              <Spin spinning={loading} tip="正在加载数据，请稍候...">
                 <Row className="ant-layout-content home-row">
@@ -80,7 +84,7 @@ class Home extends React.Component {
                     </Row>*/}
                     <Row style={{padding: 10}}>
                         <Col span={24}>
-                            <MyProjectRank rank={1}/>
+                            <MyProjectRank rank={rank}/>
                         </Col>
                     </Row>
                     <Row style={{padding: 10}}>
@@ -112,9 +116,11 @@ function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
         performanceMsg:  state.acqPerformanceMsg.performanceMsg,
-        performanceMsgLoading: state.acqPerformanceMsg.loading,
-        myIssueList: state.acqMyIssueList.myIssueList,
-        myIssueListLoading: state.acqMyIssueList.loading,
+        performanceMsgLoading: state.acqPerformanceMsg.performanceMsgLoading,
+        myIssueList: state.acqPerformanceMsg.myIssueList,
+        myIssueListLoading: state.acqPerformanceMsg.myIssueListLoading,
+        myRank: state.acqPerformanceMsg.myRank,
+        myRankLoading: state.acqPerformanceMsg.myRankLoading,
     }
 }
 
@@ -122,6 +128,7 @@ function mapDispatchToProps(dispatch){
     return{
         acqPerformanceMsgAction: bindActionCreators(acqPerformanceMsg, dispatch),
         acqMyIssueListAction: bindActionCreators(acqMyIssueList, dispatch),
+        acqUserRankingAction: bindActionCreators(acqUserRanking, dispatch),
     }
 }
 
