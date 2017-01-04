@@ -56,6 +56,7 @@ import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
 import ProjectCompile2 from './containers/project-compile/index2';
+import {BranchMerge} from './containers/branchMerge'
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -151,6 +152,8 @@ ReactDOM.render(
                             <Route name="report" breadcrumbName="团队成员需求占比报表" path="teamMemberDemandProportion" component={TeamMemberDemandProportion}/>
                             <Route name="report" breadcrumbName="管理统计角度工单缺陷排名报表" path="manageViewDemandRank" component={manageViewDemandRank}/>
                             <Route name="report" breadcrumbName="个人某里程碑中的代码提交整体情况" path="personal" component={PersonalCodeManageReport}/>
+                            <Route name="BranchMerge" breadcrumbName="分支代码合并" path="pushBranchCode" component={BranchMerge}/>
+
                         </Route>
                         <Route name="label" breadcrumbName="Label列表" path="label" component={Labels}/>
                         <Route name="labelEdit" breadcrumbName="Label编辑" path="labelEdit" component={LabelEdit}/>

@@ -2,7 +2,7 @@
  * Created by william.xu on 2016/12/29
  */
 import React, {PropTypes} from 'react';
-import {Select,Radio,Input,Form,Button,Row,Modal} from 'antd';
+import {Select,Radio,Input,Form,Button,Row,Modal,notification} from 'antd';
 
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/groovy/groovy';
@@ -41,6 +41,19 @@ class PipelineScriptEditor extends React.Component{
 
     handleOk(){
         console.log(this.props.projectName, this.refs.editor.getCodeMirror().getValue().trim());
+
+        const editor = this.refs.editor.getCodeMirror();
+        const script = editor.getValue().trim();
+        if (script == ''){
+            notification.warn({
+                message: '警告',
+                description: "Pipeline脚本不能为空",
+                duration: 5
+            });
+            editor.focus();
+            return;
+        }
+
         this.setState({
             visible:false
         });
