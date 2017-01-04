@@ -36,8 +36,11 @@ module.exports.menu ={
         {"id":33,"parentId":0,"cLevel":1,"name":"报表","link":"","description":"","icon":"bar-chart",
             "subMenu":[{"id":35,"parentId":33,"cLevel":2,"name":"业务范畴视角查看报表","link":"/projectSetTree/businessDemandReport","description":"","icon":null,"subMenu":[]},
                 {"id":36,"parentId":33,"cLevel":2,"name":"团队视角查看报表","link":"/projectSetTree/teamMemberDemandProportion","description":"","icon":null,"subMenu":[]},
-                {"id":37,"parentId":33,"cLevel":2,"name":"管理统计视角查看报表","link":"/projectSetTree/manageViewDemandRank","description":"","icon":null,"subMenu":[]}
-                ]}
-        ]};
+                {"id":37,"parentId":33,"cLevel":2,"name":"管理统计视角查看报表","link":"/projectSetTree/manageViewDemandRank","description":"","icon":null,"subMenu":[]},
+                {"id":39,"parentId":33,"cLevel":2,"name":"个人视角查看报表","link":"/projectSetTree/personal","description":"","icon":null,"subMenu":[]}
+                ]
+        }
+    ]
+};
 
 
