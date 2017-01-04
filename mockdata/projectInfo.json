@@ -1,13 +1,20 @@
 {
-  "success": true,
-  "errorCode": null,
-  "errorMsg": null,
-  "result": {
-    "id": 57,
-    "name": "devops-web",
-    "description": "devops 前端",
-    "forksCount": 3,
-    "forksFrom": "devops/devops_web",
-    "sshUrl": "ssh://git@10.10.152.146:10022/devops/devops-web.git"
+  "success":true,
+  "errorCode":null,
+  "errorMsg":null,
+  "result":{
+    "id":37,
+    "name":"devops-web",
+    "description":"devops前端系统",
+    "sshUrl":"ssh://git@10.10.147.190:10022/devops/devops-web.git",
+    "forks_count":8,
+    "forks_from":null,
+    "member_count":8,
+    "current_mileston_date":1483977600000,
+    "star_state":"项目成员不能取消关注",
+    "create_date":1481522550000,
+    "owner_id":1,
+    "design_work_time":null,
+    "file_name":null
   }
 }
