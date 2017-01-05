@@ -36,6 +36,7 @@ class MyIssueList extends Component {
             dataList.assigned_id=loginInfo.userId;
         }
         actions.getMyIssue(dataList);
+
     }
 
     componentDidMount() {
@@ -96,6 +97,7 @@ class MyIssueList extends Component {
             title:data.title,
             author_id:data.author_name,
             state:data.state,
+            type:data.type,
             start:data.created_at&&data.created_at.length>0?data.created_at[0].valueOf():'',
             end:data.created_at&&data.created_at.length>0?data.created_at[1].valueOf():'',
             due_start:data.due_date&&data.due_date.length>0?data.due_date[0].valueOf():'',
@@ -108,6 +110,14 @@ class MyIssueList extends Component {
         this.context.router.push({
             pathname: '/bug-edit',
             state: {selectedRow}
+        });
+    }
+
+    modifyConfirm(record) {
+        record.task_id ='';
+        this.context.router.push({
+            pathname: '/confirmList',
+            state: {record}
         });
     }
 
@@ -124,6 +134,7 @@ class MyIssueList extends Component {
         const {actions,loginInfo} = this.props;
         var data = {
             devops_issues_key : record.devops_issues_key,
+            demand_id:record.sets_issue_id,
             author_id:loginInfo.userId,
             state_event : 'close',
         };
@@ -195,6 +206,13 @@ class MyIssueList extends Component {
                     }
                 }
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
+                if(list[i].assignee_developer_or_tester){
+                    if(list[i].project_id){
+                        list[i].developer_or_tester = list[i].assignee_developer_or_tester.name+'(测试)';
+                    }else{
+                        list[i].developer_or_tester = list[i].assignee_developer_or_tester.name+'(开发)';
+                    }
+                }
             }
         }
         return list;
@@ -202,7 +220,11 @@ class MyIssueList extends Component {
 
     rowClassName(record,index) {
         if (record.state == 'opened') {
-            return styles.open;
+            if(record.type=='demand'){
+                return styles.open;
+            }else{
+                return styles.bug;
+            }
         }
         if (record.state == 'closed') {
             return styles.close;
@@ -210,7 +232,9 @@ class MyIssueList extends Component {
     }
 
     beforeUpload(file){
-        if (!(file.type === 'application/vnd.ms-excel')) {
+        var len = file.name.length;
+        // if (!(file.type === 'application/vnd.ms-excel')) {
+        if (!(file.name.substr(len-4,4).toLowerCase()=='.xls')) {
             message.error('上传的测试报告限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
             return false;
         }
@@ -275,6 +299,13 @@ class MyIssueList extends Component {
                                 </Col>
 
                                 <Col sm={6}>
+                                    <FormItem label="类型" {...formItemLayout}>
+                                        {getFieldDecorator('type')(<Select allowClear={true}>
+                                            <Option value="demand">需求</Option>
+                                            <Option value="bug">bug</Option>
+                                        </Select>)}
+                                    </FormItem>
+
                                     <FormItem label="创建人"{...formItemLayout}>
                                         {getFieldDecorator('author_name')(
                                             <Select showSearch
@@ -295,25 +326,6 @@ class MyIssueList extends Component {
                                     <Button type="ghost" onClick={this.handleReset.bind(this)}>重置</Button>
                                 </Col>
                             </Row>
-
-                            <Modal title="上传测试文档" visible={this.state.visible}
-                                   confirmLoading={this.props.updateIssueLoading}
-                                   onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
-                            >
-                                <FormItem {...formItemLayout} label="工时" >
-                                    {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                                </FormItem>
-
-                                <FormItem {...formItemLayout}  label="文档上传" >
-                                    {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
-                                        <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
-                                            <Button type="ghost">
-                                                <Icon type="upload" /> 点击上传
-                                            </Button>
-                                        </Upload>)}
-                                </FormItem>
-                            </Modal>
-
                         </Form>
                     </Panel>
                 </Collapse>
@@ -324,6 +336,23 @@ class MyIssueList extends Component {
                             rowClassName={this.rowClassName}
                     >
                     </Table>
+                    <Modal title="上传测试文档" visible={this.state.visible}
+                           confirmLoading={this.props.updateIssueLoading}
+                           onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
+                    >
+                        <FormItem {...formItemLayout} label="工时" >
+                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout}  label="文档上传" >
+                            {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
+                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
+                                    <Button type="ghost">
+                                        <Icon type="upload" /> 点击上传
+                                    </Button>
+                                </Upload>)}
+                        </FormItem>
+                    </Modal>
                 </Box>
             </div>
             </Spin>
@@ -343,69 +372,75 @@ MyIssueList.prototype.issueListColumns = (self)=>[
     {
         title: '里程碑',
         dataIndex: 'milestone_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '问题类型',
         dataIndex: 'issueType',
-        width: '9%',
+        width: '6%',
     },{
         title: '问题名称',
         dataIndex: 'issue_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '描述',
         dataIndex: 'description',
-        width: '9%',
+        width: '10%',
     },{
         title: '问题标签',
         dataIndex: 'label',
-        width: '9%',
+        width: '8%',
     }, {
         title: '创建人',
         dataIndex: 'author_name',
-        width: '9%',
+        width: '8%',
+    }, {
+        title: '开发/测试',
+        dataIndex: 'developer_or_tester',
+        width: '8%',
     }, {
         title: '问题创建时间',
         dataIndex: 'created_at',
-        width: '9%',
+        width: '8%',
     }, {
         title: '计划完成时间',
         dataIndex: 'due_date',
-        width: '9%',
+        width: '8%',
     },{
         title: '状态',
         dataIndex: 'status',
-        width: '9%',
+        width: '5%',
     },{
         title: '项目',
         dataIndex: 'project_name',
-        width: '9%',
+        width: '8%',
     },{
         title: '项目集',
         dataIndex: 'sets_name',
-        width: '9%',
+        width: '8%',
     }, {
         title: '操作',
         dataIndex: 'key',
-        width: '8%',
+        width: '10%',
         render: (text, record, index)=> {
             if(record.state.indexOf('open')!=-1){
-                if (!record.project_id&&record.is_sets_Issue_finished) {
+                if(record.project_id){
+                    return <div>
+                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
+                        <br/>
+                        <a onClick={self.modifyConfirm.bind(self, record)}>修改设计内容</a>
+                    </div>;
+                }else{
                     if (record.type == 'bug') {
                         return <div>
                             <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
                         </div>;
-                    } else {
+                    } else if(record.is_sets_Issue_finished){
                         return <div>
-                            <a onClick={self.editBug.bind(self,record)}>开Bug票</a>
+                            <a onClick={self.editBug.bind(self,record)}>开Bug</a>
                             <br/>
                             <a onClick={self.testPass.bind(self, record)}>提交测试报告</a>
                         </div>;
                     }
-                }else if(record.project_id){
-                    return <div>
-                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
-                    </div>;
                 }
             }
         }

@@ -30,14 +30,22 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
     switch (action.type) {
         //get confirm list
         case GET_CONFIRM_LIST_PENDING:
-            return {...state, getConfirmListLoading: true};
+            return {...state, getConfirmListLoading: true,confirmList:null,demand:null};
 
         case GET_CONFIRM_LIST_SUCCESS:
             return {...state, confirmList: action.payload, getConfirmListLoading: false};
 
         case GET_CONFIRM_LIST_ERROR:
-            return {...state,  getConfirmListLoading: false};
-            
+            return {...state,  getConfirmListLoading: false,confirmList:null};
+
+        case 'GET_DEMAND_INFO_PENDING':
+            return {...state, getDemandLoading: true,demand:null,confirmList:null,demandProjectInfo:null};
+
+        case 'GET_DEMAND_INFO_SUCCESS':
+            return {...state, demand: action.payload, getDemandLoading: false};
+
+        case 'GET_DEMAND_INFO_ERROR':
+            return {...state,  getDemandLoading: false,demand:null};
             
         //get project info
         case GET_MY_PROJECT_INFO_PENDING:
@@ -49,6 +57,14 @@ export function toBeConfirmedItem(state = initialState, action = {}) {
         case GET_MY_PROJECT_INFO_ERROR:
             return {...state,  projectInfo:null,getProjectInfoLoading: false,};
 
+        case 'GET_DEMAND_PROJECT_INFO_PENDING':
+            return {...state, demandProjectInfo:null,getDemandProjectInfoLoading: true};
+
+        case 'GET_DEMAND_PROJECT_INFO_SUCCESS':
+            return {...state, demandProjectInfo: action.payload, getDemandProjectInfoLoading: false};
+
+        case 'GET_DEMAND_PROJECT_INFO_ERROR':
+            return {...state,  demandProjectInfo:null,getDemandProjectInfoLoading: false,};
 
         //confirm
         case DEVELOP_CONFIRM_PENDING:

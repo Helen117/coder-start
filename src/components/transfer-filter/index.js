@@ -20,15 +20,16 @@ export default class TransferFilter extends React.Component {
     componentWillReceiveProps(nextProps) {
         const dataSource = nextProps.dataSource;
         const targetData = nextProps.targetKeys;
-        if(dataSource!=this.props.dataSource ){
+
+        if(dataSource && dataSource!=this.props.dataSource ){
             this.getMock(dataSource,targetData);
         }
-
     }
 
     getMock(dataSource,targetData) {
         const mockData = [];
-        const targetKeys = [];
+        // const targetKeys = [];
+        const targetKeys = targetData;
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
                 const data = {
@@ -37,16 +38,16 @@ export default class TransferFilter extends React.Component {
                 };
                 mockData.push(data);
             }
-            if(targetData){
-                for(let i=0; i<targetData.length; i++){
-                    const data = {
-                        key: targetData[i].id.substring(0,targetData[i].id.length-2),
-                        name: targetData[i].name,
-                    };
-                    mockData.push(data);
-                    targetKeys.push(data.key)
-                }
-            }
+            // if(targetData){
+            //     for(let i=0; i<targetData.length; i++){
+                //     const data = {
+                //         key: targetData[i].id,
+                //         name: targetData[i].name,
+                //     };
+                    // mockData.push(data);
+                //     targetKeys.push(data.key)
+                // }
+            // }
         }
         this.setState({ mockData, targetKeys });
     }
@@ -71,6 +72,7 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
+        console.log('render',this.state.targetKeys)
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer

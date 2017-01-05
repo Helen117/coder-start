@@ -27,7 +27,7 @@ class ProjectCompile extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            isProject: true
+            // isProject: true
         };
     }
 
@@ -74,7 +74,7 @@ class ProjectCompile extends React.Component{
         if (buildJobResult && buildJobResult != this.props.buildJobResult){
             notification.success({
                 message: '操作成功',
-                description: "成功发起执行任务，稍等几秒可以在查看执行状态！",
+                description: "成功发起执行任务，请稍等几秒查看执行状态！",
                 duration: 5
             });
         }
@@ -119,8 +119,9 @@ class ProjectCompile extends React.Component{
                     });
                     return;
                 }
+                let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
                 saveJob({
-                    jobName:selectNode.node.name + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
+                    jobName:jobName + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
                     trigger:form.getFieldValue('trigger'),
                     pipelineScript: pipelineScript
                 });

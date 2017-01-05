@@ -1,16 +1,13 @@
 /**
  * Created by helen on 2016/11/23.
  */
-/**
- * Created by helen on 2016/11/7.
- */
 import React, {PropTypes,Component} from 'react';
 import { Button,Form,InputNumber,Table,message,Spin,Upload,Icon,Modal,Input } from 'antd';
 import TransferFilter from '../../components/transfer-filter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Box from '../../components/box';
-import {getProjectInfo,developConfirm} from './action';
+import {getProjectInfo,developConfirm,getConfirmList,getDemandList,developerUpdateConfirm,getDemandProjectInfo} from './action';
 import {getApproveList} from '../approve/actions/approve-action'
 import ConfirmList from './confirm-list'
 import * as home from '../home/actions/home-action';
@@ -26,15 +23,37 @@ const FormItem = Form.Item;
     }
 
     componentWillMount() {
+
     }
 
      componentWillReceiveProps(nextProps) {
-         const {confirmList,confirmResult} = nextProps
+         const {confirmList,confirmResult,demandInfo,getDemandProjectInfo} = nextProps;
          if(this.props.confirmList != confirmList && confirmList) {
-            this.props.getProjectInfoAction(confirmList[0].set_id,this.props.loginInfo.userId)
+                 this.props.getProjectInfoAction(confirmList[0].set_id, this.props.loginInfo.userId)
          }
+         if(this.props.demandInfo != demandInfo && demandInfo){
+             this.props.getDemandProjectInfoAction(demandInfo.id);
+         }
+
+         if(this.props.demandInfo&&getDemandProjectInfo&&getDemandProjectInfo!=this.props.getDemandProjectInfo){
+             this.props.getProjectInfoAction(this.props.demandInfo.sets_id, this.props.loginInfo.userId);
+             if(getDemandProjectInfo.length>0){
+                 this.setState({
+                     fileList:[{
+                         uid: -1,
+                         name: getDemandProjectInfo[0].file_name,
+                         status: 'done',
+                         url:''
+                     }]
+                 });
+                 this.props.form.setFieldsValue({'files':this.state.fileList});
+                 this.props.form.setFieldsValue({'design_work_time':getDemandProjectInfo[0].design_work_time});
+                 this.props.form.setFieldsValue({'projects':getDemandProjectInfo.map(data => data.id)});
+             }
+         }
+
          if(this.props.confirmResult != confirmResult && confirmResult){
-             this.insertCallback('需求确认成功')
+             this.insertCallback('确认成功')
          }
      }
 
@@ -49,9 +68,8 @@ const FormItem = Form.Item;
         this.targetKeys = targetKeys;
     }
 
-
     approve(){
-        const {form,confirmList,loginInfo} = this.props;
+        const {form,confirmList,loginInfo,demandInfo} = this.props;
         form.setFieldsValue({'files':this.state.fileList});
 
         form.validateFields((errors, values) => {
@@ -59,13 +77,19 @@ const FormItem = Form.Item;
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.pass = true;
-                data.task_id = this.props.task_id;
-                data.demand_id = confirmList[0].demand_id;
-                data.role = confirmList[0].role;
-                data.username = loginInfo.username;
-                data.files= this.state.fileList;
-                this.props.ConfirmAction(data)
+                if(this.props.task_id){
+                    data.pass = true;
+                    data.task_id = this.props.task_id;
+                    data.demand_id = confirmList[0].demand_id;
+                    data.role = confirmList[0].role;
+                    data.username = loginInfo.username;
+                    data.files= this.state.fileList;
+                    this.props.ConfirmAction(data)
+                }else{
+                    data.assigned_id = loginInfo.userId;
+                    data.demand_id=demandInfo.id;
+                    this.props.developerUpdateConfirmAction(data);
+                }
             }
         })
     }
@@ -87,15 +111,18 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-           //console.log(file);
-         if(this.props.confirmList&&this.props.confirmList[0].role=='developer'){
-             if (!(file.type === 'application/msword')) {
-                 message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
+          // console.log(file);
+         var len = file.name.length;
+         if(this.props.confirmList&&this.props.confirmList[0].role=='tester'){
+             // if (!(file.type === 'application/vnd.ms-excel')) {
+             if (!(file.name.substr(len-4,4).toLowerCase()=='.xls')) {
+                 message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
                  return false;
              }
          }else{
-             if (!(file.type === 'application/vnd.ms-excel')) {
-                 message.error('上传的案例限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
+             // if (!(file.type === 'application/msword')) {
+             if (!(file.name.substr(len-4,4).toLowerCase() == '.doc')) {
+                 message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
                  return false;
              }
          }
@@ -125,17 +152,24 @@ const FormItem = Form.Item;
     render() {
 
         const { getFieldDecorator } = this.props.form;
+        let role = this.props.confirmList?this.props.confirmList[0].role:'';
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
 
         const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
+        let targetKeys = this.props.getDemandProjectInfo?this.props.getDemandProjectInfo.map(data => data.id):[];
         const confirmLoading = this.props.confirmLoading? true:false;
-        const role = this.props.confirmList?this.props.confirmList[0].role:'';
+
         const { getConfirmListLoading,getMyProjectLoading} = this.props;
         const TransferLoading = getMyProjectLoading? true: false;
         const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
+        if(!this.props.task_id){
+            role ='developer';
+        }else{
+            targetKeys=[]
+        }
         if(this.props.showConfirm){
         return(
             <Box title="需求确认">
@@ -148,7 +182,7 @@ const FormItem = Form.Item;
                                                      onChange={this.handleChange.bind(this)}
                                                      loadingProMsg={TransferLoading}
                                                     //fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                    //targetKeys = {targetKeys}
+                                                    targetKeys = {targetKeys}
                                     />)}
                             </FormItem>:<div></div>
                             }
@@ -186,34 +220,17 @@ DevelopConfirm.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-DevelopConfirm.prototype.columns = (self)=>[{
-    title: '工单名称',
-    dataIndex: 'name',
-    width: '20%',
-},{
-    title: '内容',
-    dataIndex: 'description',
-    width: '20%',
-},{
-    title: '计划上线时间',
-    dataIndex: 'due_date',
-    width: '20%',
-}, {
-    title: '负责人',
-    dataIndex: 'director',
-    width: '20%',
-}];
-
-
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
         getConfirmListLoading: state.toBeConfirmedItem.getConfirmListLoading,
         confirmList: state.toBeConfirmedItem.confirmList,
+        demandInfo: state.toBeConfirmedItem.demand,
         getMyProjectLoading: state.toBeConfirmedItem.loading,
         getMyProjectInfo: state.toBeConfirmedItem.projectInfo,
         confirmLoading: state.toBeConfirmedItem.confirmLoading,
-        confirmResult: state.toBeConfirmedItem.confirmResult
+        confirmResult: state.toBeConfirmedItem.confirmResult,
+        getDemandProjectInfo: state.toBeConfirmedItem.demandProjectInfo,
     };
 }
 
@@ -223,6 +240,8 @@ function mapDispatchToProps(dispatch) {
         ConfirmAction: bindActionCreators(developConfirm, dispatch),
         getApproveListAction: bindActionCreators(getApproveList, dispatch),
         home:bindActionCreators(home, dispatch),
+        developerUpdateConfirmAction: bindActionCreators(developerUpdateConfirm, dispatch),
+        getDemandProjectInfoAction: bindActionCreators(getDemandProjectInfo, dispatch),
     }
 }
 

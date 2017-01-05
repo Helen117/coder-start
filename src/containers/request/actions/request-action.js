@@ -2,7 +2,7 @@
  * Created by helen on 2016/11/22.
  */
 import api from '../../../api';
-export function addDemand(message) {
+export function addRequest(message) {
     return {
         type: 'ADD_DEMAND',
         payload: {
@@ -13,7 +13,7 @@ export function addDemand(message) {
     }
 }
 
-export function editDemand(message) {
+export function editRequest(message) {
     return {
         type: 'EDIT_DEMAND',
         payload: {
@@ -25,14 +25,13 @@ export function editDemand(message) {
 }
 
 
-export function getDemandInfo(setId) {
+export function getRequestInfo(page, queryCondition) {
+    queryCondition.page = page;
     return {
         type: 'FETCH_REQUIREMENT_INFO',
         payload: {
             promise: api.post('/project/list-demand', {
-                params: {
-                    sets_id: setId
-                }
+                data: queryCondition
             })
         }
     }
@@ -79,7 +78,7 @@ export function getTesterInfo(id,type,role) {
     }
 }
 
-export function deleteDemandInfo(demand_id,userId) {
+export function deleteRequestInfo(demand_id,userId) {
     return {
         type: 'DELETE_REQUIREMENT_INFO',
         payload: {
@@ -107,4 +106,57 @@ export function getCurrentMilestone(sets_id,due_date) {
         }
     }
 }
+
+export function getMilestoneByName(sets_id,milestone_name) {
+    return {
+        type: 'GET_MILESTONE_BY_NAME',
+        payload: {
+            promise: api.post('/project/list-milestone-forname', {
+                params: {
+                    sets_id: sets_id,
+                    milestone_name: milestone_name
+                }
+            })
+        }
+    }
+}
+
+export function requestQueryCondition(page,queryCondition){
+    return {
+        type: 'REQUEST_QUERY_CONDITION',
+        page: page,
+        queryCondition: queryCondition,
+    }
+}
+
+
+export function getTesterWorkload(user_id,due_date) {
+    return {
+        type: 'GET_TESTER_WORKLOAD',
+        payload: {
+            promise: api.post('/project/task-num', {
+                params: {
+                    user_id: user_id,
+                    due_date:due_date,
+                }
+            })
+        }
+    }
+}
+
+
+export function getDeveloperWorkload(user_id,due_date) {
+    return {
+        type: 'GET_DEVELOPER_WORKLOAD',
+        payload: {
+            promise: api.post('/project/task-num', {
+                params: {
+                    user_id: user_id,
+                    due_date:due_date,
+                }
+            })
+        }
+    }
+}
+
 

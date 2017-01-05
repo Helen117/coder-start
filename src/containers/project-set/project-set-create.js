@@ -20,12 +20,11 @@ class ProjectSetCreate extends React.Component {
         this.projectSetInfo = this.props.selectedProjectSet;
     }
 
-    componentWillMount(){
-        const userId = this.props.logInfo.userId;
-        this.props.getSetProjectAction(userId);
-    }
     componentDidMount() {
-        if(this.props.location.state.editType != 'add'){
+        const {logInfo} = this.props;
+        const userId = logInfo.userId;
+        const editType = this.props.location.state.editType
+        if(editType != 'add'){
             if(this.projectSetInfo){
                 this.projectSetInfo.project_set = [];
                 if(this.props.projectSetTree){
@@ -43,6 +42,9 @@ class ProjectSetCreate extends React.Component {
                 }
             }
             this.props.form.setFieldsValue(this.projectSetInfo);
+            this.props.getSetProjectAction(userId,this.projectSetInfo.project_set,editType);
+        }else{
+            this.props.getSetProjectAction(userId,[],editType);
         }
     }
 
@@ -147,7 +149,6 @@ class ProjectSetCreate extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        const targetKeys = (editType=='update')?this.projectSetInfo?this.projectSetInfo.project_set:[]:[];
         return (
             <Box title={editType == 'add' ? '创建项目集合' : '修改项目集合'}>
                 <Spin spinning={updateLoading} tip="正在保存数据" >
@@ -163,18 +164,19 @@ class ProjectSetCreate extends React.Component {
 
                         <FormItem   {...formItemLayout} label="项目">
                                 <Spin spinning={createLoading}>
-                                    {getFieldDecorator('project_set')(<TransferFilter dataSource = {this.props.projectInfo}
-                                                                                      onChange={this.handleChange.bind(this)}
-                                                                                      loadingProMsg={getProjectInfoLoading}
-                                                                                      fetchProMsgErr ={this.props.fetchProMsgErr}
-                                                                                      targetKeys = {targetKeys}/>)}
+                                    {getFieldDecorator('project_set')
+                                    (<TransferFilter dataSource = {this.props.dataSource}
+                                                      onChange={this.handleChange.bind(this)}
+                                                      loadingProMsg={getProjectInfoLoading}
+                                                      fetchProMsgErr ={this.props.fetchProMsgErr}
+                                                      targetKeys = {this.props.targetKeys}/>)}
                                 </Spin>
                         </FormItem>
+
                         {editType == 'update' ?
                         <FormItem  {...formItemLayout} label="修改原因">
                             {getFieldDecorator('reason',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
                             (<Input  type="textarea" rows="5" placeholder="请输入项目集合的修改原因 " />)}
-
                         </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
@@ -206,6 +208,8 @@ function mapStateToProps(state) {
         updateLoading: state.projectSet.updateLoading,
         projectSetTree: state.projectSet.projectSetTree,
         selectedProjectSet: state.projectSet.selectedProjectSet,
+        dataSource: state.projectSet.dataSource,
+        targetKeys: state.projectSet.targetKeys,
 
     }
 }

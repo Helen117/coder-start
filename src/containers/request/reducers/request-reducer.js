@@ -8,14 +8,14 @@ export default function request(state = initialState, action = {}) {
     switch (action.type) {
 
         case 'FETCH_TESTER_INFO_PENDING':
-            return {...state, tester:null,getTesterLoading: true};
+            return {...state, tester:null,getTesterLoading: true, testerWorkloader:null};
         case 'FETCH_TESTER_INFO_SUCCESS':
             return {...state, tester: action.payload, getTesterLoading: false, getTestError: null};
         case 'FETCH_TESTER_INFO_ERROR':
             return {...state, getTesterLoading: false, getTesterError: action.payload.errorMsg};
 
         case 'FETCH_DEVELOPER_INFO_PENDING':
-            return {...state, developer: null, currentMilestone:null, getDeveloperLoading: true};
+            return {...state, developer: null, developerWorkloder:null, currentMilestone:null, getDeveloperLoading: true};
         case 'FETCH_DEVELOPER_INFO_SUCCESS':
             return {...state, developer: action.payload, getDeveloperLoading: false, getDeveloperError: null};
         case 'FETCH_DEVELOPER_INFO_ERROR':
@@ -29,18 +29,18 @@ export default function request(state = initialState, action = {}) {
             return {...state,  getLabelLoading: false, getLabelError: action.payload.errorMsg};
 
         case 'ADD_DEMAND_PENDING':
-            return {...state, addDemandResult:null,currentMilestone:null, addDemandLoading: true};
+            return {...state, addRequestResult:null,currentMilestone:null, addRequestLoading: true};
         case 'ADD_DEMAND_SUCCESS':
-            return {...state, addDemandResult: action.payload, addDemandLoading: false};
+            return {...state, addRequestResult: action.payload, addRequestLoading: false};
         case 'ADD_DEMAND_ERROR':
-            return {...state,  addDemandResult:null,addDemandLoading: false,  addDemandError: action.payload.errorMsg};
+            return {...state,  addRequestResult:null,addRequestLoading: false,  addRequestError: action.payload.errorMsg};
 
         case 'EDIT_DEMAND_PENDING':
-            return {...state, editDemandResult: null, currentMilestone:null, editDemandLoading: true};
+            return {...state, editRequestResult: null, currentMilestone:null, editRequestLoading: true};
         case 'EDIT_DEMAND_SUCCESS':
-            return {...state, editDemandResult: action.payload, editDemandLoading: false};
+            return {...state, editRequestResult: action.payload, editRequestLoading: false};
         case 'EDIT_DEMAND_ERROR':
-            return {...state, editDemandResult: null,editDemandLoading: false,  editDemandError: action.payload.errorMsg};
+            return {...state, editRequestResult: null,editRequestLoading: false,  editRequestError: action.payload.errorMsg};
 
         case 'FETCH_REQUIREMENT_INFO_PENDING':
             return {...state,requirementInfo: null,loading: true};
@@ -64,7 +64,37 @@ export default function request(state = initialState, action = {}) {
             return {...state, currentMilestone: action.payload, currentMilestoneLoading: false};
         case 'GET_CURRENT_MILESTONE_ERROR':
             return {...state, currentMilestone: null, currentMilestoneLoading: false};
+
+        //auto complete miletone data    
+        case 'GET_MILESTONE_BY_NAME_PENDING':
+            return {...state, matchMilestone: null, matchMilestoneLoading: true};
+        case 'GET_MILESTONE_BY_NAME_SUCCESS':
+            return {...state, matchMilestone: action.payload, matchMilestoneLoading: false};
+        case 'GET_MILESTONE_BY_NAME_ERROR':
+            return {...state, matchMilestone: null, matchMilestoneLoading: false};
+
+
+        //get developer workload
+        case 'GET_DEVELOPER_WORKLOAD_PENDING':
+            return {...state, developerWorkloder: null};
+        case 'GET_DEVELOPER_WORKLOAD_SUCCESS':
+            return {...state, developerWorkloder: action.payload};
+        case 'GET_DEVELOPER_WORKLOAD_ERROR':
+            return {...state, developerWorkloder: null};
+
             
+        //get tester workload
+        case 'GET_TESTER_WORKLOAD_PENDING':
+            return {...state, testerWorkloader: null};
+        case 'GET_TESTER_WORKLOAD_SUCCESS':
+            return {...state, testerWorkloader: action.payload};
+        case 'GET_TESTER_WORKLOAD_ERROR':
+            return {...state, testerWorkloader: null};
+
+        //put query condition into state
+        case 'REQUEST_QUERY_CONDITION':
+            return {...state, queryCondition: action.queryCondition, page: action.page};
+
         default:
             return state;
     }

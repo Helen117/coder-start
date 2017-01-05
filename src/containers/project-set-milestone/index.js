@@ -18,10 +18,20 @@ class ProjectSetMilestones extends React.Component {
         const defaultDate = this.props.location.state?this.props.location.state.date:moment();
         const selectedProjectSet = this.props.selectedProjectSet;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
-        const projectName = selectedProjectSet? selectedProjectSet.name:''
+        const projectName = selectedProjectSet? selectedProjectSet.name:'';
+        let milestoneDetailPath = '';
+        if(projectId.indexOf('_p')>= 0){
+            milestoneDetailPath = "/projectSetMilestonesDetail";
+        }else{
+            milestoneDetailPath = "/projectSetMilestonesRequest";
+        }
+
         if(projectId) {
             return (
-                <Milestones projectId={projectId} projectName={projectName} defaultDate={defaultDate}/>
+                <Milestones projectId={projectId}
+                            projectName={projectName}
+                            defaultDate={defaultDate}
+                            milestoneDetailPath={milestoneDetailPath}/>
             )
         }else{
             return (

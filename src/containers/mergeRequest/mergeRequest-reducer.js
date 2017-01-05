@@ -90,7 +90,7 @@ export function mergeRequest(state = initialState, action = {}) {
 
             
         //put query condition into state    
-        case 'CHANGE_QUERY_CONDITION':
+        case 'MR_QUERY_CONDITION':
             return {...state, page:action.page, status:action.status};
             
         

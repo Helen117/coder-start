@@ -126,7 +126,7 @@ class CreateMergeRequest extends Component {
     //修改源分支内容，目标分支跟着改变
     changeTargetBranch(value){
         const targetBranches = this.props.mergeBranch?this.props.mergeBranch[1].branches:[]
-        let i=0
+        let i=0;
         for(i=0; i<targetBranches.length; i++){
             if(value == targetBranches[i]){
                 this.props.form.setFieldsValue({target_branch: targetBranches[i]});
@@ -141,8 +141,9 @@ class CreateMergeRequest extends Component {
 
     beforeUpload(file){
         // console.log(file);
-
-        if (!(file.type === 'application/msword')) {
+        var len = file.name.length;
+        // if (!(file.type === 'application/msword')) {
+        if (!(file.name.substr(len-4,4).toLowerCase() == '.doc')) {
             message.error('上传的设计文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
             return false;
         }

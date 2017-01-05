@@ -2,7 +2,7 @@
  * Created by helen on 2016/10/18.
  */
 import React, {PropTypes,Component} from 'react';
-import { Table ,Button,Input,notification } from 'antd';
+import { Table ,Button,Input,notification,Tooltip } from 'antd';
 import './index.less';
 import Box from '../box';
 
@@ -309,13 +309,47 @@ IssueList.prototype.issueListColumns = (self)=>[
     dataIndex: 'issue_name',
     width: '7%',
     className:'columnClass',
-    render:renderContent,
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (value) {
+            obj.props.colSpan = 1;
+        } else if (row.sets_name || row.project_name || row.milestone_name) {
+            obj.props.colSpan = 0;
+        }
+
+        if(value){
+            return <Tooltip placement="left" title={value}>
+                <span>{value}</span>
+            </Tooltip>
+        }
+        return obj;
+    },
 },{
     title: '问题描述',
     dataIndex: 'description',
     width: '7%',
     className:'columnClass',
-    render:renderContent,
+    render(value, row, index) {
+        const obj = {
+            children: value,
+            props: {},
+        };
+        if (value) {
+            obj.props.colSpan = 1;
+        } else if (row.sets_name || row.project_name || row.milestone_name) {
+            obj.props.colSpan = 0;
+        }
+
+        if(value){
+            return <Tooltip placement="left" title={value}>
+                        <span>{value}</span>
+                </Tooltip>
+        }
+        return obj;
+    }
 },{
     title: '问题标签',
     dataIndex: 'label',
