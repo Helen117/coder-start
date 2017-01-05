@@ -42,17 +42,17 @@ class BranchMerge extends React.Component {
         const {selectedProjectSet,loginInfo} = this.props;
         const set_id = selectedProjectSet? selectedProjectSet.id.substring(0,selectedProjectSet.id.length-2):null;
         const user_id = loginInfo.userId;
-        if(set_id) {
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g') >= 0) {
             return(
                 <div style={{textAlign:"right"}}>
-                    <Button type="primary" loading={this.props.codeToReleaseLoading} onClick={this.pushCodeToRelease.bind(this,user_id,set_id)}>release</Button>
-                    <Button type="primary" loading={this.props.codeToMasterLoading} onClick={this.pushCodeToMaster.bind(this,user_id,set_id)}>master</Button>
+                    <Button type="primary" loading={this.props.codeToReleaseLoading} onClick={this.pushCodeToRelease.bind(this,user_id,set_id)}>dev->release</Button>
+                    <Button type="primary" loading={this.props.codeToMasterLoading} onClick={this.pushCodeToMaster.bind(this,user_id,set_id)}>release->master</Button>
                 </div>
             )
         }else{
             return (
                 <Alert style={{margin:10}}
-                       message="请从左边的项目树中选择一个具体的项目或项目集！"
+                       message="请从左边的项目树中选择一个项目集！"
                        description=""
                        type="warning"
                        showIcon
