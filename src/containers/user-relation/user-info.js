@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Table, Button, Row, Modal, notification, Form, Input,Icon} from 'antd';
+import {Table, Button, Row, Modal, notification, Form, Input,Icon,message} from 'antd';
 import {getUserInfo} from './actions/user-relation-actions';
 import {MoveUser,DeleteGroupUser,setSelectedRowKeys} from './actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
@@ -148,15 +148,20 @@ class UserInfo extends React.Component {
         });
     }
 
-    editUser(type,record){
+    editUser(record){
         const {userRelationState,busiType} = this.props;
         let userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
-        this.setState({
-            moreGroupVisible: true,
-            source_user_id:findUserIdByEmail(record.email,userInfoData)
-        });
+        const is_leader = this.isLeader(userInfoData,record);
+        if(is_leader == 1){
+            message.error('修改组织，将该成员变成普通成员才能移动！',10);
+        }else{
+            this.setState({
+                moreGroupVisible: true,
+                source_user_id:findUserIdByEmail(record.email,userInfoData)
+            });
+        }
     }
 
     filterChange(filterData,filterKeys,ifFiled){
@@ -293,7 +298,7 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
                                        dataSource={dataSource}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name",
                 render(text,record){
-                    let is_leader = self.isLeader(userInfoData,record);
+                    const is_leader = self.isLeader(userInfoData,record);
                     return (is_leader==1?<div>{text}<Icon type="user" style={{fontSize:18,paddingLeft:'7px'}}/>
                     </div>:<div>{text}</div>)
                 }},
@@ -308,7 +313,7 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
                     return (
                         <div>
                             <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>移除</Button>
-                            <Button type="ghost" onClick={self.editUser.bind(self, 'move',record)}>移动</Button>
+                            <Button type="ghost" onClick={self.editUser.bind(self, record)}>移动</Button>
                         </div>
                     )
                 }

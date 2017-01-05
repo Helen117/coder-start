@@ -8,7 +8,6 @@ import {Row, Col, message, Modal, Form, notification} from 'antd';
 import TreeFilter from '../../components/tree-filter';
 import {getUserRelationTree} from './actions/user-relation-actions';
 import {getSelectNode} from './actions/user-relation-actions';
-//import PopoverImg from '../../components/popover-img';
 import PopoverImg from '../../components/popover-img/index-1';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
