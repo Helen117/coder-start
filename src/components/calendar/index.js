@@ -57,7 +57,7 @@ export default class MilestonesCalendar extends React.Component{
         }
         return(
             <div>
-                <h4>{milestoneData.title}</h4>
+                <u>{milestoneData.title}</u>
                 <div style={{marginLeft:8}}>
                     {milestoneData.description}
                     <p>状态：{milestoneState}</p>
@@ -136,7 +136,7 @@ export default class MilestonesCalendar extends React.Component{
         const tooltip = this.milestoneTooltip(milestoneData);
         return(
             <div style={{marginLeft:3}}>
-                <Tooltip placement="top" title={tooltip}>
+                <Tooltip placement="left" title={tooltip}>
                     <ul className="events">
                          <li>{this.titleDecorate(milestoneData)}</li>
                          <li>{milestoneData.description}</li>
@@ -152,7 +152,7 @@ export default class MilestonesCalendar extends React.Component{
                 issueList.map((item, index) =>{
                     const type =  this.setMilestoneType(item.state,Date.now());
                     const issueTooltip = this.issueTooltip(item)
-                    return  <Tooltip placement="top" title={issueTooltip} key={index}>
+                    return  <Tooltip placement="left" title={issueTooltip} key={index}>
                         <li key={index} >
                             <div>
                             <span className={`event-${type}`}>● </span>
@@ -204,7 +204,7 @@ export default class MilestonesCalendar extends React.Component{
                 milestoneList.map((item, index) => {
                     const type = this.setMilestoneType(item.state, item.due_date)
                        return <li style={{paddingTop: 5}} key={index}>
-                            <Tooltip key={index} placement="top" title={this.milestoneTooltip(item)}>
+                            <Tooltip key={index} placement="left" title={this.milestoneTooltip(item)}>
                                 {this.titleDecorate(item,calendarTime)}
                             </Tooltip>
                         </li>
