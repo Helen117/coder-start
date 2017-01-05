@@ -33,7 +33,7 @@ class RequestList extends Component {
     stateTranslate(state){
         switch(state){
             case 'open': return '待确认';
-            case 'test_confirmed_running': return '测试已确认';
+            case 'test_confirmed_running': return '待开发';
             case 'develop_running': return '开发中';
             case 'test_running': return '测试中';
             case 'bug_to_be_confirmed_running': return 'bug待确认';
