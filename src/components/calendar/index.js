@@ -121,12 +121,12 @@ export default class MilestonesCalendar extends React.Component{
         const type = this.setMilestoneType(milestoneData.state,milestoneData.due_date);
         if(revocable){
             return <a onClick = {this.editMilestone.bind(this,milestoneData)} >
-                <h4 style={{color:type=="error"?"red":""}}>
+                <div style={{color:type=="error"?"red":"", textDecoration: 'underline', fontWeight:900}}>
                     <Icon style={{marginRight:5}} type="edit" />{milestoneData.title}
-                </h4>
+                </div>
             </a>
         }else{
-            return <h4 style={{color:type=="error"?"red":""}}>
+            return <h4 style={{color:type=="error"?"red":"", textDecoration: 'underline', fontWeight:900}}>
                 <Badge status={type}/>{milestoneData.title}
             </h4>
         }
@@ -139,7 +139,7 @@ export default class MilestonesCalendar extends React.Component{
                 <Tooltip placement="left" title={tooltip}>
                     <ul className="events">
                          <li>{this.titleDecorate(milestoneData)}</li>
-                         <li>{milestoneData.description}</li>
+                         <li style={{textIndent: 15, color:'gray'}}>{milestoneData.description}</li>
                     </ul>
                 </Tooltip>
             </div>
