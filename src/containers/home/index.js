@@ -89,10 +89,10 @@ class Home extends React.Component {
                     </Row>
                     <Row style={{padding: 10}}>
                         <Col span={9} offset={3}>
-                            <MyProjectProgress label="我在本里程碑未完成工作的百分比" percent={unfinished}/>
+                            <MyProjectProgress label="我在当前里程碑未完成工作的百分比" percent={unfinished}/>
                         </Col>
                         <Col span={9} offset={3}>
-                            <MyProjectProgress label="我在本里程碑完成工作的百分比" percent={finished}/>
+                            <MyProjectProgress label="我在当前里程碑完成工作的百分比" percent={finished}/>
                         </Col>
                     </Row>
                 </Row>
