@@ -7,7 +7,7 @@ import {PUSH_CODE_TO_MASTER,
     PUSH_CODE_TO_RELEASE} from './action-types';
 
 export function pushCodeToRelease(user_id, set_id){
-    var path = '/project/auto-merge';
+    var path = '/project/manual-merge';
     return {
         type: PUSH_CODE_TO_RELEASE,
         payload: {
@@ -23,7 +23,7 @@ export function pushCodeToRelease(user_id, set_id){
 }
 
 export function pushCodeToMaster(user_id, set_id){
-    var path = '/project/auto-merge';
+    var path = '/project/manual-merge';
     return {
         type: PUSH_CODE_TO_MASTER,
         payload: {
