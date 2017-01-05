@@ -120,7 +120,7 @@ export class MyProjectRank extends React.Component {
             <Row>
                 <Col span={5}>
                     <Icon type="github" style={{marginRight: 8}}/>
-                    <span style={{fontWeight: 'bold'}}>我在本项目中的绩效排名</span>
+                    <span style={{fontWeight: 'bold'}}>我在当前里程碑中的绩效排名</span>
                 </Col>
                 <Col span={5}>
                     第 <label style={{color: 'red'}}>{rank}</label> 名

@@ -264,7 +264,7 @@ class EditRequest extends Component{
 
     render() {
         const {editType,selectedRow} = this.props.location.state;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator,getFieldError } = this.props.form;
         const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editRequestLoading,addRequestLoading,currentMilestone} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editRequestLoading||addRequestLoading ?true: false;
@@ -298,24 +298,23 @@ class EditRequest extends Component{
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout}  label="需求名称" >
-                        {getFieldDecorator('title',{rules:[{ required:true,message:'不能为空'}]})(<Input placeholder="title"/>)}
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求名称'}]})
+                        (<Input placeholder="请填写需求名称"/>)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="需求描述" >
-                        {getFieldDecorator('description',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="description" rows="5" />)}
+                        {getFieldDecorator('description',{rules:[{required:true,message:'请填写需求描述'}]})
+                        (<Input type="textarea" placeholder="请填写需求描述" rows="5" />)}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):helpMsg} validateStatus={validateStatus} >
+                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,message:'请选择计划完成时间'}]})
+                        (<DatePicker disabledDate={this.disabledDate.bind(this)}
+                                     onChange={this.getMilestone.bind(this)}
+                                     style={{ width: 300 }}  />)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="业务范畴" >
-                        {getFieldDecorator('labels',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
-                            <Select multiple
-                                    style={{ width: 300 }} >
-                                {labels}
-                            </Select>)
-                        }
-                    </FormItem>
-
-                    <FormItem {...formItemLayout} label="开发人员" >
+                    <FormItem {...formItemLayout} label="开发人员" help={getFieldError('assignee_develop_id')?getFieldError('assignee_develop_id'):this.props.developerWorkloder?'该员工在此里程碑下有待办任务'+this.props.developerWorkloder.taskNum+'项':''}>
                         {getFieldDecorator('assignee_develop_id',
-                            {rules:[{required:true, message:'不能为空'},
+                            {rules:[{required:true, message:'请选择开发人员'},
                                 { validator: this.checkDevelop.bind(this)}
                                 ]})(
                             <Select  showSearch
@@ -328,17 +327,16 @@ class EditRequest extends Component{
                                      onChange={this.changeDeveloper.bind(this)}>
                                 {developer}
                             </Select>)}
-                        {this.props.developerWorkloder?<span>  开发在该里程碑下有待办任务 {this.props.developerWorkloder.taskNum} 项</span>:<div/>}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="测试人员" >
+                    <FormItem {...formItemLayout} label="测试人员" help={getFieldError('assignee_test_id')?getFieldError('assignee_test_id'):this.props.testerWorkloader?'该员工在此里程碑下有待办任务'+this.props.testerWorkloader.taskNum+'项':''}>
                         {getFieldDecorator('assignee_test_id',
-                            {rules:[{required:true,message:'不能为空'},
+                            {rules:[{required:true,message:'请选择测试人员'},
                                 { validator: this.checkTest.bind(this)}
                                 ]})(
                             <Select  showSearch
                                      showArrow={false}
-                                     placeholder="请选择对应的测试人员"
+                                     placeholder="请选择测试人员"
                                      optionFilterProp="children"
                                      notFoundContent="无法找到"
                                      disabled={disabledEditTester}
@@ -346,14 +344,15 @@ class EditRequest extends Component{
                                      onChange={this.changeTester.bind(this)}>
                                 {tester}
                             </Select>)}
-                        {this.props.testerWorkloader?<span>  测试在该里程碑下有待办任务 {this.props.testerWorkloader.taskNum} 项</span>:<div/>}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="计划完成时间" help={helpMsg} validateStatus={validateStatus} >
-                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,type:'object',message:'不能为空'}]})
-                        (<DatePicker disabledDate={this.disabledDate.bind(this)}
-                                     onChange={this.getMilestone.bind(this)}
-                                     style={{ width: 300 }}  />)}
+                    <FormItem {...formItemLayout} label="业务范畴" >
+                        {getFieldDecorator('labels',{rules:[{ required:true,type:'array',message:'请选择业务范畴'}]})(
+                            <Select multiple
+                                    style={{ width: 300 }} >
+                                {labels}
+                            </Select>)
+                        }
                     </FormItem>
 
                     <FormItem {...formItemLayout}  label="文档上传" >
