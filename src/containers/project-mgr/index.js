@@ -61,7 +61,7 @@ class ProjectMgr extends React.Component{
             this.props.setSelectNode({node:node, isProject:false});
         }else if(node.id.indexOf("_") >= 0 && node.id.indexOf("_g") < 0){//点击项目节点
             var node_temp = node.id;
-            let groupInfo = {};
+            const groupInfo = {};
             this.props.getProjectInfo(node_temp.substr(0,node_temp.length-2),loginInfo.userId);
             this.props.getGroupInfo(groupInfo, node.id,node);
             PubSub.publish("onSelectProjectNode",{node:node, isProject:true});
@@ -82,8 +82,6 @@ class ProjectMgr extends React.Component{
                 });
             }
         }
-        //this.props.setSelectNode(node.id);
-
     }
 
     render(){

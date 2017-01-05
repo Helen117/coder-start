@@ -30,7 +30,7 @@ class CodeFiles extends React.Component {
 
     componentWillMount(){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(!this.isEmptyObject(projectInfo)){
             const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
             this.setState({
@@ -46,7 +46,7 @@ class CodeFiles extends React.Component {
         //默认跳转fileTree路由，以项目名称为参数调后台接口，dataSource初始化为返回的第一级数据.
         PubSub.subscribe("evtRefreshFileTree",this.refreshTreePath.bind(this));
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(!this.isEmptyObject(projectInfo)){
             this.props.fetchBranchesData(projectInfo.id);
             this.props.getCodeFile(projectInfo.id,"",this.state.brand);
@@ -59,7 +59,7 @@ class CodeFiles extends React.Component {
         if(this.props.project.getProjectInfo && project.getProjectInfo){
             if(this.props.project.getProjectInfo.projectInfo != project.getProjectInfo.projectInfo
                 && project.getProjectInfo.projectInfo){
-                let projectInfo = project.getProjectInfo.projectInfo;
+                const projectInfo = project.getProjectInfo.projectInfo;
                 if(projectInfo){
                     this.state.brand = 'dev';
                     this.props.fetchBranchesData(projectInfo.id);
@@ -83,7 +83,7 @@ class CodeFiles extends React.Component {
     }
 
     refreshTreePath(msg,data){
-        let path_temp = this.state.pathData;
+        const path_temp = this.state.pathData;
         path_temp.push({
             path:data.path,
             pathKey:this.state.activeKey + 1,
@@ -115,8 +115,9 @@ class CodeFiles extends React.Component {
         //当点击面包屑时，遍历path，找到点击的name，将此name后的元素都删掉。更新面包屑
         //以pathName传参，跳转到相应页面
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
-        let path_temp = this.state.pathData,type;
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const path_temp = this.state.pathData;
+        let type;
         let clickPathIndex;
         for(let i=0; i<path_temp.length; i++){
             if(pathName == path_temp[i].path){
@@ -161,7 +162,7 @@ class CodeFiles extends React.Component {
 
     changeSelect(value){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const pathData = [{path:projectInfo.name,pathKey:1,pathType:"tree" }];
         this.props.getCodeFile(projectInfo.id,"",value);
         this.setState({

@@ -51,10 +51,10 @@ class ProjectList extends Component {
             }
         }
         //删除项目更新项目组信息
-        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if (this.props.treeData != treeData && treeData.length>0){
             if(projectGroup.getGroupInfo){
-                let resetGroupInfo = searchGroupByGroupId(projectGroup.getGroupInfo.groupInfo.id,treeData);
+                const resetGroupInfo = searchGroupByGroupId(projectGroup.getGroupInfo.groupInfo.id,treeData);
                 if(resetGroupInfo){
                     this.props.setGroupInfo(resetGroupInfo, node.id,node);
                 }
@@ -76,7 +76,7 @@ class ProjectList extends Component {
 
     handleOk() {
         const {loginInfo,setProjectDelete,projectGroup} = this.props;
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         let projectId = findProjectIdByProjectName(this.state.selectProjectName, groupInfo);
         projectId = projectId.substr(0,projectId.length-2);
         //调删除项目的接口
@@ -123,31 +123,31 @@ class ProjectList extends Component {
     render() {
         const {visible,projectGroup,treeData, project} = this.props;
         let listType = false;
-        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
-        if(visible == true){
-            if(node.isLeaf==false && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
+        const node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        if(visible){
+            if(!node.isLeaf && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
                 //项目组节点下有项目
                 listType = true;
-            }else if(node.isLeaf==true && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
+            }else if(node.isLeaf && ((node.id.indexOf("_")<0 && node.id>0) || (node.id.indexOf("_g")>0))){
                 //项目组节点下没有项目
                 listType = true;
             }
         }
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         let dataSource = [],groupDesc = (<div></div>);
         if(treeData.length>0){
             dataSource = !this.isEmptyObject(groupInfo)?this.getDataSource(groupInfo):[];
             groupDesc = !this.isEmptyObject(groupInfo)?(
-                <Row>
-                    <Col span={4}>项目组名称：{groupInfo.name}</Col>
-                    <Col span={4}>项目组创建人：{groupInfo.owner}</Col>
-                    <Col span={16}>项目组创建目的：{groupInfo.description}</Col>
-                </Row>
+                <div>
+                    <span>项目组名称：{groupInfo.name}</span>
+                    <span style={{paddingLeft:20}}>项目组创建人：{groupInfo.owner}</span>
+                    <span style={{paddingLeft:20}}>项目组创建目的：{groupInfo.description}</span>
+                </div>
             ):(<div></div>);
         }
         const deleteLoading = project.deleteProject?project.deleteProject.loading:false;
 
-        if(listType == true){//展示项目组信息
+        if(listType){//展示项目组信息
             return (
                 <div>
                     <Row>
