@@ -155,7 +155,7 @@ class UpdateBasicInfo extends React.Component {
                                     rules: [{
                                         required: true,
                                         whitespace: true,
-                                        message: "邮箱",
+                                        message: "请输入邮箱！",
                                     }],initialValue:_email}
                                 )( <Input addonAfter={selectAfter}/> )}
                             </Col>

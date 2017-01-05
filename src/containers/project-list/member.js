@@ -214,11 +214,6 @@ class ProjectMember extends Component {
                     项目创建时间:{this.transformDate(projectInfo.create_date)}</span>
                 <span style={{paddingLeft:20}}>项目创建目的:{projectInfo.description}</span>
             </div>
-            /*<Row>
-                <Col span={8}>项目名称:{projectInfo.name}</Col>
-                <Col span={5}>项目创建时间:{this.transformDate(projectInfo.create_date)}</Col>
-                <Col span={11}>项目创建目的:{projectInfo.description}</Col>
-            </Row>*/
         ):(<div></div>);
         let projectId = projectInfo?projectInfo.id:'';
         let membersLoading = projectMember.getProjectMembers?projectMember.getProjectMembers.loading:false;
@@ -229,7 +224,8 @@ class ProjectMember extends Component {
                 {projectDesc}
                 <Table columns={columns} dataSource={dataSource}
                        rowSelection={rowSelection}
-                       loading={membersLoading}></Table>
+                       loading={membersLoading}
+                       style={{paddingTop:"10px"}}></Table>
                 <Modal title="添加成员"
                        width="80%"
                        visible={this.state.addProjectMember}

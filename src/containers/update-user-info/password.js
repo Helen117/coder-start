@@ -75,15 +75,11 @@ class UpdatePassword extends React.Component {
 
     handlePasswordBlur(e){
         const value = e.target.value;
-        console.log('!!value:',!!value)
-        console.log('this.state.passwordDirty---:',this.state.passwordDirty)
         this.setState({ passwordDirty: this.state.passwordDirty || !!value });
     }
 
     checkConfirm(rule, value, callback){
         const form = this.props.form;
-        console.log('value:',value)
-        console.log('this.state.passwordDirty:',this.state.passwordDirty)
         if (value && this.state.passwordDirty) {
             form.validateFields(['comfirm_password'], { force: true });
         }
@@ -92,18 +88,18 @@ class UpdatePassword extends React.Component {
 
     render() {
         const {visible} = this.props;
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldError} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 5},
             wrapperCol: {span: 8},
         };
         const oldPasswordProps = getFieldDecorator('old_password',
             {rules:[
-                {required:true, message:'请输入原始密码！'},
+                {required:true, message:'请输入原密码！'},
             ]})(<Input type="password" placeholder="请输入原密码"/>);
         const newPasswordProps = getFieldDecorator('new_password',
             {rules:[
-                {required:true, message:'请输入新密码！'},
+                {required:true,min:8,max:18, message:'请输入新密码,密码为8-18个字符！'},
                 {validator: this.checkConfirm.bind(this),},
             ]})(<Input type="password" placeholder="请输入新密码"
                        onBlur={this.handlePasswordBlur.bind(this)}/>);
@@ -122,7 +118,9 @@ class UpdatePassword extends React.Component {
                         {oldPasswordProps}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="新密码">
+                    <FormItem {...formItemLayout} label="新密码"
+                         help={getFieldError('new_password')?getFieldError('new_password'):"密码为8-18个字符！"}
+                    >
                         {newPasswordProps}
                     </FormItem>
 
