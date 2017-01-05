@@ -10,6 +10,10 @@ import {
    ACQUIRE_MY_ISSUE_LIST_PENDING,
    ACQUIRE_MY_ISSUE_LIST_SUCCESS,
    ACQUIRE_MY_ISSUE_LIST_ERROR,
+
+    ACQUIRE_USER_RANKING_PENDING,
+    ACQUIRE_USER_RANKING_SUCCESS,
+    ACQUIRE_USER_RANKING_ERROR,
     
 } from '../constants/home-action-types';
 
@@ -21,54 +25,38 @@ export function acqPerformanceMsg(state = initialState, action = {}) {
 
     switch (action.type) {
         case ACQUIRE_PERFORMANCE_MSG_PENDING:
-            return Object.assign({}, initialState, {loading:true});
-
+            return { ...state, performanceMsg:null, performanceMsgLoading:true};
         case ACQUIRE_PERFORMANCE_MSG_SUCCESS:
-            return Object.assign({}, initialState, {performanceMsg: action.payload,loading:false});
-
+            return { ...state, performanceMsg: action.payload,performanceMsgLoading:false};
         case ACQUIRE_PERFORMANCE_MSG_ERROR:
-            return {
-                ...state,
-                errors: action.payload.errorMsg,
-                loading:false,
-            };
+            return {...state, performanceMsg:null, performanceMsgLoading:false,};
 
-        default:
-            return state;
-    }
-}
-
-
-export function acqMyIssueList(state = initialState, action = {}) {
-
-    switch (action.type) {
+            
         case ACQUIRE_MY_ISSUE_LIST_PENDING:
-            return Object.assign({}, initialState, {loading:true});
-
+            return { ...state, myIssueList:null, myIssueListLoading:true};
         case ACQUIRE_MY_ISSUE_LIST_SUCCESS:
-            return Object.assign({}, initialState, {myIssueList: action.payload, loading:false});
-
+            return { ...state, myIssueList: action.payload, myIssueListLoading:false};
         case ACQUIRE_MY_ISSUE_LIST_ERROR:
-            return {
-                ...state,
-                errors: action.payload.errorMsg,
-                loading:false,
-            };
+            return { ...state, myIssueList:null, myIssueListLoading:false, };
 
-        default:
-            return state;
-    }
-}
 
-export function getNotifyItems(state = {}, action = {}) {
-    switch (action.type) {
+        case ACQUIRE_USER_RANKING_PENDING:
+            return { ...state, myRank:null, myRankLoading:true};
+        case ACQUIRE_USER_RANKING_SUCCESS:
+            return { ...state, myRank: action.payload, myRankLoading:false};
+        case ACQUIRE_USER_RANKING_ERROR:
+            return { ...state, myRank:null, myRankLoading:false, };
+            
+            
         case 'NOTIFY_ITEM_PENDING':
-            return Object.assign({}, {pending:true});
+            return { ...state, notifyItems:null, notifyItemsLoading:true};
         case 'NOTIFY_ITEM_SUCCESS':
-            return Object.assign({}, {notifyItems: action.payload,errors: null});
+            return { ...state, notifyItems: action.payload, notifyItemsLoading:false};
         case 'NOTIFY_ITEM_ERROR':
-            return Object.assign({},{notifyItems:null,errors: action.payload.errorMsg});
+            return { ...state, notifyItems:null, notifyItemsLoading:false};
+        
         default:
             return state;
     }
 }
+

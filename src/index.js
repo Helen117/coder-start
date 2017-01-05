@@ -31,7 +31,7 @@ import ProjectSetMilestones from './containers/project-set-milestone';
 
 import {RequirementConditionList,EditRequest} from './containers/request';
 
-import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail} from './containers/milestones'
+import {ProjectSetMilestonesEdit,ProjectSetMilestonesDetail,MilestoneRequest} from './containers/milestones'
 import  {AddIssue,IssueNotes,ProjectIssueList,MyIssueList,EditBug,AddRequest} from './containers/issues';
 import {ApproveList,RegistrationApproval,MrApproval} from './containers/approve';
 import {ConfirmList,DevelopConfirm,DevelopTransPond} from './containers/to-be-confirmed';
@@ -177,6 +177,7 @@ ReactDOM.render(
                         <Route name="testCase" breadcrumbName="测试案例" path="testCase" component={TestCase}/>
                         <Route name="testCaseEdit" breadcrumbName="测试案例编辑" path="testCaseEdit" component={EditTestCase}/>
                         <Route name="codeChanges" breadcrumbName="代码变更详情" path="CodeChanges" component={CodeChanges}/>
+                        <Route name="projectSetMilestonesRequest" breadcrumbName="需求列表" path="projectSetMilestonesRequest" component={MilestoneRequest}/>
 
                     </Route>
                     <Route path="register" component={Register}/>

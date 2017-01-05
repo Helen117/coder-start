@@ -20,7 +20,11 @@ import {
 
     ACQUIRE_MILESTONES_ISSUES_PENDING,
     ACQUIRE_MILESTONES_ISSUES_SUCCESS,
-    ACQUIRE_MILESTONES_ISSUES_ERROR
+    ACQUIRE_MILESTONES_ISSUES_ERROR,
+
+    ACQUIRE_MILESTONES_REQUEST_PENDING,
+    ACQUIRE_MILESTONES_REQUEST_SUCCESS,
+    ACQUIRE_MILESTONES_REQUEST_ERROR
 } from './milestones-action-types';
 
 const initialState = {
@@ -81,6 +85,16 @@ export function milestones(state = initialState, action = {}) {
             case ACQUIRE_MILESTONES_ISSUES_ERROR:
                 return {...state, milestoneIssues:null,acqIssuesLoading: false};
 
+
+            //acquire milestones request
+            case ACQUIRE_MILESTONES_REQUEST_PENDING:
+                return {...state,milestoneRequirement:null, milestoneRequirementLoading: true};
+
+            case ACQUIRE_MILESTONES_REQUEST_SUCCESS:
+                return {...state,milestoneRequirement: action.payload, milestoneRequirementLoading: false};
+
+            case ACQUIRE_MILESTONES_REQUEST_ERROR:
+                return {...state, milestoneRequirement:null, milestoneRequirementLoading: false};
 
             default:
                 return state;

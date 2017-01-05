@@ -406,8 +406,8 @@ function mapStateToProps(state) {
         currentMilestone: state.request.currentMilestone,
         developerWorkloder: state.request.developerWorkloder,
         testerWorkloader: state.request.testerWorkloader,
-        page: state.request.page,
         condition: state.request.queryCondition,
+        page: state.request.page,
     };
 }
 

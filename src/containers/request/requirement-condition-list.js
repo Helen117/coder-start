@@ -119,11 +119,11 @@ class RequirementConditionList extends Component {
                                         <FormItem label="状态" {...formItemLayout}>
                                             {getFieldDecorator('state')(<Select allowClear={true}>
                                                 <Option value="open">待确认</Option>
-                                                <Option value="test_confirmed_running">测试已确认</Option>
+                                                <Option value="test_confirmed_running">待开发</Option>
                                                 <Option value="develop_running">开发中</Option>
                                                 <Option value="test_running">测试中</Option>
                                                 <Option value="bug_to_be_confirmed_running">bug待确认</Option>
-                                                <Option value="bug_fixing_running">修复bug中</Option>
+                                                <Option value="bug_fix_running">修复bug中</Option>
                                                 <Option value="closed">已完成</Option>
                                             </Select>)}
                                         </FormItem>
@@ -192,7 +192,6 @@ class RequirementConditionList extends Component {
 function mapStateToProps(state) {
     return {
         requirementInfo: state.request.requirementInfo,
-        loginInfo:state.login.profile,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         developerInfo: state.request.developer,
         testerInfo: state.request.tester,

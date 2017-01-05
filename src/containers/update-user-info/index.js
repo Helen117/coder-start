@@ -69,9 +69,11 @@ class UpdateUserInfo extends React.Component {
                     </ul>
                 </Col>
                 <Col span={19}>
-                    <UpdatePassword visible={this.state.showPassword}/>
-                    <UpdateBasicInfo visible={this.state.showBasicInfo}/>
                     <UpdateSshKey visible={this.state.showSshKey}/>
+                    <div style={{paddingTop:"5%",paddingLeft:"15%"}}>
+                        <UpdatePassword visible={this.state.showPassword}/>
+                        <UpdateBasicInfo visible={this.state.showBasicInfo}/>
+                    </div>
                 </Col>
             </Row>
         )
