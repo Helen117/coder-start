@@ -20,7 +20,7 @@ export function searchUserGroupByProjectId(projectId,treeData) {
         for(var j=0;j<treeData[i].children.length;j++){
             var project_cat = treeData[i].children[j];
             for(var k=0; k<project_cat.children.length; k++){
-                let _projectId = project_cat.children[k].id;
+                const _projectId = project_cat.children[k].id;
                 if(projectId == _projectId.substr(0,_projectId.length-2)){
                     if((project_cat.id>0)||(project_cat.id.indexOf("_g")>0)){
                         groupInfo = project_cat;
@@ -104,12 +104,13 @@ export function isConserned(loginInfo,projectMembers,starList,projectInfo) {
             count++;
         }
     }
+    let consern_desc = "";
     if(count == 0 && count2 == 0){//未关注
-        var consern_desc = "关注";
+        consern_desc = "关注";
     }else if(count != 0 && count2 == 0){//已关注
-        var consern_desc = "取消关注";
+        consern_desc = "取消关注";
     }else{//项目成员
-        var consern_desc = "项目成员禁止取关";
+        consern_desc = "项目成员禁止取关";
     }
     return consern_desc;
 }

@@ -208,11 +208,17 @@ class ProjectMember extends Component {
             onChange:this.onSelectedChange.bind(this)
         };
         const projectDesc = projectInfo?(
-            <Row>
+            <div>
+                <span>项目名称:{projectInfo.name}</span>
+                <span style={{paddingLeft:20}}>
+                    项目创建时间:{this.transformDate(projectInfo.create_date)}</span>
+                <span style={{paddingLeft:20}}>项目创建目的:{projectInfo.description}</span>
+            </div>
+            /*<Row>
                 <Col span={8}>项目名称:{projectInfo.name}</Col>
                 <Col span={5}>项目创建时间:{this.transformDate(projectInfo.create_date)}</Col>
                 <Col span={11}>项目创建目的:{projectInfo.description}</Col>
-            </Row>
+            </Row>*/
         ):(<div></div>);
         let projectId = projectInfo?projectInfo.id:'';
         let membersLoading = projectMember.getProjectMembers?projectMember.getProjectMembers.loading:false;

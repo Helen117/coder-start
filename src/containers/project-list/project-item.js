@@ -31,7 +31,7 @@ class ProjectItem extends Component {
 
     componentDidMount() {
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(projectInfo){
             this.setState({
                 url: projectInfo.sshUrl,
@@ -47,7 +47,7 @@ class ProjectItem extends Component {
             })
         }
         const {loginInfo,projectGroup} = this.props;
-        let selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if(consernedInfo && this.props.consernedInfo ){
             if(consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
             && consernedInfo.consernedInfo){
@@ -64,7 +64,7 @@ class ProjectItem extends Component {
         }
 
         const {forkResult,project} = nextProps;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if (forkResult.forkProject&&this.props.forkResult.forkProject != forkResult.forkProject){
             PubSub.publish("evtRefreshGroupTree",{});
             this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
@@ -73,10 +73,6 @@ class ProjectItem extends Component {
             });
             message.success('Fork成功!',3);
         }
-        // else if(forkResult.errors && this.props.forkResult.errors != forkResult.errors){
-        //     // message.error('Fork失败!'+forkResult.errors,3);
-        //     this.errorMessage('Fork失败!',forkResult.errors);
-        // }
 
         if(projectInfo){
             this.setState({
@@ -107,7 +103,7 @@ class ProjectItem extends Component {
 
     handleOk(){
         const {actions,project,loginInfo} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(this.state.namespace){
             actions.forkProject(projectInfo.id,loginInfo.username,this.state.namespace);
         }else{
@@ -124,7 +120,7 @@ class ProjectItem extends Component {
 
     getForks(){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = projectInfo.id;
 
         this.context.router.push({
@@ -151,7 +147,7 @@ class ProjectItem extends Component {
 
     concernedChange(is_conserned){
         const {loginInfo,starActions,project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         var starInfo={
             username:null,
             projectId:null,
@@ -165,10 +161,10 @@ class ProjectItem extends Component {
         }
     }
 
-    memberCountClick(record){
+    memberCountClick(){
         //调member接口
         const { project } = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         this.props.getProjectMembers(projectInfo.id);
         this.setState({
             showProjectMember:true,
@@ -188,7 +184,7 @@ class ProjectItem extends Component {
     getDataSource(){
         const {project} = this.props;
         let dataSource = [];
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(projectInfo ){
             dataSource = [{
                 project_name:projectInfo.name,
@@ -207,7 +203,7 @@ class ProjectItem extends Component {
     render() {
         const {treeData,visible,project,forkResult} = this.props;
 
-        if(visible == true && treeData.length!=0){
+        if(visible && treeData.length!=0){
             const columns = (self)=>[
                 {title: "项目名称", dataIndex: "project_name", key: "project_name"},
                 {title: "项目描述", dataIndex: "description", key: "description"},
@@ -218,10 +214,8 @@ class ProjectItem extends Component {
                 },
                 {title: "当前里程碑结束时间", dataIndex: "current_milestom", key: "current_milestom"},
                 {title: "是否关注", dataIndex: "consern", key: "consern",
-                    render(text,record){
-                        if(text == '关注'){
-                            return <a onClick={self.concernedChange.bind(self,text)}>{text}</a>
-                        }else if(text == '取消关注'){
+                    render(text){
+                        if(text == '关注' || text == '取消关注'){
                             return <a onClick={self.concernedChange.bind(self,text)}>{text}</a>
                         }else if(text == '项目成员不能取消关注'){
                             return <a onClick={self.concernedChange.bind(self,text)} disabled>{text}</a>
@@ -231,7 +225,7 @@ class ProjectItem extends Component {
                 {title: "技术债务", dataIndex: "tech_debt", key: "tech_debt"},
                 {title: "单元测试覆盖率", dataIndex: "test_cover", key: "test_cover"},
             ];
-            let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+            const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
             const dataSource = this.getDataSource();
             const forkFrom =projectInfo&&projectInfo.forks_from?<strong> Forked from {projectInfo.forks_from}</strong>:'';
 
@@ -272,7 +266,7 @@ class ProjectItem extends Component {
                         </Modal>
                     </Row>
                     <Row>
-                        {this.state.showProjectMember==true?(
+                        {this.state.showProjectMember?(
                             <ProjectMember />
                         ):(<div></div>)}
                     </Row>

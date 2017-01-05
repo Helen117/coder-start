@@ -1,8 +1,3 @@
-/*
- * Copyright 2016 Asiainfo Technologies(China),Inc. All rights reserved.
- *
- */
-
 /**
  * Created by william.xu on 2016/9/20
  */
@@ -35,8 +30,8 @@ class ProjectDetail extends React.Component {
         const { actions, form, loginInfo, projectGroup } = this.props;
         const {selectedRow } = this.props.location.state;
         const {editType} = this.props.location.state;
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
-        form.validateFields((errors, values) => {
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -97,8 +92,8 @@ class ProjectDetail extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { project,list } = nextProps;
         const {projectGroup} = this.props;
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
-        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         const {editType} = this.props.location.state;
         //创建返回信息
         if(this.props.project.createProject && project.createProject){
@@ -116,12 +111,12 @@ class ProjectDetail extends React.Component {
         }
         //更新选择项目组信息
         if (this.props.list != list && list.length>0){
-            let groupId = groupInfo.id;
+            const groupId = groupInfo.id;
             if(editType != 'add'){
-                let resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
+                const resetGroupInfo = resetGroupInfoState(groupInfo,this.state.resetGroupInfo);
                 this.props.getGroupInfo(resetGroupInfo, groupId,node);
             }else{
-                let resetGroupInfo = searchGroupByGroupId(groupId,list);
+                const resetGroupInfo = searchGroupByGroupId(groupId,list);
                 this.props.getGroupInfo(resetGroupInfo, groupId,node);
             }
             this.context.router.goBack();
@@ -139,7 +134,7 @@ class ProjectDetail extends React.Component {
         const {selectedRow, } = this.props.location.state;
         const {setFieldsValue} = this.props.form;
         const {projectGroup} = this.props;
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         if (selectedRow){
             for(let i=0; i<groupInfo.children.length; i++){
                 if(selectedRow.projectName == groupInfo.children[i].name){

@@ -14,7 +14,6 @@ import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
 import PopoverImg from '../../components/popover-img/index-1';
-//import PopoverImg from '../../components/popover-img/index';
 import ProjectList from './project-list';
 import ProjectItem from './project-item';
 
@@ -156,7 +155,7 @@ class ProjectMgrSub extends React.Component{
 
     render(){
         const {currentTwoInfo,projectGroup} = this.props;
-        let groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const groupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         const content = (
             <div>
                 <a style={{paddingLeft:10}}
@@ -170,7 +169,7 @@ class ProjectMgrSub extends React.Component{
             </div>
         );
         let showProjectList=false,showProjectItem=false;
-        let node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
         if(node){
             if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){
                 showProjectList=true;
@@ -183,7 +182,7 @@ class ProjectMgrSub extends React.Component{
                 showProjectItem=false;
             }
         }
-        let deleteLoading = projectGroup.deleteGroup?projectGroup.deleteGroup.loading:false;
+        const deleteLoading = projectGroup.deleteGroup?projectGroup.deleteGroup.loading:false;
 
         return (
             <div>
@@ -214,9 +213,9 @@ class ProjectMgrSub extends React.Component{
                         >
                             <p>{groupInfo?groupInfo.name:''}</p>
                         </Modal>
-                        {showProjectList==true?(<ProjectList visible={showProjectList}
+                        {showProjectList?(<ProjectList visible={showProjectList}
                                                              node={node}/>):(<div></div>)}
-                        {showProjectItem==true?(<ProjectItem visible={showProjectItem}
+                        {showProjectItem?(<ProjectItem visible={showProjectItem}
                                                              node={node}/>
                         ):(<div></div>)}
                     </Row>
