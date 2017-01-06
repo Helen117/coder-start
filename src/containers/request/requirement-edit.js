@@ -300,9 +300,9 @@ class EditRequest extends Component{
             <Spin spinning={pending} >
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                    <FormItem {...formItemLayout}  label="需求名称" >
-                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求名称'}]})
-                        (<Input placeholder="请填写需求名称"/>)}
+                    <FormItem {...formItemLayout}  label="需求主题" >
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求主题'}]})
+                        (<Input placeholder="请填写需求主题"/>)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="需求描述" >
                         {getFieldDecorator('description',{rules:[{required:true,message:'请填写需求描述'}]})
