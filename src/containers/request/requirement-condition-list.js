@@ -30,6 +30,7 @@ class RequirementConditionList extends Component {
         }
         if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && ( !requirementInfo || requirementInfo.setsId != selectedProjectSet.selectedItemId)) {
             if(!loading){
+                this.props.form.resetFields();
                 const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
                 this.loadQueryOption(this.currentPage,queryCondition);
                 actions.getRequestInfo(this.currentPage, queryCondition);

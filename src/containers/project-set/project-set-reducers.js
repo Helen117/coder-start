@@ -108,11 +108,11 @@ export function projectSet(state = initialState, action = {}) {
 
 
         // get project info
-        case 'GET_PROJECT_INFO_PENDING':
+        case 'GET_PROJECT_INFORMATION_PENDING':
             return {...state, projectInfoLoading:true, projectInfo:null};
-        case 'GET_PROJECT_INFO_SUCCESS':
+        case 'GET_PROJECT_INFORMATION_SUCCESS':
             return {...state, projectInfoLoading:false, projectInfo:action.payload};
-        case 'GET_PROJECT_INFO_ERROR':
+        case 'GET_PROJECT_INFORMATION_ERROR':
             return {...state, projectInfoLoading:false, projectInfo:null};
 
 
