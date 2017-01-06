@@ -99,7 +99,7 @@ RequestList.prototype.columns = (self)=>[{
     title: '里程碑',
     dataIndex: 'milestone_name',
 },{
-    title: '需求名称',
+    title: '需求主题',
     dataIndex: 'title',
 },  {
     title: '描述',
@@ -143,11 +143,7 @@ RequestList.prototype.columns = (self)=>[{
     dataIndex: 'key',
     width: self.props.editable ? '8%':'0%',
     render: (text, record) => {
-        const userLimits = self.props.loginInfo.name == record.author? true: false;
-        const updateLimits = record.state=='已完成'?  true: false;
-        const deleteLimits = record.state=='进行中'?  true: false;
         return (<div>
-
             {record.state=='已完成'?<div/>:
                 record.state=='待确认'?<span> <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
                     <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
@@ -165,10 +161,5 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RequestList);
+export default connect(mapStateToProps)(RequestList);
 

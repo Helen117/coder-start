@@ -4,7 +4,6 @@
  */
 import React ,{PropTypes}from 'react';
 import { Calendar,Tooltip ,Progress,Icon,Badge} from 'antd';
-//import zhCN from 'antd/lib/calendar/locale/en_US';
 import './index.less';
 import moment from 'moment';
 import ReactDOM from 'react-dom'
@@ -32,7 +31,7 @@ export default class MilestonesCalendar extends React.Component{
     milestonesDetail(milestonesId, state,due_end){
         const id = this.props.id;
         let setId=null,projectId=null;
-        if(id.indexOf('_g')>0){
+        if(id.indexOf('_g')>-1){
             setId = this.props.projectId;
         }else{
             projectId = this.props.projectId;
@@ -95,20 +94,18 @@ export default class MilestonesCalendar extends React.Component{
         )
     }
     setMilestoneType(state,due_date){
-        let type = {};
+        let type = "default";
         if (state == 'closed'){
             type="success"
         }else if(state == 'active' && due_date <= Date.now() || state=='expired'){
             type="error"
-        }else{
-            type="default"
         }
         return type;
     }
 
     isRevocable(state,id){
         let revocable = false;
-        if(state != 'closed' && id.indexOf('_g')>0){
+        if(state != 'closed' && id.indexOf('_g')>-1){
             revocable = true;
         }
         return revocable;
@@ -174,7 +171,8 @@ export default class MilestonesCalendar extends React.Component{
                 const milestoneDueDate = moment(milestoneData[i].due_date).startOf('day').valueOf();
                 const colorId = i%6;
                 if(calendarTime <= milestoneDueDate){
-                    let milestoneMount = null,issuesMount = null, issuesList = [];
+                    let milestoneMount = null,issuesMount = null;
+                    const issuesList = [];
                     if(calendarTime == milestoneDueDate){
                         milestoneMount = this.getMilestoneData(milestoneData[i]);
                     }
@@ -202,10 +200,9 @@ export default class MilestonesCalendar extends React.Component{
         return <ul  style={{marginLeft:3}} className="events">
             {
                 milestoneList.map((item, index) => {
-                    const type = this.setMilestoneType(item.state, item.due_date)
                        return <li style={{paddingTop: 5}} key={index}>
                             <Tooltip key={index} placement="left" title={this.milestoneTooltip(item)}>
-                                {this.titleDecorate(item,calendarTime)}
+                                {this.titleDecorate(item)}
                             </Tooltip>
                         </li>
                     }
@@ -217,7 +214,7 @@ export default class MilestonesCalendar extends React.Component{
 
     monthCellRender(milestoneData,value){
         if(milestoneData) {
-            let milestoneList = [];
+            const milestoneList = [];
             for (let i = 0; i < milestoneData.length; i++) {
                 if (value.month() == new Date(milestoneData[i].due_date).getMonth()) {
                     milestoneList.push(milestoneData[i]);

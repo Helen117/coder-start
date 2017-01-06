@@ -14,8 +14,7 @@ export default class TransferFilter extends React.Component {
         }
 
     }
-    componentDidMount() {
-    }
+
 
     componentWillReceiveProps(nextProps) {
         const dataSource = nextProps.dataSource;
@@ -28,7 +27,6 @@ export default class TransferFilter extends React.Component {
 
     getMock(dataSource,targetData) {
         const mockData = [];
-        // const targetKeys = [];
         const targetKeys = targetData;
         if(dataSource){
             for(let i=0; i<dataSource.length; i++){
@@ -38,16 +36,6 @@ export default class TransferFilter extends React.Component {
                 };
                 mockData.push(data);
             }
-            // if(targetData){
-            //     for(let i=0; i<targetData.length; i++){
-                //     const data = {
-                //         key: targetData[i].id,
-                //         name: targetData[i].name,
-                //     };
-                    // mockData.push(data);
-                //     targetKeys.push(data.key)
-                // }
-            // }
         }
         this.setState({ mockData, targetKeys });
     }
@@ -72,7 +60,6 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
-        console.log('render',this.state.targetKeys)
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer

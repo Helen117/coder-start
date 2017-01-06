@@ -22,9 +22,6 @@ class RequirementInfo extends Component {
         }
     }
 
-    componentWillMount() {
-
-    }
 
     editRequest(type,selectedRow){
         this.context.router.push({
@@ -71,7 +68,7 @@ class RequirementInfo extends Component {
 
     }
 
-    changePage(pagination, filters, sorter) {
+    changePage(pagination) {
         const {actions} = this.props;
         actions.requestQueryCondition(pagination.current, this.props.condition);
         actions.getRequestInfo(pagination.current, this.props.condition);

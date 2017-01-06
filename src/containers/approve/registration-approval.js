@@ -27,7 +27,6 @@ class RegistrationApproval  extends Component {
         const nextResult = nextProps.result;
         const nextError = nextProps.error;
         const commit = nextProps.commitLoading;
-        const getDetailError = nextProps.getDetailError;
 
         // if(getDetailError&& getDetailError != this.props.getDetailError){
         //     // message.error('获取待审批详情失败！'+getDetailError,3);
@@ -56,7 +55,7 @@ class RegistrationApproval  extends Component {
     approve(type){
         const {actions,form,loginInfo} = this.props;
         const {record} = this.props.location.state;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {

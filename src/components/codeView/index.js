@@ -22,14 +22,12 @@ class CodeView extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
-    }
 
     render(){
         const {fileName,filePath,code} = this.props;
-        let index =0,categary='',imgPath='';
+        let categary='',imgPath='';
         if(fileName){
-            index = fileName.lastIndexOf('.');
+            const index = fileName.lastIndexOf('.');
             categary = fileName.substr(index+1,fileName.length);
         }
         if(filePath){
