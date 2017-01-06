@@ -4,22 +4,14 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Row, input, Spin} from 'antd';
-import SyntaxHighlighter from './syntaxhighlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import styles from "./index.css";
-
-const availableStyles = [
-    'docco',
-    'foundation',
-    'github',
-    'monokai',
-    'github-gist'
-];
 
 class CodeView extends React.Component {
     constructor(){
         super();
         this.state = {
-            style: require('./styles/atelier-dune-light').default,
+            style: require('react-syntax-highlighter/dist/styles/atelier-dune-light').default,
             code: '',
         }
     }
