@@ -13,7 +13,7 @@ export default class TableView extends Component{
         super(props);
     }
 
-    selectRow(record, index){
+    selectRow(record){
         const {onRowClick} = this.props;
         if (onRowClick){
             onRowClick(record);
@@ -31,10 +31,6 @@ export default class TableView extends Component{
         const pagination = {
             total: this.props.dataSource.length,
             showSizeChanger: true,
-            onShowSizeChange(current, pageSize) {
-            },
-            onChange(current) {
-            },
         };
 
         return(

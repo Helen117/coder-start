@@ -11,7 +11,7 @@ import { message, Modal, Spin, Alert, Row, Button} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 //import PopoverImg from '../../components/popover-img';
-import PopoverImg from '../../components/popover-img/index-1';
+import PopoverImg from '../../components/popover-img/popoverimg';
 import TableView from '../../components/table';
 import {deleteProjectSet,fetchProjectSetTree} from './project-set-action';
 
