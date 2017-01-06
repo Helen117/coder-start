@@ -91,7 +91,7 @@ export function getSetProject(userId, selectedProjectSet, editType) {
 export function getProjectInfo(project_id,user_id) {
     var path = '/project/info';
     return {
-        type: 'GET_PROJECT_INFO',
+        type: 'GET_PROJECT_INFORMATION',
         payload: {
             promise: api.post(path, {
                 params: {

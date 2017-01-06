@@ -270,6 +270,9 @@ class EditRequest extends Component{
         const buttonLoading = editRequestLoading||addRequestLoading ?true: false;
         const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
         let helpMsg = null, validateStatus="success";
+        if(getFieldError('expect_due_date')){
+            validateStatus="error";
+        }
         if(currentMilestone) {
             if(currentMilestone.length>0){
                 validateStatus="success";
@@ -307,12 +310,13 @@ class EditRequest extends Component{
                     </FormItem>
                     <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):helpMsg} validateStatus={validateStatus} >
                         {getFieldDecorator('expect_due_date',{rules:[{ required:true,message:'请选择计划完成时间'}]})
-                        (<DatePicker disabledDate={this.disabledDate.bind(this)}
+                        (<DatePicker allowClear={false}
+                                     disabledDate={this.disabledDate.bind(this)}
                                      onChange={this.getMilestone.bind(this)}
                                      style={{ width: 300 }}  />)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="开发人员" help={getFieldError('assignee_develop_id')?getFieldError('assignee_develop_id'):this.props.developerWorkloder?'该员工在此里程碑下有待办任务'+this.props.developerWorkloder.taskNum+'项':''}>
+                    <FormItem {...formItemLayout} label="开发人员" help={getFieldError('assignee_develop_id')?getFieldError('assignee_develop_id'):this.props.developerWorkloder?'该员工在此阶段有待办任务'+this.props.developerWorkloder.taskNum+'项':''}>
                         {getFieldDecorator('assignee_develop_id',
                             {rules:[{required:true, message:'请选择开发人员'},
                                 { validator: this.checkDevelop.bind(this)}
@@ -329,7 +333,7 @@ class EditRequest extends Component{
                             </Select>)}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="测试人员" help={getFieldError('assignee_test_id')?getFieldError('assignee_test_id'):this.props.testerWorkloader?'该员工在此里程碑下有待办任务'+this.props.testerWorkloader.taskNum+'项':''}>
+                    <FormItem {...formItemLayout} label="测试人员" help={getFieldError('assignee_test_id')?getFieldError('assignee_test_id'):this.props.testerWorkloader?'该员工在此阶段有待办任务'+this.props.testerWorkloader.taskNum+'项':''}>
                         {getFieldDecorator('assignee_test_id',
                             {rules:[{required:true,message:'请选择测试人员'},
                                 { validator: this.checkTest.bind(this)}
