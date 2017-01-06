@@ -93,7 +93,11 @@ class MenuBar extends React.Component {
         //待修改内容，当点击二级菜单时，要默认展示三级菜单的第一个
         const currentMenuTwo = findDefaultMenuThree(e.key,this.selectNaviOne);
         const {menuData} = this.props;
-        const menuLink = findMenuLink(currentMenuTwo,menuData);
+        let menuLink;
+        menuLink = findMenuLink(currentMenuTwo,menuData);
+        if(!menuLink){
+            menuLink = findMenuLink(e.key.replace("menu",""),menuData);
+        }
         this.context.router.push({
             pathname: menuLink
         });

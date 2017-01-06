@@ -2,7 +2,7 @@
  * Created by helen on 15016/9/19.
  */
 import React, {PropTypes,Component} from 'react';
-import { Button,notification,Form,Select,DatePicker,Col,Row ,Icon,Collapse } from 'antd';
+import { Button,notification,Form,Select,DatePicker,Col,Row ,Icon,Collapse,Alert } from 'antd';
 import Box from '../../components/box';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -37,7 +37,7 @@ class ProjectIssueList extends Component {
         if(!this.isEmptyObject(projectInfo)) {
             actions.fetchProjectDeveloper(projectInfo.id);
             actions.fetchProjectMilestone(projectInfo.id);
-            actions.fetchProjectLabel(projectInfo.id);
+            // actions.fetchProjectLabel(projectInfo.id);
             getUserAction.getAllUser();
             var data = {project_id: projectInfo.id};
             actions.getIssueList(data);
@@ -85,13 +85,26 @@ class ProjectIssueList extends Component {
             actions.getIssueList(data);
             actions.fetchProjectDeveloper(nextProId);
             actions.fetchProjectMilestone(nextProId);
-            actions.fetchProjectLabel(nextProId);
+            // actions.fetchProjectLabel(nextProId);
         }
 
         // if(errorMsg&&errorMsg!=this.props.errors){
         //     // message.error('获取数据失败'+errorMsg,3);
         //     this.errorMessage('获取数据失败!',errorMsg);
         // }
+    }
+
+    shouldComponentUpdate(nextprops,nextState){
+        //const getProjectInfo = nextprops.getProjectInfo;
+        const {project} = nextprops;
+        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        //console.log(nextprops,nextState)
+        if(this.isEmptyObject(projectInfo)){
+            return false;
+        }else{
+            return true;
+        }
+
     }
 
     // errorMessage(info,error){
@@ -118,7 +131,8 @@ class ProjectIssueList extends Component {
             assigned_id:data.assignee,
             author_id:data.author_name,
             state:data.state,
-            labeles:data.label,
+            // labeles:data.label,
+            type:data.type,
             start:data.created_at&&data.created_at.length>0?data.created_at[0].valueOf():'',
             end:data.created_at&&data.created_at.length>0?data.created_at[1].valueOf():'',
             due_start:data.due_date&&data.due_date.length>0?data.due_date[0].valueOf():'',
@@ -146,6 +160,8 @@ class ProjectIssueList extends Component {
         const { getFieldDecorator } = this.props.form;
         const {project} = this.props;
         let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
+
         const formItemLayout = {
             labelCol: { span: 8 },
             wrapperCol: { span: 16 },
@@ -156,10 +172,10 @@ class ProjectIssueList extends Component {
 
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
-        const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
+        // const label =this.props.labels?this.props.labels.map(data => <Option key={data.name}>{data.name}</Option>):[];
 
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
-        if(!this.isEmptyObject(projectInfo)) {
+        if(projectId) {
             return (
                 <div style={{marginLeft:'10px'}}>
                     <Collapse defaultActiveKey={['1']}>
@@ -197,15 +213,11 @@ class ProjectIssueList extends Component {
                                         </FormItem>
                                     </Col>
                                     <Col sm={10}>
-                                        <FormItem label="问题标签" {...formItemLayout}>
-                                            {getFieldDecorator('label')(
-                                                <Select showSearch
-                                                        showArrow={false}
-                                                        placeholder="请选择标签"
-                                                        optionFilterProp="children"
-                                                        notFoundContent="无法找到">
-                                                    {label}
-                                                </Select>)}
+                                        <FormItem label="问题类型" {...formItemLayout}>
+                                            {getFieldDecorator('type')(<Select allowClear={true}>
+                                                <Option value="demand">需求</Option>
+                                                <Option value="bug">bug</Option>
+                                            </Select>)}
                                         </FormItem>
                                         <FormItem label="创建时间" {...formItemLayout}>
                                             {getFieldDecorator('created_at')(<RangePicker size="default"/>)}
@@ -249,9 +261,12 @@ class ProjectIssueList extends Component {
             )
         }else {
             return(
-                <div className="null_type_div">
-                <span><Icon type="exclamation-circle-o" />   请选择一个项目</span>
-                </div>
+                <Alert style={{margin:10}}
+                       message="请从左边的项目树中选择一个具体的项目！"
+                       description=""
+                       type="warning"
+                       showIcon
+                />
             )
         }
     }
@@ -268,7 +283,7 @@ ProjectIssueList = Form.create()(ProjectIssueList);
 function mapStateToProps(state) {
     return {
         milestones:state.issue.milestones,
-        labels:state.issue.labels,
+        // labels:state.issue.labels,
         members : state.issue.members,
         loading:state.issue.loading,
         issueList: state.issue.issueList,
