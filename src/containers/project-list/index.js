@@ -13,7 +13,7 @@ import { Row, notification, Modal, message, Form, Alert, Button,Affix } from 'an
 import {getGroupTree} from '../project-mgr/actions/group-tree-action';
 import {setGroupDelete} from '../project-mgr/actions/create-group-action';
 import 'pubsub-js';
-import PopoverImg from '../../components/popover-img/index-1';
+import PopoverImg from '../../components/popover-img/popoverimg';
 import ProjectList from './project-list';
 import ProjectItem from './project-item';
 

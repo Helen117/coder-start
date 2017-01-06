@@ -2,7 +2,6 @@
  * Created by Administrator on 2016-12-23.
  */
 import React, {PropTypes} from 'react';
-import {Popover, Icon,Row,Col} from 'antd';
 import styles from './index-1.css';
 
 export default class ToolTipDiv extends React.Component {
@@ -13,7 +12,7 @@ export default class ToolTipDiv extends React.Component {
     render(){
         const {content,visible} = this.props;
 
-        if(visible == true){
+        if(visible){
             return (
                 <div className={styles.tooltip_div}>
                     <div style={{padding:'5px 10px 5px 10px'}}>
