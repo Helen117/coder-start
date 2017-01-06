@@ -59,7 +59,7 @@ class MergeRequestList extends React.Component {
                     state: {record: '',projectId:mergeBranch[0].id}
                 });
             }else{
-                this.errCallback('无需合并','您当前无待办事项，不能代码合并请求');
+                this.errCallback('无需合并','您当前在该项目下无待办事项，不能请求代码合并');
             }
 
         }
