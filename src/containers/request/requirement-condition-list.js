@@ -28,13 +28,11 @@ class RequirementConditionList extends Component {
         if(condition){
             form.setFieldsValue(condition);
         }
-        if (selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && ( !requirementInfo || requirementInfo.setsId != selectedProjectSet.selectedItemId)) {
-            if(!loading){
-                this.props.form.resetFields();
-                const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
-                this.loadQueryOption(this.currentPage,queryCondition);
-                actions.getRequestInfo(this.currentPage, queryCondition);
-            }
+        if (!loading && selectedProjectSet && selectedProjectSet.id.indexOf('g') != -1 && ( !requirementInfo || requirementInfo.setsId != selectedProjectSet.selectedItemId)) {
+            this.props.form.resetFields();
+            const queryCondition = {sets_id: selectedProjectSet.selectedItemId}
+            this.loadQueryOption(this.currentPage,queryCondition);
+            actions.getRequestInfo(this.currentPage, queryCondition);
 
         }
     }
@@ -60,7 +58,7 @@ class RequirementConditionList extends Component {
         actions.getTesterInfo(queryCondition.sets_id,'set',20);
     }
 
-    handleReset(e) {
+    handleReset() {
         this.props.form.resetFields();
         this.props.actions.requestQueryCondition(this.currentPage, null);
     }
@@ -110,15 +108,15 @@ class RequirementConditionList extends Component {
                                         </FormItem>
                                     </Col>
                                     <Col sm={8}>
-                                        <FormItem label="需求名称" {...formItemLayout} >
+                                        <FormItem label="需求主题" {...formItemLayout} >
                                             {getFieldDecorator('title')(
-                                                <Input  placeholder="请输入需求名称"/>
+                                                <Input  placeholder="请输入需求主题"/>
                                             )}
                                         </FormItem>
                                     </Col>
                                     <Col sm={8}>
                                         <FormItem label="状态" {...formItemLayout}>
-                                            {getFieldDecorator('state')(<Select allowClear={true}>
+                                            {getFieldDecorator('state')(<Select allowClear={true} placeholder="请选择需求状态">
                                                 <Option value="open">待确认</Option>
                                                 <Option value="test_confirmed_running">待开发</Option>
                                                 <Option value="develop_running">开发中</Option>

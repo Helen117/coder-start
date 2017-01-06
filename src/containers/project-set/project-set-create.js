@@ -85,6 +85,7 @@ class ProjectSetCreate extends React.Component {
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }

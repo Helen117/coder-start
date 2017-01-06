@@ -82,7 +82,7 @@ export function projectSet(state = initialState, action = {}) {
             return {...state,getProjectInfoLoading: true, dataSource:[], targetKeys:[]};
 
         case GET_SET_PROJECTS_SUCCESS:
-            let targetKeys=[],dataSource=[];
+            const targetKeys=[],dataSource=[];
             for(let i=0; i<action.payload.length; i++){
                 const data = {
                     id: action.payload[i].id,

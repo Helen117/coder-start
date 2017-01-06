@@ -27,11 +27,8 @@ class MilestoneRequest extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
 
-    }
-
-    changePage(pagination, filters, sorter) {
+    changePage(pagination) {
         const queryCondition = this.props.location.state;
         const {getMilestonesRequestAction} = this.props;
         this.setState({

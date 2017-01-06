@@ -10,7 +10,6 @@ import 'pubsub-js';
 import { message, Modal, Spin, Alert, Row, Button} from 'antd';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-//import PopoverImg from '../../components/popover-img';
 import PopoverImg from '../../components/popover-img/popoverimg';
 import TableView from '../../components/table';
 import {deleteProjectSet,fetchProjectSetTree} from './project-set-action';
@@ -29,9 +28,6 @@ class SelectedSetInfo extends Component {
         const {delResult} = nextProps;
         const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
         const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
-        if(thisId != nextId && nextId){
-
-        }
         if(this.props.delResult != delResult && delResult){
             this.successCallback('删除成功')
         }
@@ -75,6 +71,7 @@ class SelectedSetInfo extends Component {
                         deleteProjectSetAction(selectedProjectSet.selectedItemId, userId);
                     },
                     onCancel() {
+                        //do nothing
                     }
                 })
             }
