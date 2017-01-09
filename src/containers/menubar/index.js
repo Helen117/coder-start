@@ -9,7 +9,7 @@ import {getMenuBarInfo} from './actions/menubar-action';
 import 'pubsub-js';
 import './index.less';
 import {findMenuLink, findDefaultMenuBar, findMenuBarInfoByLocation, findDefaultMenuThree,
-    findMenuOneIndex, findMenuTwoIndex, findCurrentMenuOne, hasMenuOneOrTwo} from './utils';
+    findMenuOneIndex, findMenuTwoIndex, findCurrentMenuOne, haveSubMenu} from './utils';
 
 let currentOne,currentTwo;
 const topMenuOne_temp=[];
@@ -171,9 +171,17 @@ class MenuBar extends React.Component {
             }else{return menutwo_null;}
         });
         //是否存在二级菜单和三级菜单
-        const {haveMenuOne,haveMenuTwo} = hasMenuOneOrTwo(this.selectNaviOne);
-        const topMenuTwo_1=[];let topMenuTwo_tmp;
+        let haveMenuOne = false,haveMenuTwo = false;
+        if(this.selectNaviOne && this.selectNaviOne.length != 0){
+            haveMenuOne = haveSubMenu(this.selectNaviOne[0].id,menuData);
+        }
+        currentOne = haveMenuOne ? [this.state.currentMenuOne] : [];
         const selectMenuOne = this.state.currentMenuOne.replace("menu","");
+        if(haveMenuOne){
+            haveMenuTwo = haveSubMenu(selectMenuOne,menuData);
+        }
+        currentTwo = haveMenuTwo ? [this.state.currentMenuTwo] : [];
+        const topMenuTwo_1=[];let topMenuTwo_tmp;
         if(topMenuTwo && topMenuTwo.length > 0 && topMenuTwo[0].length > 0){//顶部二级菜单，结构[[{},{},{]]]
             topMenuTwo_tmp = topMenuTwo[0];
             const menuOneIndex = findMenuOneIndex(selectMenuOne, topMenuOne_temp[0]);
@@ -181,8 +189,6 @@ class MenuBar extends React.Component {
                 topMenuTwo_1[0] = topMenuTwo_tmp[menuOneIndex];
             }
         }
-        currentOne = haveMenuOne ? [this.state.currentMenuOne] : [];
-        currentTwo = haveMenuTwo ? [this.state.currentMenuTwo] : [];
 
         return (
             <div className="menu-area">
