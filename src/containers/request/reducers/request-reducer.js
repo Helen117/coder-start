@@ -91,6 +91,14 @@ export default function request(state = initialState, action = {}) {
         case 'GET_TESTER_WORKLOAD_ERROR':
             return {...state, testerWorkloader: null};
 
+        //get request state
+        case 'GET_REQUEST_STATE_PENDING':
+            return {...state, requestState: null};
+        case 'GET_REQUEST_STATE_SUCCESS':
+            return {...state, requestState: action.payload};
+        case 'GET_REQUEST_STATE_ERROR':
+            return {...state, requestState: null};
+
         //put query condition into state
         case 'REQUEST_QUERY_CONDITION':
             return {...state, queryCondition: action.queryCondition, page: action.page};
