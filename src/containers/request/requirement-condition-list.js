@@ -3,7 +3,7 @@
  */
 
 import React, {PropTypes,Component} from 'react';
-import { Collapse ,Form,Input, Row,Col ,Select ,DatePicker ,Alert, AutoComplete ,Button  } from 'antd';
+import { Collapse ,Form,Input, Row,Col ,Select ,DatePicker ,Alert, TreeSelect  ,Button  } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import RequirementInfo from './requirement';
@@ -56,6 +56,7 @@ class RequirementConditionList extends Component {
         this.props.actions.getMilestoneByName(queryCondition.sets_id,'');
         actions.getDeveloperInfo(queryCondition.sets_id,'set',30);
         actions.getTesterInfo(queryCondition.sets_id,'set',20);
+        actions.getRequestState(queryCondition.sets_id);
     }
 
     handleReset() {
@@ -87,6 +88,8 @@ class RequirementConditionList extends Component {
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const state = this.props.requestState? this.props.requestState :[];
+
         if(projectId) {
             return(
                 <div style={{marginLeft:'10px'}}>
@@ -116,6 +119,16 @@ class RequirementConditionList extends Component {
                                     </Col>
                                     <Col sm={8}>
                                         <FormItem label="状态" {...formItemLayout}>
+                                            {getFieldDecorator('states')
+                                            (<TreeSelect
+                                                treeDefaultExpandAll
+                                                showCheckedStrategy='SHOW_PARENT'
+                                                treeData = {state}
+                                                multiple= {true}
+                                                treeCheckable= {true}
+                                                searchPlaceholder= '请选择需求状态' />)}
+                                        </FormItem>
+                                        {/*<FormItem label="状态" {...formItemLayout}>
                                             {getFieldDecorator('state')(<Select allowClear={true} placeholder="请选择需求状态">
                                                 <Option value="open">待确认</Option>
                                                 <Option value="test_confirmed_running">待开发</Option>
@@ -125,7 +138,7 @@ class RequirementConditionList extends Component {
                                                 <Option value="bug_fix_running">修复bug中</Option>
                                                 <Option value="closed">已完成</Option>
                                             </Select>)}
-                                        </FormItem>
+                                        </FormItem>*/}
                                      </Col>
                                     </Row>
                                 <Row gutter={16}>
@@ -195,6 +208,7 @@ function mapStateToProps(state) {
         developerInfo: state.request.developer,
         testerInfo: state.request.tester,
         matchMilestone: state.request.matchMilestone,
+        requestState: state.request.requestState,
         page: state.request.page,
         condition: state.request.queryCondition,
         loading: state.request.loading,
