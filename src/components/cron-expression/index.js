@@ -28,7 +28,7 @@ class CronExpression extends React.Component{
         const {expression} = nextProps;
         if(expression != this.props.expression && expression){
             this.splitCronExpression(expression);
-        }else if(this.state.visible == false && !expression){
+        }else if(!this.state.visible && !expression){
             const {form} = this.props;
             form.resetFields();
             this.setState({
@@ -40,11 +40,11 @@ class CronExpression extends React.Component{
 
     splitCronExpression(expression){
         const {setFieldsValue} = this.props.form;
-        let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
-        let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
-        let reg_perhour = /^\*\/[1-9]\d*$/;
-        let reg_perminute = /^\*\/[1-9]\d*$/;
-        let expression_array = expression.split(' ');
+        const reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
+        const reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
+        const reg_perhour = /^\*\/[1-9]\d*$/;
+        const reg_perminute = /^\*\/[1-9]\d*$/;
+        const expression_array = expression.split(' ');
         if(expression_array[2]!='*' || expression_array[3]!='*'
             || expression_array[4]!='*'){
             this.setState({
@@ -60,8 +60,8 @@ class CronExpression extends React.Component{
                 this.setState({
                     radioValue:2,
                 });
-                let index = expression_array[0].indexOf('/');
-                let per_minute = expression_array[0].substr(index+1,expression_array[0].length);
+                const index = expression_array[0].indexOf('/');
+                const per_minute = expression_array[0].substr(index+1,expression_array[0].length);
                 setFieldsValue({
                     expression:'',
                     minute:[],
@@ -73,8 +73,8 @@ class CronExpression extends React.Component{
                 this.setState({
                     radioValue:2,
                 });
-                let index = expression_array[1].indexOf('/');
-                let per_hour = expression_array[1].substr(index+1,expression_array[1].length);
+                const index = expression_array[1].indexOf('/');
+                const per_hour = expression_array[1].substr(index+1,expression_array[1].length);
                 setFieldsValue({
                     expression:'',
                     minute:[],
@@ -93,9 +93,8 @@ class CronExpression extends React.Component{
                 });
             }
         }else{
-            //let minute = expression_array[0].split(',');
-            let minute = expression_array[0];
-            let hour = expression_array[1].split(',');
+            const minute = expression_array[0];
+            const hour = expression_array[1].split(',');
             this.setState({
                 radioValue:1,
             });
@@ -107,7 +106,7 @@ class CronExpression extends React.Component{
         }
     }
 
-    handleChange(value) {
+    handleChange() {
         this.setState({
             radioValue:1
         })
@@ -129,11 +128,11 @@ class CronExpression extends React.Component{
         if (!cron){
             return '';
         }
-        let reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
-        let reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
-        let reg_perhour = /^\*\/[1-9]\d*$/;
-        let reg_perminute = /^\*\/[1-9]\d*$/;
-        let cron_array = cron.split(' ');
+        const reg_minute = /^([0-5]?\d)(,([0-5]?\d))*$/;
+        const reg_hour = /^(2[0-3]|[0-1]?\d)(,(2[0-3]|[0-1]?\d))*$/;
+        const reg_perhour = /^\*\/[1-9]\d*$/;
+        const reg_perminute = /^\*\/[1-9]\d*$/;
+        const cron_array = cron.split(' ');
         if(cron_array.length!=5){
             return cron
         }
@@ -144,17 +143,16 @@ class CronExpression extends React.Component{
         if(!reg_minute.test(cron_array[0]) || !reg_hour.test(cron_array[1])){
             if((reg_perminute.test(cron_array[0]) && cron_array[1]=='*')
                 || (reg_perhour.test(cron_array[1]) && cron_array[0]=='*')){
-                let expression_desc = this.cronToDesc(null,null);
+                const expression_desc = this.cronToDesc(null,null);
                 return expression_desc;
             }else {
                 return cron;
             }
         }else{
-            let hour_temp = cron_array[1];
-            let minute = cron_array[0];
-            let hour = hour_temp.split(',');
-            //let minute = minute_temp.split(',');
-            let expression_desc = this.cronToDesc(hour,minute);
+            const hour_temp = cron_array[1];
+            const minute = cron_array[0];
+            const hour = hour_temp.split(',');
+            const expression_desc = this.cronToDesc(hour,minute);
             return expression_desc;
         }
     }
@@ -165,19 +163,19 @@ class CronExpression extends React.Component{
         });
         const {getFieldsValue} = this.props.form;
         const {setCron} = this.props;
-        let formData = getFieldsValue();
+        const formData = getFieldsValue();
         let final_expression='',expression_desc='';
-        let cronExpression = [];
-        cronExpression[2] = '*'; cronExpression[3] = '*'; cronExpression[4] = '*';
+        const cronExpression = [];
+        cronExpression[2] = cronExpression[3] = cronExpression[4] = '*';
         if(this.state.radioValue == 1){
-            let hour,minute;
+            let hour;
             if(formData.hour.length==0 || formData.minute.length==0){
                 final_expression=''
             }else{
                 expression_desc = this.cronToDesc(formData.hour,formData.minute);
                 hour = formData.hour.join();
-                //minute = formData.minute.join();
-                cronExpression[0] = formData.minute; cronExpression[1] = hour;
+                cronExpression[0] = formData.minute;
+                cronExpression[1] = hour;
                 final_expression = cronExpression.join(' ');
             }
         }else if(this.state.radioValue == 3){
@@ -185,11 +183,13 @@ class CronExpression extends React.Component{
             expression_desc = formData.expression;
         }else if(this.state.radioValue == 2){
             if(formData.grading == 'perhour'){
-                cronExpression[0] = '*'; cronExpression[1] = '*/'+formData.percent;
+                cronExpression[0] = '*';
+                cronExpression[1] = '*/'+formData.percent;
                 final_expression = cronExpression.join(' ');
                 expression_desc = this.cronToDesc(null,null);
             }else if(formData.grading == 'perminute'){
-                cronExpression[0] = '*/'+formData.percent; cronExpression[1] = '*';
+                cronExpression[0] = '*/'+formData.percent;
+                cronExpression[1] = '*';
                 final_expression = cronExpression.join(' ');
                 expression_desc = this.cronToDesc(null,null);
             }
@@ -197,12 +197,6 @@ class CronExpression extends React.Component{
         if(setCron){
             setCron(final_expression,expression_desc);
         }
-        /*const {form} = this.props;
-        form.resetFields();
-        this.setState({
-            radioValue:1,
-            isPercentHour:true
-        })*/
     }
 
     cronToDesc(hour,minute){
@@ -210,16 +204,13 @@ class CronExpression extends React.Component{
         if(this.state.radioValue == 1){
             let expression_desc_temp = [];
             for(let i=0; i<hour.length; i++){
-                /*for(let j=0; j<minute.length; j++){
-                    expression_desc_temp.push(hour[i]+'点'+minute[j]+'分')
-                }*/
                 expression_desc_temp.push(hour[i]+'点'+minute+'分')
             }
             expression_desc = expression_desc_temp.join(' ');
             expression_desc = '每天： '+expression_desc+' 执行';
         }else if(this.state.radioValue == 2){
             const {getFieldsValue} = this.props.form;
-            let formData = getFieldsValue();
+            const formData = getFieldsValue();
             if(formData.grading == 'perhour'){
                 expression_desc = '每隔： '+formData.percent+' 小时执行';
             }else if(formData.grading == 'perminute'){
@@ -233,15 +224,9 @@ class CronExpression extends React.Component{
         this.setState({
             visible:false
         });
-        /*const {form} = this.props;
-        form.resetFields();
-        this.setState({
-            radioValue:1,
-            isPercentHour:true
-        })*/
     }
 
-    percentChange(value){
+    percentChange(){
         this.setState({
             radioValue:2
         })
@@ -271,7 +256,7 @@ class CronExpression extends React.Component{
         for (let i = 0; i < 60; i++) {
             minute.push(<Option key={i}>{i}分</Option>);
         }
-        let percentHour = [],percentMinute = [];
+        const percentHour = [],percentMinute = [];
         for (let i = 0; i < 24; i++) {
             percentHour.push(<Option key={i}>{i}</Option>);
         }

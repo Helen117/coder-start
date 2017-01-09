@@ -22,7 +22,7 @@ class CreateBranches extends Component {
 
     componentDidMount() {
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(projectInfo.id) {
             this.props.fetchBranchesData(projectInfo.id);
         }else{
@@ -42,7 +42,7 @@ class CreateBranches extends Component {
 
     insertCallback(type){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         message.success(type);
         this.context.router.goBack();
         this.props.fetchBranchesData(projectInfo.id);
@@ -89,7 +89,7 @@ class CreateBranches extends Component {
     handleSubmit(e) {
         e.preventDefault();
         const {project,loginInfo} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const {form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {

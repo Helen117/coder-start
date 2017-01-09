@@ -19,14 +19,6 @@ export function getMenuBarInfoFail() {
 
 
 export function getMenuBarInfo(currentOneInfo, currentTwoInfo) {
-    // return (dispatch) => {
-    //     /*if(currentOneInfo){*/
-    //         console.log("888");
-    //         dispatch(getMenuBarInfoSuss(currentOneInfo));
-    //     /*}else{
-    //         dispatch(getMenuBarInfoFail());
-    //     }*/
-    // }
     if (currentOneInfo){
         return getMenuBarInfoSuss(currentOneInfo, currentTwoInfo);
     }else{

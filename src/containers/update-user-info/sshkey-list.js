@@ -54,6 +54,7 @@ class SshKeyList extends React.Component {
                 actions.DeleteSshKeys(loginInfo.userId,key_id)
             },
             onCancel() {
+                //取消
             }
         })
     }
@@ -64,7 +65,7 @@ class SshKeyList extends React.Component {
         if(GetSshkey){
             if(GetSshkey.getResult){
                 keyProps = GetSshkey.getResult.map((item)=>{
-                    let panelTitle = (
+                    const panelTitle = (
                         <div style={{fontSize:14}}>
                             <Col span={21}>{item.title}</Col>
                             <Col span={1}></Col>

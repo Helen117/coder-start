@@ -2,9 +2,8 @@
  * Created by Administrator on 2016-11-14.
  */
 import React, {PropTypes} from 'react';
-import {Icon,Dropdown,Menu,Form,Input,Row,Col} from 'antd';
+import {Icon,Dropdown,Menu,Form,Input} from 'antd';
 import 'pubsub-js';
-import styles from './index.css';
 import {findFilterIndex} from './util';
 
 const FormItem = Form.Item;
@@ -31,7 +30,7 @@ class TableFilterTitle extends React.Component {
     }
 
     filterData(dataSource,filterKey,formData){
-        let newData=[];
+        const newData=[];
         for(let i=0; i<dataSource.length; i++){
             if(dataSource[i][filterKey].indexOf(formData) >=0 ){
                 newData.push(dataSource[i]);
@@ -40,32 +39,49 @@ class TableFilterTitle extends React.Component {
         return newData;
     }
 
-    clickFilterImg(e){
+    clickFilterImg(){
         this.setState({
             visible:!this.state.visible
         })
-        let node = document.getElementById('searchContext');
-        //node.focus();
-        console.log('node:',node)
+    }
+
+    setStateFilterKeys(filterKey,formData){
+        let countKey_1 = 0;
+        for(let i=0; i<this.state.filterKeys.length; i++){
+            if(filterKey == this.state.filterKeys[i].filterKey){
+                countKey_1++;
+                this.state.filterKeys[i].formData = formData;
+            }
+        }
+        if(countKey_1 == 0){
+            this.state.filterKeys.push({filterKey:filterKey,formData:formData});
+        }
+    }
+
+    setFilterKeys(filterKeys){
+        let countKey = 0;
+        for(let i=0; i<filterKeys.length; i++){
+            if(this.state.filterKeys[0].filterKey == filterKeys[i].filterKey){
+                countKey++;
+                filterKeys[i].formData = this.state.filterKeys[0].formData;
+            }
+        }
+        if(countKey == 0){
+            filterKeys.push(this.state.filterKeys[0]);
+        }
+        return filterKeys;
     }
 
     searchData(e){
-        const {filterChange,filterKey,dataSource,filterKeys} = this.props;
+        const {filterChange,filterKey,dataSource} = this.props;
+        const filterKeys = this.props.filterKeys;
         let isFiled;
         let newdata = dataSource;
         if(e.target.value){
-            let countKey = 0;
-            for(let i=0; i<this.state.filterKeys.length; i++){
-                if(filterKey == this.state.filterKeys[i].filterKey){
-                    countKey++;
-                    this.state.filterKeys[i].formData = e.target.value;
-                }
-            }
-            if(countKey == 0){
-                this.state.filterKeys.push({filterKey:filterKey,formData:e.target.value});
-            }
-            for(let i=0; i< this.state.filterKeys.length; i++){
-                newdata = this.filterData(newdata,this.state.filterKeys[i].filterKey,this.state.filterKeys[i].formData);
+            this.setStateFilterKeys(filterKey,e.target.value)
+            const filterKeys_temp = this.setFilterKeys(filterKeys);
+            for(let i=0; i< filterKeys_temp.length; i++){
+                newdata = this.filterData(newdata,filterKeys_temp[i].filterKey,filterKeys_temp[i].formData);
             }
             this.setState({
                 isFiled:true,
@@ -75,7 +91,7 @@ class TableFilterTitle extends React.Component {
                 filterChange(newdata,this.state.filterKeys,isFiled);
             }
         }else {
-            let index = findFilterIndex(filterKeys,filterKey);
+            const index = findFilterIndex(filterKeys,filterKey);
             filterKeys.splice(index,1);
             for(let i=0; i<filterKeys.length; i++){
                 newdata = this.filterData(newdata,filterKeys[i].filterKey,filterKeys[i].formData);

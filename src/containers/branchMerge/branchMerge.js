@@ -14,10 +14,6 @@ class BranchMerge extends React.Component {
         super(props);
     }
 
-    componentDidMount() {
-
-    }
-
     componentWillReceiveProps(nextProps) {
         const {codeToMasterResult, codeToReleaseResult} = nextProps;
         if (this.props.codeToMasterResult != codeToMasterResult && codeToMasterResult) {

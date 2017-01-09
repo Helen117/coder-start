@@ -9,24 +9,20 @@ export default class TimelineMilestone extends React.Component {
     constructor(props){
         super(props);
     }
-
-    componentDidMount() {
-    }
+    
 
     getTime(date) {
         return new Date(parseInt(date)).toLocaleDateString();
     }
 
     setMilestoneColor(state,due_date,unfinished){
-        let timelineColor = '';
         if (state == 'closed'){
-            timelineColor="green";
+            return "green";
         }else if(state == 'active' && due_date <= Date.now() && unfinished>0){
-            timelineColor="red";
+            return "red";
         }else{
-            timelineColor="blue";
+            return "blue";
         }
-        return timelineColor;
     }
 
     milestonesDetail(milestonesId){
@@ -60,6 +56,7 @@ export default class TimelineMilestone extends React.Component {
                     milestoneClose(item.id,projectId,id);
                 },
                 onCancel() {
+                    //do nothing
                 }
             })
         }else{
@@ -81,7 +78,7 @@ export default class TimelineMilestone extends React.Component {
     }
 
     timelineItemConst(timeLineData){
-        let timeLine = [];
+        const timeLine = [];
         if (timeLineData && timeLineData.length>0){
             for(let i=0; i<timeLineData.length; i++){
                 if(i == 0){
@@ -109,7 +106,7 @@ export default class TimelineMilestone extends React.Component {
                 }
                 const timelineColor = this.setMilestoneColor(timeLineData[i].state,timeLineData[i].due_date,timeLineData[i].unfinished);
                 const groupId = this.props.id.toString();
-                const isGroup = groupId? groupId.indexOf("_g")>0? true: false: false;
+                const isGroup = groupId? groupId.indexOf("_g")> -1? true: false: false;
                 timeLine.push (
                     <Timeline.Item color={timelineColor}  dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />} key={'milestones' + timeLineData[i].id} >
                         {revocable && isGroup?
@@ -137,7 +134,7 @@ export default class TimelineMilestone extends React.Component {
                 )
             }
 
-        };
+        }
         return timeLine;
     }
 

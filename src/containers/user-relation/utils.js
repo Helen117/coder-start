@@ -3,7 +3,7 @@
  */
 export function findUserGroupById(userGroupId,userTreeData) {
     let selectedUserGroup;
-    let selectedGroup = userTreeData.map((item) => {
+    const selectedGroup = userTreeData.map((item) => {
         if(item.id == userGroupId){
             return item;
         }else{
@@ -22,24 +22,6 @@ export function findUserIdByEmail(email,userInfoData) {
     for(let i=0; i<userInfoData.length; i++){
         if(email == userInfoData[i].email){
             return userInfoData[i].id;
-        }
-    }
-}
-
-export function findEmailByUserId(userId,allUser) {
-    for(let i=0; i<allUser.length; i++){
-        if(userId == allUser[i].id){
-            let index = allUser[i].email.indexOf('@');
-            let email = allUser[i].email.substr(0,index);
-            return email;
-        }
-    }
-}
-
-export function findFilterIndex(array,data) {
-    for(let i=0; i<array.length; i++){
-        if(array[i].filterKey == data){
-            return i;
         }
     }
 }

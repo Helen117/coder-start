@@ -2,9 +2,9 @@
  * Created by Administrator on 2016-11-08.
  */
 import React, {PropTypes} from 'react';
-import {Popover, Icon,Row,Col} from 'antd';
+import {Icon} from 'antd';
 import styles from './index-1.css';
-import ToolTipDiv from './content';
+import ToolTipDiv from './tooltipdiv';
 
 export default class PopoverImg extends React.Component{
     constructor(props){

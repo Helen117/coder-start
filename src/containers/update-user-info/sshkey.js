@@ -19,7 +19,7 @@ class UpdateSshKey extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { form,loginInfo,actions } = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -72,7 +72,7 @@ class UpdateSshKey extends React.Component {
             ]})(<Input type="textarea" rows="4" placeholder="请输入上面步骤3打开的内容！"/>);
         const titleProps = getFieldDecorator('title')(<Input type="text" placeholder="请输入SSH Key标题！"/>);
 
-        if(visible == true){
+        if(visible){
             return(
                 <div style={{paddingLeft:'50px'}}>
                     <SshKeyList/>

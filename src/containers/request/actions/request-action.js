@@ -160,3 +160,15 @@ export function getDeveloperWorkload(user_id,due_date) {
 }
 
 
+export function getRequestState(set_id) {
+    return {
+        type: 'GET_REQUEST_STATE',
+        payload: {
+            promise: api.post('/project/demand-states', {
+                params: {
+                    set_id: set_id,
+                }
+            })
+        }
+    }
+}

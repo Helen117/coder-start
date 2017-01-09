@@ -22,10 +22,6 @@ class DevelopTransPond extends Component {
         this.state = {visible: false};
     }
 
-    componentWillMount() {
-
-    }
-
     componentWillReceiveProps(nextProps) {
         const {confirmList,transpondResult} = nextProps
         if(this.props.confirmList != confirmList && confirmList) {
@@ -52,7 +48,7 @@ class DevelopTransPond extends Component {
     handleSubmit(e){
         e.preventDefault();
         const {form,confirmList,loginInfo} = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -78,6 +74,7 @@ class DevelopTransPond extends Component {
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }
@@ -85,7 +82,7 @@ class DevelopTransPond extends Component {
     render(){
         const { getFieldDecorator } = this.props.form;
         const {transpondMember,transpondLoading, getConfirmListLoading,getTranspondMemberLoading} = this.props;
-        const buttonLoading = this.props.transpondLoading? true: false;
+        const buttonLoading = transpondLoading? true: false;
         const memberSelectOption =  transpondMember?transpondMember.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const dataLoading = getTranspondMemberLoading||getConfirmListLoading ?true: false;
         const formItemLayout = {

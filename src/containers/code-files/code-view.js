@@ -17,26 +17,24 @@ class CodeView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const { codeView, fetchContentStatus} = nextProps;
+        const { codeView} = nextProps;
         if(codeView != this.props.codeView){
-            if(fetchContentStatus == true){
-                this.setState({
-                    code:codeView.content
-                })
-            }
+            this.setState({
+                code:codeView.content
+            })
         }
     }
 
     render(){
-        const {fetchContentStatus,visible,pathName,filePath} = this.props;
+        const {codeView,visible,pathName,filePath} = this.props;
         let imgPath = '',categary='',fileName = '';
-        if(fetchContentStatus || false){
-            let index = pathName.lastIndexOf('.');
+        if(codeView){
+            const index = pathName.lastIndexOf('.');
             categary = pathName.substr(index+1,pathName.length);
             imgPath = '/'+filePath;
             fileName = pathName;
         }
-        if(visible==true){
+        if(visible){
             return (
                 <Spin spinning={this.props.loading} tip="正在加载数据...">
                     <div >
@@ -71,11 +69,10 @@ CodeView.contextTypes = {
 function mapStateToProps(state) {
     return {
         codeView:state.getCodeFile.codeView,
-        fetchContentStatus:state.getCodeFile.fetchContentStatus
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(){
     return{
 
     }

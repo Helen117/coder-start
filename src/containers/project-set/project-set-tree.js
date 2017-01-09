@@ -25,13 +25,12 @@ class ProjectSetTree extends React.Component{
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-    }
-
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
@@ -55,8 +54,7 @@ class ProjectSetTree extends React.Component{
 
 
     render(){
-        const {projectSet, loading,errMessage,selectedProjectSet} = this.props;
-        const defaultSelectedKeys = selectedProjectSet?selectedProjectSet.id:'';
+        const {projectSet, loading,errMessage} = this.props;
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>

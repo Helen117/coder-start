@@ -56,9 +56,9 @@ class CodeFiles extends React.Component {
     componentWillReceiveProps(nextProps){
         //初始化面包屑
         const {project} = nextProps;
-        if(this.props.project.getProjectInfo && project.getProjectInfo){
-            if(this.props.project.getProjectInfo.projectInfo != project.getProjectInfo.projectInfo
-                && project.getProjectInfo.projectInfo){
+        if(this.props.project.getProjectInfo && project.getProjectInfo
+            && project.getProjectInfo.projectInfo
+            && this.props.project.getProjectInfo.projectInfo != project.getProjectInfo.projectInfo){
                 const projectInfo = project.getProjectInfo.projectInfo;
                 if(projectInfo){
                     this.state.brand = 'dev';
@@ -73,7 +73,6 @@ class CodeFiles extends React.Component {
                         filePath:''
                     })
                 }
-            }
         }
     }
 
@@ -106,7 +105,9 @@ class CodeFiles extends React.Component {
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
