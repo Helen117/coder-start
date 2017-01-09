@@ -17,20 +17,18 @@ class CodeView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const { codeView, fetchContentStatus} = nextProps;
-        if(codeView && codeView != this.props.codeView){
-            if(fetchContentStatus){
-                this.setState({
-                    code:codeView.content
-                })
-            }
+        const { codeView} = nextProps;
+        if(codeView != this.props.codeView){
+            this.setState({
+                code:codeView.content
+            })
         }
     }
 
     render(){
-        const {fetchContentStatus,visible,pathName,filePath} = this.props;
+        const {codeView,visible,pathName,filePath} = this.props;
         let imgPath = '',categary='',fileName = '';
-        if(fetchContentStatus){
+        if(codeView){
             const index = pathName.lastIndexOf('.');
             categary = pathName.substr(index+1,pathName.length);
             imgPath = '/'+filePath;
@@ -71,7 +69,6 @@ CodeView.contextTypes = {
 function mapStateToProps(state) {
     return {
         codeView:state.getCodeFile.codeView,
-        fetchContentStatus:state.getCodeFile.fetchContentStatus
     }
 }
 

@@ -47,7 +47,9 @@ class ProjectMgr extends React.Component{
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }

@@ -36,18 +36,16 @@ class ProjectMember extends Component {
     componentWillReceiveProps(nextProps) {
         const {projectMember} = nextProps;
         //添加返回信息
-        if(this.props.projectMember.addProjectMember && projectMember.addProjectMember){
-            if(this.props.projectMember.addProjectMember.result !=
-                projectMember.addProjectMember.result && projectMember.addProjectMember.result){
+        if(this.props.projectMember.addProjectMember && projectMember.addProjectMember
+        && this.props.projectMember.addProjectMember.result !=
+            projectMember.addProjectMember.result && projectMember.addProjectMember.result){
                 this.insertCallback("添加成功");
-            }
         }
         //删除返回信息
-        if(this.props.projectMember.deleteProjectMember && projectMember.deleteProjectMember){
-            if(this.props.projectMember.deleteProjectMember.result !=
-                projectMember.deleteProjectMember.result && projectMember.deleteProjectMember.result){
+        if(this.props.projectMember.deleteProjectMember && projectMember.deleteProjectMember
+        && this.props.projectMember.deleteProjectMember.result !=
+            projectMember.deleteProjectMember.result && projectMember.deleteProjectMember.result){
                 this.insertCallback("删除成功");
-            }
         }
     }
 

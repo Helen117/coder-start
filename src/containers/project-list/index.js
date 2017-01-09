@@ -80,7 +80,9 @@ class ProjectMgrSub extends React.Component{
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
@@ -110,14 +112,13 @@ class ProjectMgrSub extends React.Component{
     componentWillReceiveProps(nextProps) {
         const {projectGroup} = nextProps;
         //删除返回信息
-        if(this.props.projectGroup.deleteGroup && projectGroup.deleteGroup){
-            if(this.props.projectGroup.deleteGroup.result != projectGroup.deleteGroup.result
+        if(this.props.projectGroup.deleteGroup && projectGroup.deleteGroup
+        && this.props.projectGroup.deleteGroup.result != projectGroup.deleteGroup.result
             && projectGroup.deleteGroup.result){
-                this.setState({
-                    modalVisible: false,
-                });
-                this.insertCallback('删除成功!');
-            }
+            this.setState({
+                modalVisible: false,
+            });
+            this.insertCallback('删除成功!');
         }
     }
 

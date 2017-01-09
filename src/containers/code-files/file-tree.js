@@ -46,16 +46,14 @@ class FileTree extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const { codeFile, fetchCodeStatus, filePath} = nextProps;
+        const { codeFile, filePath} = nextProps;
         this.setState({
             filePath:filePath
         })
         if(codeFile && codeFile != this.props.codeFile){
-            if(fetchCodeStatus){
-                this.state.dataSource.splice(0,this.state.dataSource.length);
-                for(var i=0; i<codeFile.length; i++){
-                    this.state.dataSource.push(codeFile[i]);
-                }
+            this.state.dataSource.splice(0,this.state.dataSource.length);
+            for(var i=0; i<codeFile.length; i++){
+                this.state.dataSource.push(codeFile[i]);
             }
         }
     }
@@ -100,12 +98,12 @@ class FileTree extends React.Component {
     }
 
     render(){
-        const { fetchCodeStatus,visible } = this.props;
+        const { codeFile,visible } = this.props;
         const pagination = {
             pageSize:20
         };
         const dataSource = [];
-        if(fetchCodeStatus){
+        if(codeFile){
             for(var i=0; i<this.state.dataSource.length; i++){
                 dataSource.push({
                     key:i+1,
@@ -147,7 +145,6 @@ FileTree.prototype.getColumns = (self,dataSource)=>[
 function mapStateToProps(state) {
     return {
         codeFile:state.getCodeFile.codeFile,
-        fetchCodeStatus:state.getCodeFile.fetchCodeStatus,
         project:state.project,
     }
 }
