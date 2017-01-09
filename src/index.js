@@ -42,6 +42,7 @@ import BusinessDemandStatistics from './containers/report/scope-of-business';
 import TeamMemberDemandProportion from './containers/report/teamMemberDemand';
 import manageViewDemandRank from './containers/report/manageViewDemandRank';
 import PersonalCodeManageReport from './containers/report/personal-code-manage'
+import memberDailyDemandComplete from './containers/report/member-daily-demand-complete'
 
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
@@ -152,6 +153,7 @@ ReactDOM.render(
                             <Route name="report" breadcrumbName="团队成员需求占比报表" path="teamMemberDemandProportion" component={TeamMemberDemandProportion}/>
                             <Route name="report" breadcrumbName="管理统计角度工单缺陷排名报表" path="manageViewDemandRank" component={manageViewDemandRank}/>
                             <Route name="report" breadcrumbName="个人某里程碑中的代码提交整体情况" path="personal" component={PersonalCodeManageReport}/>
+                            <Route name="report" breadcrumbName="团队中成员每日的需求完成情况" path="memberDailyDemand" component={memberDailyDemandComplete}/>
                             <Route name="BranchMerge" breadcrumbName="分支代码合并" path="pushBranchCode" component={BranchMerge}/>
 
                         </Route>

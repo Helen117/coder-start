@@ -39,12 +39,13 @@ class TeamMemberDemandProportion extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,form,loginInfo} = this.props;
+        const {actions,form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-
+                const data = form.getFieldsValue();
+                actions.fetchTeamMemberDemandProportion(data.milestone,data.group);
             }
         })
     }
@@ -58,10 +59,17 @@ class TeamMemberDemandProportion extends Component {
         const {selectedProjectSet,matchMilestone,team} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
-        const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const milestone = matchMilestone&&matchMilestone.length>0?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
+        const member = this.props.memberRate?this.props.memberRate.map(data => data.username):[];
+        const demand = this.props.memberRate?this.props.memberRate.map(data =>{
+            return {value:data.total,
+                name:data.username}
+        }):[];
+        const defect = this.props.memberRate?this.props.memberRate.map(data =>{return{value:data.defect_total,name:data.username}}):[];
+        const expired = this.props.memberRate?this.props.memberRate.map(data =>{return{value:data.expired,name:data.username}}): [];
         if(projectId) {
         return(
             <Box title="从团队leader视角展示当前团队成员的需求、超时工单和缺陷的占比情况分析">
@@ -84,7 +92,7 @@ class TeamMemberDemandProportion extends Component {
                         </Col>
                         <Col sm={8}>
                             <FormItem label="团队名称" {...formItemLayout}>
-                                {getFieldDecorator('user',{rules:[{ required:true,message:'不能为空'}]})(
+                                {getFieldDecorator('group',{rules:[{ required:true,message:'不能为空'}]})(
                                     <Select showSearch
                                             showArrow={false}
                                             placeholder="请选择一个团队"
@@ -104,33 +112,19 @@ class TeamMemberDemandProportion extends Component {
 
                 <Row>
                     <Col span={12}>
-                        <Pie title="需求数量" legend={['成员1','成员2','成员3','成员4','成员5']} name="需求数量" data={[
-                        {value:3, name:'成员1'},
-                        {value:5, name:'成员2'},
-                        {value:6, name:'成员3'},
-                        {value:2, name:'成员4'},
-                        {value:1, name:'成员5'}
-                    ]}/>
+                        <Pie title="需求数量" legend={member} name="需求数量" data={demand}/>
                     </Col>
                     <Col span={12} style={{textAlign:'right'}}>
-                        <Pie title="缺陷数量" legend={['成员1','成员2','成员3','成员4','成员5']} name="缺陷数量" data={[
-                        {value:3, name:'成员1'},
-                        {value:5, name:'成员2'},
-                        {value:6, name:'成员3'},
-                        {value:2, name:'成员4'},
-                        {value:1, name:'成员5'}
-                    ]}/>
+                        <Pie title="缺陷数量" legend={member} name="缺陷数量" data={defect}/>
                     </Col>
                 </Row>
                 <Row>
-                    <Pie title="超时数量" legend={['成员1','成员2','成员3','成员4','成员5']} name="超时数量" data={[
-                        {value:3, name:'成员1'},
-                        {value:5, name:'成员2'},
-                        {value:6, name:'成员3'},
-                        {value:2, name:'成员4'},
-                        {value:1, name:'成员5'}
-                    ]}  style={{height: '350px', width: '80%'}}
+                    <Col span={6}>
+                        </Col>
+                    <Col span={12}>
+                    <Pie title="超时数量" legend={member} name="超时数量" data={expired}  style={{height: '350px', width: '60%'}}
                     />
+                        </Col>
                 </Row>
             </Box>
         );
@@ -154,8 +148,8 @@ TeamMemberDemandProportion = Form.create()(TeamMemberDemandProportion);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
-        reportData:state.report.reportData,
-        loading:state.report.getReportDataPending,
+        memberRate:state.report.memberRate,
+        loading:state.report.getMemberRatePending,
         matchMilestone: state.request.matchMilestone,
         matchMember: state.report.member,
         selectedProjectSet: state.projectSet.selectedProjectSet,
