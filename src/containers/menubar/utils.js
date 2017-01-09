@@ -133,20 +133,28 @@ export function findCurrentMenuOne(menuData,navpath) {//当前点击的一级菜
     return currentMenuOne;
 }
 
-export function hasMenuOneOrTwo(selectNaviOne) {//一级菜单有二级菜单,二级菜单有三级菜单
-    let haveMenuOne = false;
-    let haveMenuTwo = false;
-    if(selectNaviOne && selectNaviOne.length != 0){
-        if(selectNaviOne[0].subMenu){
-            if(selectNaviOne[0].subMenu.length != 0){
-                haveMenuOne = true;//一级菜单有二级菜单
-                if(selectNaviOne[0].subMenu[0].subMenu){
-                    if(selectNaviOne[0].subMenu[0].subMenu.length != 0){
-                        haveMenuTwo = true;//二级菜单有三级菜单
-                    }
-                }
-            }
+export function findMenu(menuKey,menuData) {
+    let menu;
+    const menuLink_temp = menuData.map((item) => {
+        if(item.id == menuKey){
+            return item;
+        }else {
+            return findMenu(menuKey,item.subMenu);
+        }
+    });
+    for(let i=0; i<menuLink_temp.length; i++){
+        if(menuLink_temp[i]){
+            menu = menuLink_temp[i];
         }
     }
-    return {haveMenuOne,haveMenuTwo}
+    return menu;
+}
+
+export function haveSubMenu(parentMenuKey,menuData) {
+    let haveSubMenu = false;
+    const parentMenu = findMenu(parentMenuKey,menuData);
+    if(parentMenu && parentMenu.subMenu && parentMenu.subMenu.length != 0){
+        haveSubMenu = true;
+    }
+    return haveSubMenu;
 }
