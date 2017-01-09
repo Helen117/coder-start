@@ -48,19 +48,17 @@ class ProjectItem extends Component {
         }
         const {loginInfo,projectGroup} = this.props;
         const selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
-        if(consernedInfo && this.props.consernedInfo ){
-            if(consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
+        if(consernedInfo && this.props.consernedInfo
+        && consernedInfo.consernedInfo != this.props.consernedInfo.consernedInfo
             && consernedInfo.consernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
                 this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
-            }
         }
-        if(unconsernInfo && this.props.unconsernInfo){
-            if(unconsernInfo.unconsernedInfo != this.props.unconsernInfo.unconsernedInfo
+        if(unconsernInfo && this.props.unconsernInfo
+        && unconsernInfo.unconsernedInfo != this.props.unconsernInfo.unconsernedInfo
             && unconsernInfo.unconsernedInfo){
                 this.props.getGroupTree(loginInfo.userId);
                 this.props.getProject(selectedKey.id.substr(0,selectedKey.id.length-2),loginInfo.userId);
-            }
         }
 
         const {forkResult,project} = nextProps;
@@ -79,14 +77,6 @@ class ProjectItem extends Component {
                 url: projectInfo.sshUrl,
             });
         }
-    }
-
-    errorMessage(info,error){
-        notification.error({
-            message: info,
-            description:error,
-            duration:null,
-        });
     }
 
     fork(){
@@ -131,7 +121,7 @@ class ProjectItem extends Component {
 
     handleChange(value){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(value=='ssh'){
             this.setState({
                 value:'ssh',

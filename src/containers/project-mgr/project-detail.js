@@ -76,6 +76,7 @@ class ProjectDetail extends React.Component {
                 form.resetFields();
             },
             onCancel() {
+                //取消
             }
         })
     }
@@ -125,7 +126,9 @@ class ProjectDetail extends React.Component {
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
@@ -155,30 +158,6 @@ class ProjectDetail extends React.Component {
         }
     }
 
-    projectNameExists(rule, value, callback){
-        const {list} = this.props;
-        if(!value){
-            callback();
-        }else{
-            var count=0;
-            for(var i=0;i<list.length;i++){
-                for(var j=0;j<list[i].children.length;j++){
-                    var project_cat = list[i].children[j];
-                    for(var k=0; k<project_cat.children.length; k++){
-                        if(value == project_cat.children[k].name){
-                            count++;
-                        }
-                    }
-                }
-            }
-            if(count != 0){
-                callback([new Error('项目名称已被占用')]);
-            }else {
-                callback();
-            }
-        }
-    }
-
     render() {
         const {editType} = this.props.location.state;
         const {getFieldDecorator} = this.props.form;
@@ -198,7 +177,6 @@ class ProjectDetail extends React.Component {
             const nameProps = getFieldDecorator('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
-                    //{validator:this.projectNameExists.bind(this)},
                 ]
                 })(<Input type="text" placeholder="请输入项目名称"/>);
             const descriptionProps = getFieldDecorator('description',{rules:[{ required:true,message:'请输入描述！'}]})(<Input type="textarea" />);

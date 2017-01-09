@@ -76,7 +76,6 @@ const validate = function (next, replace, callback) {
     if (!isLoggedIn && next.location.pathname != '/login') {
         replace('/login');
     }
-    //const isLoggedIn = getCookie('uid');
     callback();
 };
 const root = document.createElement('div');

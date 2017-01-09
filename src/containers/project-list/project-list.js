@@ -41,23 +41,21 @@ class ProjectList extends Component {
         const { project, treeData } = nextProps;
         const {projectGroup} = this.props;
         //删除返回信息
-        if(this.props.project.deleteProject && project.deleteProject){
-            if(this.props.project.deleteProject.result != project.deleteProject.result
+        if(this.props.project.deleteProject && project.deleteProject
+        && this.props.project.deleteProject.result != project.deleteProject.result
             && project.deleteProject.result){
                 this.setState({
                     modalVisible: false,
                 });
                 this.insertCallback('删除成功!');
-            }
         }
         //删除项目更新项目组信息
         const node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
-        if (this.props.treeData != treeData && treeData.length>0){
-            if(projectGroup.getGroupInfo){
-                const resetGroupInfo = searchGroupByGroupId(projectGroup.getGroupInfo.groupInfo.id,treeData);
-                if(resetGroupInfo){
-                    this.props.setGroupInfo(resetGroupInfo, node.id,node);
-                }
+        if (this.props.treeData != treeData && treeData.length>0
+        && projectGroup.getGroupInfo){
+            const resetGroupInfo = searchGroupByGroupId(projectGroup.getGroupInfo.groupInfo.id,treeData);
+            if(resetGroupInfo){
+                this.props.setGroupInfo(resetGroupInfo, node.id,node);
             }
         }
     }
@@ -102,7 +100,7 @@ class ProjectList extends Component {
     }
 
     getDataSource(groupInfo){
-        let dataSource = [];
+        const dataSource = [];
         for(var i=0;i<groupInfo.children.length;i++){
             dataSource.push({
                 key:i+1,
@@ -115,7 +113,9 @@ class ProjectList extends Component {
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }

@@ -15,7 +15,7 @@ class MergeRequestList extends React.Component {
 
     componentWillMount() {
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id) {
@@ -31,10 +31,10 @@ class MergeRequestList extends React.Component {
         const {mergeBranch,issues} = nextProps;
         const {project} = this.props;
         const next_project = nextProps.project;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        let next_projectInfo = next_project.getProjectInfo?(
+        const next_projectInfo = next_project.getProjectInfo?(
             next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
         ):{};
         const thisProId = projectInfo.id;
@@ -75,7 +75,7 @@ class MergeRequestList extends React.Component {
 
     createMergeRequest(){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = projectInfo.id;
         this.props.fetchMergeBranchData(projectId,'','');
     }
@@ -149,7 +149,7 @@ class MergeRequestList extends React.Component {
             total: mrList?mrList.size:0,
             current: this.props.page
         }
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(selectNode && selectNode.isProject){

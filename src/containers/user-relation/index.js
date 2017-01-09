@@ -26,9 +26,9 @@ class UserRelation extends React.Component{
 
     componentDidMount(){
         const {userRelationTree,loginInfo,treeFilterState} = this.props;
-        let userTreeData = userRelationTree?(
+        const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let busi_type = this.props.busiType?this.props.busiType:'user-relation';
+        const busi_type = this.props.busiType?this.props.busiType:'user-relation';
         let selectedNodeKey = [];
         if (treeFilterState[busi_type] && treeFilterState[busi_type].selectedNodeKey){
             selectedNodeKey = treeFilterState[busi_type].selectedNodeKey;
@@ -48,9 +48,9 @@ class UserRelation extends React.Component{
     onSelectNode(node){
         //根据node.id找到点击的节点的组织的信息
         const {userRelationTree} = this.props;
-        let userTreeData = userRelationTree?(
+        const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let selectedGroup = findUserGroupById(node.id,userTreeData);
+        const selectedGroup = findUserGroupById(node.id,userTreeData);
         this.props.getLeader();
         this.props.getSelectNode(node.id,selectedGroup);
         this.setState({
@@ -60,7 +60,7 @@ class UserRelation extends React.Component{
 
     handleOk() {
         const { setUserGroupDelete,treeFilterState,loginInfo } = this.props;
-        let busi_type = this.props.busiType?this.props.busiType:'user-relation';
+        const busi_type = this.props.busiType?this.props.busiType:'user-relation';
         let selectedNodeKey = [];
         if (treeFilterState[busi_type] && treeFilterState[busi_type].selectedNodeKey){
             selectedNodeKey = treeFilterState[busi_type].selectedNodeKey;
@@ -79,8 +79,8 @@ class UserRelation extends React.Component{
 
     deleteUserGroup(selectedUserGroup){//删除组织
         const {userRelationState,busiType} = this.props;
-        let busi_type = busiType?busiType:'user-relation';
-        let userInfoData = userRelationState['getUserInfo_'+busi_type]?(
+        const busi_type = busiType?busiType:'user-relation';
+        const userInfoData = userRelationState['getUserInfo_'+busi_type]?(
             userRelationState['getUserInfo_'+busi_type].userInfoData?
                 userRelationState['getUserInfo_'+busi_type].userInfoData:[]):[];
 
@@ -99,7 +99,7 @@ class UserRelation extends React.Component{
 
     editUserGroup(type,selectedRow){//新增、修改组织
         const {treeFilterState} = this.props;
-        let busi_type = this.props.busiType?this.props.busiType:'user-relation';
+        const busi_type = this.props.busiType?this.props.busiType:'user-relation';
         let selectedNodeKey = [];
         if (treeFilterState[busi_type] && treeFilterState[busi_type].selectedNodeKey){
             selectedNodeKey = treeFilterState[busi_type].selectedNodeKey;
@@ -142,13 +142,13 @@ class UserRelation extends React.Component{
             }
         }
         //修改组织后更新组织信息
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         if(this.props.userRelationTree && userRelationTree){
             if(this.props.userRelationTree.userTreeData != userRelationTree.userTreeData
             && userRelationTree.userTreeData
             && userRelationTree.userTreeData.length > 0){
                 if(selectedUserGroup != ''){
-                    let resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
+                    const resetGroup = findUserGroupById(selectedUserGroup.id,userRelationTree.userTreeData);
                     this.props.getSelectNode(selectedUserGroup.id,resetGroup);
                 }
             }
@@ -157,11 +157,11 @@ class UserRelation extends React.Component{
 
     render(){
         const {userRelationTree,selectNode,deleteUserGroup,visible,treeFilterState} = this.props;
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
-        let loadingTree = userRelationTree?userRelationTree.loading:false;
-        let userTreeData = userRelationTree?(
+        const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const loadingTree = userRelationTree?userRelationTree.loading:false;
+        const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let deleteGroupLoading = deleteUserGroup?deleteUserGroup.deleteLoading:false;
+        const deleteGroupLoading = deleteUserGroup?deleteUserGroup.deleteLoading:false;
 
         const content = (
             <div>
@@ -173,7 +173,7 @@ class UserRelation extends React.Component{
                    onClick={this.deleteUserGroup.bind(this, selectedUserGroup)}>删除组织</a>
             </div>
         );
-        let busi_type = this.props.busiType?this.props.busiType:'user-relation';
+        const busi_type = this.props.busiType?this.props.busiType:'user-relation';
         let selectedNodeKey = [];
         if (treeFilterState[busi_type] && treeFilterState[busi_type].selectedNodeKey){
             selectedNodeKey = treeFilterState[busi_type].selectedNodeKey;

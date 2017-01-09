@@ -3,7 +3,7 @@
  */
 export function findMenuLink(menuKey,menuData) {
     let menuLink;
-    let menuLink_temp = menuData.map((item) => {
+    const menuLink_temp = menuData.map((item) => {
         if(item.id == menuKey){
             return item.link;
         }else {
@@ -40,7 +40,8 @@ export function findDefaultMenuBar(menuData, navpath) {//找到默认的二级�
 }
 
 export function findMenuBarInfoByLocation(menuData,pathName) {//根据url找到二级菜单和三级菜单的选中项
-    let find_path = 0,menuOneKey = [], menuTwoKey = [];
+    let find_path = 0;
+    const menuOneKey = [], menuTwoKey = [];
     for(let i=0; i<menuData.length;i++){
         if(find_path == 0){
             if(pathName == menuData[i].link){//url是一级菜单，选中项都是空
@@ -120,9 +121,9 @@ export function findMenuTwoIndex(menuTwoKey,currentOneInfo) {//当前点击的�
 }
 
 export function findCurrentMenuOne(menuData,navpath) {//当前点击的一级菜单
-    let currentMenuOne = [];
+    const currentMenuOne = [];
     for(let i=0;i<menuData.length;i++){//当前点击的一级菜单
-        if(navpath.length != 0){
+        if(navpath && navpath.length != 0){
             if(navpath[0].key == menuData[i].id){
                 currentMenuOne[0] = menuData[i];
                 return currentMenuOne;
@@ -135,7 +136,7 @@ export function findCurrentMenuOne(menuData,navpath) {//当前点击的一级菜
 export function hasMenuOneOrTwo(selectNaviOne) {//一级菜单有二级菜单,二级菜单有三级菜单
     let haveMenuOne = false;
     let haveMenuTwo = false;
-    if(selectNaviOne.length != 0){
+    if(selectNaviOne && selectNaviOne.length != 0){
         if(selectNaviOne[0].subMenu){
             if(selectNaviOne[0].subMenu.length != 0){
                 haveMenuOne = true;//一级菜单有二级菜单

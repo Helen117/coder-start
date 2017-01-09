@@ -25,14 +25,16 @@ class ProjectIssueList extends Component {
 
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
 
     componentWillMount() {
         const {actions,project,getUserAction} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
 
         if(!this.isEmptyObject(projectInfo)) {
             actions.fetchProjectDeveloper(projectInfo.id);
@@ -68,10 +70,10 @@ class ProjectIssueList extends Component {
     componentWillReceiveProps(nextProps) {
         const {actions,project} = this.props;
         const next_project = nextProps.project;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        let next_projectInfo = next_project.getProjectInfo?(
+        const next_projectInfo = next_project.getProjectInfo?(
             next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
         ):{};
         const thisProId = projectInfo.id;
@@ -124,7 +126,7 @@ class ProjectIssueList extends Component {
         const {actions,project,form} = this.props;
         const data = form.getFieldsValue();
         // console.log("查询条件：",data);
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         var dataList ={
             project_id:projectInfo.id,
             milestone_id:data.milestone,
@@ -159,7 +161,7 @@ class ProjectIssueList extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
 
         const formItemLayout = {

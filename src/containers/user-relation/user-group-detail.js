@@ -26,14 +26,14 @@ class UserGroupDetail extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { form, actions, loginInfo,selectNode } = this.props;
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         const {editType} = this.props.location.state;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                let data = {};
+                const data = {};
                 data.name = formData.name;
                 data.description = formData.description;
                 data.owner_id = loginInfo.userId;
@@ -65,6 +65,7 @@ class UserGroupDetail extends React.Component {
                 form.resetFields();
             },
             onCancel() {
+                //取消
             }
         })
     }
@@ -77,8 +78,8 @@ class UserGroupDetail extends React.Component {
         });
         PubSub.publish("evtRefreshUserGroupTree",{});
         const {selectNode} = this.props;
-        let busiType = 'user-relation';
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const busiType = 'user-relation';
+        const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         this.props.getGroupsUsers(selectedUserGroup.id,busiType);
         this.context.router.goBack();
     }
@@ -98,9 +99,9 @@ class UserGroupDetail extends React.Component {
     componentWillMount() {
         this.props.getNotLeader();
         const {userRelationTree,selectNode} = this.props;
-        let userTreeData = userRelationTree?(
+        const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
+        const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
 
         const {editType} = this.props.location.state;
         const {setFieldsValue} = this.props.form;
@@ -111,7 +112,7 @@ class UserGroupDetail extends React.Component {
             if(editType == 'add'){
                 setFieldsValue({parent_id:selectedUserGroup.name});
             }else{
-                let parentGroup = findUserGroupById(selectedUserGroup.parent_id, userTreeData);
+                const parentGroup = findUserGroupById(selectedUserGroup.parent_id, userTreeData);
                 if(parentGroup){
                     setFieldsValue({parent_id:parentGroup.name});
                 }
@@ -189,10 +190,10 @@ class UserGroupDetail extends React.Component {
 
         const leader = notLeaderInfo?(notLeaderInfo.notLeaderInfo?notLeaderInfo.notLeaderInfo.map(
             data => <Option key={data.leader_id}>{data.leader_name}</Option>):[]):[];
-        let createLoading = createGroupInfo?createGroupInfo.loading:false;
-        let updateLoading = updateGroupInfo?updateGroupInfo.updateLoading:false;
-        let createDisabled = createGroupInfo?createGroupInfo.disabled:false;
-        let updateDisabled = updateGroupInfo?updateGroupInfo.updateDisabled:false;
+        const createLoading = createGroupInfo?createGroupInfo.loading:false;
+        const updateLoading = updateGroupInfo?updateGroupInfo.updateLoading:false;
+        const createDisabled = createGroupInfo?createGroupInfo.disabled:false;
+        const updateDisabled = updateGroupInfo?updateGroupInfo.updateDisabled:false;
 
         return(
             <Box title={editType == 'add' ? '新建组织' : '修改组织'}>

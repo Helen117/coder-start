@@ -78,41 +78,11 @@ class ProjectMgrSub extends React.Component{
         }
     }
 
-    searchGroupByGroupId(groupId,list){
-        var groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                if(groupId == list[i].children[j].id){
-                    groupInfo = list[i].children[j];
-                    return groupInfo;
-                }
-            }
-        }
-    }
-
-    searchGroupByProjectId(projectId,list){
-        var projectInfo,groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                var project_cat = list[i].children[j];
-                for(var k=0; k<project_cat.children.length; k++){
-                    if(projectId == project_cat.children[k].id){
-                        if(project_cat.id > 0){
-                            groupInfo = project_cat;
-                        }else{
-                            groupInfo = {};
-                        }
-                        projectInfo = project_cat.children[k];
-                        return {projectInfo,groupInfo}
-                    }
-                }
-            }
-        }
-    }
-
     isEmptyObject(obj){
         for(var key in obj){
-            return false;
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
         }
         return true;
     }
@@ -142,14 +112,13 @@ class ProjectMgrSub extends React.Component{
     componentWillReceiveProps(nextProps) {
         const {projectGroup} = nextProps;
         //删除返回信息
-        if(this.props.projectGroup.deleteGroup && projectGroup.deleteGroup){
-            if(this.props.projectGroup.deleteGroup.result != projectGroup.deleteGroup.result
+        if(this.props.projectGroup.deleteGroup && projectGroup.deleteGroup
+        && this.props.projectGroup.deleteGroup.result != projectGroup.deleteGroup.result
             && projectGroup.deleteGroup.result){
-                this.setState({
-                    modalVisible: false,
-                });
-                this.insertCallback('删除成功!');
-            }
+            this.setState({
+                modalVisible: false,
+            });
+            this.insertCallback('删除成功!');
         }
     }
 

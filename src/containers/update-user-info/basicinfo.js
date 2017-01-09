@@ -28,18 +28,18 @@ class UpdateBasicInfo extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { form,loginInfo,UpdateUser,AddEmail } = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
                 if(formData.new_email){
                     //调添加邮箱接口
-                    let email = formData.new_email+formData.option_add;
+                    const email = formData.new_email+formData.option_add;
                     AddEmail(loginInfo.userId,email);
                 }else{
                     //调修改成员信息接口
-                    let data = {};
+                    const data = {};
                     data.user_id = loginInfo.userId;
                     data.name = formData.name;
                     data.email = formData.email_0+formData.option_0;
@@ -68,7 +68,7 @@ class UpdateBasicInfo extends React.Component {
         const {UserInfo,AddEmailInfo} = nextProps;
         const {visible} = this.props;
         //修改返回信息
-        if(visible == true && this.props.UserInfo && UserInfo){
+        if(visible && this.props.UserInfo && UserInfo){
             if (this.props.UserInfo.updateResult != UserInfo.updateResult && UserInfo.updateResult) {
                 this.insertCallback("修改成功");
             }
@@ -126,16 +126,16 @@ class UpdateBasicInfo extends React.Component {
             </Select>
         );
 
-        if(visible == true){
+        if(visible){
             let email_list=(<div></div>),selectAfter=(<div></div>);
             let email_array = [];
             if(AllUserInfo && AllUserInfo.allUserInfo){
-                let initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
+                const initEmail = findEmailByUserId(loginInfo.userId,AllUserInfo.allUserInfo);
                 email_array = initEmail.split(' , ');
                 email_list = email_array.map((item,index)=>{
-                    let _index = item.indexOf('@');
-                    let _email = item.substr(0,_index);
-                    let email_ = item.substr(_index,item.length);
+                    const _index = item.indexOf('@');
+                    const _email = item.substr(0,_index);
+                    const email_ = item.substr(_index,item.length);
 
                     selectAfter = getFieldDecorator(`option_${index}`,{initialValue:email_})(
                         <Select style={{ width: 100 }} >
@@ -163,8 +163,8 @@ class UpdateBasicInfo extends React.Component {
                     );
                 })
             }
-            let updateLoading = UserInfo?UserInfo.updateLoading:false;
-            let updateDisabled = UserInfo?UserInfo.updateDisabled:false;
+            const updateLoading = UserInfo?UserInfo.updateLoading:false;
+            const updateDisabled = UserInfo?UserInfo.updateDisabled:false;
 
             return(
                 <div>
