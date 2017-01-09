@@ -29,7 +29,7 @@ class AddDemand extends Component{
 
     componentDidMount() {
         const {actions,project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(!this.isEmptyObject(projectInfo)){
             actions.fetchDataSource(projectInfo.id);
         }
@@ -60,7 +60,7 @@ class AddDemand extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const { actions,form ,loginInfo,project,milestones} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
 
         form.validateFields((errors, values) => {
             if (!!errors) {
@@ -108,7 +108,7 @@ class AddDemand extends Component{
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
         };
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const assignee =this.props.members?this.props.members.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         const mileStoneOptions =this.props.milestones?this.props.milestones.map(data => <Option key={data.id}>{data.title}</Option>):[];

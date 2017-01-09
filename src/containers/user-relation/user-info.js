@@ -28,7 +28,7 @@ class UserInfo extends React.Component {
 
     componentWillMount(){
         const {userRelationState,busiType,treeFilterState} = this.props;
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         let selectedNodeKey = [];
@@ -57,7 +57,7 @@ class UserInfo extends React.Component {
 
     componentWillReceiveProps(nextProps){
         const {moveUserInfo,deleteUserInfo,userRelationState,busiType} = nextProps;
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData
                 ?userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         const node = nextProps.selectedNode;
@@ -93,7 +93,7 @@ class UserInfo extends React.Component {
     }
 
     getDataSource(userInfoData){
-        let dataSource = [];
+        const dataSource = [];
         for(let i=0; i<userInfoData.length; i++){
             dataSource.push({
                 key:i+1,
@@ -112,16 +112,16 @@ class UserInfo extends React.Component {
         if (treeFilterState[busiType] && treeFilterState[busiType].selectedNodeKey){
             selectedNodeKey = treeFilterState[busiType].selectedNodeKey;
         }
-        let data = {};
+        const data = {};
         data.user_id = loginInfo.userId;
         data.source_user_id = this.state.source_user_id;
         data.reason = formData.reason;
         data.source_group_id = selectedNodeKey[0];
-        if(this.state.moveOutVisible == true){
+        if(this.state.moveOutVisible){
             //调移除接口
             DeleteGroupUser(data);
             form.resetFields();
-        }else if(this.state.moreGroupVisible == true){
+        }else if(this.state.moreGroupVisible){
             //调移动接口
             data.dest_group_id = node[0];
             MoveUser(data);
@@ -139,7 +139,7 @@ class UserInfo extends React.Component {
 
     moveOutUser(type,record){
         const {userRelationState,busiType} = this.props;
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         this.setState({
@@ -150,7 +150,7 @@ class UserInfo extends React.Component {
 
     editUser(record){
         const {userRelationState,busiType} = this.props;
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         const is_leader = this.isLeader(userInfoData,record);
@@ -165,7 +165,7 @@ class UserInfo extends React.Component {
     }
 
     filterChange(filterData,filterKeys,ifFiled){
-        if(ifFiled == true){
+        if(ifFiled){
             let countKey = 0;
             for(let i=0; i<this.state.filterKeys.length; i++){
                 if(filterKeys[0].filterKey == this.state.filterKeys[i].filterKey){
@@ -188,13 +188,13 @@ class UserInfo extends React.Component {
     }
 
     onSelectedChange(selectedRowKeys, selectedRows){
-        const {userRelationState,onSelected,busiType} = this.props;
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const {userRelationState,busiType} = this.props;
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
-        let user_ids = [];
+        const user_ids = [];
         for(let i=0; i<selectedRows.length; i++){
-            let _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
+            const _id = findUserIdByEmail(selectedRows[i].email,userInfoData);
             user_ids.push(_id);
         }
         this.props.setSelectedRowKeys(selectedRowKeys,user_ids);
@@ -215,20 +215,20 @@ class UserInfo extends React.Component {
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
             moveUserInfo,busiType,selectedUsers,treeFilterState} = this.props;
 
-        let getUserLoading = userRelationState['getUserInfo_'+busiType]?
+        const getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
-        let removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
-        let loadingTree = userRelationTree?userRelationTree.loading:false;
-        let moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
+        const removeUserLoading = deleteUserInfo?deleteUserInfo.deleteLoading:false;
+        const loadingTree = userRelationTree?userRelationTree.loading:false;
+        const moveLoading = moveUserInfo?moveUserInfo.moveLoading:false;
 
-        let selectedRowKeys = selectedUsers?selectedUsers.selectedKeys:[];
-        let userTreeData = userRelationTree?(
+        const selectedRowKeys = selectedUsers?selectedUsers.selectedKeys:[];
+        const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
-        let userInfoData = userRelationState['getUserInfo_'+busiType]?(
+        const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData?
                 userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         let selectedMoreGroup = [];
-        let more_group_type='more-user-group';
+        const more_group_type='more-user-group';
         if (treeFilterState[more_group_type] && treeFilterState[more_group_type].selectedNodeKey){
             selectedMoreGroup = treeFilterState[more_group_type].selectedNodeKey;
         }
@@ -241,13 +241,13 @@ class UserInfo extends React.Component {
         const pagination = {
             pageSize:20
         };
-        let dataSource = this.getDataSource(this.state.dataSource);
+        const dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
             {})(<Input type="textarea" rows={4} />);
         let showOpt = true;
         if(visible){ showOpt = false; }
 
-        if(showUserInfo == true){
+        if(showUserInfo){
             return(
                 <div style={{"paddingLeft":10}}>
                     <Row>
@@ -255,7 +255,7 @@ class UserInfo extends React.Component {
                                columns={this.groupColumns(this,showOpt,this.data,
                                    userInfoData,this.state.filterKeys)}
                                dataSource={dataSource}
-                               rowSelection={showOpt==true?null:rowSelection}
+                               rowSelection={showOpt?null:rowSelection}
                                pagination={pagination}
                                loading={getUserLoading}></Table>
                         <Modal title="确认移除此成员吗?"
@@ -290,7 +290,7 @@ UserInfo.contextTypes = {
 };
 
 UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys)=>{
-    if(showOpt==true){
+    if(showOpt){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
                                        filterKey="name"
@@ -327,7 +327,7 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
                                        dataSource={dataSource}
                                        filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name",
                 render(text,record){
-                    let is_leader = self.isLeader(userInfoData,record);
+                    const is_leader = self.isLeader(userInfoData,record);
                     return (is_leader==1?<div>{text}<Icon type="user" style={{fontSize:18,paddingLeft:'7px'}}/>
                     </div>:<div>{text}</div>)
                 }},

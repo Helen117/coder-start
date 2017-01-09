@@ -102,7 +102,7 @@ class ProjectList extends Component {
     }
 
     getDataSource(groupInfo){
-        let dataSource = [];
+        const dataSource = [];
         for(var i=0;i<groupInfo.children.length;i++){
             dataSource.push({
                 key:i+1,

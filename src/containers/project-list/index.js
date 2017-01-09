@@ -78,38 +78,6 @@ class ProjectMgrSub extends React.Component{
         }
     }
 
-    searchGroupByGroupId(groupId,list){
-        var groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                if(groupId == list[i].children[j].id){
-                    groupInfo = list[i].children[j];
-                    return groupInfo;
-                }
-            }
-        }
-    }
-
-    searchGroupByProjectId(projectId,list){
-        var projectInfo,groupInfo;
-        for(var i=0;i<list.length;i++){
-            for(var j=0;j<list[i].children.length;j++){
-                var project_cat = list[i].children[j];
-                for(var k=0; k<project_cat.children.length; k++){
-                    if(projectId == project_cat.children[k].id){
-                        if(project_cat.id > 0){
-                            groupInfo = project_cat;
-                        }else{
-                            groupInfo = {};
-                        }
-                        projectInfo = project_cat.children[k];
-                        return {projectInfo,groupInfo}
-                    }
-                }
-            }
-        }
-    }
-
     isEmptyObject(obj){
         for(var key in obj){
             return false;

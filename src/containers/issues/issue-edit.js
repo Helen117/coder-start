@@ -32,7 +32,7 @@ class AddIssue extends Component{
     componentDidMount() {
         const {actions,project} = this.props;
         const {selectedRow,editType} = this.props.location.state;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(selectedRow){
             actions.fetchDataSource(selectedRow.project_id);
             var milestoneId = selectedRow.milestone_id?selectedRow.milestone_id:0;
@@ -139,7 +139,7 @@ class AddIssue extends Component{
 
     handleSubmit(e) {
         e.preventDefault();
-        const { actions,form ,loginInfo,project,milestones,demandList} = this.props;
+        const { actions,form ,loginInfo,milestones,demandList} = this.props;
         const {editType,selectedRow} = this.props.location.state;
 
         form.validateFields(['title','description','due_date','parent_id','assignee.id'],(errors, values) => {
@@ -232,7 +232,7 @@ class AddIssue extends Component{
 
         const {selectedRow} = this.props.location.state;
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = projectInfo.id;
         console.log(value,selectedRow,projectId);
         if (value && projectId){

@@ -131,7 +131,7 @@ class ProjectItem extends Component {
 
     handleChange(value){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(value=='ssh'){
             this.setState({
                 value:'ssh',

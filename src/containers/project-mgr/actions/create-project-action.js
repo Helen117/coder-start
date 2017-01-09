@@ -25,7 +25,6 @@ export function getProjectInfo(project_id,user_id) {
 }
 
 export function createProject(projectData) {
-    //var path = '/project-mgr/createProject';
     var path = '/project/create';
     return {
         type: CREATE_PROJECT,

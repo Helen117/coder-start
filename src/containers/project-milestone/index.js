@@ -22,9 +22,8 @@ class ProjectMilestones extends React.Component {
     }
 
     shouldComponentUpdate(nextprops,nextState){
-        //const getProjectInfo = nextprops.getProjectInfo;
         const {project} = nextprops;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         //console.log(nextprops,nextState)
         if(this.isEmptyObject(projectInfo)){
             return false;
@@ -36,7 +35,7 @@ class ProjectMilestones extends React.Component {
 
     render(){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = !this.isEmptyObject(projectInfo)? projectInfo.id+'_p':'';
         const projectName = !this.isEmptyObject(projectInfo)? projectInfo.name:'';
         const milestoneDetailPath = "/projectSetMilestonesDetail";

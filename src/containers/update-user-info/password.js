@@ -23,12 +23,12 @@ class UpdatePassword extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const { form,loginInfo,UpdateUser } = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
                 const formData = form.getFieldsValue();
-                let data = {};
+                const data = {};
                 data.user_id = loginInfo.userId;
                 data.password = formData.old_password;
                 data.new_password = formData.new_password;
@@ -57,7 +57,7 @@ class UpdatePassword extends React.Component {
         const {UserInfo} = nextProps;
         const {visible} = this.props;
         //修改返回信息
-        if(visible == true && this.props.UserInfo && UserInfo){
+        if(visible && this.props.UserInfo && UserInfo){
             if (this.props.UserInfo.updateResult != UserInfo.updateResult && UserInfo.updateResult) {
                 this.insertCallback("修改成功");
             }
@@ -111,7 +111,7 @@ class UpdatePassword extends React.Component {
         let showPassword = this.state.visible;
         if(visible){ showPassword = true }
 
-        if(showPassword == true){
+        if(showPassword){
             return(
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout} label="原密码">

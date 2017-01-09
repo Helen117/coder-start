@@ -11,7 +11,8 @@ import './index.less';
 import {findMenuLink, findDefaultMenuBar, findMenuBarInfoByLocation, findDefaultMenuThree,
     findMenuOneIndex, findMenuTwoIndex, findCurrentMenuOne, hasMenuOneOrTwo} from './utils';
 
-let currentOne,currentTwo,topMenuOne_temp=[];
+let currentOne,currentTwo;
+const topMenuOne_temp=[];
 
 class MenuBar extends React.Component {
     constructor(){
@@ -27,7 +28,7 @@ class MenuBar extends React.Component {
 
     componentWillReceiveProps(nextProps){
         const {navpath, menuData,light_menubar} = nextProps;
-        if(navpath.length != 0){
+        if(navpath && navpath.length != 0){
             if((this.props.light_menubar != light_menubar && light_menubar) ||
                 (this.props.navpath != navpath && navpath)){
                 if(nextProps.is_menuclick){//点击侧边导航，顶部导航恢复默认值
@@ -128,7 +129,7 @@ class MenuBar extends React.Component {
             const menuone_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
-                    let topMenuData = item.subMenu;
+                    const topMenuData = item.subMenu;
                     const menuOneData = topMenuData.map(( itemTop ) => {
                         return (
                             <Menu.Item key={'menu' + itemTop.id}>
@@ -140,24 +141,24 @@ class MenuBar extends React.Component {
                 }else{return menuone_null;}
             }else{return menuone_null;}
         });
-        let topMenu_1=[];
-        if(topMenu.length > 0){//顶部一级导航，结构[[{},{},{}]]
+        const topMenu_1=[];
+        if(topMenu && topMenu.length > 0){//顶部一级导航，结构[[{},{},{}]]
             if(topMenu[0].length > 0){
                 topMenu_1[0] = topMenu[0];
                 topMenuOne_temp[0] = topMenu_1[0];
             }
         }
         const topMenuTwo = this.selectNaviOne.map((item) => {//顶部二级导航,结构[[[{},{},{}],[{},{}],[{}]]]
-            let menutwo_null = [];
+            const menutwo_null = [];
             if(item.subMenu){
                 if(item.subMenu.length != 0){
-                    let topMenuData = item.subMenu;
+                    const topMenuData = item.subMenu;
                     const topTwoMenu = topMenuData.map((itemTopTwo) => {
                         if(itemTopTwo.subMenu){
                             if(itemTopTwo.subMenu.length != 0){
-                                let menuTwoData = itemTopTwo.subMenu;
+                                const menuTwoData = itemTopTwo.subMenu;
                                 const topTwo = menuTwoData.map((itemTwo) => {
-                                    let menuTwoKey = 'menu'+itemTwo.id;
+                                    const menuTwoKey = 'menu'+itemTwo.id;
                                     return (
                                         <Menu.Item key={menuTwoKey}>
                                             {itemTwo.name}
@@ -174,12 +175,12 @@ class MenuBar extends React.Component {
         });
         //是否存在二级菜单和三级菜单
         const {haveMenuOne,haveMenuTwo} = hasMenuOneOrTwo(this.selectNaviOne);
-        let topMenuTwo_1=[], topMenuTwo_tmp;
-        let selectMenuOne = this.state.currentMenuOne.replace("menu","");
-        if(topMenuTwo.length > 0){//顶部二级菜单，结构[[{},{},{]]]
+        const topMenuTwo_1=[];let topMenuTwo_tmp;
+        const selectMenuOne = this.state.currentMenuOne.replace("menu","");
+        if(topMenuTwo && topMenuTwo.length > 0){//顶部二级菜单，结构[[{},{},{]]]
             if(topMenuTwo[0].length > 0){
                 topMenuTwo_tmp = topMenuTwo[0];
-                let menuOneIndex = findMenuOneIndex(selectMenuOne, topMenuOne_temp[0]);
+                const menuOneIndex = findMenuOneIndex(selectMenuOne, topMenuOne_temp[0]);
                 if(topMenuTwo_tmp[menuOneIndex]){
                     if(topMenuTwo_tmp[menuOneIndex].length > 0){
                         topMenuTwo_1[0] = topMenuTwo_tmp[menuOneIndex];
@@ -226,7 +227,7 @@ MenuBar.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
+function mapStateToProps() {
     return {
         //getMenuBarInfo:state.getMenuBarInfo,
     }
