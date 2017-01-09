@@ -43,6 +43,19 @@ export function fetchTeamMemberDemandComplete(milestoneId,groupId) {
     }
 }
 
+export function fetchTeamDemandComplete(milestoneId) {
+    return {
+        type: 'FETCH_TEAM_DEMAND_COMPLETE',
+        payload: {
+            promise: api.post('/report/team-demand',{
+                params: {
+                    milestone_id: milestoneId
+                }
+            })
+        }
+    }
+}
+
 export function fetchMemberInfo(milestoneId) {
     return {
         type: 'FETCH_MEMBER',
