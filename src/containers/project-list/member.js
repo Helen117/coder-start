@@ -7,7 +7,7 @@ import React,{
 } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
+import {Form,Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
 import styles from './index.css';
 import UserRelation from '../user-relation';
 import {addProjectMember,deleteProjectMember,
@@ -21,6 +21,7 @@ import {setSelectedRowKeys} from '../user-relation/actions/user-relation-actions
 
 const Option = Select.Option;
 const confirm = Modal.confirm;
+const FormItem = Form.Item;
 
 class ProjectMember extends Component {
     constructor(props) {
@@ -116,28 +117,36 @@ class ProjectMember extends Component {
 
     handleOk(){
         //调添加成员接口
-        const {actions,project,loginInfo,selectedUsers} = this.props;
-        const data = [],final_data={};
-        const projectInfo = project.getProjectInfo?(
-            project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
-        ):{};
-        const user_ids = selectedUsers?selectedUsers.user_ids:[];
-        for(let i=0; i<user_ids.length; i++){
-            data.push({
-                projectId:projectInfo.id,
-                gitlabAccessLevel:this.state.accessLevel,
-                userId:user_ids[i],
-            })
-        }
-        final_data.users = data;
-        final_data.id = loginInfo.userId;
-        actions.addProjectMember(final_data);
+        const {form,actions,project,loginInfo,selectedUsers} = this.props;
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = [],final_data={};
+                const projectInfo = project.getProjectInfo?(
+                    project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
+                ):{};
+                const user_ids = selectedUsers?selectedUsers.user_ids:[];
+                for(let i=0; i<user_ids.length; i++){
+                    data.push({
+                        projectId:projectInfo.id,
+                        gitlabAccessLevel:this.state.accessLevel,
+                        userId:user_ids[i],
+                    })
+                }
+                final_data.users = data;
+                final_data.id = loginInfo.userId;
+                actions.addProjectMember(final_data);
+            }
+        })
     }
 
     handleCancel(){
+        const {form} = this.props;
         this.setState({
             addProjectMember: false
         });
+        form.resetFields();
         this.props.setSelectedRowKeys([],[]);
     }
 
@@ -162,7 +171,12 @@ class ProjectMember extends Component {
 
     render(){
         const {projectMember,project,loginInfo} = this.props;
+        const { getFieldDecorator } = this.props.form;
         const {selectedRowKeys} = this.state;
+        const formItemLayout = {
+            labelCol: {span: 20},
+            wrapperCol: {span: 4},
+        };
 
         const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectMembers = projectMember.getProjectMembers?(
@@ -228,17 +242,23 @@ class ProjectMember extends Component {
                        onCancel={this.handleCancel.bind(this)}
                        confirmLoading={addLoading}
                 >
-                    <div style={{paddingLeft:'10px'}}>
-                        <span>添加成员作为：</span>
-                        <Select id="access_level" defaultValue="40"
-                                onChange={this.changeSelect.bind(this)}>
-                            <Option value="40">管理员</Option>
-                            <Option value="30">开发者</Option>
-                            <Option value="20">测试</Option>
-                        </Select>
-                    </div>
                     <UserRelation visible='true'
                                   busiType="add-members"/>
+                    <FormItem {...formItemLayout} label="添加成员作为">
+                        {getFieldDecorator('access_level',{rules:[
+                            {required:true, message:'请为添加的成员选择角色！'},
+                        ]})(
+                            <Select
+                                style={{ width: '100%' }}
+                                placeholder="请选择角色"
+                                onChange={this.changeSelect.bind(this)}
+                            >
+                                <Option value="40">管理员</Option>
+                                <Option value="30">开发者</Option>
+                                <Option value="20">测试</Option>
+                            </Select>
+                        )}
+                    </FormItem>
                 </Modal>
                 {comfirmRoleId(loginInfo.userId,projectMembers)?(
                     <div style={{paddingTop:'10px'}}>
@@ -255,6 +275,8 @@ ProjectMember.contextTypes = {
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
 };
+
+ProjectMember = Form.create()(ProjectMember);
 
 function mapStateToProps(state) {
     return {
