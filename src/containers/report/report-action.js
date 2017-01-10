@@ -15,6 +15,47 @@ export function fetchReportData(milestoneId) {
     }
 }
 
+export function fetchTeamMemberDemandProportion(milestoneId,groupId) {
+    return {
+        type: 'FETCH_MEMBER_RATE',
+        payload: {
+            promise: api.post('/report/team',{
+                params: {
+                    milestone_id: milestoneId,
+                    group_id:groupId
+                }
+            })
+        }
+    }
+}
+
+export function fetchTeamMemberDemandComplete(milestoneId,groupId) {
+    return {
+        type: 'FETCH_MEMBER_DEMAND_COMPLETE',
+        payload: {
+            promise: api.post('/report/member-demand',{
+                params: {
+                    milestone_id: milestoneId,
+                    group_id:groupId
+                }
+            })
+        }
+    }
+}
+
+export function fetchTeamDemandComplete(milestoneId) {
+    return {
+        type: 'FETCH_TEAM_DEMAND_COMPLETE',
+        payload: {
+            promise: api.post('/report/team-demand',{
+                params: {
+                    milestone_id: milestoneId
+                }
+            })
+        }
+    }
+}
+
 export function fetchMemberInfo(milestoneId) {
     return {
         type: 'FETCH_MEMBER',
