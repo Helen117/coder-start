@@ -27,7 +27,6 @@ export function clearGroupProjectInfo() {
 }
 
 export function createGroup(groupData) {
-    //var path = '/project-mgr/createGroup';
     var path = '/groups/create';
     return {
         type: CREATE_GROUP,

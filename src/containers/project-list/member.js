@@ -33,25 +33,19 @@ class ProjectMember extends Component {
         }
     }
 
-    componentDidMount(){
-
-    }
-
     componentWillReceiveProps(nextProps) {
         const {projectMember} = nextProps;
         //添加返回信息
-        if(this.props.projectMember.addProjectMember && projectMember.addProjectMember){
-            if(this.props.projectMember.addProjectMember.result !=
-                projectMember.addProjectMember.result && projectMember.addProjectMember.result){
+        if(this.props.projectMember.addProjectMember && projectMember.addProjectMember
+        && this.props.projectMember.addProjectMember.result !=
+            projectMember.addProjectMember.result && projectMember.addProjectMember.result){
                 this.insertCallback("添加成功");
-            }
         }
         //删除返回信息
-        if(this.props.projectMember.deleteProjectMember && projectMember.deleteProjectMember){
-            if(this.props.projectMember.deleteProjectMember.result !=
-                projectMember.deleteProjectMember.result && projectMember.deleteProjectMember.result){
+        if(this.props.projectMember.deleteProjectMember && projectMember.deleteProjectMember
+        && this.props.projectMember.deleteProjectMember.result !=
+            projectMember.deleteProjectMember.result && projectMember.deleteProjectMember.result){
                 this.insertCallback("删除成功");
-            }
         }
     }
 
@@ -68,8 +62,8 @@ class ProjectMember extends Component {
         });
         //调项目成员接口
         const {actions,loginInfo,projectGroup} = this.props;
-        let selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
-        let projectId = selectedKey.id.substr(0,selectedKey.id.length-2);
+        const selectedKey = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const projectId = selectedKey.id.substr(0,selectedKey.id.length-2);
         this.props.getProject(projectId,loginInfo.userId);
         actions.getProjectMembers(projectId);
         this.props.setSelectedRowKeys([],[]);
@@ -100,7 +94,7 @@ class ProjectMember extends Component {
                 content: '',
                 onOk() {
                     //调删除成员接口
-                    let data = [],final_data={};
+                    const data = [],final_data={};
                     for(let i=0;i<user_ids.length;i++){
                         data.push({
                             projectId:projectId,
@@ -112,6 +106,7 @@ class ProjectMember extends Component {
                     actions.deleteProjectMember(final_data)
                 },
                 onCancel() {
+                    //取消
                 }
             })
         }else{
@@ -122,11 +117,11 @@ class ProjectMember extends Component {
     handleOk(){
         //调添加成员接口
         const {actions,project,loginInfo,selectedUsers} = this.props;
-        let data = [],final_data={};
-        let projectInfo = project.getProjectInfo?(
+        const data = [],final_data={};
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        let user_ids = selectedUsers?selectedUsers.user_ids:[];
+        const user_ids = selectedUsers?selectedUsers.user_ids:[];
         for(let i=0; i<user_ids.length; i++){
             data.push({
                 projectId:projectInfo.id,
@@ -154,12 +149,12 @@ class ProjectMember extends Component {
 
     onSelectedChange(selectedRowKeys, selectedRows){
         const {projectMember} = this.props;
-        let projectMembers = projectMember.getProjectMembers?(
+        const projectMembers = projectMember.getProjectMembers?(
             projectMember.getProjectMembers?projectMember.getProjectMembers.projectMembers:[]
         ):[];
-        let user_ids = [];
+        const user_ids = [];
         for(let i=0; i<selectedRows.length; i++){
-            let _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
+            const _id = findUserIdByEmail(selectedRows[i].email,projectMembers);
             user_ids.push(_id);
         }
         this.setState({selectedRowKeys,selectedUserIds:user_ids})
@@ -169,8 +164,8 @@ class ProjectMember extends Component {
         const {projectMember,project,loginInfo} = this.props;
         const {selectedRowKeys} = this.state;
 
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
-        let projectMembers = projectMember.getProjectMembers?(
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectMembers = projectMember.getProjectMembers?(
             projectMember.getProjectMembers.projectMembers?projectMember.getProjectMembers.projectMembers:[]
         ):[];
         const columns = [
@@ -215,9 +210,9 @@ class ProjectMember extends Component {
                 <span style={{paddingLeft:20}}>项目创建目的:{projectInfo.description}</span>
             </div>
         ):(<div></div>);
-        let projectId = projectInfo?projectInfo.id:'';
-        let membersLoading = projectMember.getProjectMembers?projectMember.getProjectMembers.loading:false;
-        let addLoading = projectMember.addProjectMember?projectMember.addProjectMember.loading:false;
+        const projectId = projectInfo?projectInfo.id:'';
+        const membersLoading = projectMember.getProjectMembers?projectMember.getProjectMembers.loading:false;
+        const addLoading = projectMember.addProjectMember?projectMember.addProjectMember.loading:false;
 
         return (
             <div className={styles.project_list_div}>

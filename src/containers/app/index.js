@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Icon,Button,Row,Col, Affix} from 'antd';
+import {Affix} from 'antd';
 
 import NavPath from '../../containers/nav-path';
 import Sidebar from '../../containers/sidebar';
@@ -14,11 +14,6 @@ import {logout, fetchProfile, cookiesToReduxLoginState} from '../login/actions/l
 import { updateNavPath} from '../sidebar/actions/menu-action';
 import * as home from '../home/actions/home-action';
 import MenuBar from '../../containers/menubar';
-import * as Cookies from "js-cookie";
-
-//import authUtils from '../../utils/auth'
-
-//import 'antd/dist/antd.less';//已包含在index.less中
 
 import './index.less';
 
@@ -34,9 +29,6 @@ class App extends React.Component {
 
     componentWillMount() {
         const {actions, uid} = this.props;
-        //let realUid = uid?uid:authUtils.getUid();
-        //actions.fetchProfile(realUid);
-        //actions.fetchProfile(uid);
         if (uid == null){
             actions.cookiesToReduxLoginState();
         }
@@ -97,7 +89,7 @@ class App extends React.Component {
         let light = light_menubar;
         let truePath = window.location.pathname;
         while(!key_return && menuData.length>0){//如果没有找到key,去掉最后一个“/”，继续找
-            let trueIndex = truePath.lastIndexOf("/");
+            const trueIndex = truePath.lastIndexOf("/");
             if(trueIndex == 0 && navpath.length==0){//刷新回首页
                 path_return[0] = "menu1";
                 key_return = "menu1";

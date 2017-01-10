@@ -46,16 +46,14 @@ class FileTree extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const { codeFile, fetchCodeStatus, filePath} = nextProps;
+        const { codeFile, filePath} = nextProps;
         this.setState({
             filePath:filePath
         })
-        if(codeFile != this.props.codeFile){
-            if(fetchCodeStatus == true){
-                this.state.dataSource.splice(0,this.state.dataSource.length);
-                for(var i=0; i<codeFile.length; i++){
-                    this.state.dataSource.push(codeFile[i]);
-                }
+        if(codeFile && codeFile != this.props.codeFile){
+            this.state.dataSource.splice(0,this.state.dataSource.length);
+            for(var i=0; i<codeFile.length; i++){
+                this.state.dataSource.push(codeFile[i]);
             }
         }
     }
@@ -66,7 +64,7 @@ class FileTree extends React.Component {
         //判断点击的record是不是js文件，如果是，跳转路由,展示js内容
         //如果不是，调接口，取下一级数据，重新渲染
         const {project,brand} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         let type,filePath = this.state.filePath;
         for(let i=0; i<this.state.dataSource.length; i++){
             if(this.state.dataSource[i].name == record.name){
@@ -100,12 +98,12 @@ class FileTree extends React.Component {
     }
 
     render(){
-        const { fetchCodeStatus,visible } = this.props;
+        const { codeFile,visible } = this.props;
         const pagination = {
             pageSize:20
         };
-        let dataSource = [];
-        if(fetchCodeStatus || false){
+        const dataSource = [];
+        if(codeFile){
             for(var i=0; i<this.state.dataSource.length; i++){
                 dataSource.push({
                     key:i+1,
@@ -113,7 +111,7 @@ class FileTree extends React.Component {
                 })
             }
         }
-        if(visible == true){
+        if(visible){
             return (
                 <div>
                     <Table columns={this.getColumns(this,this.state.dataSource)}
@@ -136,7 +134,7 @@ FileTree.contextTypes = {
 FileTree.prototype.getColumns = (self,dataSource)=>[
     {title:"名称", dataIndex:"name", key:"name",
         render(text,record){
-            let type = self.findType(dataSource,record);
+            const type = self.findType(dataSource,record);
             return (type == "blob"?<div><Icon type="file-text" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>
                 :<div><Icon type="folder" style={{fontSize:18,paddingRight:'7px'}}/>{text}</div>)
         }},
@@ -147,7 +145,6 @@ FileTree.prototype.getColumns = (self,dataSource)=>[
 function mapStateToProps(state) {
     return {
         codeFile:state.getCodeFile.codeFile,
-        fetchCodeStatus:state.getCodeFile.fetchCodeStatus,
         project:state.project,
     }
 }

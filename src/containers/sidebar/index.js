@@ -30,9 +30,6 @@ class Sidebar extends React.Component {
         //let uid = authUtils.getUid();
         let {uid} = this.props;
         this.props.getAllMenu(uid);
-        /*this.setState({
-            openSideBar:isOpened
-        });*/
     }
 
     componentWillReceiveProps(nextProps){

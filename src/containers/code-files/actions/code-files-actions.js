@@ -6,7 +6,6 @@ import {GET_CODE_FILES, GET_CODE_CONTENTS} from '../constants/code-files-types';
 
 export function getCodeFile(projectId,filePath,refName) {
     var path = '/repository/tree';
-    //var path = '/fileTree';
     return {
         type: GET_CODE_FILES,
         payload: {
@@ -23,7 +22,6 @@ export function getCodeFile(projectId,filePath,refName) {
 
 export function getCodeContent(projectId,filePath,refName) {
     var path = '/repository/file';
-    //var path = '/fileTree';
     return {
         type: GET_CODE_CONTENTS,
         payload: {

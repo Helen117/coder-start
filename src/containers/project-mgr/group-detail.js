@@ -30,7 +30,7 @@ class GroupDetail extends React.Component {
         e.preventDefault();
         const { actions, form, loginInfo, projectGroup } = this.props;
         const {editType} = this.props.location.state;
-        let getGroupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
+        const getGroupInfo = projectGroup.getGroupInfo?projectGroup.getGroupInfo.groupInfo:{};
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;

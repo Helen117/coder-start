@@ -4,7 +4,7 @@
 export function findEmailByUserId(userId,allUser) {
     for(let i=0; i<allUser.length; i++){
         if(userId == allUser[i].id){
-            let email = allUser[i].email;
+            const email = allUser[i].email;
             return email;
         }
     }

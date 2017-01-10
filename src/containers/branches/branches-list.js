@@ -25,7 +25,7 @@ class BranchesList extends React.Component {
 
     componentWillMount() {
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         if(projectInfo && projectInfo.id) {
             if(!this.props.branchesData || this.props.branchesData.project_id!=projectInfo.id) {
                 this.props.fetchBranchesData(projectInfo.id);
@@ -37,10 +37,10 @@ class BranchesList extends React.Component {
         const delResult = nextProps.delResult;
         const {project} = this.props;
         const next_project = nextProps.project;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
-        let next_projectInfo = next_project.getProjectInfo?(
+        const next_projectInfo = next_project.getProjectInfo?(
             next_project.getProjectInfo.projectInfo?next_project.getProjectInfo.projectInfo:{}
         ):{};
 
@@ -61,7 +61,7 @@ class BranchesList extends React.Component {
 
     sucCallback(type){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         message.success(type);
         const project_id = projectInfo.id;
         this.props.fetchBranchesData(project_id);
@@ -84,7 +84,7 @@ class BranchesList extends React.Component {
 
     handleOk() {
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
+        const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const branch = this.state.delRecord.branch;
         const project_id = projectInfo.id;
         const result = this.props.form.getFieldsValue().result;
@@ -122,7 +122,7 @@ class BranchesList extends React.Component {
         const {project,loginInfo,branchesData} = this.props;
         const data = this.mapBranchTable(branchesData);
         const {getFieldDecorator} = this.props.form;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         let buttonDisable=true;
