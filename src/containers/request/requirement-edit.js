@@ -29,8 +29,6 @@ class EditRequest extends Component{
         const {selectedRow} = this.props.location.state;
         if(selectedRow){
             const {setFieldsValue} = this.props.form;
-            //console.log(selectedRow.expect_due_date,moment(selectedRow.expect_due_date))
-            //this.getMilestone(moment(selectedRow.expect_due_date).valueOf());
             if(selectedRow.files&&selectedRow.files.length>0){
                 this.setState({fileList:[{
                     uid: -1,
@@ -54,9 +52,6 @@ class EditRequest extends Component{
         }
     }
 
-    componentDidMount() {
-
-    }
 
     componentWillReceiveProps(nextProps) {
         const actions = this.props.actions;
@@ -84,7 +79,7 @@ class EditRequest extends Component{
         e.preventDefault();
         const {actions, form, loginInfo, selectedProjectSet} = this.props;
 
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -95,7 +90,6 @@ class EditRequest extends Component{
                 data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
                 data.files= this.state.fileList;
-                // console.log('接收的数据',data);
                 if(editType == 'add'){
                     actions.addRequest(data);
                 }else{
@@ -111,7 +105,6 @@ class EditRequest extends Component{
                         && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assignee_test_id&&filesFlag) {
                         message.info('数据没有变更，不需提交', 2);
                     } else {
-                        // console.log('接收的数据',data);
                         actions.editRequest(data);
                     }
 
@@ -187,17 +180,7 @@ class EditRequest extends Component{
         callback();
     }
 
-    checkMatchMilestone(rule, value, callback){
-        const currentMilestone = this.props.currentMilestone;
-        console.log('currentMilestone',currentMilestone)
-        if (currentMilestone && currentMilestone.length <= 0) {
-            callback('未查询到匹配的里程碑');
-        }else{
-            callback();
-        }
-    }
-
-    getMilestone(date,time){
+    getMilestone(date){
         const selectedProjectSet = this.props.selectedProjectSet;
         const sets_id = selectedProjectSet.selectedItemId;
         const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
@@ -217,6 +200,7 @@ class EditRequest extends Component{
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }
@@ -237,7 +221,6 @@ class EditRequest extends Component{
 
     beforeUpload(file){
         var len = file.name.length;
-        // if (!(file.type === 'application/msword')) {
         if (!(file.name.substr(len-4,4).toLowerCase() == '.doc')) {
             message.error('上传的需求文档限制为word2003版本的文件(IIMP暂时不支持word2007版本的文件)！',5);
             return false;
@@ -246,7 +229,7 @@ class EditRequest extends Component{
             message.error('文件大小不能超过10M',3);
             return false;
         }
-        let reader = new FileReader();
+        const reader = new FileReader();
         reader.onloadend = function () {
             this.setState({
                 fileList:[{
@@ -256,7 +239,6 @@ class EditRequest extends Component{
                     url: reader.result
                 }]
             });
-            // console.log(reader.result);
         }.bind(this);
         reader.readAsDataURL(file);
         return false;
@@ -274,12 +256,15 @@ class EditRequest extends Component{
             validateStatus="error";
         }
         if(currentMilestone) {
-            if(currentMilestone.length>0){
+            if(currentMilestone.result && currentMilestone.milestones){
                 validateStatus="success";
-                helpMsg = '对应里程碑：'+currentMilestone[0].title +"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
-            }else{
+                helpMsg = '对应里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()
+            }else if(!currentMilestone.result && !currentMilestone.milestones){
                 validateStatus="error";
                 helpMsg = '尚未建立对应的里程碑'
+            }else if(!currentMilestone.result && currentMilestone.milestones){
+                validateStatus="error";
+                helpMsg = '里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()+'，结束前两天禁止创建需求，请调整计划完成时间'
             }
         }
 
@@ -301,16 +286,13 @@ class EditRequest extends Component{
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                     <FormItem {...formItemLayout}  label="需求主题" >
-                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求主题'}]})
-                        (<Input placeholder="请填写需求主题"/>)}
+                        {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求主题'}]})(<Input placeholder="请填写需求主题"/>)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="需求描述" >
-                        {getFieldDecorator('description',{rules:[{required:true,message:'请填写需求描述'}]})
-                        (<Input type="textarea" placeholder="请填写需求描述" rows="5" />)}
+                        {getFieldDecorator('description',{rules:[{required:true,message:'请填写需求描述'}]})(<Input type="textarea" placeholder="请填写需求描述" rows="5" />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):helpMsg} validateStatus={validateStatus} >
-                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,message:'请选择计划完成时间'}]})
-                        (<DatePicker allowClear={false}
+                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,message:'请选择计划完成时间'}]})(<DatePicker allowClear={false}
                                      disabledDate={this.disabledDate.bind(this)}
                                      onChange={this.getMilestone.bind(this)}
                                      style={{ width: 300 }}  />)}

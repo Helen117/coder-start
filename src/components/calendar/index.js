@@ -196,7 +196,7 @@ export default class MilestonesCalendar extends React.Component{
     }
 
 
-    getMonthData(milestoneList,calendarTime) {
+    getMonthData(milestoneList) {
         return <ul  style={{marginLeft:3}} className="events">
             {
                 milestoneList.map((item, index) => {
@@ -220,7 +220,7 @@ export default class MilestonesCalendar extends React.Component{
                     milestoneList.push(milestoneData[i]);
                 }
             }
-            const monthCellData = this.getMonthData(milestoneList, value.month());
+            const monthCellData = this.getMonthData(milestoneList);
             return monthCellData;
         }
     }

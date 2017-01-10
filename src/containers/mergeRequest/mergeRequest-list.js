@@ -3,10 +3,11 @@
  */
 
 import React,{ PropTypes } from 'react';
-import { Button,Row, Radio, Table,notification,Alert, Col} from 'antd';
+import { Button,Row, Radio, Modal,notification,Alert, Col, Table, Input } from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {fetchMrListData,fetchMergeBranchData,fetchIssuesData,changeQueryCondition} from './mergeRequest-action'
+import './index.less';
 
 class MergeRequestList extends React.Component {
     constructor(props) {
@@ -20,7 +21,6 @@ class MergeRequestList extends React.Component {
         ):{};
         if(projectInfo.id) {
             if(!this.props.mrList || this.props.mrList.project_id!=projectInfo.id){
-                console.log('componentWillMount')
                 this.props.changeQueryConditionAction(1,'opened')
                 this.props.fetchMrListData(projectInfo.id,1,'opened');
             }
@@ -73,6 +73,38 @@ class MergeRequestList extends React.Component {
         });
     }
 
+    revertMr(record){
+        Modal.info({
+            title: '代码回退命令',
+            width: 550,
+            content: (
+                <div className="modal">
+                    <p>1. Clone,fetch and check out the branch for this merge request:</p>
+                    <div>
+                        <p>git clone {this.props.project.getProjectInfo.projectInfo.sshUrl}</p>
+                        <p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>
+                        <p>git checkout -b zhangyj/devops-scm-dev FETCH_HEAD</p>
+                    </div>
+
+                    <p>2. Revert and review changes: </p>
+                    <div> git revert {record.sha}</div>
+
+                    <p>3. Merge the branch and fix any conflicts that come up:</p>
+                    <div>
+                        <p>git checkout master</p>
+                        <p>git merge --no-ff zhangyj/devops-scm-dev</p>
+                    </div>
+
+                    <p>4. Push the result of the merge to GitLab:</p>
+                    <div>git push origin master</div>
+                </div>
+            ),
+            onOk() {
+                //do nothing
+            },
+        });
+    }
+
     createMergeRequest(){
         const {project} = this.props;
         const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
@@ -80,12 +112,12 @@ class MergeRequestList extends React.Component {
         this.props.fetchMergeBranchData(projectId,'','');
     }
 
-    onChange(pagination, filters, sorter) {
+    onChange(pagination) {
         // 点击分页、筛选、排序时触发
 
         this.props.changeQueryConditionAction(pagination.current,this.props.status)
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id) {
@@ -95,7 +127,7 @@ class MergeRequestList extends React.Component {
 
     handleSizeChange(e){
         const {project} = this.props;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         if(projectInfo.id){
@@ -131,10 +163,12 @@ class MergeRequestList extends React.Component {
                     description: mrList[i].description,
                     author: mrList[i].author.name,
                     assignee:mrList[i].assignee?mrList[i].assignee.name:'',
-                    mrPath:mrList[i].source_branch+' to '+mrList[i].target_branch,
+                    mrPath: mrList[i].target_branch=='dev'? 'dev - dev' : mrList[i].source_branch+' - '+mrList[i].target_branch,
                     created_at:this.getTime(mrList[i].created_at),
                     milestone:mrList[i].milestone,
-                    state:mrList[i].state=='opened'?'未合并':mrList[i].state=='merged'?'已合并':'已关闭'
+                    state:mrList[i].state=='opened'?'未合并':mrList[i].state=='merged'?'已合并':'已关闭',
+                    sha: mrList[i].sha,
+                    target_branch: mrList[i].target_branch,
                 });
             }
         }
@@ -146,7 +180,7 @@ class MergeRequestList extends React.Component {
         const data = mrList?this.getDataSource(mrList.gitlabMergeRequests):null;
         const buttonLoading = fetchIssueLoading || mergeBranchLoading;
         const pagination = {
-            total: mrList?mrList.size:0,
+            total: mrList?parseInt(mrList.size):0,
             current: this.props.page
         }
         const projectInfo = project.getProjectInfo?(
@@ -175,7 +209,6 @@ class MergeRequestList extends React.Component {
                                 </Radio.Group>
                                 </div>
                         </Col>
-
                     </Row>
                     <div style={{marginTop:5}}>
                         <Table loading = {this.props.loading}
@@ -207,7 +240,7 @@ MergeRequestList.prototype.columns = (self)=> [{
     dataIndex: 'mrTitle',
     key: 'mrTitle',
     width:'20%',
-    render: (text, record, index)=> {
+    render: (text, record)=> {
         return (
             <a onClick = {self.getCodeChanges.bind(self,record)}>{record.mrTitle}</a>
         )
@@ -221,39 +254,39 @@ MergeRequestList.prototype.columns = (self)=> [{
     title: '申请人',
     dataIndex: 'author',
     key: 'author',
-    width:'10%',
 },{
     title: '处理人',
     dataIndex: 'assignee',
     key: 'assignee',
-    width:'10%'
+},{
+    title: '分支路径',
+    dataIndex: 'mrPath',
+    key: 'mrPath',
 },{
     title: '创建时间',
     dataIndex: 'created_at',
     key: 'created_at',
-    width:'10%',
+    width: '7%',
 },{
     title: '状态',
     dataIndex: 'state',
     key: 'state',
-    width:'10%',
-}/*,{
+    width: '7%',
+
+},{
     title: '操作',
-    dataIndex: 'opreation',
-    width: '10%',
-    render: (text, record, index)=> {
+    dataIndex: 'operation',
+    width: '5%',
+    render: (text, record)=> {
         return (
-        record.state == "closed"?
+        record.state=="已合并" ?
             <span>
                 <a onClick = {self.revertMr.bind(self,record)}>回退</a>
             </span>:
                 <span></span>
-
-
         )
-        ;
     }
-}*/]
+}]
 
 MergeRequestList.contextTypes = {
     history: PropTypes.object.isRequired,

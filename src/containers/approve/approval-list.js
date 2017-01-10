@@ -25,32 +25,14 @@ class ApproveList extends Component {
         if( this.props.location != nextProps.location){
             actions.getApproveList(loginInfo.username);
         }
-        // const {errors} = nextProps;
-        // if(errors&&errors!=this.props.errors){
-        //     // message.error('获取待审批列表失败！'+errors,3);
-        //     this.errorMessage('获取待审批列表失败！',errors);
-        // }
     }
 
-    // errorMessage(info,error){
-    //     notification.error({
-    //         message: info,
-    //         description:error,
-    //         duration:null,
-    //     });
-    // }
-
-    approveDetail(record,type){
+    approveDetail(record){
         let pathName = '';
         if(record.type=='领导审批'){
             pathName = '/approveRegister';
         }else if(record.type=='需求确认' ){
             pathName = '/confirmList'
-            /*if(type=='confirm') {
-                pathName = '/confirmOperate'
-            }else{
-                pathName = '/transpondOperate'
-            }*/
         }else if(record.type=='代码合并申请'){
             pathName='/approveMr'
         }
@@ -66,7 +48,6 @@ class ApproveList extends Component {
 
         const pagination = {
             pageSize:20,
-           // total: data.length,
         };
 
         return(
@@ -76,7 +57,6 @@ class ApproveList extends Component {
                        size="middle"
                        pagination={pagination}
                        loading={this.props.loading}
-                       //onRowClick ={this.approveDetail.bind(this)}
                 />
             </Box>
         );
@@ -103,14 +83,7 @@ ApproveList.prototype.columns = (self)=>[{
     title: '操作',
     dataIndex: 'key',
     render: (text, record) => (
-        /*record.type!="需求确认"?*/
-            <a onClick={self.approveDetail.bind(self,record,'')}>审批</a>/*:
-            <div>
-                <a onClick={self.approveDetail.bind(self,record,'confirm')}>确认</a>
-                <span style={{marginLeft:10, marginRight:10}}className="ant-divider" />
-                <a onClick={self.approveDetail.bind(self,record,'transpond')}>转派</a>
-            </div>*/
-
+            <a onClick={self.approveDetail.bind(self,record,'')}>审批</a>
     )
 }];
 

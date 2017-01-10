@@ -85,11 +85,11 @@ export default function request(state = initialState, action = {}) {
             
         //get tester workload
         case 'GET_TESTER_WORKLOAD_PENDING':
-            return {...state, testerWorkloader: null};
+            return {...state, testerWorkloader: null, testerWorkloaderLoading: true};
         case 'GET_TESTER_WORKLOAD_SUCCESS':
-            return {...state, testerWorkloader: action.payload};
+            return {...state, testerWorkloader: action.payload, testerWorkloaderLoading: false};
         case 'GET_TESTER_WORKLOAD_ERROR':
-            return {...state, testerWorkloader: null};
+            return {...state, testerWorkloader: null, testerWorkloaderLoading: false};
 
         //get request state
         case 'GET_REQUEST_STATE_PENDING':
