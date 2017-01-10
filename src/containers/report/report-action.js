@@ -56,6 +56,32 @@ export function fetchTeamDemandComplete(milestoneId) {
     }
 }
 
+export function fetchTeamStatistics(milestoneId) {
+    return {
+        type: 'FETCH_TEAM_STATISTICS',
+        payload: {
+            promise: api.post('/report/team-scale',{
+                params: {
+                    milestone_id: milestoneId
+                }
+            })
+        }
+    }
+}
+
+export function fetchDemandStatistics(milestoneId) {
+    return {
+        type: 'FETCH_DEMAND_STATISTICS',
+        payload: {
+            promise: api.post('/report/ranking-demand',{
+                params: {
+                    milestone_id: milestoneId
+                }
+            })
+        }
+    }
+}
+
 export function fetchMemberInfo(milestoneId) {
     return {
         type: 'FETCH_MEMBER',
