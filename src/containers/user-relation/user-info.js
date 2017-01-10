@@ -62,9 +62,13 @@ class UserInfo extends React.Component {
                 ?userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
+            this.setState({
+                dataSource:[]
+            })
             this.props.getGroupsUsers(parseInt(node),busiType);
         }
-        if(userInfoData){
+        if(userInfoData && this.state.dataSource.length==0){
+            console.log('111')
             this.data = this.getDataSource(userInfoData);
             this.setState({
                 dataSource:userInfoData

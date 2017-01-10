@@ -32,7 +32,7 @@ import {
 import {CLEAR_USER_RELATION_INFO} from '../../project-list/constants/project-member-types';
 
 const initialState = {
-    userInfoData:[]
+
 };
 const initState = {};
 
@@ -53,26 +53,19 @@ export default function UserRelation(state = initialState, action = {}) {
                 selectedUserGroup:action.selectedUserGroup}};
         //获取人员信息
         case GET_USER_INFO_PENDING:
-            if (!state[action.meta]){
+            if (!state['getUserInfo_'+action.meta]){
                 state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
             }
             state['getUserInfo_'+action.meta].loading = true;
+            state['getUserInfo_'+action.meta].userInfoData = null;
             return {...state};
         case GET_USER_INFO_SUCCESS:
-            if (!state[action.meta]){
-                state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
-            }
             state['getUserInfo_'+action.meta].loading = false;
             state['getUserInfo_'+action.meta].userInfoData = action.payload;
             return {...state};
         case GET_USER_INFO_ERROR:
-            if (!state[action.meta]){
-                state['getUserInfo_'+action.meta] = Object.assign({}, initState);//等同于={...initState}
-            }
             state['getUserInfo_'+action.meta].loading = false;
-            return {
-                ...state,getUserInfo:{loading: false}
-            };
+            return {...state};
         //移动人员
         case MOVE_USER_PENDING:
             return {...state, moveUserRelation:{moveLoading:true,moveDisabled:true}};
