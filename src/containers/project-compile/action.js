@@ -127,3 +127,43 @@ export function getStageList() {
         }
     }
 }
+
+
+export const PROJECT_COMPILE_SAVE_PIPELINE_JOB = 'PROJECT_COMPILE_SAVE_PIPELINE_JOB';
+export const PROJECT_COMPILE_SAVE_PIPELINE_JOB_PENDING = 'PROJECT_COMPILE_SAVE_PIPELINE_JOB_PENDING';
+export const PROJECT_COMPILE_SAVE_PIPELINE_JOB_SUCCESS = 'PROJECT_COMPILE_SAVE_PIPELINE_JOB_SUCCESS';
+export const PROJECT_COMPILE_SAVE_PIPELINE_JOB_ERROR = 'PROJECT_COMPILE_SAVE_PIPELINE_JOB_ERROR';
+
+export function savePipelineJob(pipelineJobInfo) {
+    var path = '/savePipelineJob';
+    return {
+        type: PROJECT_COMPILE_SAVE_PIPELINE_JOB,
+        payload: {
+            promise: api.post(path, {
+                data: pipelineJobInfo,
+                urlType:'ci'
+            })
+        }
+    }
+}
+
+export const PROJECT_COMPILE_GET_PIPELINE_JOB = 'PROJECT_COMPILE_GET_PIPELINE_JOB';
+export const PROJECT_COMPILE_GET_PIPELINE_JOB_PENDING = 'PROJECT_COMPILE_GET_PIPELINE_JOB_PENDING';
+export const PROJECT_COMPILE_GET_PIPELINE_JOB_SUCCESS = 'PROJECT_COMPILE_GET_PIPELINE_JOB_SUCCESS';
+export const PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR = 'PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR';
+
+export function getPipelineJob(jobName, branchName) {
+    var path = '/getPipelineJob';
+    return {
+        type: PROJECT_COMPILE_GET_PIPELINE_JOB,
+        payload: {
+            promise: api.get(path, {
+                params: {
+                    jobName: jobName,
+                    branchName: branchName
+                },
+                urlType:'ci'
+            })
+        }
+    }
+}
