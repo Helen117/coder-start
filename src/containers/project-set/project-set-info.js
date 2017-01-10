@@ -26,8 +26,6 @@ class SelectedSetInfo extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {delResult} = nextProps;
-        const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
-        const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
         if(this.props.delResult != delResult && delResult){
             this.successCallback('删除成功')
         }
@@ -41,6 +39,7 @@ class SelectedSetInfo extends Component {
 
     editProjectSet(type,selectedProjectSet){
         if(selectedProjectSet){
+            console.log('editProjectSet error')
             this.context.router.push({
                 pathname: '/editProjectSet',
                 state:{editType: type}
@@ -48,7 +47,6 @@ class SelectedSetInfo extends Component {
         }else{
             message.warning('请选择要修改的项目集合')
         }
-
     }
 
     delProjectSet(type,selectedProjectSet){
@@ -83,7 +81,7 @@ class SelectedSetInfo extends Component {
 
 
     getDataSource(selectedProjectSet){
-        let dataSource = [];
+        const dataSource = [];
         if(selectedProjectSet){
             for(let j=0; j<selectedProjectSet.children.length; j++){
                 dataSource.push({
