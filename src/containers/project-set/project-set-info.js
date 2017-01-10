@@ -39,6 +39,7 @@ class SelectedSetInfo extends Component {
 
     editProjectSet(type,selectedProjectSet){
         if(selectedProjectSet){
+            console.log('editProjectSet error')
             this.context.router.push({
                 pathname: '/editProjectSet',
                 state:{editType: type}
@@ -46,7 +47,6 @@ class SelectedSetInfo extends Component {
         }else{
             message.warning('请选择要修改的项目集合')
         }
-
     }
 
     delProjectSet(type,selectedProjectSet){

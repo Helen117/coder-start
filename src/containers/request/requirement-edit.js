@@ -256,12 +256,15 @@ class EditRequest extends Component{
             validateStatus="error";
         }
         if(currentMilestone) {
-            if(currentMilestone.length>0){
+            if(currentMilestone.result && currentMilestone.milestones){
                 validateStatus="success";
-                helpMsg = '对应里程碑：'+currentMilestone[0].title +"，期望上线时间："+new Date(parseInt(currentMilestone[0].dueDate)).toLocaleDateString()
-            }else{
+                helpMsg = '对应里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()
+            }else if(!currentMilestone.result && !currentMilestone.milestones){
                 validateStatus="error";
                 helpMsg = '尚未建立对应的里程碑'
+            }else if(!currentMilestone.result && currentMilestone.milestones){
+                validateStatus="error";
+                helpMsg = '里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()+'，结束前两天禁止创建需求，请调整计划完成时间'
             }
         }
 
