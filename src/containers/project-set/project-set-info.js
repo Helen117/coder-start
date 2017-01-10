@@ -26,8 +26,6 @@ class SelectedSetInfo extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {delResult} = nextProps;
-        const thisId = this.props.selectedItemInfo?this.props.selectedItemInfo.id:'';
-        const nextId = nextProps.selectedItemInfo?nextProps.selectedItemInfo.id:'';
         if(this.props.delResult != delResult && delResult){
             this.successCallback('删除成功')
         }
@@ -83,7 +81,7 @@ class SelectedSetInfo extends Component {
 
 
     getDataSource(selectedProjectSet){
-        let dataSource = [];
+        const dataSource = [];
         if(selectedProjectSet){
             for(let j=0; j<selectedProjectSet.children.length; j++){
                 dataSource.push({
