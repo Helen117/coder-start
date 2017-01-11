@@ -16,6 +16,7 @@ import './index.less';
 import CronExpression from '../../components/cron-expression';
 import PipelineScriptEditor from './pipeline-script-editor';
 import DeployConfig from './deploy-config';
+
 //import CodeMirror from 'react-codemirror';
 //import 'codemirror/mode/shell/shell';
 
@@ -40,7 +41,7 @@ class ProjectCompile2 extends React.Component{
     componentWillMount(){
     }
     componentDidMount(){
-        const {selectNode, form, getStageList, fetchBranchesData} = this.props;
+        const {selectNode, form, getStageList, fetchBranchesData, getPipelineScript} = this.props;
         form.setFieldsValue({
             deployConfigs: [1],
         });
@@ -86,7 +87,6 @@ class ProjectCompile2 extends React.Component{
                 deployConfigs: deployConfigsArray,
                 deployConfigShouldRender: pipelineJobInfo.jobName?true:false
             });
-            console.log('deployConfigs=', deployConfigs, this.refs);
             // for (let i = 0; i < deployConfigsArray.length; i++){
             //     const form = this.refs['deployConfig'+deployConfigsArray[i]].refs.wrappedComponent.props.form;
             //     console.log(form);
@@ -147,8 +147,13 @@ class ProjectCompile2 extends React.Component{
 
     getJobInfo(selectNode, branchName){
         const {form, getPipelineJob} = this.props;
+        getPipelineJob(this.getJobName(selectNode), branchName);
+    }
+
+    getJobName(selectNode){
         let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
-        getPipelineJob(jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2), branchName);
+        jobName = jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2);
+        return jobName;
     }
 
     handleSubmit(e) {
@@ -173,16 +178,11 @@ class ProjectCompile2 extends React.Component{
                 }
 
                 if (allValid){
-                    const jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
                     savePipelineJob({
-                        jobName:jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
+                        jobName:this.getJobName(selectNode),
                         ...form.getFieldsValue(),
                         deployConfigs: deployConfigDetails
                     });
-                    console.log(form.getFieldsValue());
-                    console.log('deployConfigs=', form.getFieldValue("deployConfigs"));
-                    console.log('deployConfigDetails=', deployConfigDetails);
-
                 }
 
             }
@@ -232,39 +232,30 @@ class ProjectCompile2 extends React.Component{
     }
 
     render(){
-        console.log('render', this.props);
         const {selectNode, pipelineJobInfo, getPipelineJobLoading, savePipelineJobLoading, buildLoading} = this.props;
-        var title = '编译发布配置';
-        if (selectNode&&selectNode.isProject){
-            if (savePipelineJobLoading){
-                title = '正在保存编译发布配置...';
-            }else{
-                if (getPipelineJobLoading){
-                    title = '正在加载编译发布配置...';
-                // }else{
-                //     if (pipelineJobInfo){
-                //         if (pipelineJobInfo.jobName){
-                //             title = '修改编译发布配置';
-                //         }
-                //     }
-                }
-            }
-        }
         const {getFieldDecorator, getFieldError, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 3},
             wrapperCol: {span: 20},
         };
 
-        const script = "mvn package";
-        const projectName = 'devops-web-1';
-
+        var title = '编译发布配置';
         let action = <div/>;
         let deployConfigItems = <div/>;
         if (selectNode && selectNode.isProject){
-            action = <PipelineScriptEditor script={script} projectName={projectName}/>;
-            const deployConfigs = getFieldValue('deployConfigs');
-            console.log('deployConfigs', deployConfigs);
+            if (savePipelineJobLoading){
+                title = '正在保存编译发布配置...';
+            }else{
+                if (getPipelineJobLoading){
+                    title = '正在加载编译发布配置...';
+                }
+            }
+
+            action = <PipelineScriptEditor projectName={this.getJobName(selectNode)}/>;
+            let deployConfigs = getFieldValue('deployConfigs');
+            if (!deployConfigs){
+                deployConfigs = [1];
+            }
             deployConfigItems = deployConfigs.map((value, index) => {
                 return (
                     <Box key={value} title={`发布配置${value}`} classType="bg" action={value==1?(<div></div>):(<Button type="dashed" icon="minus" onClick={()=>this.removeDeployConfig(value)}>删除该配置</Button>)}>
@@ -439,11 +430,6 @@ function mapStateToProps(state) {
         savePipelineJobLoading: state.projectCompile.savePipelineJobLoading,
         savePipelineJobResult: state.projectCompile.savePipelineJobResult,
 
-        // jobInfo: state.projectCompile.jobInfo,
-        // saveJobResult: state.projectCompile.saveJobResult,
-        // saveLoading: state.projectCompile.saveLoading,
-        // buildLoading: state.projectCompile.buildLoading,
-        // buildJobResult: state.projectCompile.buildJobResult
     };
 }
 
