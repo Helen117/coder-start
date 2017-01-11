@@ -25,12 +25,22 @@ import {
     PROJECT_COMPILE_CODE_CHANGES_ERROR,
     PROJECT_COMPILE_STAGES_PENDING,
     PROJECT_COMPILE_STAGES_SUCCESS,
-    PROJECT_COMPILE_STAGES_ERROR
+    PROJECT_COMPILE_STAGES_ERROR,
+
+    PROJECT_COMPILE_SAVE_PIPELINE_JOB_PENDING,
+    PROJECT_COMPILE_SAVE_PIPELINE_JOB_SUCCESS,
+    PROJECT_COMPILE_SAVE_PIPELINE_JOB_ERROR,
+    PROJECT_COMPILE_GET_PIPELINE_JOB_PENDING,
+    PROJECT_COMPILE_GET_PIPELINE_JOB_SUCCESS,
+    PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR
+
 } from './action';
 
 const initialState = {
     getLoading:false,
-    saveLoading:false
+    saveLoading:false,
+    getPipelineJobLoading: false,
+    savePipelineJobLoading: false
 };
 
 export default function projectCompile(state = initialState, action = {}) {
@@ -108,6 +118,33 @@ export default function projectCompile(state = initialState, action = {}) {
                 errors: action.payload.errorMsg,
                 stageList:{stageLoading:false}
             };
+
+
+        //save pipeline job
+        case PROJECT_COMPILE_SAVE_PIPELINE_JOB_PENDING:
+            return {...state, savePipelineJobResult: false, savePipelineJobLoading:true};
+        case PROJECT_COMPILE_SAVE_PIPELINE_JOB_SUCCESS:
+            return {...state, savePipelineJobResult: true, savePipelineJobLoading:false};
+        case PROJECT_COMPILE_SAVE_PIPELINE_JOB_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                savePipelineJobLoading:false
+            };
+
+
+        //get pipeline job
+        case PROJECT_COMPILE_GET_PIPELINE_JOB_PENDING:
+            return {...state, pipelineJobInfo: null, getPipelineJobLoading:true};
+        case PROJECT_COMPILE_GET_PIPELINE_JOB_SUCCESS:
+            return {...state, pipelineJobInfo: action.payload, getPipelineJobLoading:false};
+        case PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                getPipelineJobLoading:false
+            };
+
 
         default:
             return state;
