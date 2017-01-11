@@ -51,7 +51,7 @@ class ProjectSetMilestonesEdit extends React.Component {
         e.preventDefault();
         const {form,logInfo } = this.props;
         const {editType,item} = this.props.location.state;
-        form.validateFields((errors, values) => {
+        form.validateFieldsAndScroll((errors, values) => {
             if (!!errors) {
                 return;
             } else {
@@ -99,15 +99,17 @@ class ProjectSetMilestonesEdit extends React.Component {
             const due_date = new Date(value.valueOf()).toLocaleDateString();
             const path = '/project/milestone-time-check'
             const params = {milestone_id:milestone_id, sets_id:sets_id, due_date:due_date}
-            const errStr = '计划完成时间超出允许设定范围';
-            fetchData(path, params, callback, errStr);
-           /* console.log('1111')
-            if(fetchData(path, params, callback, errStr)){
-                console.log(fetchData(path, params, callback, errStr))
-            }*/
-
+            fetchData(path, params,callback,this.handleCheckDuedateResult)
         }else{
             callback();
+        }
+    }
+
+    handleCheckDuedateResult(result,callback){
+        if(result){
+            callback();
+        }else{
+            callback('计划完成时间超出允许设定范围');
         }
     }
 
@@ -116,9 +118,17 @@ class ProjectSetMilestonesEdit extends React.Component {
         const milestone_id = item? item.id: '';
         const path = '/project/milestone-title-ocp';
         const params = {title:value,milestone_id:milestone_id};
-        const errStr = '名称已被占用';
-        fetchData(path,params,callback,errStr);
+        fetchData(path,params,callback,this.handleCheckTitleResult);
     }
+
+    handleCheckTitleResult(result,callback){
+        if(result){
+            callback();
+        }else{
+            callback('名称已被占用');
+        }
+    }
+
 
     disabledDate(current) {
         return current && current.startOf('day') < moment().startOf('day')

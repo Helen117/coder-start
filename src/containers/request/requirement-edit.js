@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import Box from '../../components/box';
 import * as home from '../home/actions/home-action';
 import * as request from './actions/request-action';
+import fetchData from '../../utils/fetch'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,7 +20,8 @@ class EditRequest extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developDirty: false
+            developDirty: false,
+            helpMsg: ''
         };
 
     }
@@ -78,8 +80,7 @@ class EditRequest extends Component{
     handleSubmit(e) {
         e.preventDefault();
         const {actions, form, loginInfo, selectedProjectSet} = this.props;
-
-        form.validateFields((errors) => {
+        form.validateFieldsAndScroll((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -107,30 +108,30 @@ class EditRequest extends Component{
                     } else {
                         actions.editRequest(data);
                     }
-
                 }
+            }
+        })
+    }
 
+    handleCancel() {
+        const {form} = this.props;
+        const {router} = this.context;
+
+        confirm({
+            title: '您是否确定要取消表单的编辑',
+            content: '取消之后表单内未提交的修改将会被丢弃',
+            onOk() {
+                router.goBack();
+                form.resetFields();
+            },
+            onCancel() {
+                //do nothing
             }
         })
     }
 
     disabledDate(current) {
         return current && current.startOf('day') < moment().startOf('day')
-    }
-
-    developTestDistinct(checkTarget,rule, value, callback){
-        if (!value) {
-            callback();
-        } else {
-            setTimeout(() => {
-                if(value == checkTarget){
-                    callback([new Error('测试与开发不能指定同一人')]);
-                }else{
-                    callback();
-                }
-
-            }, 500);
-        }
     }
 
     getAssigneeWorkload(value,type){
@@ -180,31 +181,6 @@ class EditRequest extends Component{
         callback();
     }
 
-    getMilestone(date){
-        const selectedProjectSet = this.props.selectedProjectSet;
-        const sets_id = selectedProjectSet.selectedItemId;
-        const due_date =date.valueOf()// new Date(parseInt(date).toLocaleDateString())
-        this.props.actions.getCurrentMilestone(sets_id,due_date);
-        this.getWorkloadByDate(date);
-    }
-
-    handleCancel() {
-        const {form} = this.props;
-        const {router} = this.context;
-
-        confirm({
-            title: '您是否确定要取消表单的编辑',
-            content: '取消之后表单内未提交的修改将会被丢弃',
-            onOk() {
-                router.goBack();
-                form.resetFields();
-            },
-            onCancel() {
-                //do nothing
-            }
-        })
-    }
-
     disabledEditAssignee(selectedRow){
         let disabledEditTester=false,disabledEditDeveloper=false;
         if(selectedRow){
@@ -215,8 +191,36 @@ class EditRequest extends Component{
                 disabledEditTester=true;
             }
         }
-
         return {disabledEditDeveloper,disabledEditTester}
+    }
+
+    checkDuedate(rule, value, callback){
+        if(value){
+            const selectedProjectSet = this.props.selectedProjectSet;
+            const sets_id = selectedProjectSet.selectedItemId;
+            const due_date =value.valueOf();
+            this.getWorkloadByDate(value);
+            const path = '/project/current-milestone'
+            const params = {sets_id:sets_id, due_date:due_date}
+            fetchData(path, params,callback,this.handleCheckDuedateResult.bind(this))
+        }else{
+            callback();
+        }
+    }
+
+    handleCheckDuedateResult(result,callback){
+        if(!result.result && !result.milestones){
+            callback('尚未建立对应的里程碑')
+        }else if(!result.result && result.milestones){
+            callback('里程碑：'+result.milestones.title +"，期望上线时间："+new Date(parseInt(result.milestones.dueDate)).toLocaleDateString()+'，结束前两天禁止创建需求，请调整计划完成时间')
+        }else if(result.result && result.milestones){
+            this.setState({
+                helpMsg : '对应里程碑：'+result.milestones.title +"，期望上线时间："+new Date(parseInt(result.milestones.dueDate)).toLocaleDateString()
+            })
+            callback();
+        }else{
+            callback();
+        }
     }
 
     beforeUpload(file){
@@ -244,42 +248,25 @@ class EditRequest extends Component{
         return false;
     }
 
+
     render() {
         const {editType,selectedRow} = this.props.location.state;
         const { getFieldDecorator,getFieldError } = this.props.form;
-        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editRequestLoading,addRequestLoading,currentMilestone} = this.props;
+        const {labelLoading,labelInfo,developerLoading,developerInfo,testerLoading,testerInfo,editRequestLoading,addRequestLoading} = this.props;
         const pending = labelLoading||developerLoading||testerLoading?true:false;
         const buttonLoading = editRequestLoading||addRequestLoading ?true: false;
         const {disabledEditDeveloper,disabledEditTester} = this.disabledEditAssignee(selectedRow);
-        let helpMsg = null, validateStatus="success";
-        if(getFieldError('expect_due_date')){
-            validateStatus="error";
-        }
-        if(currentMilestone) {
-            if(currentMilestone.result && currentMilestone.milestones){
-                validateStatus="success";
-                helpMsg = '对应里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()
-            }else if(!currentMilestone.result && !currentMilestone.milestones){
-                validateStatus="error";
-                helpMsg = '尚未建立对应的里程碑'
-            }else if(!currentMilestone.result && currentMilestone.milestones){
-                validateStatus="error";
-                helpMsg = '里程碑：'+currentMilestone.milestones.title +"，期望上线时间："+new Date(parseInt(currentMilestone.milestones.dueDate)).toLocaleDateString()+'，结束前两天禁止创建需求，请调整计划完成时间'
-            }
-        }
 
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 12 },
         };
-
         const modifyReason = editType=='modify'?<FormItem {...formItemLayout}  label="需求修改原因" >
             {getFieldDecorator('reason',{rules:[{ required:true,message:'请填写修改原因'}]})(<Input type="textarea" rows="5" />)}
         </FormItem>:'';
         const labels = labelInfo?labelInfo.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
 
         return (
             <Spin spinning={pending} >
@@ -291,10 +278,11 @@ class EditRequest extends Component{
                     <FormItem {...formItemLayout} label="需求描述" >
                         {getFieldDecorator('description',{rules:[{required:true,message:'请填写需求描述'}]})(<Input type="textarea" placeholder="请填写需求描述" rows="5" />)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):helpMsg} validateStatus={validateStatus} >
-                        {getFieldDecorator('expect_due_date',{rules:[{ required:true,message:'请选择计划完成时间'}]})(<DatePicker allowClear={false}
+                    <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):this.state.helpMsg} >
+                        {getFieldDecorator('expect_due_date',
+                            {rules:[{ required:true,message:'请选择计划完成时间'},
+                            { validator: this.checkDuedate.bind(this)}]})(<DatePicker allowClear={false}
                                      disabledDate={this.disabledDate.bind(this)}
-                                     onChange={this.getMilestone.bind(this)}
                                      style={{ width: 300 }}  />)}
                     </FormItem>
 
@@ -388,7 +376,6 @@ function mapStateToProps(state) {
         developerInfo: state.request.developer,
         testerLoading: state.request.getTesterLoading,
         testerInfo: state.request.tester,
-        currentMilestone: state.request.currentMilestone,
         developerWorkloder: state.request.developerWorkloder,
         testerWorkloader: state.request.testerWorkloader,
         condition: state.request.queryCondition,

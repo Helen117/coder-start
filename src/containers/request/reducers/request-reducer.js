@@ -58,13 +58,6 @@ export default function request(state = initialState, action = {}) {
             return {...state, deleteResult: null, deleteLoading: false};
 
 
-        case 'GET_CURRENT_MILESTONE_PENDING':
-            return {...state, currentMilestone: null, currentMilestoneLoading: true};
-        case 'GET_CURRENT_MILESTONE_SUCCESS':
-            return {...state, currentMilestone: action.payload, currentMilestoneLoading: false};
-        case 'GET_CURRENT_MILESTONE_ERROR':
-            return {...state, currentMilestone: null, currentMilestoneLoading: false};
-
         //auto complete miletone data    
         case 'GET_MILESTONE_BY_NAME_PENDING':
             return {...state, matchMilestone: null, matchMilestoneLoading: true};
