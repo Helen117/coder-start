@@ -50,7 +50,15 @@ class _Api {
                     for (let param in params){
                         queryString += (param+'='+params[param]+'&');
                     }
-                    opts.body = queryString;
+                    if (opts.method == 'get'){
+                        if (url.indexOf('?') != -1){
+                            url += ('&' + queryString);
+                        }else{
+                            url += ('?' + queryString);
+                        }
+                    }else{
+                        opts.body = queryString;
+                    }
                 }
                 const profile = Cookies.getJSON('profile');
                 if (profile){

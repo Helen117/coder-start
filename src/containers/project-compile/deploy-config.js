@@ -32,14 +32,14 @@ class DeployConfig extends React.Component{
                 <Row>
                     <Col span={12}>
                         <FormItem {...formItemLayout2} label="目标服务器">
-                            {getFieldDecorator('targetServer', {
+                            {getFieldDecorator('server', {
                                 rules: [
                                     { required: true, message: '请选择发布的目标服务器!' },
                                 ],
                             })(
                                 <Select placeholder="请选择发布的目标服务器">
-                                    <Option value="server1">root@10.10.147.189</Option>
-                                    <Option value="server2">root@10.10.147.190</Option>
+                                    <Option value="root@10.10.147.189">root@10.10.147.189</Option>
+                                    <Option value="root@10.10.147.190">root@10.10.147.190</Option>
                                 </Select>
                             )}
                             {/*<Row>*/}
@@ -111,4 +111,12 @@ class DeployConfig extends React.Component{
 
 }
 
-export default DeployConfig = Form.create({withRef:true})(DeployConfig);
+export default DeployConfig = Form.create({
+    withRef:true,
+    // onFieldsChange(props, changedFields) {
+    //     console.log('onFieldsChange', props, changedFields);
+    // },
+    // mapPropsToFields(props) {
+    //     console.log('mapPropsToFields', props);
+    // }
+})(DeployConfig);
