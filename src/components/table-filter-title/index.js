@@ -7,6 +7,7 @@ import 'pubsub-js';
 import {findFilterIndex} from './util';
 
 const FormItem = Form.Item;
+const Search = Input.Search;
 
 class TableFilterTitle extends React.Component {
     constructor(props) {
@@ -119,7 +120,10 @@ class TableFilterTitle extends React.Component {
             <Menu style={{width:"110px"}}>
                 <Menu.Item key="0">
                     {getFieldDecorator('searchContext')(
-                        <Input size="small" onBlur={this.onBlur.bind(this)}
+                        <Input prefix={<Icon type="search" />}
+                               size="small"
+                               placeholder="搜索..."
+                               onBlur={this.onBlur.bind(this)}
                             onChange={this.searchData.bind(this)}/>
                     )}
                 </Menu.Item>
@@ -127,16 +131,25 @@ class TableFilterTitle extends React.Component {
         );
 
         return(
-            <div >
-                <span >
+            <div style={{display:'inline-block'}}>
+                <div style={{display:'inline',float:'left'}}>
                     {this.props.title}
-                    <Dropdown trigger={['click']} overlay={menu}
-                              visible={this.state.visible}>
-                        <Icon type="filter"
-                              style={this.state.isFiled?{color:'#2db7f5'}:{color:'#aaaaaa'}}
-                              onClick={this.clickFilterImg.bind(this)}/>
-                    </Dropdown>
-                </span>
+                </div>
+                <div style={{display:'inline',float:'left',width:'90px',paddingLeft:'10px'}}>
+                    {getFieldDecorator('searchContext')(
+                        <Input size="small"
+                               style={{borderRadius:"5px"}}
+                               prefix={<Icon type="search" />}
+                               placeholder="搜索..."
+                               onChange={this.searchData.bind(this)}/>
+                    )}
+                </div>
+                {/*<Dropdown trigger={['click']} overlay={menu}
+                          visible={this.state.visible}>
+                    <Icon type="filter"
+                          style={this.state.isFiled?{color:'#2db7f5'}:{color:'#aaaaaa'}}
+                          onClick={this.clickFilterImg.bind(this)}/>
+                </Dropdown>*/}
             </div>
         )
     }
