@@ -38,6 +38,20 @@ export default function report(state={}, action = {}) {
         case 'FETCH_TEAM_DEMAND_COMPLETE_ERROR':
             return {...state, teamDemandComplete:null,getTeamDemandCompletePending:false,getTeamDemandCompleteError:action.payload.errorMsg};
 
+        case 'FETCH_TEAM_STATISTICS_PENDING':
+            return {...state, getTeamStatisticsPending:true,teamStatistics:null};
+        case 'FETCH_TEAM_STATISTICS_SUCCESS':
+            return {...state, teamStatistics: action.payload,getTeamStatisticsPending:false};
+        case 'FETCH_TEAM_STATISTICS_ERROR':
+            return {...state, teamStatistics:null,getTeamStatisticsPending:false,getTeamStatisticsError:action.payload.errorMsg};
+
+            case 'FETCH_DEMAND_STATISTICS_PENDING':
+            return {...state, getDemandStatisticsPending:true,demandStatistics:null};
+        case 'FETCH_DEMAND_STATISTICS_SUCCESS':
+            return {...state, demandStatistics: action.payload,getDemandStatisticsPending:false};
+        case 'FETCH_DEMAND_STATISTICS_ERROR':
+            return {...state, demandStatistics:null,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
+
         default:
             return state;
     }
