@@ -99,7 +99,7 @@ class UserInfo extends React.Component {
         const dataSource = [];
         for(let i=0; i<userInfoData.length; i++){
             dataSource.push({
-                key:i+1,
+                key:userInfoData[i].id?userInfoData[i].id:userInfoData[i].key,
                 name:userInfoData[i].name,
                 role:userInfoData[i].role,
                 email:userInfoData[i].email,

@@ -93,20 +93,6 @@ export function deleteRequestInfo(demand_id,userId) {
 }
 
 
-export function getCurrentMilestone(sets_id,due_date) {
-    return {
-        type: 'GET_CURRENT_MILESTONE',
-        payload: {
-            promise: api.post('/project/current-milestone', {
-                params: {
-                    sets_id: sets_id,
-                    due_date: due_date
-                }
-            })
-        }
-    }
-}
-
 export function getMilestoneByName(sets_id,milestone_name) {
     return {
         type: 'GET_MILESTONE_BY_NAME',

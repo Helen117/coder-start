@@ -1,6 +1,6 @@
 
 
-export default function fetchData(url,params,callback,errStr) {
+export default function fetchData(url, params,callback,handleCheckResult) {
     const baseURI = 'http://10.10.147.190:11000/gitlab';
     //const baseURI = 'http://10.10.156.237:11000/gitlab'
     url = baseURI+url;
@@ -19,31 +19,13 @@ export default function fetchData(url,params,callback,errStr) {
         opts.body = queryString;
     }
 
-    /*return fetch(url, opts).then ( function (res) {
+     fetch(url, opts).then ( function (res) {
         if(res.ok){
             return res.json().then(function(json) {
                 if (json.success) {
-                   return json.result
+                    handleCheckResult(json.result,callback)
                 }else{
-                    callback(json.errorMsg);
-                }
-            })
-
-        }
-    })*/
-     return fetch(url, opts).then ( function (res) {
-        if(res.ok){
-            return res.json().then(function(json) {
-                if (json.success) {
-                    //console.log('123333')
-                    if(json.result){
-                        callback();
-                    }else{
-                        callback(errStr);
-                    }
-
-                }else{
-                    callback(json.errorMsg);
+                    callback('验证失败：'+json.errorMsg);
                 }
             })
 
