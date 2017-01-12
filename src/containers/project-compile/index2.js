@@ -327,63 +327,53 @@ class ProjectCompile2 extends React.Component{
                                 </Col>
                             </Row>
                         </FormItem>
-                        <FormItem style={{display:'none'}}>
-                            <Row >
-                                <Col span={21}>
-                                    {getFieldDecorator('trigger',
-                                        {rules:[
-                                            {required:true, message:'请设置调度'}
-                                        ]})(<Input type="text" placeholder="请设置调度"/>)}
-                                </Col>
-                            </Row>
-                        </FormItem>
                         <Box title={stepsTitle}>
                             <Steps direction="vertical" size='small' current={-1}>
                                 {stageList?stageList.map((value, index) => {
-                                    switch (value.id){
-                                        case 1:
-                                            return <Step key={value.id} title={value.name} description={
-                                                <FormItem {...formItemLayout} label="Git仓库URL:">
-                                                    {getFieldDecorator('gitUrl',
-                                                        {rules:[
-                                                            {required:true, message:'请输入Git仓库URL'}
-                                                        ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
-                                                </FormItem>
-                                            } />
-                                        case 100:
-                                            return <Step key={value.id} title={value.name} description={
-                                                <FormItem {...formItemLayout} label="编译脚本">
-                                                    {getFieldDecorator('buildScript',
-                                                        {rules:[
-                                                            {required:true, message:'请输入编译脚本'}
-                                                        ]})(<Input type="textarea" rows={3} placeholder="请输入编译脚本"/>)}
-                                                </FormItem>
-                                            } />
-                                        case 140:
-                                            return <Step key={value.id} title={value.name} description={
-                                                <FormItem {...formItemLayout} label="打包脚本">
-                                                    {getFieldDecorator('packageScript',
-                                                        {rules:[
-                                                            {required:true, message:'请输入打包脚本'}
-                                                        ]})(<Input type="textarea" rows={3} placeholder="请输入打包脚本"/>)}
-                                                </FormItem>
-                                            } />
-                                        case 200:
-                                            return <Step key={value.id} title={value.name} description={
-                                                <Box title="填写发布配置信息" action={<Button type="dashed" icon="plus" onClick={()=>this.addDeployConfig()}>添加发布配置</Button>}>
-                                                    {deployConfigItems}
-                                                </Box>
+                                        switch (value.id){
+                                            case 1:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="Git仓库URL:">
+                                                        {getFieldDecorator('gitUrl',
+                                                            {rules:[
+                                                                {required:true, message:'请输入Git仓库URL'}
+                                                            ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 100:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="编译脚本">
+                                                        {getFieldDecorator('buildScript',
+                                                            {rules:[
+                                                                {required:true, message:'请输入编译脚本'}
+                                                            ]})(<Input type="textarea" rows={3} placeholder="请输入编译脚本"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 140:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="打包脚本">
+                                                        {getFieldDecorator('packageScript',
+                                                            {rules:[
+                                                                {required:true, message:'请输入打包脚本'}
+                                                            ]})(<Input type="textarea" rows={3} placeholder="请输入打包脚本"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 200:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <Box title="填写发布配置信息" action={<Button type="dashed" icon="plus" onClick={()=>this.addDeployConfig()}>添加发布配置</Button>}>
+                                                        {deployConfigItems}
+                                                    </Box>
 
-                                            } />
-                                        default:
-                                            return <Step key={value.id} title={value.name} description="" />
-                                    }
-                                }):[]}
+                                                } />
+                                            default:
+                                                return <Step key={value.id} title={value.name} description="" />
+                                        }
+                                    }):[]}
                             </Steps>
                         </Box>
-                        <FormItem wrapperCol={{span: 24, offset: 21}} style={{marginTop: 0}}>
+                        <FormItem wrapperCol={{span: 24}} style={{marginTop: 0}}>
                             <Affix offsetBottom={0}>
-                                <Button type="primary" icon="save" htmlType="submit">保存配置</Button>
+                                <Button type="primary" icon="save" htmlType="submit" style={{float:'right'}}>保存配置</Button>
                             </Affix>
                         </FormItem>
                     </Form>
