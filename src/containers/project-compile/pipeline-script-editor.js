@@ -124,7 +124,7 @@ class PipelineScriptEditor extends React.Component{
                                保存
                            </Button>,
                        ]}>
-                    <FormItem {...formItemLayout} label="" extra={"注：脚本中需要传递的projectId="}>
+                    <FormItem {...formItemLayout} label="" extra={""}>
                         <CodeMirror ref="editor"
                                     value={pipelineScriptInfo?pipelineScriptInfo:''}
                                     onChange={this.updateCode.bind(this)}
