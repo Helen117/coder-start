@@ -27,6 +27,8 @@ const demand = require('./mockdata/demand.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
 const setsMilestone = milstone_.milstone;
+const code_ = require('./mockdata/code');
+const code = code_.result;
 
 const virtual_project_ = require('./mockdata/project_set_tree');
 const virtual_project = virtual_project_.projectSetTree;
@@ -119,6 +121,10 @@ app.post('/gitlab/project/add-issue', function (req, res) {
 
 app.post('/gitlab/issue/notes', function (req, res) {
         res.json(issueNotes);
+});
+
+app.post('/gitlab/project/mr-change', function (req, res) {
+    res.json(code);
 });
 
 app.post('/gitlab/project/issues', function (req, res) {
