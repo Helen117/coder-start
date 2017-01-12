@@ -10,7 +10,7 @@ class CodeView extends React.Component {
     constructor(){
         super();
         this.state = {
-            style: require('react-syntax-highlighter/dist/styles/atelier-dune-light').default,
+            style: require('react-syntax-highlighter/dist/styles/agate').default,
         }
     }
 
@@ -36,7 +36,7 @@ class CodeView extends React.Component {
                             <img src={imgPath}></img>
                         ):(
                             <SyntaxHighlighter
-                                language={categary=="diff"?"diff":""}
+                                language="diff"
                                 style={this.state.style}
                                 showLineNumbers>
                                 {code}
