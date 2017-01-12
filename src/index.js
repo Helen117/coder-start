@@ -26,7 +26,7 @@ import {UserList, UserDetail} from './containers/user';
 import NotFound from './components/page/not-found';
 
 import ForkList from './containers/fork';
-import {ProjectSetCreate,ProjectSetTree,ShowInfo} from './containers/project-set';
+import {ProjectSetCreate,ProjectSetTree,ShowInfo,EmergencyProjectSetEdit} from './containers/project-set';
 import ProjectSetMilestones from './containers/project-set-milestone';
 
 import {RequirementConditionList,EditRequest} from './containers/request';
@@ -163,6 +163,7 @@ ReactDOM.render(
                         <Route name="label" breadcrumbName="Label列表" path="label" component={Labels}/>
                         <Route name="labelEdit" breadcrumbName="Label编辑" path="labelEdit" component={LabelEdit}/>
                         <Route name="requestEdit" breadcrumbName="需求编辑" path="requestEdit" component={EditRequest}/>
+                        <Route name="editEmergencyProjectSet" breadcrumbName="创建修改紧急上线项目集合" path="editEmergencyProjectSet" component={EmergencyProjectSetEdit}/>
 
                         <Route name="ProjectSetCreate" breadcrumbName="创建修改项目集合" path="editProjectSet" component={ProjectSetCreate}/>
                         <Route name="addIssue" breadcrumbName="问题编辑" path="issueEdit" component={AddIssue}/>
