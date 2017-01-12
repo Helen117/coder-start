@@ -1,5 +1,5 @@
 /**
- * Created by helen on 2017/1/10.
+ * Created by helen on 2017/1/12.
  */
 import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
@@ -7,13 +7,13 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Form,Select,Alert} from 'antd';
 import * as reportActions from './report-action';
-import * as request from '../request/actions/request-action';
+import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class TeamStatistics extends Component {
+class MemberCurrentWork extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,7 +21,8 @@ class TeamStatistics extends Component {
     }
 
     componentWillMount(){
-
+        const {loginInfo} = this.props;
+        this.props.getUserRelationTree(loginInfo.userId);
     }
 
     componentDidMount(){
@@ -29,19 +30,13 @@ class TeamStatistics extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {request,selectedProjectSet} = this.props;
-        const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
-        const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
-        //点击不同项目集，重新加载数据
-        if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
-        }
+
     }
 
     fetchData(value){
         const { actions } = this.props;
         if(value){
-            actions.fetchTeamStatistics(value);
+            actions.fetchMemberCurrentWork(value);
         }
     }
 
@@ -57,7 +52,7 @@ class TeamStatistics extends Component {
                 orient:"vertical",
                 y:"center",
                 right:'right',
-                data:['团队人数','人均需求分配','人均需求超时','人均缺陷情况'],
+                data:['今日待办','共有待办','超时未完成','超时已完成'],
             },
             toolbox: {
                 show: true,
@@ -75,7 +70,7 @@ class TeamStatistics extends Component {
             xAxis : [
                 {
                     type : 'category',
-                    data :this.props.reportData?this.props.reportData.map(data => data.teamname):[]
+                    data :this.props.reportData?this.props.reportData.map(data => data.name):[]
                 }
             ],
             yAxis : [
@@ -84,32 +79,32 @@ class TeamStatistics extends Component {
                 }
             ],
             series : [
-                {name:'团队人数',
+                {name:'今日待办',
                     barCategoryGap  : 10,
                     type:'bar',
                     itemStyle: {normal: {color:'#0098d9'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.team_num):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.today_no_complete):[]
                 },
                 {
-                    name:'人均需求分配',
+                    name:'共有待办',
                     barCategoryGap  : 10,
                     type:'bar',
                     itemStyle: {normal: {color:'#c12e34'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.average_demand):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.no_complete):[]
                 },
                 {
-                    name:'人均需求超时',
+                    name:'超时未完成',
                     barCategoryGap  : 10,
                     type:'bar',
-                    itemStyle: {normal: {color:'#B2B6B7'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.average_expired):[]
+                    itemStyle: {normal: {color:'#F5F629'}},
+                    data:this.props.reportData?this.props.reportData.map(data => data.expired_no_complete):[]
                 },
                 {
-                name:'人均缺陷情况',
-                barCategoryGap  : 10,
-                type:'bar',
-                itemStyle: {normal: {color:'#F5F629'}},
-                data:this.props.reportData?this.props.reportData.map(data => data.average_defect):[]
+                    name:'超时已完成',
+                    symbolSize:10,
+                    type:'bar',
+                    itemStyle: {normal: {color:'#B2B6B7'}},
+                    data:this.props.reportData?this.props.reportData.map(data => data.expired_complete):[]
                 }
             ]
         };
@@ -122,25 +117,23 @@ class TeamStatistics extends Component {
             labelCol: { span: 10 },
             wrapperCol: { span: 12 },
         };
-        const {selectedProjectSet,matchMilestone} = this.props;
-        const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
-        const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const {team} = this.props;
+        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
-        if(projectId) {
-            return(
-                <Box title="横向对多个团队的情况进行对比分析">
+        return(
+                <Box title="团队成员当前工作情况">
                     <Form horizontal  >
-                        <FormItem label="里程碑" {...formItemLayout}>
-                            {getFieldDecorator('milestone')(
+                        <FormItem label="团队名称" {...formItemLayout}>
+                            {getFieldDecorator('group',{rules:[{ required:true,message:'不能为空'}]})(
                                 <Select showSearch
                                         showArrow={false}
-                                        placeholder="请选择一个里程碑"
+                                        placeholder="请选择一个团队"
                                         optionFilterProp="children"
                                         notFoundContent="无法找到"
                                         onSelect={this.fetchData.bind(this)}
                                         style={{width: '200px'}}>
-                                    {milestone}
+                                    {groups}
                                 </Select>)
                             }
                         </FormItem>
@@ -152,35 +145,25 @@ class TeamStatistics extends Component {
                     />
                 </Box>
             );
-        }else{
-            return (
-                <Alert style={{margin:10}}
-                       message="请从左边的项目树中选择一个具体的项目集！"
-                       description=""
-                       type="warning"
-                       showIcon
-                />
-            )
-        }
     }
 }
 
-TeamStatistics = Form.create()(TeamStatistics);
+MemberCurrentWork = Form.create()(MemberCurrentWork);
 
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        reportData:state.report.teamStatistics,
-        selectedProjectSet: state.projectSet.selectedProjectSet,
-        matchMilestone: state.request.matchMilestone,
+        reportData:state.report.memberCurrentWork,
+        loginInfo:state.login.profile,
+        team:state.UserRelation.getUserRelationTree,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
-        request : bindActionCreators(request,dispatch),
+        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(TeamStatistics);
+export default connect(mapStateToProps,mapDispatchToProps)(MemberCurrentWork);

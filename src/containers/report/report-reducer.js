@@ -52,6 +52,27 @@ export default function report(state={}, action = {}) {
         case 'FETCH_DEMAND_STATISTICS_ERROR':
             return {...state, demandStatistics:null,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
 
+        case 'FETCH_DEVELOPER_TESTER_REPORT_PENDING':
+            return {...state, getDeveloperTesterDataPending:true,developerTesterData:null};
+        case 'FETCH_DEVELOPER_TESTER_REPORT_SUCCESS':
+            return {...state, developerTesterData: action.payload,getDeveloperTesterDataPending:false};
+        case 'FETCH_DEVELOPER_TESTER_REPORT_ERROR':
+            return {...state, developerTesterData:null,getDeveloperTesterDataPending:false,getDeveloperTesterDataError:action.payload.errorMsg};
+
+        case 'FETCH_MEMBER_CURRENT_WORK_PENDING':
+            return {...state, getMemberCurrentWorkPending:true,memberCurrentWork:null};
+        case 'FETCH_MEMBER_CURRENT_WORK_SUCCESS':
+            return {...state, memberCurrentWork: action.payload,getMemberCurrentWorkPending:false};
+        case 'FETCH_MEMBER_CURRENT_WORK_ERROR':
+            return {...state, memberCurrentWork:null,getMemberCurrentWorkPending:false,getMemberCurrentWorkError:action.payload.errorMsg};
+
+        case 'FETCH_TEAM_CURRENT_WORK_PENDING':
+            return {...state, getTeamCurrentWorkPending:true,teamCurrentWork:null};
+        case 'FETCH_TEAM_CURRENT_WORK_SUCCESS':
+            return {...state, teamCurrentWork: action.payload,getTeamCurrentWorkPending:false};
+        case 'FETCH_TEAM_CURRENT_WORK_ERROR':
+            return {...state, teamCurrentWork:null,getTeamCurrentWorkPending:false,getTeamCurrentWorkError:action.payload.errorMsg};
+
         default:
             return state;
     }

@@ -1,19 +1,20 @@
 /**
- * Created by helen on 2017/1/3.
+ * Created by helen on 2017/1/12.
  */
 import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
+import { Form,Select,Alert,Col,Row,Button} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert,Row,Col,Button} from 'antd';
 import * as reportActions from './report-action';
-import * as request from '../request/actions/request-action';
 import Box from '../../components/box';
+import * as request from '../request/actions/request-action';
+import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class PersonalCodeManageReport extends Component {
+class developerTesterReport extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,11 +22,8 @@ class PersonalCodeManageReport extends Component {
     }
 
     componentWillMount(){
-
-    }
-
-    componentDidMount(){
-
+        const {loginInfo} = this.props;
+        this.props.getUserRelationTree(loginInfo.userId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,35 +38,33 @@ class PersonalCodeManageReport extends Component {
 
     getOption() {
         const option = {
-            // title: {
-            //     text: ''
-            // },
             tooltip : {
                 trigger: 'axis'
             },
-            legend:{
-                orient:"vertical",
-                y:"center",
-                right:'right',
-                data:['提交代码行数','bug数量','合并失败次数','代码走查拒绝次数','修改函数数量','新增类数量','修改类数量','删除类数量'],
-            },
             toolbox: {
-                show: true,
-                feature: {
-                    dataView: {readOnly: false},
-                    saveAsImage: {}
+                orient:"vertical",
+                y:'center',
+                itemGap:15,
+                x:'right',
+                show : true,
+                feature : {
+                    saveAsImage: {},
+                    dataView : {show: true, readOnly: false}
                 }
             },
+            legend: {
+                data: this.props.reportData?this.props.reportData.map(data =>data.name):[]
+            },
             grid: {
-                left: '8%',
-                right: '18%',
+                left: '10%',
+                right: '10%',
                 bottom: '3%',
                 containLabel: true
             },
             xAxis : [
                 {
                     type : 'category',
-                    data :this.props.reportData?this.props.reportData.map(data => data.label):[]
+                    data :this.props.reportData&&this.props.reportData.length>0?this.props.reportData[0].field_list:[]
                 }
             ],
             yAxis : [
@@ -76,55 +72,25 @@ class PersonalCodeManageReport extends Component {
                     type : 'value'
                 }
             ],
-            series : [
-                {name:'提交代码行数',
-                    barCategoryGap  : 10,
-                    type:'bar',
-                    itemStyle: {normal: {color:'#0098d9'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.total):[]
-                },
-                {
-                    name:'bug数量',
-                    barCategoryGap  : 10,
-                    type:'bar',
-                    itemStyle: {normal: {color:'#c12e34'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.expired):[]
-                },
-                {
-                    name:'合并失败次数',
-                    barCategoryGap  : 10,
-                    type:'bar',
-                    itemStyle: {normal: {color:'#B2B6B7'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.defect_total):[]
-                },
-                {
-                    name:'代码走查拒绝次数',
-                    symbolSize:10,
-                    type:'bar',
-                    itemStyle: {normal: {color:'#F5F629'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.defect_expired):[]
-                }
-            ]
+            series : this.props.reportData?this.props.reportData.map(data =>{return{
+                name:data.name,
+                symbolSize:10,
+                type:'bar',
+                data:data.data_total
+            }}):[]
         };
         return option;
     }
 
-
-    fetchMember(value){
-        const { actions } = this.props;
-        if(value){
-            actions.fetchMemberInfo(value);
-        }
-    }
-
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,form,loginInfo} = this.props;
+        const {actions,form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-
+                const data = form.getFieldsValue();
+                actions.fetchDeveloperTesterReport(data.milestone,data.group,data.type);
             }
         })
     }
@@ -133,21 +99,21 @@ class PersonalCodeManageReport extends Component {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 8 },
-            wrapperCol: { span: 14 },
+            wrapperCol: { span: 16 },
         };
-        const {selectedProjectSet,matchMilestone,matchMember} = this.props;
+        const {selectedProjectSet,matchMilestone,team} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
-        const member = matchMember?matchMember.map(data => <Option key={data.userId}>{data.name}</Option>):[];
+        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         if(projectId) {
             return(
-                <Box title="从个人视角查看个人某里程碑中的代码提交整体情况">
+                <Box title="从团队leader视角展示当前团队中开发及测试人员整体情况">
                     <Form horizontal  >
                         <Row gutter={16}>
-                            <Col sm={8}>
+                            <Col span={8}>
                                 <FormItem label="里程碑" {...formItemLayout}>
                                     {getFieldDecorator('milestone',{rules:[{ required:true,message:'不能为空'}]})(
                                         <Select showSearch
@@ -155,28 +121,38 @@ class PersonalCodeManageReport extends Component {
                                                 placeholder="请选择一个里程碑"
                                                 optionFilterProp="children"
                                                 notFoundContent="无法找到"
-                                                onSelect={this.fetchMember.bind(this)}
                                                 style={{width: '200px'}}>
                                             {milestone}
                                         </Select>)
                                     }
                                 </FormItem>
                             </Col>
-                            <Col sm={8}>
-                                <FormItem label="人员" {...formItemLayout}>
-                                    {getFieldDecorator('user',{rules:[{ required:true,message:'不能为空'}]})(
+                            <Col span={8}>
+                                <FormItem label="团队名称" {...formItemLayout}>
+                                    {getFieldDecorator('group',{rules:[{ required:true,message:'不能为空'}]})(
                                         <Select showSearch
                                                 showArrow={false}
-                                                placeholder="请选择一个成员"
+                                                placeholder="请选择一个团队"
                                                 optionFilterProp="children"
                                                 notFoundContent="无法找到"
                                                 style={{width: '200px'}}>
-                                            {member}
+                                            {groups}
                                         </Select>)
                                     }
                                 </FormItem>
                             </Col>
-                            <Col sm={8}>
+                            <Col span={8}>
+                                <FormItem {...formItemLayout} label="职责" >
+                                    {getFieldDecorator('type',{rules:[{ required:true,message:'不能为空'}]})(
+                                        <Select style={{ width: 200 }} >
+                                            <Option value="devop">开发</Option>
+                                            <Option value="test">测试</Option>
+                                        </Select>)}
+                                </FormItem>
+                                </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12} offset={12} style={{textAlign: 'right'}}>
                                 <Button type="primary" onClick={this.handleSubmit.bind(this)}>查询</Button>
                             </Col>
                         </Row>
@@ -201,16 +177,16 @@ class PersonalCodeManageReport extends Component {
     }
 }
 
-PersonalCodeManageReport = Form.create()(PersonalCodeManageReport);
+developerTesterReport = Form.create()(developerTesterReport);
 
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        reportData:state.report.reportData,
-        loading:state.report.getReportDataPending,
+        loginInfo:state.login.profile,
+        reportData:state.report.developerTesterData,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
-        matchMember: state.report.member,
+        team:state.UserRelation.getUserRelationTree,
     };
 }
 
@@ -218,7 +194,8 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
         request : bindActionCreators(request,dispatch),
+        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(PersonalCodeManageReport);
+export default connect(mapStateToProps,mapDispatchToProps)(developerTesterReport);

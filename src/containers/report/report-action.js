@@ -82,6 +82,43 @@ export function fetchDemandStatistics(milestoneId) {
     }
 }
 
+export function fetchDeveloperTesterReport(milestoneId,groupId,type) {
+    return {
+        type: 'FETCH_DEVELOPER_TESTER_REPORT',
+        payload: {
+            promise: api.post('/report/team-devoptest',{
+                params: {
+                    milestone_id: milestoneId,
+                    group_id:groupId,
+                    type:type
+                }
+            })
+        }
+    }
+}
+
+export function fetchMemberCurrentWork(groupId) {
+    return {
+        type: 'FETCH_MEMBER_CURRENT_WORK',
+        payload: {
+            promise: api.post('/report/member-everyday',{
+                params: {
+                    group_id:groupId
+                }
+            })
+        }
+    }
+}
+
+export function fetchTeamCurrentWork(groupId) {
+    return {
+        type: 'FETCH_TEAM_CURRENT_WORK',
+        payload: {
+            promise: api.post('/report/team-everyday')
+        }
+    }
+}
+
 export function fetchMemberInfo(milestoneId) {
     return {
         type: 'FETCH_MEMBER',
