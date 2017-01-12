@@ -37,12 +37,10 @@ export default class TransferFilter extends React.Component {
                 mockData.push(data);
             }
         }
-        console.log('mockData, targetKeys',mockData, targetKeys)
         this.setState({ mockData, targetKeys });
     }
 
     handleChange(targetKeys) {
-        console.log('targetKeys',targetKeys)
         this.setState({ targetKeys });
         const {onChange} = this.props;
         onChange(targetKeys);
@@ -62,7 +60,6 @@ export default class TransferFilter extends React.Component {
 
 
     render(){
-        console.log('render',this.state.mockData,this.state.targetKeys)
         return (
             <Spin spinning={this.props.loadingProMsg}>
                 <Transfer
