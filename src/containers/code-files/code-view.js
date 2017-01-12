@@ -5,7 +5,6 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {Row, input, Spin} from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import styles from "./index.css";
 
 class CodeView extends React.Component {
     constructor(){
@@ -38,11 +37,11 @@ class CodeView extends React.Component {
             return (
                 <Spin spinning={this.props.loading} tip="正在加载数据...">
                     <div >
-                        <Row className={styles.blob_commit_info}>
-                            <p className={styles.commit_info}>{fileName}</p>
+                        <Row className="blob-commit-info">
+                            <p className="commit-info">{fileName}</p>
                         </Row>
                         <Row>
-                            <div className={styles.blob_commit_info}>
+                            <div className="blob-commit-info">
                                 {(categary=='png' || categary=='jpg')?(
                                     <img src={imgPath}></img>
                                 ):(

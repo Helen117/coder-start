@@ -72,7 +72,10 @@ class PipelineScriptEditor extends React.Component{
         }
 
         const {projectName, savePipelineScript} = this.props;
-        savePipelineScript(projectName, this.refs.editor.getCodeMirror().getValue().trim());
+        savePipelineScript({
+            projectName: projectName,
+            pipelineScript: this.refs.editor.getCodeMirror().getValue().trim()
+        });
 
         // this.setState({
         //     visible:false

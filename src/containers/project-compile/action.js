@@ -197,16 +197,13 @@ export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING = 'PROJECT_COMPILE_SAV
 export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS';
 export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR';
 
-export function savePipelineScript(jobName, pipelineScript) {
+export function savePipelineScript(pipelineScriptInfo) {
     var path = '/savePipelineScript';
     return {
         type: PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT,
         payload: {
             promise: api.post(path, {
-                params: {
-                    jobName: jobName,
-                    pipelineScript: pipelineScript
-                },
+                data: pipelineScriptInfo,
                 urlType:'ci'
             })
         }
