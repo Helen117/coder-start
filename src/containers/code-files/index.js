@@ -4,9 +4,8 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Breadcrumb, Row, Select, Col, Alert} from 'antd';
+import {Breadcrumb, Row, Select, Col, Alert,BackTop } from 'antd';
 import {getCodeFile, getCodeContent} from './actions/code-files-actions';
-import styles from "./index.css";
 import 'pubsub-js';
 import FileTree from './file-tree';
 import CodeView from './code-view';
@@ -195,7 +194,7 @@ class CodeFiles extends React.Component {
                     <div>
                         <Row>
                             <div style={{display: 'inline',float:'left'}}>
-                                <Select id="branch" value={this.state.brand} className={styles.select}
+                                <Select id="branch" value={this.state.brand} className="select-branch"
                                         onChange={this.changeSelect.bind(this)}>
                                     {branchData}
                                 </Select>
@@ -224,6 +223,9 @@ class CodeFiles extends React.Component {
                     type="warning"
                     showIcon
                 />)}
+                <BackTop>
+                    <div className="ant-back-top-inner">UP</div>
+                </BackTop>
         </div>
         )
     }

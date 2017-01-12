@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as jenkins from './actions/jenkins-build-action';
 import Box from '../../components/box';
-// import styles from './index.css';
+// import styles from './index-1.less';
 
 class CodeChangesList extends Component {
     constructor(props) {
