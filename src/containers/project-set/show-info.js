@@ -37,19 +37,19 @@ class ShowInfo extends Component {
     }
 
     isShowModel(id){
-        if(id.indexOf("_g") > -1) {
-            showProjectInfo = false;
-            showSetInfo = true;
-            this.setState({
-                showProjectInfo:false,
-                showSetInfo: true
-            })
-        }else if(id.indexOf("_p") > -1){
+        if(id.indexOf("_p") > -1){
             showProjectInfo = true;
             showSetInfo = false;
             this.setState({
                 showProjectInfo:true,
                 showSetInfo: false
+            })
+        }else{
+            showProjectInfo = false;
+            showSetInfo = true;
+            this.setState({
+                showProjectInfo:false,
+                showSetInfo: true
             })
         }
     }

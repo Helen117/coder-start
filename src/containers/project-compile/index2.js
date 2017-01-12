@@ -16,6 +16,7 @@ import './index.less';
 import CronExpression from '../../components/cron-expression';
 import PipelineScriptEditor from './pipeline-script-editor';
 import DeployConfig from './deploy-config';
+
 //import CodeMirror from 'react-codemirror';
 //import 'codemirror/mode/shell/shell';
 
@@ -44,9 +45,9 @@ class ProjectCompile2 extends React.Component{
         form.setFieldsValue({
             deployConfigs: [1],
         });
+        getStageList();
         if (selectNode && selectNode.isProject){
-            //getStageList();
-            //fetchBranchesData();
+            fetchBranchesData(this.getProjectId(selectNode));
             this.getJobInfo(selectNode, 'dev');
         }
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
@@ -58,7 +59,7 @@ class ProjectCompile2 extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {pipelineJobInfo, selectNode, savePipelineJobResult} = nextProps;
+        const {pipelineJobInfo, selectNode, savePipelineJobResult,buildJobResult} = nextProps;
         if (selectNode && selectNode.isProject == false){
             if (pipelineJobInfo){
                 pipelineJobInfo.jobName = null;
@@ -86,7 +87,6 @@ class ProjectCompile2 extends React.Component{
                 deployConfigs: deployConfigsArray,
                 deployConfigShouldRender: pipelineJobInfo.jobName?true:false
             });
-            console.log('deployConfigs=', deployConfigs, this.refs);
             // for (let i = 0; i < deployConfigsArray.length; i++){
             //     const form = this.refs['deployConfig'+deployConfigsArray[i]].refs.wrappedComponent.props.form;
             //     console.log(form);
@@ -115,6 +115,13 @@ class ProjectCompile2 extends React.Component{
                 duration: 5
             });
         }
+        if (buildJobResult && buildJobResult != this.props.buildJobResult){
+            notification.success({
+                message: '操作成功',
+                description: "成功发起执行任务，请稍等几秒查看执行状态！",
+                duration: 5
+            });
+        }
 
     }
     shouldComponentUpdate(nextProps, nextState){
@@ -127,8 +134,11 @@ class ProjectCompile2 extends React.Component{
         if (getFieldValue('deployConfigShouldRender')){
             const deployConfigs = getFieldValue('deployConfigs');
             for (let i = 0; i < deployConfigs.length; i++){
-                const form = this.refs['deployConfig'+deployConfigs[i]].refs.wrappedComponent.props.form;
-                form.setFieldsValue(this.props.pipelineJobInfo.deployConfigs[i]);
+                const deployConfigRef = this.refs['deployConfig'+deployConfigs[i]];
+                if (deployConfigRef){
+                    const form = deployConfigRef.refs.wrappedComponent.props.form;
+                    form.setFieldsValue(this.props.pipelineJobInfo.deployConfigs[i]);
+                }
             }
             setFieldsValue({deployConfigShouldRender:false});
         }
@@ -136,8 +146,9 @@ class ProjectCompile2 extends React.Component{
 
     selectProject(msg, data){
         if (data.isProject){
-            const {form} = this.props;
+            const {form,fetchBranchesData} = this.props;
             this.getJobInfo(data, form.getFieldValue('branchName'));
+            fetchBranchesData(this.getProjectId(data));
         }
     }
     changeBranch(e){
@@ -147,8 +158,17 @@ class ProjectCompile2 extends React.Component{
 
     getJobInfo(selectNode, branchName){
         const {form, getPipelineJob} = this.props;
+        getPipelineJob(this.getJobName(selectNode), branchName);
+    }
+
+    getJobName(selectNode){
         let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
-        getPipelineJob(jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2), branchName);
+        jobName = jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2);
+        return jobName;
+    }
+
+    getProjectId(selectNode){
+        return selectNode.node.id.substr(0,selectNode.node.id.length-2);
     }
 
     handleSubmit(e) {
@@ -173,16 +193,11 @@ class ProjectCompile2 extends React.Component{
                 }
 
                 if (allValid){
-                    const jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
                     savePipelineJob({
-                        jobName:jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2),
+                        jobName:this.getJobName(selectNode),
                         ...form.getFieldsValue(),
                         deployConfigs: deployConfigDetails
                     });
-                    console.log(form.getFieldsValue());
-                    console.log('deployConfigs=', form.getFieldValue("deployConfigs"));
-                    console.log('deployConfigDetails=', deployConfigDetails);
-
                 }
 
             }
@@ -216,62 +231,59 @@ class ProjectCompile2 extends React.Component{
     }
 
     execBuild(){
-        // const {buildJob, selectNode} = this.props;
-        // let jobName = selectNode.node.name;
-        // if (jobName){
-        //     jobName = jobName.substr(jobName.lastIndexOf("/") + 1);
-        // }
-        // buildJob(jobName + '_' + selectNode.node.id.substr(0,selectNode.node.id.length-2));
+        const {buildJob, selectNode, form} = this.props;
+        buildJob(this.getJobName(selectNode) + '_' + form.getFieldValue('branchName'));
     }
 
     viewBuildHis(){
-        // this.context.router.push({
-        //     pathname: '/project-mgr/project-build-history',
-        //     state: {}
-        // });
+        this.context.router.push({
+            pathname: '/project-mgr/project-build-history',
+            state: {}
+        });
     }
 
     render(){
-        console.log('render', this.props);
-        const {selectNode, pipelineJobInfo, getPipelineJobLoading, savePipelineJobLoading, buildLoading} = this.props;
-        var title = '编译发布配置';
-        if (selectNode&&selectNode.isProject){
-            if (savePipelineJobLoading){
-                title = '正在保存编译发布配置...';
-            }else{
-                if (getPipelineJobLoading){
-                    title = '正在加载编译发布配置...';
-                // }else{
-                //     if (pipelineJobInfo){
-                //         if (pipelineJobInfo.jobName){
-                //             title = '修改编译发布配置';
-                //         }
-                //     }
-                }
-            }
-        }
+        const {selectNode, pipelineJobInfo, getPipelineJobLoading, savePipelineJobLoading, branches, stageList, stageLoading, buildLoading} = this.props;
         const {getFieldDecorator, getFieldError, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 3},
             wrapperCol: {span: 20},
         };
 
-        const script = "mvn package";
-        const projectName = 'devops-web-1';
-
-        let action = <div/>;
-        let deployConfigItems = <div/>;
+        var title = '编译发布配置';
+        var stepsTitle = '具体配置步骤';
+        let action = '';
+        let deployConfigItems = [];
+        let branchList = [];
         if (selectNode && selectNode.isProject){
-            action = <PipelineScriptEditor script={script} projectName={projectName}/>;
-            const deployConfigs = getFieldValue('deployConfigs');
-            console.log('deployConfigs', deployConfigs);
+            if (savePipelineJobLoading){
+                title = '正在保存编译发布配置...';
+            }else{
+                if (getPipelineJobLoading){
+                    title = '正在加载编译发布配置...';
+                }
+            }
+            if (stageLoading){
+                stepsTitle = '正在加载配置步骤...'
+            }
+
+            action = <PipelineScriptEditor projectName={this.getJobName(selectNode)}/>;
+            let deployConfigs = getFieldValue('deployConfigs');
+            if (!deployConfigs){
+                deployConfigs = [1];
+            }
             deployConfigItems = deployConfigs.map((value, index) => {
                 return (
-                    <Box key={value} title={`发布配置${value}`} classType="bg" action={value==1?(<div></div>):(<Button type="dashed" icon="minus" onClick={()=>this.removeDeployConfig(value)}>删除该配置</Button>)}>
+                    <Box key={value} title={`发布配置${value}`} classType="bg" action={value==1?(''):(<Button type="dashed" icon="minus" onClick={()=>this.removeDeployConfig(value)}>删除该配置</Button>)}>
                         <DeployConfig ref={"deployConfig"+value}/>
                     </Box>
                 );
             });
+            if (branches){
+                branchList = branches.branch.map((value, index) => {
+                    return <Radio key={value} value={value}>{value}</Radio>
+                });
+            }
         }
 
         return (
@@ -298,9 +310,7 @@ class ProjectCompile2 extends React.Component{
                             {getFieldDecorator('branchName',
                                 {rules:[{required:true, message:'请选择项目代码分支'}],initialValue: 'dev'})(
                                 <RadioGroup style={{paddingRight:10}} onChange={this.changeBranch.bind(this)}>
-                                    <Radio value="dev">dev</Radio>
-                                    <Radio value="release">release</Radio>
-                                    <Radio value="master">master</Radio>
+                                    {branchList}
                                 </RadioGroup>
                             )}
                         </FormItem>
@@ -317,58 +327,53 @@ class ProjectCompile2 extends React.Component{
                                 </Col>
                             </Row>
                         </FormItem>
-                        <FormItem style={{display:'none'}}>
-                            <Row >
-                                <Col span={21}>
-                                    {getFieldDecorator('trigger',
-                                        {rules:[
-                                            {required:true, message:'请设置调度'}
-                                        ]})(<Input type="text" placeholder="请设置调度"/>)}
-                                </Col>
-                            </Row>
-                        </FormItem>
-                        <Box title="具体配置步骤">
+                        <Box title={stepsTitle}>
                             <Steps direction="vertical" size='small' current={-1}>
-                                <Step title="更新代码" description={
-                                    <FormItem {...formItemLayout} label="Git仓库URL:">
-                                        {getFieldDecorator('gitUrl',
-                                            {rules:[
-                                                {required:true, message:'请输入Git仓库URL'}
-                                            ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
-                                    </FormItem>
-                                } />
-                                <Step title="编译" description={
-                                    <FormItem {...formItemLayout} label="编译脚本">
-                                        {getFieldDecorator('buildScript',
-                                            {rules:[
-                                                {required:true, message:'请输入编译脚本'}
-                                            ]})(<Input type="textarea" rows={3} placeholder="请输入编译脚本"/>)}
-                                    </FormItem>
-                                } />
-                                <Step title="生成单元测试案例" description="" />
-                                <Step title="代码质量扫描" description="" />
-                                <Step title="单元测试" description="" />
-                                <Step title="打包" description={
-                                    <FormItem {...formItemLayout} label="打包脚本">
-                                        {getFieldDecorator('packageScript',
-                                            {rules:[
-                                                {required:true, message:'请输入打包脚本'}
-                                            ]})(<Input type="textarea" rows={3} placeholder="请输入打包脚本"/>)}
-                                    </FormItem>
-                                } />
-                                <Step title="生成镜像" description="" />
-                                <Step title="发布" description={
-                                    <Box title="填写发布配置信息" action={<Button type="dashed" icon="plus" onClick={()=>this.addDeployConfig()}>添加发布配置</Button>}>
-                                        {deployConfigItems}
-                                    </Box>
+                                {stageList?stageList.map((value, index) => {
+                                        switch (value.id){
+                                            case 1:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="Git仓库URL:">
+                                                        {getFieldDecorator('gitUrl',
+                                                            {rules:[
+                                                                {required:true, message:'请输入Git仓库URL'}
+                                                            ]})(<Input type="text" placeholder="请输入Git仓库URL"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 100:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="编译脚本">
+                                                        {getFieldDecorator('buildScript',
+                                                            {rules:[
+                                                                {required:true, message:'请输入编译脚本'}
+                                                            ]})(<Input type="textarea" rows={3} placeholder="请输入编译脚本"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 140:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="打包脚本">
+                                                        {getFieldDecorator('packageScript',
+                                                            {rules:[
+                                                                {required:true, message:'请输入打包脚本'}
+                                                            ]})(<Input type="textarea" rows={3} placeholder="请输入打包脚本"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 200:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <Box title="填写发布配置信息" action={<Button type="dashed" icon="plus" onClick={()=>this.addDeployConfig()}>添加发布配置</Button>}>
+                                                        {deployConfigItems}
+                                                    </Box>
 
-                                } />
-                                <Step title="执行自动化测试" description="" />
+                                                } />
+                                            default:
+                                                return <Step key={value.id} title={value.name} description="" />
+                                        }
+                                    }):[]}
                             </Steps>
                         </Box>
-                        <FormItem wrapperCol={{span: 24, offset: 21}} style={{marginTop: 0}}>
+                        <FormItem wrapperCol={{span: 24}} style={{marginTop: 0}}>
                             <Affix offsetBottom={0}>
-                                <Button type="primary" icon="save" htmlType="submit">保存配置</Button>
+                                <Button type="primary" icon="save" htmlType="submit" style={{float:'right'}}>保存配置</Button>
                             </Affix>
                         </FormItem>
                     </Form>
@@ -434,16 +439,13 @@ function mapStateToProps(state) {
         selectNode: state.getGroupTree.selectNode,
         branches:state.branch.branchesData,
         stageList: state.projectCompile.stageList,
+        stageLoading: state.projectCompile.stageLoading,
         getPipelineJobLoading: state.projectCompile.getPipelineJobLoading,
         pipelineJobInfo: state.projectCompile.pipelineJobInfo,
         savePipelineJobLoading: state.projectCompile.savePipelineJobLoading,
         savePipelineJobResult: state.projectCompile.savePipelineJobResult,
-
-        // jobInfo: state.projectCompile.jobInfo,
-        // saveJobResult: state.projectCompile.saveJobResult,
-        // saveLoading: state.projectCompile.saveLoading,
-        // buildLoading: state.projectCompile.buildLoading,
-        // buildJobResult: state.projectCompile.buildJobResult
+        buildLoading: state.projectCompile.buildLoading,
+        buildJobResult: state.projectCompile.buildJobResult
     };
 }
 
@@ -453,6 +455,7 @@ function mapDispatchToProps(dispatch) {
         getStageList:bindActionCreators(getStageList, dispatch),
         getPipelineJob: bindActionCreators(getPipelineJob, dispatch),
         savePipelineJob: bindActionCreators(savePipelineJob, dispatch),
+        buildJob: bindActionCreators(buildJob, dispatch)
     }
 }
 

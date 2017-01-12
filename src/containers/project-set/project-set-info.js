@@ -39,9 +39,19 @@ class SelectedSetInfo extends Component {
 
     editProjectSet(type,selectedProjectSet){
         if(selectedProjectSet){
-            console.log('editProjectSet error')
             this.context.router.push({
                 pathname: '/editProjectSet',
+                state:{editType: type}
+            });
+        }else{
+            message.warning('请选择要修改的项目集合')
+        }
+    }
+
+    editEmergencyProjectSet(type,selectedProjectSet){
+        if(selectedProjectSet){
+            this.context.router.push({
+                pathname: '/editEmergencyProjectSet',
                 state:{editType: type}
             });
         }else{
@@ -114,6 +124,8 @@ class SelectedSetInfo extends Component {
             const dataSource = this.getDataSource(selectedProjectSet);
             const content = (
                 <div>
+                    <a style={{paddingLeft:10}}
+                       onClick={this.editEmergencyProjectSet.bind(this,'add',selectedItemInfo)}>创建紧急上线项目集</a>
                     <a style={{paddingLeft:10}}
                        onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
                     <a style={{paddingLeft:10}}

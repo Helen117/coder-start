@@ -167,3 +167,48 @@ export function getPipelineJob(jobName, branchName) {
         }
     }
 }
+
+
+
+export const PROJECT_COMPILE_GET_PIPELINE_SCRIPT = 'PROJECT_COMPILE_GET_PIPELINE_SCRIPT';
+export const PROJECT_COMPILE_GET_PIPELINE_SCRIPT_PENDING = 'PROJECT_COMPILE_GET_PIPELINE_SCRIPT_PENDING';
+export const PROJECT_COMPILE_GET_PIPELINE_SCRIPT_SUCCESS = 'PROJECT_COMPILE_GET_PIPELINE_SCRIPT_SUCCESS';
+export const PROJECT_COMPILE_GET_PIPELINE_SCRIPT_ERROR = 'PROJECT_COMPILE_GET_PIPELINE_SCRIPT_ERROR';
+
+export function getPipelineScript(jobName) {
+    var path = '/getPipelineScript';
+    return {
+        type: PROJECT_COMPILE_GET_PIPELINE_SCRIPT,
+        payload: {
+            promise: api.get(path, {
+                params: {
+                    jobName: jobName
+                },
+                urlType:'ci'
+            })
+        }
+    }
+}
+
+
+
+export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT';
+export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING';
+export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS';
+export const PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR = 'PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR';
+
+export function savePipelineScript(jobName, pipelineScript) {
+    var path = '/savePipelineScript';
+    return {
+        type: PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    jobName: jobName,
+                    pipelineScript: pipelineScript
+                },
+                urlType:'ci'
+            })
+        }
+    }
+}

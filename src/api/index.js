@@ -2,7 +2,7 @@ import Api from './api';
 
 const api = new Api({
     ciBaseURI: 'http://10.10.147.190:13000/jenkins',
-    // baseURI: '/gitlab',
+    //baseURI: '/gitlab',
     baseURI: 'http://10.10.147.190:11000/gitlab',
     // baseURI: 'http://10.10.156.119:11000/gitlab',
 
