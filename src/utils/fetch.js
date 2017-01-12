@@ -2,7 +2,7 @@
 
 export default function fetchData(url, params,callback,handleResult) {
     const baseURI = 'http://10.10.147.190:11000/gitlab';
-    //const baseURI = 'http://10.10.156.237:11000/gitlab'
+    //const baseURI = 'http://10.10.156.23:11000/gitlab'
     url = baseURI+url;
     const opts = {
         method: 'post',

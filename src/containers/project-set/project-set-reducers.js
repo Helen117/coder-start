@@ -116,9 +116,20 @@ export function projectSet(state = initialState, action = {}) {
             return {...state, projectInfoLoading:false, projectInfo:null};
 
 
+        //create emergency project set
+        case 'CREATE_EMERGENCY_PROJECT_SET_PENDING':
+            return {...state,createEmergencyResult:null, createEmergencyLoading:true};
+
+        case 'CREATE_EMERGENCY_PROJECT_SET_SUCCESS':
+            return {...state,createEmergencyResult: action.payload, createEmergencyLoading:false};
+
+        case 'CREATE_EMERGENCY_PROJECT_SET_ERROR':
+            return {...state,createEmergencyResult:null, createEmergencyLoading:false};
+
         //put selected tree item to state
         case PUT_PROJECT_SET_TO_STATE:
             return {...state, selectedProjectSet: action.payload.data};
+
         default:
             return state;
     }

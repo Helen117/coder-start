@@ -323,6 +323,7 @@ class EditRequest extends Component{
                     <FormItem {...formItemLayout} label="业务范畴" >
                         {getFieldDecorator('labels',{rules:[{ required:true,type:'array',message:'请选择业务范畴'}]})(
                             <Select multiple
+                                    optionFilterProp="children"
                                     style={{ width: 300 }} >
                                 {labels}
                             </Select>)
