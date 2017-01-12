@@ -181,7 +181,7 @@ class ProjectSetCreate extends React.Component {
                         </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" loading={this.props.createLoading} disabled={this.props.disabled}>确定</Button>
+                            <Button type="primary" htmlType="submit" loading={this.props.createLoading}>确定</Button>
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
                         </FormItem>
                     </Form>

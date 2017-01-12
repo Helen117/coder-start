@@ -71,7 +71,7 @@ class Milestones extends React.Component {
                             </Breadcrumb>
                         </Col>
                         <Col span={12}>
-                            {id.toString().indexOf("_g") > 0?
+                            {id.toString().indexOf("_p") < 0?
                                 <div style={{textAlign:"right"}}>
                                     <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                                 </div> :<div></div>}

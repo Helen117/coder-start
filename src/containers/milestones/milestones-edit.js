@@ -58,7 +58,7 @@ class ProjectSetMilestonesEdit extends React.Component {
                 const formData = form.getFieldsValue();
                 formData.set_id= this.groupId.substring(0,this.groupId.length-2);
                 formData.author_id = logInfo.userId;
-                formData.due_date = formData.due_date.utc()
+                formData.due_date = formData.due_date.valueOf();
                 if(editType == 'add'){
                     this.props.createMilestone(formData);
                 }else{
@@ -125,7 +125,7 @@ class ProjectSetMilestonesEdit extends React.Component {
         if(result){
             callback();
         }else{
-            callback('名称已被占用');
+            callback('主题已被占用');
         }
     }
 
@@ -139,15 +139,15 @@ class ProjectSetMilestonesEdit extends React.Component {
         const {getFieldDecorator} = this.props.form;
         const titleProps = getFieldDecorator('title', {
             rules: [
-                { required: true, message:'请输入里程碑名称' },
-                { max: 30, message: '名称长度为 1~30 个字符' },
+                { required: true, message:'请输入里程碑主题' },
+                { max: 30, message: '主题长度为 1~30 个字符' },
                 { validator: this.checkTitle.bind(this) }
             ],
         });
 
         const dueDateProps = getFieldDecorator('due_date', {
             rules: [
-                { required: true, type: 'object', message: '请选择结束日期' },
+                { required: true, type: 'object', message: '请选择计划完成时间' },
                 { validator: this.checkDuedate.bind(this) }
             ],
         });
@@ -161,8 +161,8 @@ class ProjectSetMilestonesEdit extends React.Component {
             <Box title={editType == 'add' ? '创建里程碑' : '修改里程碑'}>
                 <Spin spinning={updateLoading} tip="正在保存数据,请稍候..." >
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
-                        <FormItem   {...formItemLayout} label="名称">
-                            {titleProps(<Input placeholder="请输入里程碑名称" /> )}
+                        <FormItem   {...formItemLayout} label="主题">
+                            {titleProps(<Input placeholder="请输入里程碑主题" /> )}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="描述" >
@@ -171,7 +171,10 @@ class ProjectSetMilestonesEdit extends React.Component {
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="计划完成时间">
-                            {dueDateProps(<DatePicker size='large' disabledDate={this.disabledDate.bind(this)} placeholder="计划完成时间" />)}
+                            {dueDateProps(<DatePicker size='large'
+                                                      disabledDate={this.disabledDate.bind(this)}
+                                                      placeholder="计划完成时间"
+                                                      style={{width:300}} />)}
                         </FormItem>
 
                         {editType == 'update' ?

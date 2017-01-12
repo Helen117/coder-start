@@ -102,3 +102,16 @@ export function getProjectInfo(project_id,user_id) {
         }
     }
 }
+
+
+export function createEmergencyProjectSet(data) {
+    var path = '/project/sub-set';
+    return {
+        type: 'CREATE_EMERGENCY_PROJECT_SET',
+        payload: {
+            promise: api.post(path, {
+                    data: data,
+            })
+        }
+    }
+}

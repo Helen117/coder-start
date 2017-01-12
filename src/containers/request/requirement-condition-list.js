@@ -42,7 +42,7 @@ class RequirementConditionList extends Component {
         const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
-        if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
+        if(thisSetId != nextSetId && nextSetId && !nextProps.selectedProjectSet.id.indexOf('_p') >=0 ){
             this.handleReset();
             const queryCondition = {sets_id: nextSetId};
             this.loadQueryOption(this.currentPage,queryCondition);
@@ -83,7 +83,7 @@ class RequirementConditionList extends Component {
             wrapperCol: { span: 16 },
         };
         const {selectedProjectSet, developerInfo, testerInfo,matchMilestone} = this.props;
-        const projectId = selectedProjectSet? selectedProjectSet.id.indexOf('g')!=-1:'';
+        const projectId = selectedProjectSet? selectedProjectSet.id.indexOf('_p')< 0: false;
         const { getFieldDecorator } = this.props.form;
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const tester = testerInfo?testerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
