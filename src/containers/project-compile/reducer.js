@@ -32,7 +32,14 @@ import {
     PROJECT_COMPILE_SAVE_PIPELINE_JOB_ERROR,
     PROJECT_COMPILE_GET_PIPELINE_JOB_PENDING,
     PROJECT_COMPILE_GET_PIPELINE_JOB_SUCCESS,
-    PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR
+    PROJECT_COMPILE_GET_PIPELINE_JOB_ERROR,
+
+    PROJECT_COMPILE_GET_PIPELINE_SCRIPT_PENDING,
+    PROJECT_COMPILE_GET_PIPELINE_SCRIPT_SUCCESS,
+    PROJECT_COMPILE_GET_PIPELINE_SCRIPT_ERROR,
+    PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING,
+    PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS,
+    PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR
 
 } from './action';
 
@@ -44,7 +51,6 @@ const initialState = {
 };
 
 export default function projectCompile(state = initialState, action = {}) {
-
     switch (action.type) {
         //get job
         case PROJECT_COMPILE_GET_JOB_PENDING:
@@ -143,6 +149,36 @@ export default function projectCompile(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.errorMsg,
                 getPipelineJobLoading:false
+            };
+
+
+
+        //get pipeline script
+        case PROJECT_COMPILE_GET_PIPELINE_SCRIPT_PENDING:
+            return {...state, pipelineScriptInfo: null, getPipelineScriptLoading:true};
+        case PROJECT_COMPILE_GET_PIPELINE_SCRIPT_SUCCESS:
+            return {...state, pipelineScriptInfo: action.payload, getPipelineScriptLoading:false};
+        case PROJECT_COMPILE_GET_PIPELINE_SCRIPT_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                getPipelineScriptLoading:false
+            };
+
+
+
+
+
+        //save pipeline script
+        case PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING:
+            return {...state, savePipelineScriptResult: false, savePipelineScriptLoading:true};
+        case PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS:
+            return {...state, savePipelineScriptResult: true, savePipelineScriptLoading:false};
+        case PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                savePipelineScriptLoading:false
             };
 
 

@@ -3,7 +3,7 @@
  */
 import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
-import { Form,Select,Alert} from 'antd';
+import { Form,Select,Alert,Table} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as reportActions from './report-action';
@@ -88,7 +88,7 @@ class manageViewDemandRank extends Component {
     fetchData(value){
         const { actions } = this.props;
         if(value){
-            // actions.fetchReportData(value);
+            actions.fetchDemandStatistics(value);
         }
     }
 
@@ -103,9 +103,14 @@ class manageViewDemandRank extends Component {
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
+        const pagination = {
+            pageSize:20,
+            // total: data.length,
+        };
+
         if(projectId) {
         return(
-            <Box title="一个里程碑中产生缺陷(上线前)最多的工单统计排名">
+            <Box title="一个里程碑中的工单统计情况">
                 <Form horizontal  >
                     <FormItem label="里程碑" {...formItemLayout}>
                         {getFieldDecorator('milestone')(
@@ -121,10 +126,11 @@ class manageViewDemandRank extends Component {
                         }
                     </FormItem>
                 </Form>
-                <ReactEcharts
-                    option={this.getOption()}
-                    style={{height: '350px', width: '80%'}}
-                    theme="my_theme"
+                <Table columns={this.columns(this)} dataSource={this.props.reportData}
+                       bordered
+                       size="middle"
+                       pagination={pagination}
+                       loading={this.props.loading}
                 />
             </Box>
         );
@@ -141,13 +147,26 @@ class manageViewDemandRank extends Component {
     }
 }
 
+manageViewDemandRank.prototype.columns = (self)=>[{
+    title: '工单',
+    dataIndex: 'title',
+},{
+    title: '缺陷数',
+    dataIndex: 'defect_num',
+    sorter: (a, b) => a.defect_num - b.defect_num,
+}, {
+    title: '涉及系统数量',
+    dataIndex: 'systm_num',
+    sorter: (a, b) => a.systm_num - b.systm_num,
+}];
+
 manageViewDemandRank = Form.create()(manageViewDemandRank);
 
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        reportData:state.report.reportData,
-        loading:state.report.getReportDataPending,
+        reportData:state.report.demandStatistics,
+        loading:state.report.getDemandStatisticsPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
     };

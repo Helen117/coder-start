@@ -31,7 +31,7 @@ class EditBug extends Component{
             setFieldsValue({'planTime': moment(selectedRow.due_date,"YYYY-MM-DD")});//时间类型转换
             setFieldsValue({'demand': selectedRow.issue_name});
             setFieldsValue({'due_date': moment()});
-            setFieldsValue({'requirePerson': selectedRow.assignee_id.toString()});
+            setFieldsValue({'requirePerson': selectedRow.assignee_developer_or_tester.id.toString()});
             setFieldsValue({'assignee_develop_id': selectedRow.assignee_developer_or_tester.id.toString()});
         }
     }

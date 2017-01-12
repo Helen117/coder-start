@@ -1,6 +1,6 @@
 
 
-export default function fetchData(url, params,callback,handleCheckResult) {
+export default function fetchData(url, params,callback,handleResult) {
     const baseURI = 'http://10.10.147.190:11000/gitlab';
     //const baseURI = 'http://10.10.156.108:11000/gitlab'
     url = baseURI+url;
@@ -23,9 +23,10 @@ export default function fetchData(url, params,callback,handleCheckResult) {
         if(res.ok){
             return res.json().then(function(json) {
                 if (json.success) {
-                    handleCheckResult(json.result,callback)
+                    handleResult(json.result,callback)
                 }else{
-                    callback('验证失败：'+json.errorMsg);
+                    return json.errorMsg
+                    //callback('调用结果失败：'+json.errorMsg);
                 }
             })
 

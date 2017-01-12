@@ -12,6 +12,7 @@ import {fetchMergeBranchData} from '../mergeRequest/mergeRequest-action';
 import IssueList from '../../components/issues-list';
 import styles from './index.css';
 import Box from '../../components/box';
+import fetchData from '../../utils/fetch'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -121,13 +122,27 @@ class MyIssueList extends Component {
         });
     }
 
+    isPromiseMerge(result,record){
+        if(result) {
+            const {fetchMergeBranchData, loginInfo} = this.props;
+            fetchMergeBranchData('', record.project_id, loginInfo.userId);
+            this.context.router.push({
+                pathname: '/CreateMergeRequest',
+                state: {record, projectId: record.project_id}
+            });
+        }else{
+            notification.error({
+                        message: '不能提交合并申请',
+                        description:'该问题不在最近的上线点中，不能提交合并申请',
+                        duration:10,
+                    });
+        }
+    }
+
     mergeRequest(record){
-        const {fetchMergeBranchData,loginInfo} = this.props;
-        fetchMergeBranchData('',record.project_id,loginInfo.userId);
-        this.context.router.push({
-            pathname: '/CreateMergeRequest',
-            state: {record,projectId:record.project_id}
-        });
+        const path = '/project/validate-issue-mr'
+        const params = {issue_id:record.id}
+        fetchData(path, params,record,this.isPromiseMerge.bind(this))
     }
 
     closeBug(record) {

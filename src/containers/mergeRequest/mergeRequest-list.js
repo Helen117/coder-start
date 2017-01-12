@@ -266,7 +266,7 @@ MergeRequestList.prototype.columns = (self)=> [{
     title: '创建时间',
     dataIndex: 'created_at',
     key: 'created_at',
-    width: '7%',
+    width: '9%',
 },{
     title: '状态',
     dataIndex: 'state',
