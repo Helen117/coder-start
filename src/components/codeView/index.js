@@ -35,8 +35,10 @@ class CodeView extends React.Component {
                         {(categary=='png' || categary=='jpg')?(
                             <img src={imgPath}></img>
                         ):(
-                            <SyntaxHighlighter style={this.state.style}
-                                               showLineNumbers>
+                            <SyntaxHighlighter
+                                language={categary=="diff"?"diff":""}
+                                style={this.state.style}
+                                showLineNumbers>
                                 {code}
                             </SyntaxHighlighter>
                         )}
