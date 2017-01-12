@@ -115,14 +115,14 @@ export default function projectCompile(state = initialState, action = {}) {
 
         //get stages
         case PROJECT_COMPILE_STAGES_PENDING:
-            return {...state, stageList:{stageLoading:true}};
+            return {...state, stageLoading:true};
         case PROJECT_COMPILE_STAGES_SUCCESS:
-            return {...state, stageList: {...action.payload, stageLoading:false}};
+            return {...state, stageList: action.payload, stageLoading:false};
         case PROJECT_COMPILE_STAGES_ERROR:
             return {
                 ...state,
                 errors: action.payload.errorMsg,
-                stageList:{stageLoading:false}
+                stageLoading:false
             };
 
 
