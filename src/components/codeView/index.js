@@ -27,11 +27,11 @@ class CodeView extends React.Component {
         }
         return (
             <div className={styles.code_view}>
-                <Row className={styles.blob_commit_info}>
-                    <p className={styles.commit_info}>{fileName}</p>
+                <Row className={styles.blob_commit_info_cp}>
+                    <p className={styles.commit_info_cp}>{fileName}</p>
                 </Row>
                 <Row>
-                    <div className={styles.blob_commit_info}>
+                    <div className={styles.blob_commit_info_cp}>
                         {(categary=='png' || categary=='jpg')?(
                             <img src={imgPath}></img>
                         ):(

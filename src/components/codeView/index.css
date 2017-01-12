@@ -1,11 +1,11 @@
 .code_view{
     padding-left: 10px;
 }
-.blob_commit_info{
+.blob_commit_info_cp{
     background-color: #FAFAFA;
     border: 1px solid #e5e5e5;
 }
-.commit_info{
+.commit_info_cp{
     padding-top: 10px;
     padding-left: 10px;
     padding-bottom: 10px;
