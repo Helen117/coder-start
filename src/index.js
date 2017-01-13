@@ -39,12 +39,15 @@ import {TestCase,EditTestCase} from './containers/test-case'
 import {LabelEdit,Labels} from './containers/label';
 import ToDoListStatistics from './containers/report';
 import BusinessDemandStatistics from './containers/report/scope-of-business';
-import TeamMemberDemandProportion from './containers/report/teamMemberDemand';
-import manageViewDemandRank from './containers/report/manageViewDemandRank';
+import TeamMemberDemandProportion from './containers/report/team-defect-analysis';
+import manageViewDemandRank from './containers/report/demand-ranking';
 import PersonalCodeManageReport from './containers/report/personal-code-manage'
 import memberDailyDemandComplete from './containers/report/member-daily-demand-complete'
 import TeamDailyDemandStatistics from './containers/report/team-daily-demand-complete'
 import TeamStatistics from './containers/report/team-statistics'
+import developerTesterReport from './containers/report/developer-tester-report'
+import MemberCurrentWork from './containers/report/member-current-work'
+import TeamCurrentWork from './containers/report/team-current-work'
 
 import ProjectMilestones from './containers/project-milestone';
 import ProjectMgr, {GroupDetail, ProjectDetail} from './containers/project-mgr';
@@ -157,6 +160,7 @@ ReactDOM.render(
                             <Route name="report" breadcrumbName="团队中成员每日的需求完成情况" path="memberDailyDemand" component={memberDailyDemandComplete}/>
                             <Route name="report" breadcrumbName="多个团队横向比较每日需求完成情况分布" path="teamDailyDemand" component={TeamDailyDemandStatistics}/>
                             <Route name="report" breadcrumbName="横向对多个团队的情况进行对比分析" path="teamStatistics" component={TeamStatistics}/>
+                            <Route name="report" breadcrumbName="从团队leader视角展示当前团队中开发及测试人员整体情况" path="developerTesterReport" component={developerTesterReport}/>
                             <Route name="BranchMerge" breadcrumbName="分支代码合并" path="pushBranchCode" component={BranchMerge}/>
 
                         </Route>
@@ -185,6 +189,8 @@ ReactDOM.render(
                         <Route name="codeChanges" breadcrumbName="代码变更详情" path="CodeChanges" component={CodeChanges}/>
                         <Route name="projectSetMilestonesRequest" breadcrumbName="需求列表" path="projectSetMilestonesRequest" component={MilestoneRequest}/>
 
+                        <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
+                        <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

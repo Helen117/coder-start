@@ -280,7 +280,7 @@ class EditRequest extends Component{
                     </FormItem>
                     <FormItem {...formItemLayout} label="计划完成时间" help={getFieldError('expect_due_date')?getFieldError('expect_due_date'):this.state.helpMsg} >
                         {getFieldDecorator('expect_due_date',
-                            {rules:[{ required:true,message:'请选择计划完成时间'},
+                            {rules:[{ required:true,type:'object',message:'请选择计划完成时间'},
                             { validator: this.checkDuedate.bind(this)}]})(<DatePicker allowClear={false}
                                      disabledDate={this.disabledDate.bind(this)}
                                      style={{ width: 300 }}  />)}
