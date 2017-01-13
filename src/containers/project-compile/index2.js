@@ -327,6 +327,17 @@ class ProjectCompile2 extends React.Component{
                                 </Col>
                             </Row>
                         </FormItem>
+                        <FormItem style={{display:'none'}}>
+                            <Row >
+                                <Col span={21}>
+                                    {getFieldDecorator('trigger',
+                                        {rules:[
+                                            {required:true, message:'请设置调度'}
+                                        ]})(<Input type="text" placeholder="请设置调度"/>)}
+                                </Col>
+                            </Row>
+                        </FormItem>
+
                         <Box title={stepsTitle}>
                             <Steps direction="vertical" size='small' current={-1}>
                                 {stageList?stageList.map((value, index) => {
