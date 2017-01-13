@@ -119,6 +119,20 @@ export function fetchTeamCurrentWork(groupId) {
     }
 }
 
+export function fetchPersonalCodeManage(milestoneId,userId) {
+    return {
+        type: 'FETCH_PERSONAL_CODE_MANAGE',
+        payload: {
+            promise: api.post('/report/code-commit',{
+                params: {
+                    milestone_id: milestoneId,
+                    user_id:userId
+                }
+            })
+        }
+    }
+}
+
 export function fetchMemberInfo(milestoneId) {
     return {
         type: 'FETCH_MEMBER',

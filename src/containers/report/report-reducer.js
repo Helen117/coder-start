@@ -73,6 +73,13 @@ export default function report(state={}, action = {}) {
         case 'FETCH_TEAM_CURRENT_WORK_ERROR':
             return {...state, teamCurrentWork:null,getTeamCurrentWorkPending:false,getTeamCurrentWorkError:action.payload.errorMsg};
 
+        case 'FETCH_PERSONAL_CODE_MANAGE_PENDING':
+            return {...state, getPersonalCodeManagePending:true,personalCodeManage:null};
+        case 'FETCH_PERSONAL_CODE_MANAGE_SUCCESS':
+            return {...state, personalCodeManage: action.payload,getPersonalCodeManagePending:false};
+        case 'FETCH_PERSONAL_CODE_MANAGE_ERROR':
+            return {...state, personalCodeManage:null,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
+
         default:
             return state;
     }

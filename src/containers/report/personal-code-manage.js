@@ -50,7 +50,7 @@ class PersonalCodeManageReport extends Component {
                 orient:"vertical",
                 y:"center",
                 right:'right',
-                data:['提交代码行数','bug数量','合并失败次数','代码走查拒绝次数','修改函数数量','新增类数量','修改类数量','删除类数量'],
+                data:['新增代码行数','删除代码行数','bug数量','合并失败次数','代码走查拒绝次数','修改函数数量','新增类数量','修改类数量','删除类数量'],
             },
             toolbox: {
                 show: true,
@@ -68,7 +68,7 @@ class PersonalCodeManageReport extends Component {
             xAxis : [
                 {
                     type : 'category',
-                    data :this.props.reportData?this.props.reportData.map(data => data.label):[]
+                    data :this.props.reportData?this.props.reportData.map(data => data.project_name):[]
                 }
             ],
             yAxis : [
@@ -77,32 +77,55 @@ class PersonalCodeManageReport extends Component {
                 }
             ],
             series : [
-                {name:'提交代码行数',
+                {name:'新增代码行数',
                     barCategoryGap  : 10,
                     type:'bar',
-                    itemStyle: {normal: {color:'#0098d9'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.total):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.add_line_num):[]
+                },
+                {name:'删除代码行数',
+                    barCategoryGap  : 10,
+                    type:'bar',
+                    data:this.props.reportData?this.props.reportData.map(data => data.del_line_num):[]
                 },
                 {
                     name:'bug数量',
                     barCategoryGap  : 10,
                     type:'bar',
-                    itemStyle: {normal: {color:'#c12e34'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.expired):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.bug_num):[]
                 },
                 {
                     name:'合并失败次数',
                     barCategoryGap  : 10,
                     type:'bar',
-                    itemStyle: {normal: {color:'#B2B6B7'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.defect_total):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.failure_num):[]
                 },
                 {
                     name:'代码走查拒绝次数',
                     symbolSize:10,
                     type:'bar',
-                    itemStyle: {normal: {color:'#F5F629'}},
-                    data:this.props.reportData?this.props.reportData.map(data => data.defect_expired):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.refuse_num):[]
+                },{name:'修改函数数量',
+                    barCategoryGap  : 10,
+                    type:'bar',
+                    data:this.props.reportData?this.props.reportData.map(data => data.funtion_num):[]
+                },
+                {
+                    name:'新增类数量',
+                    barCategoryGap  : 10,
+                    type:'bar',
+                    data:this.props.reportData?this.props.reportData.map(data => data.add_class_num):[]
+                },
+                {
+                    name:'修改类数量',
+                    barCategoryGap  : 10,
+                    type:'bar',
+                    data:this.props.reportData?this.props.reportData.map(data => data.modify_class_num):[]
+                },
+                {
+                    name:'删除类数量',
+                    symbolSize:10,
+                    type:'bar',
+                    data:this.props.reportData?this.props.reportData.map(data => data.delete_class_num):[]
                 }
             ]
         };
@@ -119,12 +142,13 @@ class PersonalCodeManageReport extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const {actions,form,loginInfo} = this.props;
+        const {actions,form} = this.props;
         form.validateFields((errors, values) => {
             if (!!errors) {
                 return;
             } else {
-
+                const data = form.getFieldsValue();
+                actions.fetchPersonalCodeManage(data.milestone,data.user);
             }
         })
     }
@@ -206,8 +230,7 @@ PersonalCodeManageReport = Form.create()(PersonalCodeManageReport);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
-        reportData:state.report.reportData,
-        loading:state.report.getReportDataPending,
+        reportData:state.report.personalCodeManage,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
         matchMember: state.report.member,
