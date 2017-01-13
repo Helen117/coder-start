@@ -79,24 +79,31 @@ class MergeRequestList extends React.Component {
             width: 550,
             content: (
                 <div className="modal">
-                    <p>1. Clone,fetch and check out the branch for this merge request:</p>
+                    <p>1. 获取远程项目代码到本地，:</p>
                     <div>
                         <p>git clone {this.props.project.getProjectInfo.projectInfo.sshUrl}</p>
-                        <p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>
-                        <p>git checkout -b zhangyj/devops-scm-dev FETCH_HEAD</p>
                     </div>
 
-                    <p>2. Revert and review changes: </p>
+                    <p>2. 进入项目代码的根目录，从dev分支创建并切换到newBranch分支 :</p>
+                    <div>
+                        <p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>
+                        <p>git checkout -b newBranch FETCH_HEAD</p>
+                    </div>
+
+                    <p>3. 回退并查看代码变更: </p>
                     <div> git revert {record.sha}</div>
 
-                    <p>3. Merge the branch and fix any conflicts that come up:</p>
+                    <p>4. 将回退修改后的代码合并到master分支:</p>
                     <div>
                         <p>git checkout master</p>
-                        <p>git merge --no-ff zhangyj/devops-scm-dev</p>
+                        <p>git merge --no-ff newBranch</p>
                     </div>
 
-                    <p>4. Push the result of the merge to GitLab:</p>
-                    <div>git push origin master</div>
+                    <p>5. 提交代码到自己的远端仓库myDistanceRepository:</p>
+                    <div>git push myDistanceRepository master:dev</div>
+
+                    <p>6. 在devops系统中提出代码合并请求。</p>
+
                 </div>
             ),
             onOk() {
