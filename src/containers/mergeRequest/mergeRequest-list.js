@@ -79,24 +79,42 @@ class MergeRequestList extends React.Component {
             width: 550,
             content: (
                 <div className="modal">
-                    <p>1. Clone,fetch and check out the branch for this merge request:</p>
+                    <p>1. 获取远程仓库dev分支代码到本地:</p>
                     <div>
-                        <p>git clone {this.props.project.getProjectInfo.projectInfo.sshUrl}</p>
-                        <p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>
-                        <p>git checkout -b zhangyj/devops-scm-dev FETCH_HEAD</p>
+                        <p>git clone -b dev {this.props.project.getProjectInfo.projectInfo.sshUrl}</p>
                     </div>
 
-                    <p>2. Revert and review changes: </p>
-                    <div> git revert {record.sha}</div>
+                    {/*<p>2. 进入上一步骤克隆项目的根目录，追踪远程仓库的dev分支，并基于远程dev分支创建并切换到本地的revert_branch分支 :</p>*/}
+                    {/*<div>*/}
+                        {/*<p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>*/}
+                        {/*<p>git checkout -b revert_branch FETCH_HEAD</p>*/}
+                    {/*</div>*/}
+                    <p>2. 进入上一步骤克隆项目的根目录，查看本次代码合并包含的信息，若包含多条信息继续用git log命令进行查看: </p>
+                    <div> git log {record.sha.substring(0,6)} -1</div>
 
-                    <p>3. Merge the branch and fix any conflicts that come up:</p>
+
+                    <p>3. 根据上述查找的需要操作记录的commitId回退代码，并解决冲突: </p>
+                    <div> git revert -n commitId </div>
+                    {/*<div>注若提示错误：<br/>
+                        error: Commit {record.sha.substring(0,6)} is a merge but no -m option was given.<br/>
+                        fatal: revert failed<br/>
+                        则执行命令：<br/>
+                        git log {record.sha.substring(0,6)} -1<br/>
+                        该命令显示当前提交包含的
+                    </div>
+
+                    <p>4. 将回退修改后的代码合并到master分支:</p>
                     <div>
                         <p>git checkout master</p>
-                        <p>git merge --no-ff zhangyj/devops-scm-dev</p>
-                    </div>
+                        <p>git merge --no-ff revert_branch</p>
+                    </div>*/}
 
-                    <p>4. Push the result of the merge to GitLab:</p>
-                    <div>git push origin master</div>
+                    <p>4. 提交代码并推送到个人的远程仓库myDistanceRepositoryName:</p>
+                    <div>git commit -m '回退代码的原因'</div>
+                    <div>git push myDistanceRepositoryName master:dev</div>
+
+                    <p>5. 在devops系统中提出代码合并请求，将代码提交到公共的远程仓库。</p>
+
                 </div>
             ),
             onOk() {
