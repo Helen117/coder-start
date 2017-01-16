@@ -72,14 +72,15 @@ export const PROJECT_COMPILE_BUILD_LIST_PENDING = 'PROJECT_COMPILE_BUILD_LIST_PE
 export const PROJECT_COMPILE_BUILD_LIST_SUCCESS = 'PROJECT_COMPILE_BUILD_LIST_SUCCESS';
 export const PROJECT_COMPILE_BUILD_LIST_ERROR = 'PROJECT_COMPILE_BUILD_LIST_ERROR';
 
-export function getBuildList(projectId) {
-    var path = '/getBuildList';
+export function getBuildList(projectId, jobName) {
+    var path = '/getBuildInfo';
     return {
         type: PROJECT_COMPILE_BUILD_LIST,
         payload: {
             promise: api.post(path, {
                 params: {
                     projectId: projectId,
+                    jobName: jobName,
                     limit:5
                 },
                 urlType:'ci'

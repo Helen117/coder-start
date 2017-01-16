@@ -177,13 +177,13 @@ class ProjectCompile2 extends React.Component{
         form.validateFieldsAndScroll((errors, values) => {
             if (!errors) {
                 const deployConfigs = form.getFieldValue('deployConfigs');
-                let allValid = true;
-                let deployConfigDetails = [];
-                if (deployConfigs){
-                    deployConfigs.map((value, index) => {
-                        const form = this.refs['deployConfig'+value].refs.wrappedComponent.props.form;
-                        form.validateFieldsAndScroll((errors, values) => {
-                            if (!errors) {
+                            let allValid = true;
+                            let deployConfigDetails = [];
+                            if (deployConfigs){
+                                deployConfigs.map((value, index) => {
+                                    const form = this.refs['deployConfig'+value].refs.wrappedComponent.props.form;
+                                    form.validateFieldsAndScroll((errors, values) => {
+                                        if (!errors) {
                                 deployConfigDetails.push(form.getFieldsValue());
                             }else{
                                 allValid =false;
@@ -327,6 +327,17 @@ class ProjectCompile2 extends React.Component{
                                 </Col>
                             </Row>
                         </FormItem>
+                        <FormItem style={{display:'none'}}>
+                            <Row >
+                                <Col span={21}>
+                                    {getFieldDecorator('trigger',
+                                        {rules:[
+                                            {required:true, message:'请设置调度'}
+                                        ]})(<Input type="text" placeholder="请设置调度"/>)}
+                                </Col>
+                            </Row>
+                        </FormItem>
+
                         <Box title={stepsTitle}>
                             <Steps direction="vertical" size='small' current={-1}>
                                 {stageList?stageList.map((value, index) => {

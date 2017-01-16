@@ -3,7 +3,7 @@
  * Created by helen on 2016/11/22.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin} from 'antd';
+import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin,Row, Col} from 'antd';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -88,7 +88,6 @@ class EditRequest extends Component{
                 const data = form.getFieldsValue();
                 data.expect_due_date = data.expect_due_date.valueOf();
                 data.author_id = loginInfo.userId;
-                data.type = 'demand';
                 data.sid = selectedProjectSet.selectedItemId;
                 data.files= this.state.fileList;
                 if(editType == 'add'){
@@ -103,7 +102,7 @@ class EditRequest extends Component{
                         filesFlag = true;
                     }
                     if (data.title == selectedRow.title && data.description == selectedRow.description &&labels==selectedRow.label_id&& new Date(parseInt(data.expect_due_date)).toLocaleDateString() == selectedRow.expect_due_date
-                        && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assignee_test_id&&filesFlag) {
+                        && data.assignee_develop_id == selectedRow.assignee_develop_id && data.assignee_test_id == selectedRow.assignee_test_id&&filesFlag && data.type == selectedRow.type) {
                         message.info('数据没有变更，不需提交', 2);
                     } else {
                         actions.editRequest(data);
@@ -272,6 +271,19 @@ class EditRequest extends Component{
             <Spin spinning={pending} >
                 <Box title={editType == 'add' ? '新增需求' : '修改需求'}>
                 <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+                    <FormItem {...formItemLayout} label="类型" >
+                        {getFieldDecorator('type',
+                            {rules:[{required:true, message:'请选择需求类型'}], initialValue:'demand'})(
+                            <Select  showSearch
+                                     showArrow={false}
+                                     optionFilterProp="children"
+                                     notFoundContent="无法找到"
+                                     style={{ width: 300 }}
+                                     disabled={disabledEditDeveloper}>
+                                <Option key='demand'>需求</Option>
+                                <Option key='defect'>缺陷</Option>
+                            </Select>)}
+                    </FormItem>
                     <FormItem {...formItemLayout}  label="需求主题" >
                         {getFieldDecorator('title',{rules:[{ required:true,message:'请填写需求主题'}]})(<Input placeholder="请填写需求主题"/>)}
                     </FormItem>

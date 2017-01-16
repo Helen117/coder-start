@@ -27,6 +27,12 @@ class PipelineScriptEditor extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
+        const {pipelineScriptInfo} = nextProps;
+
+        if (pipelineScriptInfo && pipelineScriptInfo != this.props.pipelineScriptInfo){
+            this.refs.editor.getCodeMirror().setValue(pipelineScriptInfo);
+            //this.refs.editor.getCodeMirror().setValue('');
+        }
 
     }
 
@@ -129,10 +135,12 @@ class PipelineScriptEditor extends React.Component{
                        ]}>
                     <FormItem {...formItemLayout} label="" extra={""}>
                         <CodeMirror ref="editor"
-                                    value={pipelineScriptInfo?pipelineScriptInfo:''}
                                     onChange={this.updateCode.bind(this)}
                                     options={options}
                                     interact={this.interact} />
+                        {/*<CodeMirror ref="editor"*/}
+                                    {/*value={pipelineScriptInfo?pipelineScriptInfo:''}*/}
+                                    {/*options={options}/>*/}
                     </FormItem>
                 </Modal>
             </div>
