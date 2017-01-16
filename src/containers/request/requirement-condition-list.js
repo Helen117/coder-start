@@ -98,6 +98,14 @@ class RequirementConditionList extends Component {
                             <Form horizontal className={styles.ant_search_form}>
                                 <Row gutter={16}>
                                     <Col sm={7}>
+                                        <FormItem label="需求主题" {...formItemLayout} >
+                                            {getFieldDecorator('title')(
+                                                <Input  placeholder="请输入需求主题"/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+
+                                    <Col sm={8}>
                                         <FormItem label="里程碑" {...formItemLayout} >
                                             {getFieldDecorator('sets_milestone_id')(
                                                 <Select showSearch
@@ -110,36 +118,21 @@ class RequirementConditionList extends Component {
                                                 </Select>)}
                                         </FormItem>
                                     </Col>
+
                                     <Col sm={8}>
-                                        <FormItem label="需求主题" {...formItemLayout} >
-                                            {getFieldDecorator('title')(
-                                                <Input  placeholder="请输入需求主题"/>
-                                            )}
+                                        <FormItem label="类型" {...formItemLayout} >
+                                            {getFieldDecorator('type')(
+                                                <Select showSearch
+                                                        showArrow={false}
+                                                        allowClear={true}
+                                                        placeholder="请选择类型"
+                                                        optionFilterProp="children"
+                                                        notFoundContent="无法找到">
+                                                    <Option key='demand'>需求</Option>
+                                                    <Option key='defect'>缺陷</Option>
+                                                </Select>)}
                                         </FormItem>
                                     </Col>
-                                    <Col sm={8}>
-                                        <FormItem label="状态" {...formItemLayout}>
-                                            {getFieldDecorator('states')
-                                            (<TreeSelect
-                                                treeDefaultExpandAll
-                                                showCheckedStrategy='SHOW_PARENT'
-                                                treeData = {state}
-                                                multiple= {true}
-                                                treeCheckable= {true}
-                                                searchPlaceholder= '请选择需求状态' />)}
-                                        </FormItem>
-                                        {/*<FormItem label="状态" {...formItemLayout}>
-                                            {getFieldDecorator('state')(<Select allowClear={true} placeholder="请选择需求状态">
-                                                <Option value="open">待确认</Option>
-                                                <Option value="test_confirmed_running">待开发</Option>
-                                                <Option value="develop_running">开发中</Option>
-                                                <Option value="test_running">测试中</Option>
-                                                <Option value="bug_to_be_confirmed_running">bug待确认</Option>
-                                                <Option value="bug_fix_running">修复bug中</Option>
-                                                <Option value="closed">已完成</Option>
-                                            </Select>)}
-                                        </FormItem>*/}
-                                     </Col>
                                     </Row>
                                 <Row gutter={16}>
                                     <Col sm={7}>
@@ -171,6 +164,20 @@ class RequirementConditionList extends Component {
                                     <Col sm={8}>
                                         <FormItem label="计划完成时间" {...formItemLayout}>
                                             {getFieldDecorator('expect_due_date')(<RangePicker size="default"/>)}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row gutter={16}>
+                                    <Col sm={7}>
+                                        <FormItem label="状态" {...formItemLayout}>
+                                            {getFieldDecorator('states')
+                                            (<TreeSelect
+                                                treeDefaultExpandAll
+                                                showCheckedStrategy='SHOW_PARENT'
+                                                treeData = {state}
+                                                multiple= {true}
+                                                treeCheckable= {true}
+                                                searchPlaceholder= '请选择需求状态' />)}
                                         </FormItem>
                                     </Col>
                                 </Row>
