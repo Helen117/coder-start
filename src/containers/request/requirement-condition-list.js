@@ -42,7 +42,7 @@ class RequirementConditionList extends Component {
         const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
-        if(thisSetId != nextSetId && nextSetId && !nextProps.selectedProjectSet.id.indexOf('_p') >=0 ){
+        if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_p') <0 ){
             this.handleReset();
             const queryCondition = {sets_id: nextSetId};
             this.loadQueryOption(this.currentPage,queryCondition);
