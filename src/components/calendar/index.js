@@ -105,7 +105,7 @@ export default class MilestonesCalendar extends React.Component{
 
     isRevocable(state,id){
         let revocable = false;
-        if(state != 'closed' && !id.indexOf('_p')>=0){
+        if(state != 'closed' && id.indexOf('_p')<0){
             revocable = true;
         }
         return revocable;
