@@ -91,7 +91,7 @@ class RequestList extends Component {
                    pagination={pagination}
                    onChange={this.changePage.bind(this)}
                    loading={this.props.loading}
-                   scroll={{ x: 1400 }}/>
+                   scroll={{ x: this.props.editable ?1400: 1000 }}/>
 
         )
 
@@ -110,11 +110,11 @@ RequestList.prototype.columns = (self)=>[
         title: '需求主题',
         dataIndex: 'title',
         width: 150,
-        fixed: 'left',
+        fixed: self.props.editable ? 'left': false,
     },  {
         title: '描述',
         dataIndex: 'description',
-        fixed: 'left',
+        fixed: self.props.editable ? 'left': false,
         width: 150,
     },{
         title: '文件',
@@ -152,11 +152,12 @@ RequestList.prototype.columns = (self)=>[
     },{
         title: '业务范畴',
         dataIndex: 'label',
+        width: 90,
     },{
-        title: '工单号',
+        title: 'iimp工单号',
         dataIndex: 'iimp_id',
     },{
-        title: '子工单号',
+        title: 'iimp子工单号',
         dataIndex: 'iimp_sub_id',
     }, {
         title: '当前状态',
@@ -164,8 +165,8 @@ RequestList.prototype.columns = (self)=>[
     },{
         title: '操作',
         dataIndex: 'key',
-        fixed: 'right',
-        width: self.props.editable ? 100:0,
+        fixed: self.props.editable ? 'right': false,
+        width: self.props.editable ? 100:'0%',
         render: (text, record) => {
             return (<div>
                 {record.state=='已完成'?<div/>:
