@@ -2,13 +2,14 @@
  * Created by helen on 2016/12/27.
  */
 import api from '../../api';
-export function fetchReportData(milestoneId) {
+export function fetchReportData(milestoneId,labelId) {
     return {
         type: 'FETCH_REPORT_DATA',
         payload: {
             promise: api.post('/report/labels',{
                 params: {
                     id: milestoneId,
+                    label_id_list:labelId
                 }
             })
         }
@@ -43,26 +44,28 @@ export function fetchTeamMemberDemandComplete(milestoneId,groupId) {
     }
 }
 
-export function fetchTeamDemandComplete(milestoneId) {
+export function fetchTeamDemandComplete(milestoneId,groupId) {
     return {
         type: 'FETCH_TEAM_DEMAND_COMPLETE',
         payload: {
             promise: api.post('/report/team-demand',{
                 params: {
-                    milestone_id: milestoneId
+                    milestone_id: milestoneId,
+                    group_id_list:groupId
                 }
             })
         }
     }
 }
 
-export function fetchTeamStatistics(milestoneId) {
+export function fetchTeamStatistics(milestoneId,groupId) {
     return {
         type: 'FETCH_TEAM_STATISTICS',
         payload: {
             promise: api.post('/report/team-scale',{
                 params: {
-                    milestone_id: milestoneId
+                    milestone_id: milestoneId,
+                    group_id_list:groupId
                 }
             })
         }
@@ -114,7 +117,11 @@ export function fetchTeamCurrentWork(groupId) {
     return {
         type: 'FETCH_TEAM_CURRENT_WORK',
         payload: {
-            promise: api.post('/report/team-everyday')
+            promise: api.post('/report/team-everyday',{
+                params: {
+                    group_id_list:groupId
+                }
+            })
         }
     }
 }
@@ -142,6 +149,15 @@ export function fetchMemberInfo(milestoneId) {
                     milestone_id: milestoneId,
                 }
             })
+        }
+    }
+}
+
+export function fetchGroupsInfo() {
+    return {
+        type: 'FETCH_GROUPS',
+        payload: {
+            promise: api.post('/groups/all-group')
         }
     }
 }

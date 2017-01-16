@@ -5,7 +5,7 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert} from 'antd';
+import { Form,Select,Alert,Row,Col,Button} from 'antd';
 import * as reportActions from './report-action';
 import * as request from '../request/actions/request-action';
 import Box from '../../components/box';
@@ -21,7 +21,8 @@ class TeamStatistics extends Component {
     }
 
     componentWillMount(){
-
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentDidMount(){
@@ -38,12 +39,6 @@ class TeamStatistics extends Component {
         }
     }
 
-    fetchData(value){
-        const { actions } = this.props;
-        if(value){
-            actions.fetchTeamStatistics(value);
-        }
-    }
 
     getOption() {
         const option = {
@@ -116,34 +111,65 @@ class TeamStatistics extends Component {
         return option;
     }
 
+    handleSubmit(e) {
+        e.preventDefault();
+        const {actions,form} = this.props;
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = form.getFieldsValue();
+                actions.fetchTeamStatistics(data.milestone,data.group);
+            }
+        })
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 10 },
-            wrapperCol: { span: 12 },
+            labelCol: { span: 8 },
+            wrapperCol: { span: 16 },
         };
-        const {selectedProjectSet,matchMilestone} = this.props;
+        const {selectedProjectSet,matchMilestone,groups} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         if(projectId) {
             return(
                 <Box title="横向对多个团队的情况进行对比分析">
                     <Form horizontal  >
-                        <FormItem label="里程碑" {...formItemLayout}>
-                            {getFieldDecorator('milestone')(
-                                <Select showSearch
-                                        showArrow={false}
-                                        placeholder="请选择一个里程碑"
-                                        optionFilterProp="children"
-                                        notFoundContent="无法找到"
-                                        onSelect={this.fetchData.bind(this)}
-                                        style={{width: '200px'}}>
-                                    {milestone}
-                                </Select>)
-                            }
-                        </FormItem>
+                        <Row gutter={16}>
+                            <Col sm={8}>
+                                <FormItem label="里程碑" {...formItemLayout}>
+                                    {getFieldDecorator('milestone',{rules:[{ required:true,message:'不能为空'}]})(
+                                        <Select showSearch
+                                                showArrow={false}
+                                                placeholder="请选择一个里程碑"
+                                                optionFilterProp="children"
+                                                notFoundContent="无法找到"
+                                                style={{width: '200px'}}>
+                                            {milestone}
+                                        </Select>)
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col sm={8}>
+                                <FormItem label="团队名称" {...formItemLayout}>
+                                    {getFieldDecorator('group',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
+                                        <Select multiple
+                                                placeholder="请选择团队"
+                                                style={{width: '200px'}}>
+                                            {groupsInfo}
+                                        </Select>)
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col sm={8}>
+                                <Button type="primary" onClick={this.handleSubmit.bind(this)}>查询</Button>
+                            </Col>
+                        </Row>
                     </Form>
                     <ReactEcharts
                         option={this.getOption()}
@@ -173,6 +199,8 @@ function mapStateToProps(state) {
         reportData:state.report.teamStatistics,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
+        loginInfo:state.login.profile,
+        groups:state.report.groups,
     };
 }
 

@@ -7,7 +7,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Form,Select,Alert} from 'antd';
 import * as reportActions from './report-action';
-import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
@@ -21,8 +20,8 @@ class MemberCurrentWork extends Component {
     }
 
     componentWillMount(){
-        const {loginInfo} = this.props;
-        this.props.getUserRelationTree(loginInfo.userId);
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentDidMount(){
@@ -118,8 +117,8 @@ class MemberCurrentWork extends Component {
             wrapperCol: { span: 12 },
         };
 
-        const {team} = this.props;
-        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const {groups} = this.props;
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return(
                 <Box title="团队成员当前工作情况">
@@ -133,7 +132,7 @@ class MemberCurrentWork extends Component {
                                         notFoundContent="无法找到"
                                         onSelect={this.fetchData.bind(this)}
                                         style={{width: '200px'}}>
-                                    {groups}
+                                    {groupsInfo}
                                 </Select>)
                             }
                         </FormItem>
@@ -155,14 +154,13 @@ function mapStateToProps(state) {
     return {
         reportData:state.report.memberCurrentWork,
         loginInfo:state.login.profile,
-        team:state.UserRelation.getUserRelationTree,
+        groups:state.report.groups,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
-        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
     }
 }
 
