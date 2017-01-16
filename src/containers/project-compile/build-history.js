@@ -9,12 +9,16 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col, Popover, Timeline, Icon} from 'antd';
+import {Form, Table, Tooltip, Input, Button, Alert, notification, Row, Col, Radio,Popover, Timeline, Icon} from 'antd';
 import Box from '../../components/box';
 import './build-history.less';
 import {getBuildList, getCodeChanges} from './action';
+import {fetchBranchesData} from '../branches/branches-action';
 import 'pubsub-js';
 import moment from 'moment';
+
+const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 class ProjectBuildHistory extends React.Component{
     constructor(props){
@@ -30,7 +34,11 @@ class ProjectBuildHistory extends React.Component{
     componentWillMount(){
     }
     componentDidMount(){
-        this.loadBuildList();
+        const {selectNode, fetchBranchesData} = this.props;
+        if (selectNode && selectNode.isProject){
+            fetchBranchesData(this.getProjectId(selectNode));
+            this.loadBuildList(selectNode);
+        }
         PubSub.subscribe("onSelectProjectNode", this.selectProject.bind(this));
     }
     componentWillUnmount(){
@@ -40,6 +48,9 @@ class ProjectBuildHistory extends React.Component{
     componentWillReceiveProps(nextProps){
     }
     shouldComponentUpdate(nextProps, nextState){
+        if (!nextProps.branches){
+            return false;
+        }
         return true;
     }
     componentWillUpdate(nextProps, nextState){
@@ -50,8 +61,18 @@ class ProjectBuildHistory extends React.Component{
 
     selectProject(msg, data){
         if (data.isProject){
-            this.props.getBuildList(data.node.id.substr(0,data.node.id.length-2));
+            this.props.fetchBranchesData(this.getProjectId(data));
+            this.loadBuildList(data);
         }
+    }
+
+    loadBuildList(selectNode){
+        const {getBuildList, form} = this.props;
+        let branchName = form.getFieldValue('branchName');
+        if (!branchName){
+            branchName = 'dev';
+        }
+        getBuildList(this.getProjectId(selectNode), this.getJobName(selectNode, branchName));
     }
 
     getDataSource(list){
@@ -165,23 +186,52 @@ class ProjectBuildHistory extends React.Component{
         return statusClass;
     }
 
-    loadBuildList(){
-        const {selectNode, getBuildList} = this.props;
-        if (selectNode && selectNode.isProject){
-            getBuildList(selectNode.node.id.substr(0,selectNode.node.id.length-2));
-        }
+    getJobName(selectNode, branchName){
+        let jobName = selectNode.node.name.substr(selectNode.node.name.lastIndexOf('/')+1);
+        jobName = jobName + '-' + selectNode.node.id.substr(0,selectNode.node.id.length-2);
+        jobName = jobName + '_' + branchName;
+        return jobName;
     }
 
+    getProjectId(selectNode){
+        return selectNode.node.id.substr(0,selectNode.node.id.length-2);
+    }
+
+    changeBranch(e){
+        const {selectNode, getBuildList} = this.props;
+        getBuildList(this.getProjectId(selectNode), this.getJobName(selectNode, e.target.value));
+    }
+
+
     render(){
-        const {selectNode, buildList} = this.props;
-        const action = (selectNode&&selectNode.isProject && buildList)?
-            (<Button type="primary" size="default" onClick={this.loadBuildList.bind(this)}>刷新</Button>
+        const {selectNode, buildList, branches} = this.props;
+        const {getFieldDecorator, getFieldError, getFieldValue} = this.props.form;
+        let branchList = [];
+        if (branches){
+            branchList = branches.branch.map((value, index) => {
+                return <Radio key={value} value={value}>{value}</Radio>
+            });
+        }
+        const action = (selectNode&&selectNode.isProject)?
+            (<Button type="primary" size="default" onClick={this.loadBuildList.bind(this, selectNode)}>刷新</Button>
             ):(<div/>);
         return (
             <Box title="最近5次编译发布情况" action={action}>
-                {(selectNode&&selectNode.isProject && buildList)?(
+                {(selectNode&&selectNode.isProject && branches)?(
+                    <Form horizontal>
+                        <FormItem labelCol={{span: 3}} wrapperCol={{span: 20}} label="项目代码分支">
+                            {getFieldDecorator('branchName',
+                                {rules:[{required:false, message:'请选择项目代码分支'}],initialValue: 'dev'})(
+                                <RadioGroup style={{paddingRight:10}} onChange={this.changeBranch.bind(this)}>
+                                    {branchList}
+                                </RadioGroup>
+                            )}
+                        </FormItem>
+                    </Form>
+                    ):(<div/>)}
+                {(selectNode&&selectNode.isProject)?(
                     <div id="mytable">
-                        <Table columns={this.getColumns.bind(this,buildList.stages)()} dataSource={this.getDataSource(buildList.data)}
+                        <Table columns={this.getColumns.bind(this,buildList?buildList.stages:null)()} dataSource={this.getDataSource(buildList?buildList.data:null)}
                                loading={buildList && buildList.isLoading}
                                pagination={false}
                         >
@@ -216,14 +266,16 @@ ProjectBuildHistory = Form.create()(ProjectBuildHistory);
 function mapStateToProps(state) {
     return {
         selectNode: state.getGroupTree.selectNode,
-        buildList: state.projectCompile.buildList
+        buildList: state.projectCompile.buildList,
+        branches:state.branch.branchesData
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getBuildList: bindActionCreators(getBuildList, dispatch),
-        getCodeChanges: bindActionCreators(getCodeChanges, dispatch)
+        getCodeChanges: bindActionCreators(getCodeChanges, dispatch),
+        fetchBranchesData:bindActionCreators(fetchBranchesData, dispatch),
     }
 }
 
