@@ -177,13 +177,13 @@ class ProjectCompile2 extends React.Component{
         form.validateFieldsAndScroll((errors, values) => {
             if (!errors) {
                 const deployConfigs = form.getFieldValue('deployConfigs');
-                let allValid = true;
-                let deployConfigDetails = [];
-                if (deployConfigs){
-                    deployConfigs.map((value, index) => {
-                        const form = this.refs['deployConfig'+value].refs.wrappedComponent.props.form;
-                        form.validateFieldsAndScroll((errors, values) => {
-                            if (!errors) {
+                            let allValid = true;
+                            let deployConfigDetails = [];
+                            if (deployConfigs){
+                                deployConfigs.map((value, index) => {
+                                    const form = this.refs['deployConfig'+value].refs.wrappedComponent.props.form;
+                                    form.validateFieldsAndScroll((errors, values) => {
+                                        if (!errors) {
                                 deployConfigDetails.push(form.getFieldsValue());
                             }else{
                                 allValid =false;
