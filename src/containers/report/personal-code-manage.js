@@ -122,7 +122,7 @@ class PersonalCodeManageReport extends Component {
                 },{name:'修改函数数量',
                     barCategoryGap  : 10,
                     type:'bar',
-                    data:this.props.reportData?this.props.reportData.map(data => data.funtion_num):[]
+                    data:this.props.reportData?this.props.reportData.map(data => data.function_num):[]
                 },
                 {
                     name:'新增类数量',
@@ -179,7 +179,6 @@ class PersonalCodeManageReport extends Component {
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const member = matchMember?matchMember.map(data => <Option key={data.userId}>{data.name}</Option>):[];
         const loading = this.props.loading?this.props.loading:false;
-        console.log("projectId:",projectId)
 
         if(projectId) {
             return(

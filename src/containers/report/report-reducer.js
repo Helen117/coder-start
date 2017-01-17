@@ -17,34 +17,34 @@ export default function report(state={}, action = {}) {
             return {...state, member: action.payload,getMemberDataPending:false};
         case 'FETCH_MEMBER_ERROR':
             return {...state, member:null,getMemberDataPending:false,getMemberDataError:action.payload.errorMsg};
-
+        //团队缺陷分析报表
         case 'FETCH_MEMBER_RATE_PENDING':
             return {...state, getMemberRatePending:true,memberRate:null};
         case 'FETCH_MEMBER_RATE_SUCCESS':
-            return {...state, memberRate: action.payload,getMemberRatePending:false};
+            return {...state, memberRate: action.payload,condition_teamdefet:action.meta,getMemberRatePending:false};
         case 'FETCH_MEMBER_RATE_ERROR':
-            return {...state, memberRate:null,getMemberRatePending:false,getMemberRateError:action.payload.errorMsg};
-
+            return {...state, memberRate:null,condition_teamdefet:action.meta,getMemberRatePending:false,getMemberRateError:action.payload.errorMsg};
+        //团队中成员每日的需求完成情况
         case 'FETCH_MEMBER_DEMAND_COMPLETE_PENDING':
             return {...state, getMemberDemandCompletePending:true,memberDemandComplete:null};
         case 'FETCH_MEMBER_DEMAND_COMPLETE_SUCCESS':
-            return {...state, memberDemandComplete: action.payload,getMemberDemandCompletePending:false};
+            return {...state, memberDemandComplete: action.payload,condition_memberdemond:action.meta,getMemberDemandCompletePending:false};
         case 'FETCH_MEMBER_DEMAND_COMPLETE_ERROR':
-            return {...state, memberDemandComplete:null,getMemberDemandCompletePending:false,getMemberDemandCompleteError:action.payload.errorMsg};
-
+            return {...state, memberDemandComplete:null,condition_memberdemond:action.meta,getMemberDemandCompletePending:false,getMemberDemandCompleteError:action.payload.errorMsg};
+        //多个团队横向比较每日需求完成情况分布
         case 'FETCH_TEAM_DEMAND_COMPLETE_PENDING':
             return {...state, getTeamDemandCompletePending:true,teamDemandComplete:null};
         case 'FETCH_TEAM_DEMAND_COMPLETE_SUCCESS':
-            return {...state, teamDemandComplete: action.payload,getTeamDemandCompletePending:false};
+            return {...state, teamDemandComplete: action.payload,condition_teamdemond:action.meta,getTeamDemandCompletePending:false};
         case 'FETCH_TEAM_DEMAND_COMPLETE_ERROR':
-            return {...state, teamDemandComplete:null,getTeamDemandCompletePending:false,getTeamDemandCompleteError:action.payload.errorMsg};
-
+            return {...state, teamDemandComplete:null,condition_teamdemond:action.meta,getTeamDemandCompletePending:false,getTeamDemandCompleteError:action.payload.errorMsg};
+        //横向对多个团队的情况进行对比分析
         case 'FETCH_TEAM_STATISTICS_PENDING':
             return {...state, getTeamStatisticsPending:true,teamStatistics:null};
         case 'FETCH_TEAM_STATISTICS_SUCCESS':
-            return {...state, teamStatistics: action.payload,getTeamStatisticsPending:false};
+            return {...state, teamStatistics: action.payload,condition_teamStatistics:action.meta,getTeamStatisticsPending:false};
         case 'FETCH_TEAM_STATISTICS_ERROR':
-            return {...state, teamStatistics:null,getTeamStatisticsPending:false,getTeamStatisticsError:action.payload.errorMsg};
+            return {...state, teamStatistics:null,condition_teamStatistics:action.meta,getTeamStatisticsPending:false,getTeamStatisticsError:action.payload.errorMsg};
         //管理视角统计报表数据
         case 'FETCH_DEMAND_STATISTICS_PENDING':
             return {...state, getDemandStatisticsPending:true,demandStatistics:null};
@@ -52,13 +52,13 @@ export default function report(state={}, action = {}) {
             return {...state, demandStatistics: action.payload,condition_worksheet:action.meta,getDemandStatisticsPending:false};
         case 'FETCH_DEMAND_STATISTICS_ERROR':
             return {...state, demandStatistics:null,condition_worksheet:action.meta,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
-
+        //从团队leader视角展示当前团队中开发及测试人员整体情况
         case 'FETCH_DEVELOPER_TESTER_REPORT_PENDING':
             return {...state, getDeveloperTesterDataPending:true,developerTesterData:null};
         case 'FETCH_DEVELOPER_TESTER_REPORT_SUCCESS':
-            return {...state, developerTesterData: action.payload,getDeveloperTesterDataPending:false};
+            return {...state, developerTesterData: action.payload,condition_developerTester:action.meta,getDeveloperTesterDataPending:false};
         case 'FETCH_DEVELOPER_TESTER_REPORT_ERROR':
-            return {...state, developerTesterData:null,getDeveloperTesterDataPending:false,getDeveloperTesterDataError:action.payload.errorMsg};
+            return {...state, developerTesterData:null,condition_developerTester:action.meta,getDeveloperTesterDataPending:false,getDeveloperTesterDataError:action.payload.errorMsg};
 
         case 'FETCH_MEMBER_CURRENT_WORK_PENDING':
             return {...state, getMemberCurrentWorkPending:true,memberCurrentWork:null};
@@ -82,9 +82,15 @@ export default function report(state={}, action = {}) {
             return {...state, personalCodeManage:null,condition_personal:action.meta,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
         //重置报表数据为[]，查询条件为null
         case 'RESET_REPORT_DATA':
-            return {...state, reportData: action.meta,demandStatistics:action.meta,
-                condition_business:null,condition_worksheet:null,personalCodeManage:action.meta,
-                condition_personal:null};
+            return {...state,
+                reportData: action.meta,condition_business:null,
+                demandStatistics:action.meta,condition_worksheet:null,
+                personalCodeManage:action.meta,condition_personal:null,
+                memberRate:action.meta,condition_teamdefet:null,
+                memberDemandComplete:action.meta,condition_memberdemond:null,
+                teamDemandComplete:action.meta,condition_teamdemond:null,
+                teamStatistics:action.meta,condition_teamStatistics:null,
+                developerTesterData:action.meta,condition_developerTester:null};
 
         case 'FETCH_GROUPS_PENDING':
             return {...state, getGroupsPending:true,groups:null};
