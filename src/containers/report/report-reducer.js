@@ -6,7 +6,7 @@ export default function report(state={}, action = {}) {
         case 'FETCH_REPORT_DATA_PENDING':
             return {...state, getReportDataPending:true,reportData:null};
         case 'FETCH_REPORT_DATA_SUCCESS':
-            return {...state, reportData: action.payload,getReportDataPending:false};
+            return {...state, reportData: action.payload,selectedMilestoneId_require:action.meta,getReportDataPending:false};
         case 'FETCH_REPORT_DATA_ERROR':
             return {...state, reportData:null,getReportDataPending:false,getReportDataError:action.payload.errorMsg};
 
@@ -48,7 +48,7 @@ export default function report(state={}, action = {}) {
             case 'FETCH_DEMAND_STATISTICS_PENDING':
             return {...state, getDemandStatisticsPending:true,demandStatistics:null};
         case 'FETCH_DEMAND_STATISTICS_SUCCESS':
-            return {...state, demandStatistics: action.payload,getDemandStatisticsPending:false};
+            return {...state, demandStatistics: action.payload,selectedMilestoneId_worksheet:action.meta,getDemandStatisticsPending:false};
         case 'FETCH_DEMAND_STATISTICS_ERROR':
             return {...state, demandStatistics:null,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
 
@@ -79,7 +79,8 @@ export default function report(state={}, action = {}) {
             return {...state, personalCodeManage: action.payload,getPersonalCodeManagePending:false};
         case 'FETCH_PERSONAL_CODE_MANAGE_ERROR':
             return {...state, personalCodeManage:null,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
-
+        case 'RESET_REPORT_DATA':
+            return {...state, reportData: action.meta};
         default:
             return state;
     }

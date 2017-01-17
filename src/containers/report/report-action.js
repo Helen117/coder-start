@@ -11,7 +11,8 @@ export function fetchReportData(milestoneId) {
                     id: milestoneId,
                 }
             })
-        }
+        },
+        meta:milestoneId
     }
 }
 
@@ -78,7 +79,8 @@ export function fetchDemandStatistics(milestoneId) {
                     milestone_id: milestoneId
                 }
             })
-        }
+        },
+        meta:milestoneId
     }
 }
 
@@ -143,5 +145,12 @@ export function fetchMemberInfo(milestoneId) {
                 }
             })
         }
+    }
+}
+
+export function resetReportData(resetData) {
+    return {
+        type: 'RESET_REPORT_DATA',
+        meta: resetData
     }
 }
