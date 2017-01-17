@@ -69,11 +69,10 @@ export default function request(state = initialState, action = {}) {
 
         //get developer workload
         case 'GET_DEVELOPER_WORKLOAD_PENDING':
+        case 'GET_DEVELOPER_WORKLOAD_ERROR':
             return {...state, developerWorkloder: null};
         case 'GET_DEVELOPER_WORKLOAD_SUCCESS':
             return {...state, developerWorkloder: action.payload};
-        case 'GET_DEVELOPER_WORKLOAD_ERROR':
-            return {...state, developerWorkloder: null};
 
             
         //get tester workload
@@ -86,11 +85,11 @@ export default function request(state = initialState, action = {}) {
 
         //get request state
         case 'GET_REQUEST_STATE_PENDING':
+        case 'GET_REQUEST_STATE_ERROR':
             return {...state, requestState: null};
         case 'GET_REQUEST_STATE_SUCCESS':
             return {...state, requestState: action.payload};
-        case 'GET_REQUEST_STATE_ERROR':
-            return {...state, requestState: null};
+
 
         //put query condition into state
         case 'REQUEST_QUERY_CONDITION':

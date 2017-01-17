@@ -20,17 +20,21 @@ class SelectedProInfo extends Component {
     }
 
     isEmptyObject(obj){
-        for(var key in obj){
-            if (obj.hasOwnProperty(key)) {
-                return false;
+        if(obj){
+            for(var key in obj){
+                if (obj.hasOwnProperty(key)) {
+                    return false;
+                }
             }
+        }else {
+            return true;
         }
-        return true;
+
     }
 
     componentDidMount() {
-        const {selectedItemInfo} = this.props
-        if(!this.isEmptyObject(this.props.projectInfo) && selectedItemInfo) {
+        const {selectedItemInfo,projectInfo} = this.props;
+        if(selectedItemInfo && (this.isEmptyObject(projectInfo) || projectInfo.id!=selectedItemInfo.selectedItemId)) {
             const itemId = this.props.selectedItemInfo.id;
             this.callAction(itemId);
         }
