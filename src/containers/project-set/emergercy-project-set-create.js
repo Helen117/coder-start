@@ -127,8 +127,8 @@ class EmergencyProjectSetEdit extends React.Component {
                     <Form horizontal onSubmit={this.handleSubmit.bind(this)} >
 
                         <FormItem {...formItemLayout}  label="紧急项目集合名称" >
-                            {getFieldDecorator('name',{rules:[{ required:true,message:'请填写紧急项目集合名称'}]})
-                            (<Input placeholder="请填写紧急项目集合名称"/>)}
+                            {getFieldDecorator('name',{rules:[{ required:true,message:'请填写紧急项目集合名称'}]})(
+                                <Input placeholder="请填写紧急项目集合名称"/>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="父项目集">
@@ -150,8 +150,8 @@ class EmergencyProjectSetEdit extends React.Component {
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="描述">
-                            {getFieldDecorator('description',{rules: [ { required: true, message:'请输入紧急上线项目集合描述' }]} )
-                            (<Input  type="textarea" rows="5" placeholder="请输入紧急上线项目集合描述 " />)}
+                            {getFieldDecorator('description',{rules: [ { required: true, message:'请输入紧急上线项目集合描述' }]} )(
+                                <Input  type="textarea" rows="5" placeholder="请输入紧急上线项目集合描述 " />)}
                         </FormItem>
 
                         {/*<FormItem  {...formItemLayout} label="计划完成时间">

@@ -170,8 +170,8 @@ class RequirementConditionList extends Component {
                                 <Row gutter={16}>
                                     <Col sm={7}>
                                         <FormItem label="状态" {...formItemLayout}>
-                                            {getFieldDecorator('states')
-                                            (<TreeSelect
+                                            {getFieldDecorator('states')(
+                                                <TreeSelect
                                                 treeDefaultExpandAll
                                                 showCheckedStrategy='SHOW_PARENT'
                                                 treeData = {state}
