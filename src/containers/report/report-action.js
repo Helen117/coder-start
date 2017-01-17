@@ -128,7 +128,7 @@ export function fetchTeamCurrentWork(groupId) {
     }
 }
 
-export function fetchPersonalCodeManage(milestoneId,userId) {
+export function fetchPersonalCodeManage(milestoneId,userId,condition) {
     return {
         type: 'FETCH_PERSONAL_CODE_MANAGE',
         payload: {
@@ -138,7 +138,8 @@ export function fetchPersonalCodeManage(milestoneId,userId) {
                     user_id:userId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
