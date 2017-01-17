@@ -3,12 +3,13 @@
  */
 export default function report(state={}, action = {}) {
     switch (action.type) {
+        //业务范畴报表
         case 'FETCH_REPORT_DATA_PENDING':
             return {...state, getReportDataPending:true,reportData:null};
         case 'FETCH_REPORT_DATA_SUCCESS':
-            return {...state, reportData: action.payload,getReportDataPending:false};
+            return {...state, reportData: action.payload,condition_business:action.meta,getReportDataPending:false};
         case 'FETCH_REPORT_DATA_ERROR':
-            return {...state, reportData:null,getReportDataPending:false,getReportDataError:action.payload.errorMsg};
+            return {...state, reportData:null,condition_business:action.meta,getReportDataPending:false,getReportDataError:action.payload.errorMsg};
 
         case 'FETCH_MEMBER_PENDING':
             return {...state, getMemberDataPending:true,member:null};
@@ -44,13 +45,13 @@ export default function report(state={}, action = {}) {
             return {...state, teamStatistics: action.payload,getTeamStatisticsPending:false};
         case 'FETCH_TEAM_STATISTICS_ERROR':
             return {...state, teamStatistics:null,getTeamStatisticsPending:false,getTeamStatisticsError:action.payload.errorMsg};
-
-            case 'FETCH_DEMAND_STATISTICS_PENDING':
+        //管理视角统计报表数据
+        case 'FETCH_DEMAND_STATISTICS_PENDING':
             return {...state, getDemandStatisticsPending:true,demandStatistics:null};
         case 'FETCH_DEMAND_STATISTICS_SUCCESS':
-            return {...state, demandStatistics: action.payload,getDemandStatisticsPending:false};
+            return {...state, demandStatistics: action.payload,condition_worksheet:action.meta,getDemandStatisticsPending:false};
         case 'FETCH_DEMAND_STATISTICS_ERROR':
-            return {...state, demandStatistics:null,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
+            return {...state, demandStatistics:null,condition_worksheet:action.meta,getDemandStatisticsPending:false,getDemandStatisticsError:action.payload.errorMsg};
 
         case 'FETCH_DEVELOPER_TESTER_REPORT_PENDING':
             return {...state, getDeveloperTesterDataPending:true,developerTesterData:null};
@@ -79,6 +80,10 @@ export default function report(state={}, action = {}) {
             return {...state, personalCodeManage: action.payload,getPersonalCodeManagePending:false};
         case 'FETCH_PERSONAL_CODE_MANAGE_ERROR':
             return {...state, personalCodeManage:null,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
+        //重置报表数据为[]，查询条件为null
+        case 'RESET_REPORT_DATA':
+            return {...state, reportData: action.meta,demandStatistics:action.meta,
+                condition_business:null,condition_worksheet:null};
 
         case 'FETCH_GROUPS_PENDING':
             return {...state, getGroupsPending:true,groups:null};

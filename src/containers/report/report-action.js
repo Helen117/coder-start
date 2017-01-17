@@ -2,7 +2,7 @@
  * Created by helen on 2016/12/27.
  */
 import api from '../../api';
-export function fetchReportData(milestoneId,labelId) {
+export function fetchReportData(milestoneId,labelId,condition) {
     return {
         type: 'FETCH_REPORT_DATA',
         payload: {
@@ -12,7 +12,8 @@ export function fetchReportData(milestoneId,labelId) {
                     label_id_list:labelId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
@@ -81,7 +82,8 @@ export function fetchDemandStatistics(milestoneId) {
                     milestone_id: milestoneId
                 }
             })
-        }
+        },
+        meta:milestoneId
     }
 }
 
@@ -150,6 +152,14 @@ export function fetchMemberInfo(milestoneId) {
                 }
             })
         }
+    }
+}
+
+//重置报表数据为[]
+export function resetReportData(resetData) {
+    return {
+        type: 'RESET_REPORT_DATA',
+        meta: resetData
     }
 }
 

@@ -12,26 +12,42 @@ import * as request from '../request/actions/request-action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+let lastSelectedProjectSet = "";
 
 class manageViewDemandRank extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
         };
     }
 
     componentWillMount(){
         // const { actions } = this.props;
         // actions.fetchReportData();
+        const {form,condition,selectedProjectSet} = this.props;
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
+            lastSelectedProjectSet = selectedProjectSet.id;
+            form.resetFields();
+        }else if(condition && selectedProjectSet.id.indexOf('_g')!=-1){
+            form.setFieldsValue({milestone:condition});
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {request,selectedProjectSet} = this.props;
+        const {request,selectedProjectSet,form,actions} = this.props;
         const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+            if(lastSelectedProjectSet != nextProps.selectedProjectSet.id){
+                request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+                form.resetFields();
+                actions.resetReportData([]);
+                lastSelectedProjectSet = nextProps.selectedProjectSet.id;
+            }else{
+                form.setFieldsValue({milestone:nextProps.condition});
+            }
         }
     }
 
@@ -99,7 +115,7 @@ class manageViewDemandRank extends Component {
             wrapperCol: { span: 12 },
         };
         const {selectedProjectSet,matchMilestone} = this.props;
-        const projectId = selectedProjectSet? selectedProjectSet.id:'';
+        const projectId = selectedProjectSet? (selectedProjectSet.id.indexOf('_g')!=-1?selectedProjectSet.id:''):'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
@@ -169,6 +185,7 @@ function mapStateToProps(state) {
         loading:state.report.getDemandStatisticsPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
+        condition:state.report.condition_worksheet,
     };
 }
 
