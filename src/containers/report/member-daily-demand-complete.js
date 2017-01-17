@@ -9,7 +9,6 @@ import {connect} from 'react-redux';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
 import * as request from '../request/actions/request-action';
-import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,8 +21,8 @@ class memberDailyDemandComplete extends Component {
     }
 
     componentWillMount(){
-        const {loginInfo} = this.props;
-        this.props.getUserRelationTree(loginInfo.userId);
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -33,6 +32,12 @@ class memberDailyDemandComplete extends Component {
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
             request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+        }
+    }
+
+    componentWillUpdate(){
+        if (!this.props.reportData&&this.refs.echarts){
+            this.refs.echarts.getEchartsInstance().clear();
         }
     }
 
@@ -75,7 +80,7 @@ class memberDailyDemandComplete extends Component {
                     type : 'value'
                 }
             ],
-            series : this.props.reportData?this.props.reportData.map(data =>{return{
+            series : this.props.reportData&&this.props.reportData.length>0?this.props.reportData.map(data =>{return{
                 name:data.name,
                 symbolSize:10,
                 type:'line',
@@ -104,12 +109,12 @@ class memberDailyDemandComplete extends Component {
             labelCol: { span: 8 },
             wrapperCol: { span: 14 },
         };
-        const {selectedProjectSet,matchMilestone,team} = this.props;
+        const {selectedProjectSet,matchMilestone,groups} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
-        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         if(projectId) {
             return(
@@ -139,7 +144,7 @@ class memberDailyDemandComplete extends Component {
                                                 optionFilterProp="children"
                                                 notFoundContent="无法找到"
                                                 style={{width: '200px'}}>
-                                            {groups}
+                                            {groupsInfo}
                                         </Select>)
                                     }
                                 </FormItem>
@@ -150,6 +155,7 @@ class memberDailyDemandComplete extends Component {
                         </Row>
                     </Form>
                     <ReactEcharts
+                        ref="echarts"
                         option={this.getOption()}
                         style={{height: '350px', width: '100%'}}
                         theme="my_theme"
@@ -178,7 +184,7 @@ function mapStateToProps(state) {
         reportData:state.report.memberDemandComplete,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
-        team:state.UserRelation.getUserRelationTree,
+        groups:state.report.groups,
     };
 }
 
@@ -186,7 +192,6 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
         request : bindActionCreators(request,dispatch),
-        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
     }
 }
 
