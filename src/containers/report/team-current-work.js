@@ -3,11 +3,14 @@
  */
 import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
+import { Form,Select,Alert,Col,Row,Button} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
 
+const FormItem = Form.Item;
+const Option = Select.Option;
 class TeamCurrentWork extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +19,8 @@ class TeamCurrentWork extends Component {
     }
 
     componentWillMount(){
-        this.props.actions.fetchTeamCurrentWork();
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentDidMount(){
@@ -25,6 +29,19 @@ class TeamCurrentWork extends Component {
 
     componentWillReceiveProps(nextProps) {
 
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const {actions,form} = this.props;
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = form.getFieldsValue();
+                actions.fetchTeamCurrentWork(data.group);
+            }
+        })
     }
 
 
@@ -100,9 +117,33 @@ class TeamCurrentWork extends Component {
     }
 
     render() {
-
+        const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: { span: 14 },
+            wrapperCol: { span: 8 },
+        };
+        const {groups} = this.props;
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
         return(
             <Box title="多个团队当前工作情况比较">
+                <Form horizontal  >
+                    <Row gutter={16}>
+                        <Col sm={12}>
+                            <FormItem label="团队名称" {...formItemLayout}>
+                                {getFieldDecorator('group',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
+                                    <Select multiple
+                                            placeholder="请选择团队"
+                                            style={{width: '200px'}}>
+                                        {groupsInfo}
+                                    </Select>)
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col sm={12}>
+                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>查询</Button>
+                        </Col>
+                    </Row>
+                </Form>
                 <ReactEcharts
                     option={this.getOption()}
                     style={{height: '350px', width: '100%'}}
@@ -113,10 +154,14 @@ class TeamCurrentWork extends Component {
     }
 }
 
+TeamCurrentWork = Form.create()(TeamCurrentWork);
+
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
+        loginInfo:state.login.profile,
         reportData:state.report.teamCurrentWork,
+        groups:state.report.groups,
     };
 }
 

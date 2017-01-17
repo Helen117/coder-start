@@ -9,7 +9,6 @@ import { Row,Col,Form,Select,Button,Alert} from 'antd';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
 import Pie from '../../components/echarts-report/pie';
-import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 import * as request from '../request/actions/request-action';
 
 const FormItem = Form.Item;
@@ -23,8 +22,8 @@ class TeamMemberDemandProportion extends Component {
     }
 
     componentWillMount(){
-        const {loginInfo} = this.props;
-        this.props.getUserRelationTree(loginInfo.userId);
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -56,12 +55,12 @@ class TeamMemberDemandProportion extends Component {
             labelCol: { span: 8 },
             wrapperCol: { span: 14 },
         };
-        const {selectedProjectSet,matchMilestone,team} = this.props;
+        const {selectedProjectSet,matchMilestone,groups} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone&&matchMilestone.length>0?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
-        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         const member = this.props.memberRate?this.props.memberRate.map(data => data.username):[];
         const demand = this.props.memberRate?this.props.memberRate.map(data =>{
@@ -99,7 +98,7 @@ class TeamMemberDemandProportion extends Component {
                                             optionFilterProp="children"
                                             notFoundContent="无法找到"
                                             style={{width: '200px'}}>
-                                        {groups}
+                                        {groupsInfo}
                                     </Select>)
                                 }
                             </FormItem>
@@ -153,14 +152,13 @@ function mapStateToProps(state) {
         matchMilestone: state.request.matchMilestone,
         matchMember: state.report.member,
         selectedProjectSet: state.projectSet.selectedProjectSet,
-        team:state.UserRelation.getUserRelationTree,
+        groups:state.report.groups,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
-        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
         request : bindActionCreators(request,dispatch),
     }
 }

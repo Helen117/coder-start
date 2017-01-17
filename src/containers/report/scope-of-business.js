@@ -5,9 +5,10 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert} from 'antd';
+import { Form,Select,Alert,Row,Col,Button} from 'antd';
 import * as reportActions from './report-action';
 import * as request from '../request/actions/request-action';
+import {getLabelInfo} from '../label/actions/label-action';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
@@ -21,7 +22,7 @@ class BusinessDemandStatistics extends Component {
     }
 
     componentWillMount(){
-
+       this.props.getLabelInfo();
     }
 
     componentDidMount(){
@@ -38,12 +39,12 @@ class BusinessDemandStatistics extends Component {
         }
     }
 
-    fetchData(value){
-        const { actions } = this.props;
-        if(value){
-            actions.fetchReportData(value);
-        }
-    }
+    // fetchData(value){
+    //     const { actions } = this.props;
+    //     if(value){
+    //         actions.fetchReportData(value);
+    //     }
+    // }
 
     getOption() {
         const option = {
@@ -116,34 +117,66 @@ class BusinessDemandStatistics extends Component {
         return option;
     }
 
+    handleSubmit(e) {
+        e.preventDefault();
+        const {actions,form} = this.props;
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = form.getFieldsValue();
+                actions.fetchReportData(data.milestone,data.business);
+            }
+        })
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 10 },
-            wrapperCol: { span: 12 },
+            labelCol: { span: 8 },
+            wrapperCol: { span: 16 },
         };
-        const {selectedProjectSet,matchMilestone} = this.props;
+        const {selectedProjectSet,matchMilestone,label} = this.props;
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+
+        const labelInfo = label?label.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         if(projectId) {
             return(
                 <Box title="从业务范畴视角查看一个里程碑中的需求执行情况">
                     <Form horizontal  >
+                        <Row gutter={16}>
+                            <Col sm={8}>
                         <FormItem label="里程碑" {...formItemLayout}>
-                            {getFieldDecorator('milestone')(
+                            {getFieldDecorator('milestone',{rules:[{ required:true,message:'不能为空'}]})(
                                 <Select showSearch
                                         showArrow={false}
                                         placeholder="请选择一个里程碑"
                                         optionFilterProp="children"
                                         notFoundContent="无法找到"
-                                        onSelect={this.fetchData.bind(this)}
                                         style={{width: '200px'}}>
                                     {milestone}
                                 </Select>)
                             }
                         </FormItem>
+                            </Col>
+                            <Col sm={8}>
+                                <FormItem label="业务范畴" {...formItemLayout}>
+                                    {getFieldDecorator('business',{rules:[{ required:true,type:'array',message:'不能为空'}]})(
+                                        <Select multiple
+                                                placeholder="请选择业务范畴"
+                                                style={{width: '200px'}}>
+                                            {labelInfo}
+                                        </Select>)
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col sm={8}>
+                                <Button type="primary" onClick={this.handleSubmit.bind(this)}>查询</Button>
+                            </Col>
+                            </Row>
                     </Form>
                     <ReactEcharts
                         option={this.getOption()}
@@ -174,6 +207,7 @@ function mapStateToProps(state) {
         loading:state.report.getReportDataPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
+        label: state.label.labelInfo,
     };
 }
 
@@ -181,6 +215,7 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
         request : bindActionCreators(request,dispatch),
+        getLabelInfo : bindActionCreators(getLabelInfo,dispatch)
     }
 }
 
