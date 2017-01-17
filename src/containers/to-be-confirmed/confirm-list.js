@@ -52,8 +52,11 @@ class ConfirmList extends Component {
                 confirmList[i].due_date = new Date(confirmList[i].due_date).toLocaleDateString();
                 if (confirmList[i].type == 'demand') {
                     confirmList[i].type = '需求';
+                }else if (confirmList[i].type == 'defect') {
+                        confirmList[i].type = '缺陷';
                 }
             }
+
         }
         return confirmList;
     }

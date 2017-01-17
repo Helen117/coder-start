@@ -84,30 +84,11 @@ class MergeRequestList extends React.Component {
                         <p>git clone -b dev {this.props.project.getProjectInfo.projectInfo.sshUrl}</p>
                     </div>
 
-                    {/*<p>2. 进入上一步骤克隆项目的根目录，追踪远程仓库的dev分支，并基于远程dev分支创建并切换到本地的revert_branch分支 :</p>*/}
-                    {/*<div>*/}
-                        {/*<p>git fetch {this.props.project.getProjectInfo.projectInfo.sshUrl} {record.target_branch}</p>*/}
-                        {/*<p>git checkout -b revert_branch FETCH_HEAD</p>*/}
-                    {/*</div>*/}
                     <p>2. 进入上一步骤克隆项目的根目录，查看本次代码合并包含的信息，若包含多条信息继续用git log命令进行查看: </p>
                     <div> git log {record.sha.substring(0,6)} -1</div>
 
-
                     <p>3. 根据上述查找的需要操作记录的commitId回退代码，并解决冲突: </p>
                     <div> git revert -n commitId </div>
-                    {/*<div>注若提示错误：<br/>
-                        error: Commit {record.sha.substring(0,6)} is a merge but no -m option was given.<br/>
-                        fatal: revert failed<br/>
-                        则执行命令：<br/>
-                        git log {record.sha.substring(0,6)} -1<br/>
-                        该命令显示当前提交包含的
-                    </div>
-
-                    <p>4. 将回退修改后的代码合并到master分支:</p>
-                    <div>
-                        <p>git checkout master</p>
-                        <p>git merge --no-ff revert_branch</p>
-                    </div>*/}
 
                     <p>4. 提交代码并推送到个人的远程仓库myDistanceRepositoryName:</p>
                     <div>git commit -m '回退代码的原因'</div>

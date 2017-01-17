@@ -112,7 +112,7 @@ class EmergencyProjectSetEdit extends React.Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        let projectSetOption = [],initParent='';
+        let projectSetOption = [],initParent=null;
         if(selectedItemInfo && selectedItemInfo.id.indexOf('_g')>= 0){
             initParent = this.props.selectedItemInfo.selectedItemId;
         }
