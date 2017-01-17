@@ -25,6 +25,7 @@ class BusinessDemandStatistics extends Component {
     }
 
     componentWillMount(){
+        this.props.getLabelInfo();
         const {form,condition,selectedProjectSet} = this.props;
         if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
             lastSelectedProjectSet = selectedProjectSet.id;
@@ -46,7 +47,6 @@ class BusinessDemandStatistics extends Component {
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
             if(lastSelectedProjectSet != nextProps.selectedProjectSet.id){
                 request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
-                this.props.getLabelInfo();
                 form.resetFields();
                 actions.resetReportData([]);
                 lastSelectedProjectSet = nextProps.selectedProjectSet.id;

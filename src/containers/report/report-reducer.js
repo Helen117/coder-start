@@ -73,17 +73,18 @@ export default function report(state={}, action = {}) {
             return {...state, teamCurrentWork: action.payload,getTeamCurrentWorkPending:false};
         case 'FETCH_TEAM_CURRENT_WORK_ERROR':
             return {...state, teamCurrentWork:null,getTeamCurrentWorkPending:false,getTeamCurrentWorkError:action.payload.errorMsg};
-
+        //个人代码管理视角数据和查询条件
         case 'FETCH_PERSONAL_CODE_MANAGE_PENDING':
             return {...state, getPersonalCodeManagePending:true,personalCodeManage:null};
         case 'FETCH_PERSONAL_CODE_MANAGE_SUCCESS':
-            return {...state, personalCodeManage: action.payload,getPersonalCodeManagePending:false};
+            return {...state, personalCodeManage: action.payload,condition_personal:action.meta,getPersonalCodeManagePending:false};
         case 'FETCH_PERSONAL_CODE_MANAGE_ERROR':
-            return {...state, personalCodeManage:null,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
+            return {...state, personalCodeManage:null,condition_personal:action.meta,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
         //重置报表数据为[]，查询条件为null
         case 'RESET_REPORT_DATA':
             return {...state, reportData: action.meta,demandStatistics:action.meta,
-                condition_business:null,condition_worksheet:null};
+                condition_business:null,condition_worksheet:null,personalCodeManage:action.meta,
+                condition_personal:null};
 
         case 'FETCH_GROUPS_PENDING':
             return {...state, getGroupsPending:true,groups:null};
