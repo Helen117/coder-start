@@ -5,11 +5,12 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert,Row,Col,Button} from 'antd';
+import { Form,Select,Alert,Row,Col,Button,Spin} from 'antd';
 import * as reportActions from './report-action';
 import * as request from '../request/actions/request-action';
 import {getLabelInfo} from '../label/actions/label-action';
 import Box from '../../components/box';
+import DisplayOfNone from '../../components/display-of-none';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -24,14 +25,13 @@ class BusinessDemandStatistics extends Component {
     }
 
     componentWillMount(){
-        const {form,selectedMilestoneId,selectedProjectSet} = this.props;
+        const {form,condition,selectedProjectSet} = this.props;
         if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
             lastSelectedProjectSet = selectedProjectSet.id;
             form.resetFields();
-        }else if(selectedMilestoneId && selectedProjectSet.id.indexOf('_g')!=-1){
-            form.setFieldsValue({milestone:selectedMilestoneId});
+        }else if(condition && selectedProjectSet.id.indexOf('_g')!=-1){
+            form.setFieldsValue(condition);
         }
-       this.props.getLabelInfo();
     }
 
     componentDidMount(){
@@ -46,11 +46,12 @@ class BusinessDemandStatistics extends Component {
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
             if(lastSelectedProjectSet != nextProps.selectedProjectSet.id){
                 request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+                this.props.getLabelInfo();
                 form.resetFields();
                 actions.resetReportData([]);
                 lastSelectedProjectSet = nextProps.selectedProjectSet.id;
             }else{
-                form.setFieldsValue({milestone:nextProps.selectedMilestoneId});
+                form.setFieldsValue(nextProps.condition);
             }
         }
     }
@@ -141,7 +142,7 @@ class BusinessDemandStatistics extends Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                actions.fetchReportData(data.milestone,data.business);
+                actions.fetchReportData(data.milestone,data.business,data);
             }
         })
     }
@@ -155,8 +156,9 @@ class BusinessDemandStatistics extends Component {
 
         const {selectedProjectSet,matchMilestone,label} = this.props;
         const projectId = selectedProjectSet? (selectedProjectSet.id.indexOf('_g')!=-1?selectedProjectSet.id:''):'';
-       const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
-       const labelInfo = label?label.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const labelInfo = label?label.map(data => <Option key={data.id}>{data.title}</Option>):[];
+        const loading = this.props.loading?this.props.loading:false;
 
         if(projectId) {
             return(
@@ -193,11 +195,13 @@ class BusinessDemandStatistics extends Component {
                             </Col>
                             </Row>
                     </Form>
-                    <ReactEcharts
-                        option={this.getOption()}
-                        style={{height: '350px', width: '100%'}}
-                        theme="my_theme"
-                    />
+                    <Spin spinning={loading} tip="正在加载数据...">
+                        {(this.props.reportData && this.props.reportData.length>0)?<ReactEcharts
+                            option={this.getOption()}
+                            style={{height: '350px', width: '100%'}}
+                            theme="my_theme"
+                        />:<DisplayOfNone/>}
+                    </Spin>
                 </Box>
             );
         }else{
@@ -222,7 +226,7 @@ function mapStateToProps(state) {
         loading:state.report.getReportDataPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
-        selectedMilestoneId:state.report.selectedMilestoneId_require,
+        condition:state.report.condition_business,
         label: state.label.labelInfo,
     };
 }

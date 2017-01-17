@@ -25,9 +25,12 @@ class manageViewDemandRank extends Component {
     componentWillMount(){
         // const { actions } = this.props;
         // actions.fetchReportData();
-        const {form,selectedMilestoneId} = this.props;
-        if(selectedMilestoneId){
-            form.setFieldsValue({milestone:selectedMilestoneId});
+        const {form,condition,selectedProjectSet} = this.props;
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
+            lastSelectedProjectSet = selectedProjectSet.id;
+            form.resetFields();
+        }else if(condition && selectedProjectSet.id.indexOf('_g')!=-1){
+            form.setFieldsValue({milestone:condition});
         }
     }
 
@@ -43,7 +46,7 @@ class manageViewDemandRank extends Component {
                 actions.resetReportData([]);
                 lastSelectedProjectSet = nextProps.selectedProjectSet.id;
             }else{
-                form.setFieldsValue({milestone:nextProps.selectedMilestoneId});
+                form.setFieldsValue({milestone:nextProps.condition});
             }
         }
     }
@@ -182,7 +185,7 @@ function mapStateToProps(state) {
         loading:state.report.getDemandStatisticsPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
-        selectedMilestoneId:state.report.selectedMilestoneId_worksheet,
+        condition:state.report.condition_worksheet,
     };
 }
 

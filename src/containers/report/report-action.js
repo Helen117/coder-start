@@ -2,7 +2,7 @@
  * Created by helen on 2016/12/27.
  */
 import api from '../../api';
-export function fetchReportData(milestoneId,labelId) {
+export function fetchReportData(milestoneId,labelId,condition) {
     return {
         type: 'FETCH_REPORT_DATA',
         payload: {
@@ -13,7 +13,7 @@ export function fetchReportData(milestoneId,labelId) {
                 }
             })
         },
-        meta:milestoneId
+        meta:condition
     }
 }
 
@@ -155,7 +155,7 @@ export function fetchMemberInfo(milestoneId) {
     }
 }
 
-
+//重置报表数据为[]
 export function resetReportData(resetData) {
     return {
         type: 'RESET_REPORT_DATA',
