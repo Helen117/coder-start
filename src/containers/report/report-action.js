@@ -17,7 +17,7 @@ export function fetchReportData(milestoneId,labelId,condition) {
     }
 }
 
-export function fetchTeamMemberDemandProportion(milestoneId,groupId) {
+export function fetchTeamMemberDemandProportion(milestoneId,groupId,condition) {
     return {
         type: 'FETCH_MEMBER_RATE',
         payload: {
@@ -27,11 +27,12 @@ export function fetchTeamMemberDemandProportion(milestoneId,groupId) {
                     group_id:groupId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
-export function fetchTeamMemberDemandComplete(milestoneId,groupId) {
+export function fetchTeamMemberDemandComplete(milestoneId,groupId,condition) {
     return {
         type: 'FETCH_MEMBER_DEMAND_COMPLETE',
         payload: {
@@ -41,11 +42,12 @@ export function fetchTeamMemberDemandComplete(milestoneId,groupId) {
                     group_id:groupId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
-export function fetchTeamDemandComplete(milestoneId,groupId) {
+export function fetchTeamDemandComplete(milestoneId,groupId,condition) {
     return {
         type: 'FETCH_TEAM_DEMAND_COMPLETE',
         payload: {
@@ -55,11 +57,12 @@ export function fetchTeamDemandComplete(milestoneId,groupId) {
                     group_id_list:groupId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
-export function fetchTeamStatistics(milestoneId,groupId) {
+export function fetchTeamStatistics(milestoneId,groupId,condition) {
     return {
         type: 'FETCH_TEAM_STATISTICS',
         payload: {
@@ -69,7 +72,8 @@ export function fetchTeamStatistics(milestoneId,groupId) {
                     group_id_list:groupId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
@@ -87,7 +91,7 @@ export function fetchDemandStatistics(milestoneId) {
     }
 }
 
-export function fetchDeveloperTesterReport(milestoneId,groupId,type) {
+export function fetchDeveloperTesterReport(milestoneId,groupId,type,condition) {
     return {
         type: 'FETCH_DEVELOPER_TESTER_REPORT',
         payload: {
@@ -98,7 +102,8 @@ export function fetchDeveloperTesterReport(milestoneId,groupId,type) {
                     type:type
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 

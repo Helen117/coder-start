@@ -5,13 +5,15 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert,Row,Col,Button} from 'antd';
+import { Form,Select,Alert,Row,Col,Button,Spin} from 'antd';
 import * as reportActions from './report-action';
 import * as request from '../request/actions/request-action';
 import Box from '../../components/box';
+import DisplayOfNone from '../../components/display-of-none';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+let lastSelectedProjectSet = "";
 
 class TeamStatistics extends Component {
     constructor(props) {
@@ -23,6 +25,13 @@ class TeamStatistics extends Component {
     componentWillMount(){
         const {actions} = this.props;
         actions.fetchGroupsInfo();
+        const {form,condition,selectedProjectSet} = this.props;
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
+            lastSelectedProjectSet = selectedProjectSet.id;
+            form.resetFields();
+        }else if(condition && selectedProjectSet.id.indexOf('_g')!=-1){
+            form.setFieldsValue(condition);
+        }
     }
 
     componentDidMount(){
@@ -30,12 +39,19 @@ class TeamStatistics extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {request,selectedProjectSet} = this.props;
+        const {request,selectedProjectSet,form,actions} = this.props;
         const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+            if(lastSelectedProjectSet != nextProps.selectedProjectSet.id){
+                request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+                form.resetFields();
+                actions.resetReportData([]);
+                lastSelectedProjectSet = nextProps.selectedProjectSet.id;
+            }else{
+                form.setFieldsValue(nextProps.condition);
+            }
         }
     }
 
@@ -119,7 +135,7 @@ class TeamStatistics extends Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                actions.fetchTeamStatistics(data.milestone,data.group);
+                actions.fetchTeamStatistics(data.milestone,data.group,data);
             }
         })
     }
@@ -131,10 +147,10 @@ class TeamStatistics extends Component {
             wrapperCol: { span: 16 },
         };
         const {selectedProjectSet,matchMilestone,groups} = this.props;
-        const projectId = selectedProjectSet? selectedProjectSet.id:'';
-
+        const projectId = selectedProjectSet? (selectedProjectSet.id.indexOf('_g')!=-1?selectedProjectSet.id:''):'';
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
         const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const loading = this.props.loading?this.props.loading:false;
 
         if(projectId) {
             return(
@@ -171,11 +187,13 @@ class TeamStatistics extends Component {
                             </Col>
                         </Row>
                     </Form>
-                    <ReactEcharts
-                        option={this.getOption()}
-                        style={{height: '350px', width: '100%'}}
-                        theme="my_theme"
-                    />
+                    <Spin spinning={loading} tip="正在加载数据...">
+                        {(this.props.reportData && this.props.reportData.length>0)?<ReactEcharts
+                            option={this.getOption()}
+                            style={{height: '350px', width: '100%'}}
+                            theme="my_theme"
+                        />:<DisplayOfNone/>}
+                    </Spin>
                 </Box>
             );
         }else{
@@ -197,10 +215,12 @@ TeamStatistics = Form.create()(TeamStatistics);
 function mapStateToProps(state) {
     return {
         reportData:state.report.teamStatistics,
+        loading:state.report.getTeamStatisticsPending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
         loginInfo:state.login.profile,
         groups:state.report.groups,
+        condition:state.report.condition_teamStatistics,
     };
 }
 

@@ -5,14 +5,16 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Row,Col,Form,Select,Button,Alert} from 'antd';
+import { Row,Col,Form,Select,Button,Alert,Spin} from 'antd';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
 import Pie from '../../components/echarts-report/pie';
 import * as request from '../request/actions/request-action';
+import DisplayOfNone from '../../components/display-of-none';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+let lastSelectedProjectSet = "";
 
 class TeamMemberDemandProportion extends Component {
     constructor(props) {
@@ -24,15 +26,29 @@ class TeamMemberDemandProportion extends Component {
     componentWillMount(){
         const {actions} = this.props;
         actions.fetchGroupsInfo();
+        const {form,condition,selectedProjectSet} = this.props;
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g')!=-1 && selectedProjectSet.id!=lastSelectedProjectSet){
+            lastSelectedProjectSet = selectedProjectSet.id;
+            form.resetFields();
+        }else if(condition && selectedProjectSet.id.indexOf('_g')!=-1){
+            form.setFieldsValue(condition);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {request,selectedProjectSet} = this.props;
+        const {request,selectedProjectSet,form,actions} = this.props;
         const thisSetId = selectedProjectSet?selectedProjectSet.selectedItemId:'';
         const nextSetId = nextProps.selectedProjectSet?nextProps.selectedProjectSet.selectedItemId:'';
         //点击不同项目集，重新加载数据
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
-            request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+            if(lastSelectedProjectSet != nextProps.selectedProjectSet.id){
+                request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
+                form.resetFields();
+                actions.resetReportData([]);
+                lastSelectedProjectSet = nextProps.selectedProjectSet.id;
+            }else{
+                form.setFieldsValue(nextProps.condition);
+            }
         }
     }
 
@@ -44,7 +60,7 @@ class TeamMemberDemandProportion extends Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                actions.fetchTeamMemberDemandProportion(data.milestone,data.group);
+                actions.fetchTeamMemberDemandProportion(data.milestone,data.group,data);
             }
         })
     }
@@ -56,10 +72,8 @@ class TeamMemberDemandProportion extends Component {
             wrapperCol: { span: 14 },
         };
         const {selectedProjectSet,matchMilestone,groups} = this.props;
-        const projectId = selectedProjectSet? selectedProjectSet.id:'';
-
+        const projectId = selectedProjectSet? (selectedProjectSet.id.indexOf('_g')!=-1?selectedProjectSet.id:''):'';
         const milestone = matchMilestone&&matchMilestone.length>0?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
-
         const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         const member = this.props.memberRate?this.props.memberRate.map(data => data.username):[];
@@ -69,6 +83,8 @@ class TeamMemberDemandProportion extends Component {
         }):[];
         const defect = this.props.memberRate?this.props.memberRate.map(data =>{return{value:data.defect_total,name:data.username}}):[];
         const expired = this.props.memberRate?this.props.memberRate.map(data =>{return{value:data.expired,name:data.username}}): [];
+        const loading = this.props.loading?this.props.loading:false;
+
         if(projectId) {
         return(
             <Box title="从团队leader视角展示当前团队成员的需求、超时工单和缺陷的占比情况分析">
@@ -108,23 +124,28 @@ class TeamMemberDemandProportion extends Component {
                         </Col>
                     </Row>
                 </Form>
-
-                <Row>
-                    <Col span={12}>
-                        <Pie title="需求数量" legend={member} name="需求数量" data={demand}/>
-                    </Col>
-                    <Col span={12} style={{textAlign:'right'}}>
-                        <Pie title="缺陷数量" legend={member} name="缺陷数量" data={defect}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={6}>
-                        </Col>
-                    <Col span={12}>
-                    <Pie title="超时数量" legend={member} name="超时数量" data={expired}  style={{height: '350px', width: '60%'}}
-                    />
-                        </Col>
-                </Row>
+                <Spin spinning={loading} tip="正在加载数据...">
+                    {(this.props.memberRate && this.props.memberRate.length>0)?(
+                        <div>
+                            <Row>
+                                <Col span={12}>
+                                    <Pie title="需求数量" legend={member} name="需求数量" data={demand}/>
+                                </Col>
+                                <Col span={12} style={{textAlign:'right'}}>
+                                    <Pie title="缺陷数量" legend={member} name="缺陷数量" data={defect}/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={6}>
+                                </Col>
+                                <Col span={12}>
+                                    <Pie title="超时数量" legend={member} name="超时数量" data={expired}  style={{height: '350px', width: '60%'}}
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    ):<DisplayOfNone/>}
+                </Spin>
             </Box>
         );
         }else{
@@ -153,6 +174,7 @@ function mapStateToProps(state) {
         matchMember: state.report.member,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         groups:state.report.groups,
+        condition:state.report.condition_teamdefet,
     };
 }
 
