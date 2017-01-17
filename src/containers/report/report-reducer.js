@@ -81,6 +81,13 @@ export default function report(state={}, action = {}) {
             return {...state, personalCodeManage:null,getPersonalCodeManagePending:false,getPersonalCodeManageError:action.payload.errorMsg};
         case 'RESET_REPORT_DATA':
             return {...state, reportData: action.meta};
+        case 'FETCH_GROUPS_PENDING':
+            return {...state, getGroupsPending:true,groups:null};
+        case 'FETCH_GROUPS_SUCCESS':
+            return {...state, groups: action.payload,getGroupsPending:false};
+        case 'FETCH_GROUPS_ERROR':
+            return {...state, groups:null,getGroupsPending:false,getGroupsError:action.payload.errorMsg};
+
         default:
             return state;
     }

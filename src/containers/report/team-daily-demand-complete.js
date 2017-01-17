@@ -9,7 +9,6 @@ import {connect} from 'react-redux';
 import { Form,Select,Alert,Row,Col,Button} from 'antd';
 import * as reportActions from './report-action';
 import * as request from '../request/actions/request-action';
-import {getUserRelationTree} from '../user-relation/actions/user-relation-actions';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
@@ -23,8 +22,8 @@ class TeamDailyDemandStatistics extends Component {
     }
 
     componentWillMount(){
-        const {loginInfo} = this.props;
-        this.props.getUserRelationTree(loginInfo.userId);
+        const {actions} = this.props;
+        actions.fetchGroupsInfo();
     }
 
     componentDidMount(){
@@ -39,6 +38,23 @@ class TeamDailyDemandStatistics extends Component {
         if(thisSetId != nextSetId && nextSetId && nextProps.selectedProjectSet.id.indexOf('_g')!=-1 ){
             request.getMilestoneByName(nextProps.selectedProjectSet.selectedItemId,'');
         }
+    }
+
+    componentWillUpdate(){
+        if (!this.props.reportData&&this.refs.echarts){
+            this.refs.echarts.getEchartsInstance().clear();
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        // if (!this.props.reportData){
+        //     let echarts = this.refs.echarts;
+        //     if(echarts&&echarts.getEchartsInstance()){
+        //         setTimeout(function () {
+        //             echarts.getEchartsInstance().setOption({});
+        //         },10);
+        //     }
+        // }
     }
 
     handleSubmit(e) {
@@ -90,7 +106,7 @@ class TeamDailyDemandStatistics extends Component {
                     type : 'value'
                 }
             ],
-            series : this.props.reportData?this.props.reportData.map(data =>{return{
+            series : this.props.reportData&&this.props.reportData.length>0?this.props.reportData.map(data =>{return{
                 name:data.name,
                 symbolSize:10,
                 type:'line',
@@ -106,11 +122,12 @@ class TeamDailyDemandStatistics extends Component {
             labelCol: { span: 8 },
             wrapperCol: { span: 16 },
         };
-        const {selectedProjectSet,matchMilestone,team} = this.props;
+
+        const {selectedProjectSet,matchMilestone,groups} = this.props;
 
         const projectId = selectedProjectSet? selectedProjectSet.id:'';
 
-        const groups = team&&team.userTreeData?team.userTreeData.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
         const milestone = matchMilestone?matchMilestone.map(data => <Option key={data.id}>{data.title}</Option>):[];
 
         if(projectId) {
@@ -138,7 +155,7 @@ class TeamDailyDemandStatistics extends Component {
                                         <Select multiple
                                                 placeholder="请选择团队"
                                                 style={{width: '200px'}}>
-                                            {groups}
+                                            {groupsInfo}
                                         </Select>)
                                     }
                                 </FormItem>
@@ -148,8 +165,9 @@ class TeamDailyDemandStatistics extends Component {
                         </Col>
                     </Row>
                     </Form>
-                    <ReactEcharts
+                    <ReactEcharts ref="echarts"
                         option={this.getOption()}
+                        showLoading ={this.props.loading}
                         style={{height: '350px', width: '100%'}}
                         theme="my_theme"
                     />
@@ -174,10 +192,11 @@ TeamDailyDemandStatistics = Form.create()(TeamDailyDemandStatistics);
 function mapStateToProps(state) {
     return {
         reportData:state.report.teamDemandComplete,
+        loading:state.report.getTeamDemandCompletePending,
         selectedProjectSet: state.projectSet.selectedProjectSet,
         matchMilestone: state.request.matchMilestone,
         loginInfo:state.login.profile,
-        team:state.UserRelation.getUserRelationTree,
+        groups:state.report.groups,
     };
 }
 
@@ -185,7 +204,6 @@ function mapDispatchToProps(dispatch){
     return{
         actions : bindActionCreators(reportActions,dispatch),
         request : bindActionCreators(request,dispatch),
-        getUserRelationTree:bindActionCreators(getUserRelationTree, dispatch),
     }
 }
 
