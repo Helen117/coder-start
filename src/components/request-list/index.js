@@ -71,7 +71,7 @@ class RequestList extends Component {
                 list[i].label = list[i].label_names && list[i].label_names.length > 0 ? list[i].label_names + '' : '';
                 list[i].label_id = list[i].label_ids && list[i].label_ids.length > 0 ? list[i].label_ids + '' : '';
                 list[i].state = this.stateTranslate(list[i].state);
-                list[i].type = this.typeTranslate(list[i].type);
+                list[i].types = this.typeTranslate(list[i].type);
             }
         }
         return list;
@@ -121,7 +121,7 @@ RequestList.prototype.columns = (self)=>[
         dataIndex: 'files',
     },{
         title: '类型',
-        dataIndex: 'type',
+        dataIndex: 'types',
         width: 70,
 
     },{
