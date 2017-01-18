@@ -126,9 +126,7 @@ class EmergencyProjectSetEdit extends React.Component {
 
                         <FormItem {...formItemLayout} label="父项目集">
                             {getFieldDecorator('parent_id',
-                                {rules:[{required:true, message:'请选择父项目集'},
-                                    //{ validator: this.checkDevelop.bind(this)}
-                                ],initialValue:initParent})(
+                                {rules:[{required:true, message:'请选择父项目集'},],initialValue:initParent})(
                                 <Select  showSearch
                                          showArrow={false}
                                          placeholder="请选择父项目集"
