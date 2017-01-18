@@ -64,7 +64,7 @@ class SelectedSetInfo extends Component {
             const {deleteProjectSetAction, projectSetTree} = this.props;
             const userId = this.props.loginInfo.userId;
             let isEmptySet = true;
-            for (i = 0; i < projectSetTree.length; i++) {
+            for (let i = 0; i < projectSetTree.length; i++) {
                 if (projectSetTree[i].id == selectedProjectSet.id && projectSetTree[i].children.length > 0) {
                     isEmptySet = false
                     break;
