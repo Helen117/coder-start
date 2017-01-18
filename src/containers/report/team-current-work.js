@@ -19,8 +19,11 @@ class TeamCurrentWork extends Component {
     }
 
     componentWillMount(){
-        const {actions} = this.props;
+        const {actions,form,condition} = this.props;
         actions.fetchGroupsInfo();
+        if(condition){
+            form.setFieldsValue(condition);
+        }
     }
 
     componentDidMount(){
@@ -39,7 +42,7 @@ class TeamCurrentWork extends Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                actions.fetchTeamCurrentWork(data.group);
+                actions.fetchTeamCurrentWork(data.group,data);
             }
         })
     }
@@ -162,6 +165,7 @@ function mapStateToProps(state) {
         loginInfo:state.login.profile,
         reportData:state.report.teamCurrentWork,
         groups:state.report.groups,
+        condition:state.report.condition_teamcurrent,
     };
 }
 

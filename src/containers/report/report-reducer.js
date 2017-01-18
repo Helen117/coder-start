@@ -59,20 +59,20 @@ export default function report(state={}, action = {}) {
             return {...state, developerTesterData: action.payload,condition_developerTester:action.meta,getDeveloperTesterDataPending:false};
         case 'FETCH_DEVELOPER_TESTER_REPORT_ERROR':
             return {...state, developerTesterData:null,condition_developerTester:action.meta,getDeveloperTesterDataPending:false,getDeveloperTesterDataError:action.payload.errorMsg};
-
+        //团队成员当前工作情况
         case 'FETCH_MEMBER_CURRENT_WORK_PENDING':
             return {...state, getMemberCurrentWorkPending:true,memberCurrentWork:null};
         case 'FETCH_MEMBER_CURRENT_WORK_SUCCESS':
-            return {...state, memberCurrentWork: action.payload,getMemberCurrentWorkPending:false};
+            return {...state, memberCurrentWork: action.payload,condition_membercurrent:action.meta,getMemberCurrentWorkPending:false};
         case 'FETCH_MEMBER_CURRENT_WORK_ERROR':
-            return {...state, memberCurrentWork:null,getMemberCurrentWorkPending:false,getMemberCurrentWorkError:action.payload.errorMsg};
+            return {...state, memberCurrentWork:null,condition_membercurrent:action.meta,getMemberCurrentWorkPending:false,getMemberCurrentWorkError:action.payload.errorMsg};
 
         case 'FETCH_TEAM_CURRENT_WORK_PENDING':
             return {...state, getTeamCurrentWorkPending:true,teamCurrentWork:null};
         case 'FETCH_TEAM_CURRENT_WORK_SUCCESS':
-            return {...state, teamCurrentWork: action.payload,getTeamCurrentWorkPending:false};
+            return {...state, teamCurrentWork: action.payload,condition_teamcurrent:action.meta,getTeamCurrentWorkPending:false};
         case 'FETCH_TEAM_CURRENT_WORK_ERROR':
-            return {...state, teamCurrentWork:null,getTeamCurrentWorkPending:false,getTeamCurrentWorkError:action.payload.errorMsg};
+            return {...state, teamCurrentWork:null,condition_teamcurrent:action.meta,getTeamCurrentWorkPending:false,getTeamCurrentWorkError:action.payload.errorMsg};
         //个人代码管理视角数据和查询条件
         case 'FETCH_PERSONAL_CODE_MANAGE_PENDING':
             return {...state, getPersonalCodeManagePending:true,personalCodeManage:null};
