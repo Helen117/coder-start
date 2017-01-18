@@ -41,13 +41,11 @@ class CreateMergeRequest extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState){
+    shouldComponentUpdate(nextProps){
         let isRender = false;
         const mergeBranch = nextProps.mergeBranch;
-        if(mergeBranch){
-            if(mergeBranch.length>1) {
-                isRender = true;
-            }
+        if(mergeBranch && mergeBranch.length>1){
+            isRender = true;
         }
         return isRender;
     }
@@ -70,6 +68,7 @@ class CreateMergeRequest extends Component {
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }
@@ -83,7 +82,7 @@ class CreateMergeRequest extends Component {
         const {form} = this.props;
         const {record} = this.props.location.state;
         form.setFieldsValue({'developer_test_file':this.state.fileList});
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -125,17 +124,15 @@ class CreateMergeRequest extends Component {
 
     //修改源分支内容，目标分支跟着改变
     changeTargetBranch(value){
-        const targetBranches = this.props.mergeBranch?this.props.mergeBranch[1].branches:[]
-        let i=0;
-        for(i=0; i<targetBranches.length; i++){
+        const targetBranches = this.props.mergeBranch?this.props.mergeBranch[1].branches:[];
+        let target_branch = null;
+        for(let i=0; i<targetBranches.length; i++){
             if(value == targetBranches[i]){
-                this.props.form.setFieldsValue({target_branch: targetBranches[i]});
+                target_branch = targetBranches[i];
                 break;
             }
         }
-        if(i >= targetBranches.length) {
-            this.props.form.setFieldsValue({target_branch: null});
-        }
+        this.props.form.setFieldsValue({target_branch: target_branch});
 
     }
 
@@ -175,8 +172,8 @@ class CreateMergeRequest extends Component {
         const {record} = this.props.location.state;
         const { getFieldDecorator } = this.props.form;
         const {mergeBranch} = this.props;
-        let targetPath,sourceBranch,initialSourceBranch,initSourcePath,initTargetPath;
-        let sourcePath=[],targetBranch=[],initialTargetBranchAll=[];
+        let targetPath,initSourcePath,initTargetPath;//,sourceBranch,initialSourceBranch
+        let sourcePath=[]; //targetBranch=[],initialTargetBranchAll=[];
         if(mergeBranch && mergeBranch.length>1){
                 initTargetPath = mergeBranch[0].path_with_namespace;
                 initSourcePath = mergeBranch[1].path_with_namespace;
@@ -241,23 +238,22 @@ class CreateMergeRequest extends Component {
                             {getFieldDecorator('title', {
                                 rules: [{required: true, message: '请填写MR名称'},
                                     {max: 30, message: 'MR名称长度最大30个字符'}]
-                            })
-                            (<Input placeholder="请输入MR名称"/>)}
+                            })(<Input placeholder="请输入MR名称"/>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="MR描述">
-                            {getFieldDecorator('description', {rules: [{required: true, message: '请填写MR描述'}]})
-                            (<Input type="textarea" placeholder="请输入MR描述" rows="5"/>)}
+                            {getFieldDecorator('description', {rules: [{required: true, message: '请填写MR描述'}]})(
+                                <Input type="textarea" placeholder="请输入MR描述" rows="5"/>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="问题">
-                            {getFieldDecorator('issue_id', {rules: [{required: true, message: '请选择对应问题'}]})
-                            (<Select size="large" allowClear={true} >{issuesOptions}</Select>)}
+                            {getFieldDecorator('issue_id', {rules: [{required: true, message: '请选择对应问题'}]})(
+                                <Select size="large" allowClear={true} >{issuesOptions}</Select>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="审批人">
-                            {getFieldDecorator('assignee.id', {rules: [{required: true, message: '不能为空'}]})
-                            (<Select size="large" >{assign}</Select>)}
+                            {getFieldDecorator('assignee.id', {rules: [{required: true, message: '不能为空'}]})(
+                                <Select size="large" >{assign}</Select>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout}  label="自测报告上传">

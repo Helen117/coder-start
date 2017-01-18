@@ -21,14 +21,13 @@ class EmergencyProjectSetEdit extends React.Component {
         this.projectSetInfo = this.props.selectedProjectSet;
     }
 
-    componentDidMount() {}
 
     componentWillReceiveProps(nextProps) {
-        const { createEmergencyResult,updateResult } = nextProps;
+        const { createEmergencyResult,updateEmergencyResult } = nextProps;
         if (this.props.createEmergencyResult != createEmergencyResult && createEmergencyResult){
             this.insertCallback('创建');
         }
-        if(this.props.updateResult != updateResult && updateResult){
+        if(this.props.updateEmergencyResult != updateEmergencyResult && updateEmergencyResult){
             this.insertCallback('修改');
             const formData = this.props.form.getFieldsValue();
             this.projectSetInfo.name = formData.name;
@@ -65,7 +64,7 @@ class EmergencyProjectSetEdit extends React.Component {
         const {editType} = this.props.location.state;
         e.preventDefault();
         const {form,logInfo } = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -74,8 +73,8 @@ class EmergencyProjectSetEdit extends React.Component {
                 if(editType == 'add'){
                     this.props.createEmergencyProjectSetAction(formData);
                 }else{
-                    /*formData.id = this.props.selectedProjectSet.selectedItemId;
-                    this.props.updateProjectSetAction(formData)*/
+                    //update
+
                 }
             }
         })
@@ -102,12 +101,6 @@ class EmergencyProjectSetEdit extends React.Component {
         const {editType} = this.props.location.state;
         const {updateEmergencyLoading,projectSetTree, selectedItemInfo} = this.props;
         const updateLoading = updateEmergencyLoading? true: false;
-        /*const dueDateProps = getFieldDecorator('due_date', {
-            rules: [
-                { required: true, type: 'object', message: '请选择计划完成时间' },
-                //{ validator: this.checkDuedate.bind(this) }
-            ],
-        });*/
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
@@ -141,9 +134,6 @@ class EmergencyProjectSetEdit extends React.Component {
                                          placeholder="请选择父项目集"
                                          optionFilterProp="children"
                                          notFoundContent="无法找到"
-                                        // style={{ width: 300 }}
-                                         //disabled={disabledEditDeveloper}
-                                         //onChange={this.changeDeveloper.bind(this)}
                                 >
                                     {projectSetOption}
                                 </Select>)}
@@ -153,13 +143,6 @@ class EmergencyProjectSetEdit extends React.Component {
                             {getFieldDecorator('description',{rules: [ { required: true, message:'请输入紧急上线项目集合描述' }]} )(
                                 <Input  type="textarea" rows="5" placeholder="请输入紧急上线项目集合描述 " />)}
                         </FormItem>
-
-                        {/*<FormItem  {...formItemLayout} label="计划完成时间">
-                            {dueDateProps(<DatePicker size='large'
-                                                      disabledDate={this.disabledDate.bind(this)}
-                                                      placeholder="计划完成时间"
-                                                      style={{ width: 300 }}/>)}
-                        </FormItem>*/}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>
                             <Button type="primary" htmlType="submit" loading={this.props.createEmergencyLoading}>确定</Button>

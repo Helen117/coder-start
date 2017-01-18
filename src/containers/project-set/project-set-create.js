@@ -94,7 +94,7 @@ class ProjectSetCreate extends React.Component {
         const {editType} = this.props.location.state;
         e.preventDefault();
         const {form,logInfo } = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -159,8 +159,8 @@ class ProjectSetCreate extends React.Component {
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="描述">
-                            {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )
-                            (<Input  type="textarea" rows="5" placeholder="请输入项目集合描述 " />)}
+                            {getFieldDecorator('description',{rules: [ { required: true, message:'请输入项目集合描述' }]} )(
+                                <Input  type="textarea" rows="5" placeholder="请输入项目集合描述 " />)}
                         </FormItem>
 
                         <FormItem   {...formItemLayout} label="项目">

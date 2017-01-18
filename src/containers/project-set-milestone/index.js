@@ -52,9 +52,5 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectSetMilestones);
+export default connect(mapStateToProps)(ProjectSetMilestones);

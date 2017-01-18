@@ -50,7 +50,7 @@ class SelectedProInfo extends Component {
     }
 
     callAction(itemId){
-        if(itemId.indexOf("_p")>0) {
+        if(itemId.indexOf("_p")>=0) {
             const projectId = itemId.substring(0,itemId.length-2);
             const userId = this.props.loginInfo.userId;
             this.props.getProjectInfoAction(projectId,userId);

@@ -89,14 +89,14 @@ class DevelopTransPond extends Component {
             labelCol: {span: 6},
             wrapperCol: {span: 14},
         };
-        if(this.props.showTranspod) {
+        if(this.props.showTranspond) {
             return (
                 <Box title="需求转派">
                     <Spin spinning={dataLoading} tip="正在加载数据，请稍候...">
                         <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
                             <FormItem {...formItemLayout} label="转派给">
-                                {getFieldDecorator('assigned_id', {rules: [{required: true, message: '请选择要转派的人'}]})
-                                (<Select showSearch optionFilterProp="children" placeholder="请选择要转派的人">
+                                {getFieldDecorator('assigned_id', {rules: [{required: true, message: '请选择要转派的人'}]})(
+                                    <Select showSearch optionFilterProp="children" placeholder="请选择要转派的人">
                                     {memberSelectOption}
                                 </Select>)}
                             </FormItem>

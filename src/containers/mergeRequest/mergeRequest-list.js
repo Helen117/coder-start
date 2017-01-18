@@ -45,11 +45,9 @@ class MergeRequestList extends React.Component {
             this.props.changeQueryConditionAction(1,'opened')
         }
 
-        if(this.props.mergeBranch != mergeBranch && mergeBranch){
-            if(mergeBranch.length >1){
-                const userId = this.props.loginInfo.userId;
-                this.props.fetchIssuesData(mergeBranch[0].id,userId);
-            }
+        if(this.props.mergeBranch != mergeBranch && mergeBranch && mergeBranch.length >1){
+            const userId = this.props.loginInfo.userId;
+            this.props.fetchIssuesData(mergeBranch[0].id,userId);
         }
 
         if(this.props.issues != issues && issues){

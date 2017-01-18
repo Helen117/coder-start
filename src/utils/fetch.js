@@ -16,7 +16,9 @@ export default function fetchData(url, params,callback,handleResult) {
     if (params) {
         let queryString = '';
         for (let param in params){
-            queryString += (param+'='+params[param]+'&');
+            if (params.hasOwnProperty(param)) {
+                queryString += (param + '=' + params[param] + '&');
+            }
         }
         opts.body = queryString;
     }
@@ -33,5 +35,7 @@ export default function fetchData(url, params,callback,handleResult) {
             })
 
         }
-    }).catch(function (error) {});
+    }).catch(function (error) {
+        //do nothing
+     });
 }
