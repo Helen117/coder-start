@@ -20,8 +20,11 @@ class MemberCurrentWork extends Component {
     }
 
     componentWillMount(){
-        const {actions} = this.props;
+        const {actions,form,condition} = this.props;
         actions.fetchGroupsInfo();
+        if(condition){
+            form.setFieldsValue({group:condition});
+        }
     }
 
     componentDidMount(){
@@ -155,6 +158,7 @@ function mapStateToProps(state) {
         reportData:state.report.memberCurrentWork,
         loginInfo:state.login.profile,
         groups:state.report.groups,
+        condition:state.report.condition_membercurrent,
     };
 }
 

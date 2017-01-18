@@ -116,11 +116,12 @@ export function fetchMemberCurrentWork(groupId) {
                     group_id:groupId
                 }
             })
-        }
+        },
+        meta:groupId
     }
 }
 
-export function fetchTeamCurrentWork(groupId) {
+export function fetchTeamCurrentWork(groupId,condition) {
     return {
         type: 'FETCH_TEAM_CURRENT_WORK',
         payload: {
@@ -129,7 +130,8 @@ export function fetchTeamCurrentWork(groupId) {
                     group_id_list:groupId
                 }
             })
-        }
+        },
+        meta:condition
     }
 }
 
