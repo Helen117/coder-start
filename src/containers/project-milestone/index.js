@@ -23,10 +23,9 @@ class ProjectMilestones extends React.Component {
         return true;
     }
 
-    shouldComponentUpdate(nextprops,nextState){
+    shouldComponentUpdate(nextprops){
         const {project} = nextprops;
         const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
-        //console.log(nextprops,nextState)
         if(this.isEmptyObject(projectInfo)){
             return false;
         }else{
@@ -67,9 +66,5 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectMilestones);
+export default connect(mapStateToProps)(ProjectMilestones);

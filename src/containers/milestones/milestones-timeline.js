@@ -9,7 +9,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {putProIdToState,getProjectSetMilestones,} from './milestones-action';
 import MilestonesCalendar from '../../components/calendar'
-//import TimelineMilestone from '../../components/timeline';
 import moment from 'moment'
 import 'pubsub-js';
 import './index.less';
@@ -30,7 +29,7 @@ class Milestones extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {closeSetMsResult, projectId} = nextProps;
+        const {projectId} = nextProps;
         if (this.props.projectId != nextProps.projectId && projectId) {
             //点击不同项目，重新加载数据
             //console.log('点击不同项目，重新加载数据',this.props.milestoneProId,nextProps.projectId)
@@ -55,7 +54,7 @@ class Milestones extends React.Component {
     render(){
         const isSpinning = this.props.loading? this.props.loading :false;
         const id = this.props.projectId?this.props.projectId.toString():'';
-        const projectId = id.indexOf("_g") > 0 || id.indexOf("_p") > 0?id.substring(0,id.length-2):id;
+        const projectId = id.indexOf("_g") >= 0 || id.indexOf("_p") >= 0?id.substring(0,id.length-2):id;
         const projectName =this.props.projectName?this.props.projectName:'请选择一个项目...';
         const milestoneData = projectId?this.props.milestoneData:'';
         return (

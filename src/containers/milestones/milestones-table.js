@@ -24,9 +24,7 @@ class ProjectSetMilestonesDetail extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
 
-    }
 
     render(){
         const milestoneDetail = this.props.milestoneDetail;

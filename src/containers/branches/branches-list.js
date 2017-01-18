@@ -101,9 +101,6 @@ class BranchesList extends React.Component {
 
     }
 
-    onChange(pagination, filters, sorter) {
-        // 点击分页、筛选、排序时触发
-    }
 
     mapBranchTable(branch){
         const data = [];
@@ -126,10 +123,8 @@ class BranchesList extends React.Component {
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         let buttonDisable=true;
-        if(projectInfo && loginInfo){
-            if(projectInfo.owner_id==loginInfo.userId && projectInfo.id){
-                buttonDisable = false;
-            }
+        if(projectInfo && loginInfo && projectInfo.owner_id==loginInfo.userId && projectInfo.id){
+            buttonDisable = false;
         }
 
         return(
@@ -141,7 +136,6 @@ class BranchesList extends React.Component {
                 </Row>
                 <div style={{marginTop:5}}>
                     <Table loading = {this.props.getBranchLoading}
-                           onChange={this.onChange.bind(this)}
                            columns={columns(this)}
                            dataSource={data}
                     />
@@ -179,7 +173,7 @@ const columns = (self)=>[{
     width: '10%',
     render: (text, record) => {
         const {project,loginInfo} = self.props;
-        let projectInfo = project.getProjectInfo?(
+        const projectInfo = project.getProjectInfo?(
             project.getProjectInfo.projectInfo?project.getProjectInfo.projectInfo:{}
         ):{};
         return (

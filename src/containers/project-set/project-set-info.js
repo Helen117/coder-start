@@ -61,17 +61,16 @@ class SelectedSetInfo extends Component {
 
     delProjectSet(type,selectedProjectSet){
         if(selectedProjectSet) {
-            const deleteProjectSetAction = this.props.deleteProjectSetAction;
+            const {deleteProjectSetAction, projectSetTree} = this.props;
             const userId = this.props.loginInfo.userId;
-            const projectSet = this.props.projectSetTree;
-            let i = 0;
-            for (i = 0; i < projectSet.length; i++) {
-                if (projectSet[i].id == selectedProjectSet.id && projectSet[i].children.length > 0) {
-                    message.warning('请移除所有项目后再进行删除操作');
+            let isEmptySet = true;
+            for (i = 0; i < projectSetTree.length; i++) {
+                if (projectSetTree[i].id == selectedProjectSet.id && projectSetTree[i].children.length > 0) {
+                    isEmptySet = false
                     break;
                 }
             }
-            if (i >= projectSet.length) {
+            if (isEmptySet) {
                 confirm({
                     title: '您是否确定要删除此项目集合',
                     content: '删除之后项目集合内容将会被丢弃',
@@ -82,6 +81,8 @@ class SelectedSetInfo extends Component {
                         //do nothing
                     }
                 })
+            }else{
+                message.warning('请移除所有项目后再进行删除操作');
             }
         }else{
             message.warning('请选择要删除的项目集合')

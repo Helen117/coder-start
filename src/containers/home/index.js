@@ -37,15 +37,10 @@ class Home extends React.Component {
         this.props.acqMyIssueListAction(this.props.loginInfo.userId,'opened');
         this.props.acqUserRankingAction(this.props.loginInfo.userId);
     }
-    componentDidMount(){
-    }
 
-    componentWillReceiveProps(nextProps) {
 
-    }
 
     errCallback(errMessage,type){
-        //message.error(type+'失败',errMessage);
         notification.error({
             message: type,
             description: errMessage,
@@ -53,9 +48,6 @@ class Home extends React.Component {
         });
     }
 
-    callback() {
-
-    }
 
     render() {
 

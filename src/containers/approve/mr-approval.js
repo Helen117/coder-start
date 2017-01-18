@@ -28,7 +28,7 @@ class MrApproval  extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {approveMrResult,approvalDetail} = nextProps;
+        const {approveMrResult} = nextProps;
         if (approveMrResult && approveMrResult!=this.props.approveMrResult) {
             message.success('审批成功！');
             this.props.home.getNotifyItems(this.props.logInfo.userId);

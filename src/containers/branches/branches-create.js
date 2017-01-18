@@ -61,7 +61,7 @@ class CreateBranches extends Component {
                         break;
                     }
                 }
-                if(isExit == true){
+                if(isExit){
                     callback([new Error('该分支已经存在')]);
                 }else {
                     callback();
@@ -82,6 +82,7 @@ class CreateBranches extends Component {
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }
@@ -91,7 +92,7 @@ class CreateBranches extends Component {
         const {project,loginInfo} = this.props;
         const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const {form} = this.props;
-        form.validateFields((errors, values) => {
+        form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {

@@ -106,6 +106,7 @@ const FormItem = Form.Item;
                  form.resetFields();
              },
              onCancel() {
+                 //do nothing
              }
          })
      }
@@ -177,8 +178,8 @@ const FormItem = Form.Item;
                     <Form horizontal>
                         {role == 'developer' ?
                             <FormItem   {...formItemLayout} label="涉及项目">
-                                    {getFieldDecorator('projects',{rules:[{required:true,type:"array",message:'请选择项目'}]})
-                                    (<TransferFilter dataSource = {projectInfo}
+                                    {getFieldDecorator('projects',{rules:[{required:true,type:"array",message:'请选择项目'}]})(
+                                        <TransferFilter dataSource = {projectInfo}
                                                      onChange={this.handleChange.bind(this)}
                                                      loadingProMsg={TransferLoading}
                                                     //fetchProMsgErr ={this.props.fetchProMsgErr}
@@ -188,7 +189,8 @@ const FormItem = Form.Item;
                             }
 
                         <FormItem {...formItemLayout} label="工时" >
-                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写工时'}]})(<InputNumber min={1} max={100}/>)}
+                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写工时'}]})(
+                                <InputNumber min={1} max={100}/>)}
                         </FormItem>
 
                         <FormItem {...formItemLayout}  label={role == 'developer' ?"设计文档上传":"测试案例上传"}>
@@ -209,7 +211,7 @@ const FormItem = Form.Item;
             </Box>
         )}else{
             return null;
-        };
+        }
 
     }
 }

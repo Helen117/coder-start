@@ -21,7 +21,7 @@ class ProjectSetMilestonesEdit extends React.Component {
         const item = this.props.location.state.item;
         if (item){
             item.description = item.description? item.description:"";
-            let due_date = item.due_date;
+            const due_date = item.due_date;
             item.due_date = moment(item.due_date);
             this.props.form.setFieldsValue(item);
             item.due_date = due_date;
@@ -50,8 +50,8 @@ class ProjectSetMilestonesEdit extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const {form,logInfo } = this.props;
-        const {editType,item} = this.props.location.state;
-        form.validateFieldsAndScroll((errors, values) => {
+        const {editType} = this.props.location.state;
+        form.validateFieldsAndScroll((errors) => {
             if (!!errors) {
                 return;
             } else {
@@ -87,6 +87,7 @@ class ProjectSetMilestonesEdit extends React.Component {
                 form.resetFields();
             },
             onCancel() {
+                //do nothing
             }
         })
     }
@@ -166,8 +167,8 @@ class ProjectSetMilestonesEdit extends React.Component {
                         </FormItem>
 
                         <FormItem {...formItemLayout} label="描述" >
-                            {getFieldDecorator('description')
-                            ( < Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" />)}
+                            {getFieldDecorator('description')(
+                                < Input type="textarea" rows="5" placeholder="请输入里程碑描述信息" />)}
                         </FormItem>
 
                         <FormItem  {...formItemLayout} label="计划完成时间">
@@ -179,8 +180,8 @@ class ProjectSetMilestonesEdit extends React.Component {
 
                         {editType == 'update' ?
                             <FormItem  {...formItemLayout} label="修改原因">
-                                {getFieldDecorator('result',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})
-                                (<Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
+                                {getFieldDecorator('result',{rules: [ { required: true, message:'请输入项目集合的修改原因' }]})(
+                                    <Input type="textarea" rows="5" placeholder="请输入里程碑的修改原因 " />)}
                             </FormItem>:<div></div>}
 
                         <FormItem wrapperCol={{span: 10, offset: 6}} style={{marginTop: 24}}>

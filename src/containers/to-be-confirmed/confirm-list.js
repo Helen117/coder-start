@@ -15,22 +15,22 @@ class ConfirmList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showTranspod:false,
+            showTranspond:false,
             showConfirm:true
         };
     }
 
     accept(record){
         this.setState({
-            showTranspod:false,
+            showTranspond:false,
             showConfirm:true
         })
     }
 
 
-    transpond(record){
+    transpond(){
         this.setState({
-            showTranspod:true,
+            showTranspond:true,
             showConfirm:false
         })
     }
@@ -87,7 +87,7 @@ class ConfirmList extends Component {
                        pagination={false}
                        loading={loading}
                 />
-                <DevelopTransPond showTranspod={this.state.showTranspod} task_id={task_id}/>
+                <DevelopTransPond showTranspond={this.state.showTranspond} task_id={task_id}/>
                 <DevelopConfirm showConfirm={this.state.showConfirm} task_id={task_id}/>
             </Box>
         );
@@ -135,7 +135,7 @@ ConfirmList.prototype.columns = (self)=>[{
     render: (text, record) => {
         if(self.props.location.state.record.task_id){
             return(
-                self.state.showConfirm?<a onClick={self.transpond.bind(self, record)}>转派</a>
+                self.state.showConfirm?<a onClick={self.transpond.bind(self)}>转派</a>
                             :<a onClick={self.accept.bind(self, record)}>确认</a>
             )
         }
