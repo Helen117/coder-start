@@ -9,6 +9,7 @@ import 'pubsub-js';
 import {UpdateUser,getAllUserInfo,AddEmail} from './actions/update-user-info-action';
 import {findEmailByUserId} from './utils';
 import styles from './index.css';
+import {checkNameSpace} from '../../utils/regValidate';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -118,6 +119,7 @@ class UpdateBasicInfo extends React.Component {
         const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入中文名！'},
+                {validator: checkNameSpace.bind(this)}
             ],initialValue:loginInfo.name})(<Input type="text" placeholder="请输入中文名"/>);
         const addSelectAfter = getFieldDecorator('option_add',{initialValue:'@shpso.com'})(
             <Select style={{ width: 100 }} >

@@ -9,3 +9,12 @@ export function checkName(rule, value, callback){
         callback();
     }
 }
+
+export function checkNameSpace(rule, value, callback){//校验字符串不以空格开头和结尾
+    const reg_name = /(^\s)|(\s$)/;
+    if(value && reg_name.test(value)){
+        callback('不能以空格开头和结尾!');
+    }else{
+        callback();
+    }
+}
