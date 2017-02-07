@@ -9,6 +9,7 @@ import Box from '../../components/box';
 import 'pubsub-js';
 import {findUserGroupById} from './utils';
 import {createUserGroup, UpdateUserGroup,getUserLeader,getUserInfo} from './actions/user-relation-actions';
+import {checkNameSpace} from '../../utils/regValidate';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -174,6 +175,7 @@ class UserGroupDetail extends React.Component {
         const nameProps = getFieldDecorator('name',
             {rules:[
                 {required:true, message:'请输入组织名称！'},
+                {validator: checkNameSpace.bind(this)}
             ]})(<Input type="text" placeholder="请输入组织名称"/>);
         const modifyResultProps = getFieldDecorator('reason',
             {rules:[

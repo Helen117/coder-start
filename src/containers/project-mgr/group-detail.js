@@ -13,6 +13,7 @@ import {Form, Input, Button, Modal, notification,Radio} from 'antd';
 import Box from '../../components/box';
 import {createGroup, UpdateGroup} from './actions/create-group-action';
 import 'pubsub-js';
+import {checkNameSpace} from '../../utils/regValidate';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -115,6 +116,7 @@ class GroupDetail extends React.Component {
             const nameProps = getFieldDecorator('name',
                 {rules:[
                     {required:true, message:'请输入项目组名称！'},
+                    {validator: checkNameSpace.bind(this)}
                 ]})(<Input type="text" placeholder="请输入项目组名称"/>);
             const descriptionProps = getFieldDecorator('description',
                 {rules:[

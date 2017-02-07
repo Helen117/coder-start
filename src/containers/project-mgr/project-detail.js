@@ -10,6 +10,7 @@ import {createProject, UpdateProject, DeleteProject} from './actions/create-proj
 import 'pubsub-js';
 import {findProjectIdByProjectName, resetGroupInfoState,searchGroupByGroupId} from '../project-list/util';
 import {getGroupInfo} from './actions/create-group-action';
+import {checkNameSpace} from '../../utils/regValidate';
 
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
@@ -177,6 +178,7 @@ class ProjectDetail extends React.Component {
             const nameProps = getFieldDecorator('name',
                 {rules:[
                     { required:true, message:'请输入项目名称!'},
+                    {validator: checkNameSpace.bind(this)}
                 ]
                 })(<Input type="text" placeholder="请输入项目名称"/>);
             const descriptionProps = getFieldDecorator('description',{rules:[{ required:true,message:'请输入描述！'}]})(<Input type="textarea" />);
