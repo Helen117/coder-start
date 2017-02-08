@@ -183,7 +183,7 @@ class developerTesterReport extends Component {
                            option={this.getOption()}
                            style={{height: '350px', width: '100%'}}
                            theme="my_theme"
-                        />:<DisplayOfNone/>}
+                        />:(loading?'':<DisplayOfNone/>)}
                     </Spin>
                 </Box>
             );

@@ -5,9 +5,10 @@ import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Select,Alert} from 'antd';
+import { Form,Select,Alert,Spin} from 'antd';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
+import DisplayOfNone from '../../components/display-of-none';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -33,6 +34,12 @@ class MemberCurrentWork extends Component {
 
     componentWillReceiveProps(nextProps) {
 
+    }
+
+    componentWillUpdate(){
+        if (!this.props.reportData&&this.refs.echarts){
+            this.refs.echarts.getEchartsInstance().clear();
+        }
     }
 
     fetchData(value){
@@ -122,7 +129,7 @@ class MemberCurrentWork extends Component {
 
         const {groups} = this.props;
         const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
-
+        const loading = this.props.loading?this.props.loading:false;
         return(
                 <Box title="团队成员当前工作情况">
                     <Form horizontal  >
@@ -140,11 +147,14 @@ class MemberCurrentWork extends Component {
                             }
                         </FormItem>
                     </Form>
-                    <ReactEcharts
-                        option={this.getOption()}
-                        style={{height: '350px', width: '100%'}}
-                        theme="my_theme"
-                    />
+                    <Spin spinning={loading} tip="正在加载数据...">
+                        {(this.props.reportData && this.props.reportData.length>0)?<ReactEcharts
+                            ref="echarts"
+                            option={this.getOption()}
+                            style={{height: '350px', width: '100%'}}
+                            theme="my_theme"
+                        />:(loading?'':<DisplayOfNone/>)}
+                    </Spin>
                 </Box>
             );
     }
@@ -155,6 +165,7 @@ MemberCurrentWork = Form.create()(MemberCurrentWork);
 //返回值表示的是需要merge进props的state
 function mapStateToProps(state) {
     return {
+        loading:state.report.getMemberCurrentWorkPending,
         reportData:state.report.memberCurrentWork,
         loginInfo:state.login.profile,
         groups:state.report.groups,

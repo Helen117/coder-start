@@ -156,6 +156,10 @@ class MyIssueList extends Component {
         actions.updateIssue(data);
     }
 
+    reopenBug(record){
+
+    }
+
     testPass(record){
         this.setState({
             visible: true,
@@ -448,12 +452,14 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                     if (record.type == 'bug') {
                         return <div>
                             <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
+                            <br/>
+                            <a onClick={self.reopenBug.bind(self, record)}>bug打回</a>
                         </div>;
                     } else if(record.is_sets_Issue_finished){
                         return <div>
                             <a onClick={self.editBug.bind(self,record)}>开Bug</a>
                             <br/>
-                            <a onClick={self.testPass.bind(self, record)}>提交测试报告</a>
+                            <a onClick={self.testPass.bind(self, record)}>测试完成确认</a>
                         </div>;
                     }
                 }

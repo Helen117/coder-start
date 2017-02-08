@@ -3,11 +3,12 @@
  */
 import React, {PropTypes,Component} from 'react';
 import ReactEcharts from 'echarts-for-react';
-import { Form,Select,Alert,Col,Row,Button} from 'antd';
+import { Form,Select,Alert,Col,Row,Button,Spin} from 'antd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as reportActions from './report-action';
 import Box from '../../components/box';
+import DisplayOfNone from '../../components/display-of-none';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -30,9 +31,16 @@ class TeamCurrentWork extends Component {
 
     }
 
+    componentWillUpdate(){
+        if (!this.props.reportData&&this.refs.echarts){
+            this.refs.echarts.getEchartsInstance().clear();
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
 
     }
+
 
     handleSubmit(e) {
         e.preventDefault();
@@ -127,6 +135,7 @@ class TeamCurrentWork extends Component {
         };
         const {groups} = this.props;
         const groupsInfo = groups&&groups.length>0?groups.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const loading = this.props.loading?this.props.loading:false;
         return(
             <Box title="多个团队当前工作情况比较">
                 <Form horizontal  >
@@ -147,11 +156,14 @@ class TeamCurrentWork extends Component {
                         </Col>
                     </Row>
                 </Form>
-                <ReactEcharts
-                    option={this.getOption()}
-                    style={{height: '350px', width: '100%'}}
-                    theme="my_theme"
-                />
+                <Spin spinning={loading} tip="正在加载数据...">
+                    {(this.props.reportData && this.props.reportData.length>0)?<ReactEcharts
+                        ref="echarts"
+                        option={this.getOption()}
+                        style={{height: '350px', width: '100%'}}
+                        theme="my_theme"
+                    />:(loading?'':<DisplayOfNone/>)}
+                </Spin>
             </Box>
         );
     }
@@ -163,6 +175,7 @@ TeamCurrentWork = Form.create()(TeamCurrentWork);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
+        loading:state.report.getTeamCurrentWorkPending,
         reportData:state.report.teamCurrentWork,
         groups:state.report.groups,
         condition:state.report.condition_teamcurrent,
