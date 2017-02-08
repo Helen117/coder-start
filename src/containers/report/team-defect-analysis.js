@@ -144,7 +144,7 @@ class TeamMemberDemandProportion extends Component {
                                 </Col>
                             </Row>
                         </div>
-                    ):<DisplayOfNone/>}
+                    ):(loading?'':<DisplayOfNone/>)}
                 </Spin>
             </Box>
         );
