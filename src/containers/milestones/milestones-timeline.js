@@ -57,45 +57,44 @@ class Milestones extends React.Component {
     }
 
     render(){
-        const isSpinning = this.props.loading? this.props.loading :false;
+        const isSpinning = this.props.loading? true :false;
         const id = this.props.projectId?this.props.projectId.toString():'';
         const projectId = id.indexOf("_g") >= 0 || id.indexOf("_p") >= 0?id.substring(0,id.length-2):id;
         const projectName =this.props.projectName?this.props.projectName:'请选择一个项目...';
         const milestoneData = projectId?this.props.milestoneData:'';
-
+        const action = (<Button type="primary" size="default" onClick={this.refresh.bind(this)}>刷新</Button>);
         return (
 
-                <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
-                    <div id="mycalender" style={{margin:10}}>
-                        <Row>
-                            <Col span={12}>
-                                <Breadcrumb>
-                                    <Breadcrumb.Item >
-                                        <Icon type="home" />
-                                        <span>{projectName}</span>
-                                    </Breadcrumb.Item>
-                                </Breadcrumb>
-                            </Col>
-                            <Col span={12}>
+            <Spin spinning={isSpinning} tip="正在加载数据，请稍候..." >
+                <div id="mycalender" style={{margin:10}}>
+                    <Row>
+                        <Col span={12}>
+                            <Breadcrumb>
+                                <Breadcrumb.Item >
+                                    <Icon type="home" />
+                                    <span>{projectName}</span>
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                        </Col>
+                        <Col span={12}>
+                            {id.toString().indexOf("_p") < 0?
                                 <div style={{textAlign:"right"}}>
-                                {id.toString().indexOf("_p") < 0?
-                                        <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
-                                    :<div></div>}
+                                    <Button type="primary"  onClick={this.createMilestones.bind(this,'add')}>创建里程碑</Button>
                                     <Button  size="default" onClick={this.refresh.bind(this)} >刷新</Button>
-                                </div>
-                            </Col>
-                        </Row>
+                                </div> :<div></div>}
+                        </Col>
+                    </Row>
 
-                        <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
-                                            milestoneData = {milestoneData}
-                                            milestonesDetailPath={this.props.milestoneDetailPath}
-                                            milestoneEditPath="/projectSetMilestonesEdit"
-                                            projectId = {projectId}
-                                            id = {id}
-                                            defaultValue = {defaultDate}
-                                            mode = {setMode}/>
-                        </div>
-                </Spin>
+                    <MilestonesCalendar onPanelChange = {this.onPanelChange.bind(this)}
+                                        milestoneData = {milestoneData}
+                                        milestonesDetailPath={this.props.milestoneDetailPath}
+                                        milestoneEditPath="/projectSetMilestonesEdit"
+                                        projectId = {projectId}
+                                        id = {id}
+                                        defaultValue = {defaultDate}
+                                        mode = {setMode}/>
+                </div>
+            </Spin>
         )
     }
 }

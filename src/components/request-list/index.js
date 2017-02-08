@@ -116,9 +116,9 @@ RequestList.prototype.columns = (self)=>[
         dataIndex: 'description',
         fixed: self.props.editable ? 'left': false,
         width: 150,
-    },{
-        title: '文件',
-        dataIndex: 'files',
+    }, {
+        title: '当前状态',
+        dataIndex: 'state',
     },{
         title: '类型',
         dataIndex: 'types',
@@ -159,9 +159,9 @@ RequestList.prototype.columns = (self)=>[
     },{
         title: 'iimp子工单号',
         dataIndex: 'iimp_sub_id',
-    }, {
-        title: '当前状态',
-        dataIndex: 'state',
+    },{
+        title: '文件',
+        dataIndex: 'files',
     },{
         title: '操作',
         dataIndex: 'key',
