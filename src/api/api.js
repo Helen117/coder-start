@@ -47,8 +47,12 @@ class _Api {
                 if (params) {
                     opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                     let queryString = '';
-                    for (let param in params){
-                        queryString += (param+'='+params[param]+'&');
+                    for (const param in params){
+                        const value = params[param];
+                        if (value == null || value == undefined){
+                            continue;
+                        }
+                        queryString += (param+'='+value+'&');
                     }
                     if (opts.method == 'get'){
                         if (url.indexOf('?') != -1){

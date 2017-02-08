@@ -62,6 +62,7 @@ import ProjectMgrSub from './containers/project-list/index';
 import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
 import ProjectCompile2 from './containers/project-compile/index2';
+import DeployHostConfig from './containers/project-compile/deploy-host-config';
 import {BranchMerge} from './containers/branchMerge'
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
@@ -140,6 +141,8 @@ ReactDOM.render(
                             <Route name="projectCompile2" path="project-compile2" component={ProjectCompile2}/>
 
                         </Route>
+                        <Route name="deployHostConfig" path="config-sshserver" component={DeployHostConfig}/>
+
                         <Route name="userRelation" breadcrumbName="人员组织树" path="userRelation" component={UserRelation}>
                             <Route name="userInfo" breadcrumbName="人员信息" path="userInfo" component={userInfo}/>
                         </Route>

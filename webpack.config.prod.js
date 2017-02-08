@@ -24,13 +24,16 @@ module.exports = {
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
         //new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.DedupePlugin(),//dedupe similar code
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false
             }
-        }),
+        }),//minify everything
         //new webpack.NoErrorsPlugin(),
+        //new webpack.optimize.AggressiveMergingPlugin(), //Merge chunks
+        //new webpack.optimize.LimitChunkCountPlugin({maxChunks: 15}), //Limit the maximum chunk count with
+        //new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10000}), //Limit the minimum chunk size with
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         })
