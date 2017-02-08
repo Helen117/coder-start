@@ -102,7 +102,10 @@ export default class IssueList extends Component {
 
                             if(list[i].children[j].children[k].children[n].type=='demand'){
                                 list[i].children[j].children[k].children[n].issueType = "需求";
+                            }else if(list[i].children[j].children[k].children[n].type=='defect'){
+                                list[i].children[j].children[k].children[n].issueType = "缺陷";
                             }
+
                             if(list[i].children[j].children[k].children[n].state=='opened'){
                                 list[i].children[j].children[k].children[n].status='打开';
                             }else if(list[i].children[j].children[k].children[n].state=='closed'){
