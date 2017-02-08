@@ -20,7 +20,7 @@ import DeployConfig from './deploy-config';
 //import CodeMirror from 'react-codemirror';
 //import 'codemirror/mode/shell/shell';
 
-import {getPipelineJob, savePipelineJob, buildJob, getStageList} from './action';
+import {getPipelineJob, savePipelineJob, buildJob, getStageList, getDeployHostList} from './action';
 import {fetchBranchesData} from '../branches/branches-action';
 
 
@@ -41,11 +41,12 @@ class ProjectCompile2 extends React.Component{
     componentWillMount(){
     }
     componentDidMount(){
-        const {selectNode, form, getStageList, fetchBranchesData} = this.props;
+        const {selectNode, form, getStageList, fetchBranchesData, getDeployHostList} = this.props;
         form.setFieldsValue({
             deployConfigs: [1],
         });
         getStageList();
+        getDeployHostList('', 1, 999);
         if (selectNode && selectNode.isProject){
             fetchBranchesData(this.getProjectId(selectNode));
             this.getJobInfo(selectNode, 'dev');
@@ -243,7 +244,7 @@ class ProjectCompile2 extends React.Component{
     }
 
     render(){
-        const {selectNode, pipelineJobInfo, getPipelineJobLoading, savePipelineJobLoading, branches, stageList, stageLoading, buildLoading} = this.props;
+        const {selectNode, pipelineJobInfo, getPipelineJobLoading, savePipelineJobLoading, branches, stageList, stageLoading, buildLoading, deployHostList} = this.props;
         const {getFieldDecorator, getFieldError, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 3},
@@ -275,7 +276,7 @@ class ProjectCompile2 extends React.Component{
             deployConfigItems = deployConfigs.map((value, index) => {
                 return (
                     <Box key={value} title={`发布配置${value}`} classType="bg" action={value==1?(''):(<Button type="dashed" icon="minus" onClick={()=>this.removeDeployConfig(value)}>删除该配置</Button>)}>
-                        <DeployConfig ref={"deployConfig"+value}/>
+                        <DeployConfig key={index} ref={"deployConfig"+value} deployHostList={deployHostList?deployHostList.rows:[]}/>
                     </Box>
                 );
             });
@@ -456,7 +457,8 @@ function mapStateToProps(state) {
         savePipelineJobLoading: state.projectCompile.savePipelineJobLoading,
         savePipelineJobResult: state.projectCompile.savePipelineJobResult,
         buildLoading: state.projectCompile.buildLoading,
-        buildJobResult: state.projectCompile.buildJobResult
+        buildJobResult: state.projectCompile.buildJobResult,
+        deployHostList: state.projectCompile.deployHostList,
     };
 }
 
@@ -466,7 +468,8 @@ function mapDispatchToProps(dispatch) {
         getStageList:bindActionCreators(getStageList, dispatch),
         getPipelineJob: bindActionCreators(getPipelineJob, dispatch),
         savePipelineJob: bindActionCreators(savePipelineJob, dispatch),
-        buildJob: bindActionCreators(buildJob, dispatch)
+        buildJob: bindActionCreators(buildJob, dispatch),
+        getDeployHostList:bindActionCreators(getDeployHostList, dispatch),
     }
 }
 

@@ -37,9 +37,15 @@ class DeployConfig extends React.Component{
                                     { required: true, message: '请选择发布的目标服务器!' },
                                 ],
                             })(
-                                <Select placeholder="请选择发布的目标服务器">
-                                    <Option value="root@10.10.147.189">root@10.10.147.189</Option>
-                                    <Option value="root@10.10.147.190">root@10.10.147.190</Option>
+                                <Select placeholder="请选择发布的目标服务器"
+                                        showSearch
+                                        filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                        optionFilterProp="children"
+                                        notFoundContent="找不到服务器">
+                                    {this.props.deployHostList.map((value, index)=>{
+                                        const text = `${value.loginUser}@${value.ip}`;
+                                        return <Option key={index} value={text}>{text}</Option>
+                                    })}
                                 </Select>
                             )}
                             {/*<Row>*/}
@@ -110,6 +116,14 @@ class DeployConfig extends React.Component{
 
 
 }
+
+DeployConfig.propTypes = {
+    deployHostList: PropTypes.array
+};
+
+DeployConfig.defaultProps = {
+    deployHostList: []
+};
 
 export default DeployConfig = Form.create({
     withRef:true,

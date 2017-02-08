@@ -210,3 +210,48 @@ export function savePipelineScript(pipelineScriptInfo) {
         }
     }
 }
+
+
+
+export const PROJECT_COMPILE_GET_DEPLOY_HOSTS = 'PROJECT_COMPILE_GET_DEPLOY_HOSTS';
+export const PROJECT_COMPILE_GET_DEPLOY_HOSTS_PENDING = 'PROJECT_COMPILE_GET_DEPLOY_HOSTS_PENDING';
+export const PROJECT_COMPILE_GET_DEPLOY_HOSTS_SUCCESS = 'PROJECT_COMPILE_GET_DEPLOY_HOSTS_SUCCESS';
+export const PROJECT_COMPILE_GET_DEPLOY_HOSTS_ERROR = 'PROJECT_COMPILE_GET_DEPLOY_HOSTS_ERROR';
+
+export function getDeployHostList(ip, currentPage, pageSize) {
+    var path = '/getDeployHostList';
+    return {
+        type: PROJECT_COMPILE_GET_DEPLOY_HOSTS,
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    ip: ip,
+                    currentPage: currentPage,
+                    pageSize: pageSize
+                },
+                urlType:'ci'
+            })
+        }
+    }
+}
+
+
+
+
+export const PROJECT_COMPILE_SAVE_DEPLOY_HOST = 'PROJECT_COMPILE_SAVE_DEPLOY_HOST';
+export const PROJECT_COMPILE_SAVE_DEPLOY_HOST_PENDING = 'PROJECT_COMPILE_SAVE_DEPLOY_HOST_PENDING';
+export const PROJECT_COMPILE_SAVE_DEPLOY_HOST_SUCCESS = 'PROJECT_COMPILE_SAVE_DEPLOY_HOST_SUCCESS';
+export const PROJECT_COMPILE_SAVE_DEPLOY_HOST_ERROR = 'PROJECT_COMPILE_SAVE_DEPLOY_HOST_ERROR';
+
+export function saveDeployHost(hostInfo) {
+    var path = '/saveDeployHost';
+    return {
+        type: PROJECT_COMPILE_SAVE_DEPLOY_HOST,
+        payload: {
+            promise: api.post(path, {
+                data: hostInfo,
+                urlType:'ci'
+            })
+        }
+    }
+}
