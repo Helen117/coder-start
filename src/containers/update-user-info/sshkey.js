@@ -8,6 +8,7 @@ import {Form, Input, Button, notification} from 'antd';
 import 'pubsub-js';
 import {AddSshKeys,GetSshKeys} from './actions/update-user-info-action';
 import SshKeyList from './sshkey-list';
+import {checkNameSpace} from '../../utils/regValidate';
 
 const FormItem = Form.Item;
 
@@ -69,6 +70,7 @@ class UpdateSshKey extends React.Component {
         const sshKeyProps = getFieldDecorator('sshKey',
             {rules:[
                 {required:true, message:'请输入上面步骤3打开的内容！'},
+                {validator: checkNameSpace.bind(this)}
             ]})(<Input type="textarea" rows="4" placeholder="请输入上面步骤3打开的内容！"/>);
         const titleProps = getFieldDecorator('title')(<Input type="text" placeholder="请输入SSH Key标题！"/>);
 
