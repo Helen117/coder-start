@@ -116,9 +116,6 @@ RequestList.prototype.columns = (self)=>[
         dataIndex: 'description',
         fixed: self.props.editable ? 'left': false,
         width: 150,
-    }, {
-        title: '当前状态',
-        dataIndex: 'state',
     },{
         title: '类型',
         dataIndex: 'types',
@@ -149,10 +146,13 @@ RequestList.prototype.columns = (self)=>[
         title: '期望上线时间',
         dataIndex: 'deadline_date',
         width: 90,
+    }, {
+        title: '当前状态',
+        dataIndex: 'state',
+        width: 90,
     },{
         title: '业务范畴',
         dataIndex: 'label',
-        width: 90,
     },{
         title: 'iimp工单号',
         dataIndex: 'iimp_id',

@@ -35,7 +35,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-       /*this.intervalId = setInterval(()=>{this.props.home.getNotifyItems(this.props.uid)},5000);*/
+       this.intervalId = setInterval(()=>{this.props.home.getNotifyItems(this.props.uid)},5000);
     }
 
     componentWillUnmount() {
