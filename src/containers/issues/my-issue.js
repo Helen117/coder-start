@@ -23,7 +23,7 @@ class MyIssueList extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={visible: false,};
+        this.state ={visible: false,bugVisible:false};
     }
 
     componentWillMount() {
@@ -57,6 +57,16 @@ class MyIssueList extends Component {
                         state:'opened',
                         assigned_id:loginInfo.userId,
                     };
+            this.props.home.getNotifyItems(this.props.loginInfo.userId);
+            actions.getMyIssue(data);
+        }
+
+        if(nextProps.revertBug&&nextProps.revertBug!=this.props.revertBug){
+            message.success('操作成功');
+            var data ={
+                state:'opened',
+                assigned_id:loginInfo.userId,
+            };
             this.props.home.getNotifyItems(this.props.loginInfo.userId);
             actions.getMyIssue(data);
         }
@@ -157,7 +167,10 @@ class MyIssueList extends Component {
     }
 
     reopenBug(record){
-
+        this.setState({
+            bugVisible: true,
+            record:record,
+        });
     }
 
     testPass(record){
@@ -165,6 +178,30 @@ class MyIssueList extends Component {
             visible: true,
             record:record,
         });
+    }
+
+    revertBug(){
+        const {actions,form,loginInfo} = this.props;
+        form.validateFields(['reason'],(errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = form.getFieldsValue();
+                actions.revertBug(this.state.record.id,loginInfo.name,data.reason);
+                this.setState({
+                    bugVisible: false,
+                });
+
+                form.resetFields();
+            }
+        })
+    }
+
+    cancelBug(e) {
+        this.setState({
+            bugVisible: false,
+        });
+        this.props.form.resetFields();
     }
 
     handleOk() {
@@ -372,6 +409,16 @@ class MyIssueList extends Component {
                                 </Upload>)}
                         </FormItem>
                     </Modal>
+
+                    <Modal title="您是否确定要回退bug?" visible={this.state.bugVisible}
+                           confirmLoading={this.props.revertBugLoading}
+                           onOk={this.revertBug.bind(this)} onCancel={this.cancelBug.bind(this)}
+                    >
+                        <p>如确定，请输入回退原因：</p>
+                        <FormItem>
+                            {getFieldDecorator('reason',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="reason" rows="5"  />)}
+                        </FormItem>
+                    </Modal>
                 </Box>
             </div>
             </Spin>
@@ -450,11 +497,17 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                     </div>;
                 }else{
                     if (record.type == 'bug') {
-                        return <div>
-                            <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
-                            <br/>
-                            <a onClick={self.reopenBug.bind(self, record)}>bug打回</a>
-                        </div>;
+                        if(record.is_sets_Issue_finished) {
+                            return <div>
+                                <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
+                                <br/>
+                                <a onClick={self.reopenBug.bind(self, record)}>bug回退</a>
+                            </div>;
+                        }else{
+                            return <div>
+                                <a onClick={self.closeBug.bind(self, record)}>关闭bug</a>
+                            </div>;
+                        }
                     } else if(record.is_sets_Issue_finished){
                         return <div>
                             <a onClick={self.editBug.bind(self,record)}>开Bug</a>
@@ -478,6 +531,8 @@ function mapStateToProps(state) {
         updateIssueLoading:state.issue.updateIssueLoading,
         loginInfo:state.login.profile,
         user:state.register.users,
+        revertBug:state.issue.revertBug,
+        revertBugLoading:state.issue.revertBugPending,
     };
 }
 
