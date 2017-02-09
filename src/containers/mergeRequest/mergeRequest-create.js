@@ -149,6 +149,12 @@ class CreateMergeRequest extends Component {
             message.error('文件大小不能超过10M',3);
             return false;
         }
+
+        if(file.size==0){
+            message.error('不能上传空文件',3);
+            return false;
+        }
+
         let reader = new FileReader();
         reader.onloadend = function () {
             this.setState({
