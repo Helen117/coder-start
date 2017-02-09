@@ -38,6 +38,11 @@ class BusinessDemandStatistics extends Component {
     componentDidMount(){
 
     }
+    componentWillUpdate(){
+        if (!this.props.reportData&&this.refs.echarts){
+            this.refs.echarts.getEchartsInstance().clear();
+        }
+    }
 
     componentWillReceiveProps(nextProps) {
         const {request,selectedProjectSet,form,actions} = this.props;
@@ -195,12 +200,13 @@ class BusinessDemandStatistics extends Component {
                             </Col>
                             </Row>
                     </Form>
-                    <Spin spinning={loading} tip="正在加载数据...">
+                    <Spin spinning={loading} tip="正在加载数据..." >
                         {(this.props.reportData && this.props.reportData.length>0)?<ReactEcharts
+                            ref="echarts"
                             option={this.getOption()}
                             style={{height: '350px', width: '100%'}}
                             theme="my_theme"
-                        />:<DisplayOfNone/>}
+                        />:(loading?'':<DisplayOfNone/>)}
                     </Spin>
                 </Box>
             );

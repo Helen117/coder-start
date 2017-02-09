@@ -188,7 +188,7 @@ class TeamDailyDemandStatistics extends Component {
                            showLoading ={this.props.loading}
                            style={{height: '350px', width: '100%'}}
                            theme="my_theme"
-                        />:<DisplayOfNone/>}
+                        />:(loading?'':<DisplayOfNone/>)}
                     </Spin>
                 </Box>
             );
