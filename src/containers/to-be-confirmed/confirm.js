@@ -165,7 +165,7 @@ const FormItem = Form.Item;
 
         const { getConfirmListLoading,getMyProjectLoading} = this.props;
         const TransferLoading = getMyProjectLoading? true: false;
-        const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
+        const dataLoading = (getMyProjectLoading||getConfirmListLoading) ?true: false;
         if(!this.props.task_id){
             role ='developer';
         }else{
