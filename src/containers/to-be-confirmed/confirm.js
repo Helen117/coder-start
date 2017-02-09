@@ -163,9 +163,9 @@ const FormItem = Form.Item;
         let targetKeys = this.props.getDemandProjectInfo?this.props.getDemandProjectInfo.map(data => data.id):[];
         const confirmLoading = this.props.confirmLoading? true:false;
 
-        const { getConfirmListLoading,getMyProjectLoading} = this.props;
+        const { getConfirmListLoading,getMyProjectLoading,getDemandProjectInfoLoading} = this.props;
         const TransferLoading = getMyProjectLoading? true: false;
-        const dataLoading = getMyProjectLoading||getConfirmListLoading ?true: false;
+        const dataLoading = (getMyProjectLoading||getConfirmListLoading || getDemandProjectInfoLoading) ?true: false;
         if(!this.props.task_id){
             role ='developer';
         }else{
@@ -233,6 +233,8 @@ function mapStateToProps(state) {
         confirmLoading: state.toBeConfirmedItem.confirmLoading,
         confirmResult: state.toBeConfirmedItem.confirmResult,
         getDemandProjectInfo: state.toBeConfirmedItem.demandProjectInfo,
+        getDemandProjectInfoLoading: state.toBeConfirmedItem.getDemandProjectInfoLoading,
+
     };
 }
 

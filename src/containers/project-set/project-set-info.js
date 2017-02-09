@@ -123,17 +123,23 @@ class SelectedSetInfo extends Component {
             const spinning = delLoading?true:false;
             const selectedProjectSet = this.getSelectedProjectSet(selectedItemInfo);
             const dataSource = this.getDataSource(selectedProjectSet);
+            const isEmergencySet = selectedItemInfo?selectedItemInfo.id.indexOf('_s')>=0? true: false: false;
             const content = (
-                <div>
-                    <a style={{paddingLeft:10}}
-                       onClick={this.editEmergencyProjectSet.bind(this,'add',selectedItemInfo)}>创建紧急上线项目集</a>
-                    <a style={{paddingLeft:10}}
-                       onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
-                    <a style={{paddingLeft:10}}
-                       onClick={this.editProjectSet.bind(this,'update',selectedItemInfo)}>修改项目集</a>
+                <span>
+                    {isEmergencySet? <span/>:
+                        <span>
+                            <a style={{paddingLeft:10}}
+                               onClick={this.editEmergencyProjectSet.bind(this,'add',selectedItemInfo)}>创建紧急上线项目集</a>
+                            <a style={{paddingLeft:10}}
+                               onClick={this.editProjectSet.bind(this,'add')}>创建项目集</a>
+                            <a style={{paddingLeft:10}}
+                               onClick={this.editProjectSet.bind(this,'update',selectedItemInfo)}>修改项目集</a>
+                        </span>}
                     <a style={{paddingLeft:10}}
                        onClick={this.delProjectSet.bind(this,'del',selectedItemInfo)}>删除项目集</a>
-                </div>
+                </span>
+
+
             );
 
             return (

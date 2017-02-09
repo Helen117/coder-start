@@ -111,6 +111,25 @@ class ProjectSetCreate extends React.Component {
         })
     }
 
+    trim(str) {
+    var newStr = str.toString().replace(/^\s*$/g,'');
+    return newStr;
+    }
+
+    trimName(rule, value, callback){
+        if (!value) {
+            callback();
+        } else {
+            setTimeout(() => {
+                if(this.trim(value) == ''){
+                    callback('名称除空格外应至少包含一个字符');
+                }else{
+                    callback();
+                }
+            }, 800);
+        }
+    }
+
 /*    checkGroupNameExit(rule, value, callback){
         const ProjectSetTree = this.props.ProjectSetTree;
         if (!value) {
@@ -143,6 +162,7 @@ class ProjectSetCreate extends React.Component {
             rules: [
                 { required: true, message:'请输入项目集合名称' },
                 { max: 30, message: '名称长度最大 30 个字符' },
+                { validator: this.trimName.bind(this) },
                /* { validator: this.checkGroupNameExit.bind(this) },*/
             ],
         });

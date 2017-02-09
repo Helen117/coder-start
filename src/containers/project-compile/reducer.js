@@ -39,7 +39,16 @@ import {
     PROJECT_COMPILE_GET_PIPELINE_SCRIPT_ERROR,
     PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_PENDING,
     PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_SUCCESS,
-    PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR
+    PROJECT_COMPILE_SAVE_PIPELINE_SCRIPT_ERROR,
+
+    PROJECT_COMPILE_GET_DEPLOY_HOSTS_PENDING,
+    PROJECT_COMPILE_GET_DEPLOY_HOSTS_SUCCESS,
+    PROJECT_COMPILE_GET_DEPLOY_HOSTS_ERROR,
+
+    PROJECT_COMPILE_SAVE_DEPLOY_HOST_PENDING,
+    PROJECT_COMPILE_SAVE_DEPLOY_HOST_SUCCESS,
+    PROJECT_COMPILE_SAVE_DEPLOY_HOST_ERROR
+
 
 } from './action';
 
@@ -47,7 +56,9 @@ const initialState = {
     getLoading:false,
     saveLoading:false,
     getPipelineJobLoading: false,
-    savePipelineJobLoading: false
+    savePipelineJobLoading: false,
+    savePipelineScriptLoading: false,
+    saveDeployHostLoading: false
 };
 
 export default function projectCompile(state = initialState, action = {}) {
@@ -179,6 +190,35 @@ export default function projectCompile(state = initialState, action = {}) {
                 ...state,
                 errors: action.payload.errorMsg,
                 savePipelineScriptLoading:false
+            };
+
+
+
+
+        //get deploy host list
+        case PROJECT_COMPILE_GET_DEPLOY_HOSTS_PENDING:
+            return {...state, deployHostList:{isLoading:true}};
+        case PROJECT_COMPILE_GET_DEPLOY_HOSTS_SUCCESS:
+            return {...state, deployHostList: {...action.payload, isLoading:false}};
+        case PROJECT_COMPILE_GET_DEPLOY_HOSTS_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                deployHostList:{isLoading:false}
+            };
+
+
+
+        //save deploy host
+        case PROJECT_COMPILE_SAVE_DEPLOY_HOST_PENDING:
+            return {...state, saveDeployHostResult: false, saveDeployHostLoading:true};
+        case PROJECT_COMPILE_SAVE_DEPLOY_HOST_SUCCESS:
+            return {...state, saveDeployHostResult: true, saveDeployHostLoading:false};
+        case PROJECT_COMPILE_SAVE_DEPLOY_HOST_ERROR:
+            return {
+                ...state,
+                errors: action.payload.errorMsg,
+                saveDeployHostLoading:false
             };
 
 

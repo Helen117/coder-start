@@ -122,14 +122,13 @@ RequestList.prototype.columns = (self)=>[
         render: (text, record) => {
             var url = api.opts.baseURI+"/attachfile/download?fileName="+text;
             return <div>
-                    <a href={url}>{text}</a>
-                </div>
+                <a href={url}>{text}</a>
+            </div>
         }
     },{
         title: '类型',
         dataIndex: 'types',
         width: 70,
-
     },{
         title: '里程碑',
         dataIndex: 'milestone_name',
@@ -155,19 +154,22 @@ RequestList.prototype.columns = (self)=>[
         title: '期望上线时间',
         dataIndex: 'deadline_date',
         width: 90,
+    }, {
+        title: '当前状态',
+        dataIndex: 'state',
+        width: 90,
     },{
         title: '业务范畴',
         dataIndex: 'label',
-        width: 90,
     },{
         title: 'iimp工单号',
         dataIndex: 'iimp_id',
     },{
         title: 'iimp子工单号',
         dataIndex: 'iimp_sub_id',
-    }, {
-        title: '当前状态',
-        dataIndex: 'state',
+    },{
+        title: '文件',
+        dataIndex: 'files',
     },{
         title: '操作',
         dataIndex: 'key',
