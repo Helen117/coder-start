@@ -8,6 +8,7 @@ import React, {PropTypes,Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Table } from 'antd';
+import api from '../../api';
 
 class RequestList extends Component {
 
@@ -76,7 +77,6 @@ class RequestList extends Component {
         }
         return list;
     }
-
     render() {
         const {requirementListData,page} = this.props;
         const dataSource = requirementListData?this.getDataSources(requirementListData.sets_Demands):[];
@@ -119,6 +119,12 @@ RequestList.prototype.columns = (self)=>[
     },{
         title: '文件',
         dataIndex: 'files',
+        render: (text, record) => {
+            var url = api.opts.baseURI+"/attachfile/download?fileName="+text;
+            return <div>
+                    <a href={url}>{text}</a>
+                </div>
+        }
     },{
         title: '类型',
         dataIndex: 'types',

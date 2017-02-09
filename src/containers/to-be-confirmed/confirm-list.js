@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import {getConfirmList,getDemandList} from './action';
 import DevelopTransPond from './transpond';
 import DevelopConfirm from './confirm';
+import api from '../../api';
 
 class ConfirmList extends Component {
 
@@ -111,6 +112,12 @@ ConfirmList.prototype.columns = (self)=>[{
 },{
     title: '文件',
     dataIndex: 'filesName',
+    render: (text, record) => {
+        var url = api.opts.baseURI+"/attachfile/download?fileName="+text;
+        return <div>
+            <a href={url}>{text}</a>
+        </div>
+    }
 },{
     title: '类型',
     dataIndex: 'type',
