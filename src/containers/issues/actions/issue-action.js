@@ -135,3 +135,18 @@ export function getMyIssue(data) {
         }
     }
 }
+
+export function revertBug(bug_id,username,reason) {
+    return {
+        type: 'REVERT_BUG',
+        payload: {
+            promise: api.post('/project/reject-bug',{
+                params: {
+                    bug_id: bug_id,
+                    username:username,
+                    reason:reason
+                }
+            })
+        }
+    }
+}

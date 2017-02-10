@@ -8,6 +8,7 @@ import React, {PropTypes,Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Table } from 'antd';
+import api from '../../api';
 
 class RequestList extends Component {
 
@@ -76,7 +77,6 @@ class RequestList extends Component {
         }
         return list;
     }
-
     render() {
         const {requirementListData,page} = this.props;
         const dataSource = requirementListData?this.getDataSources(requirementListData.sets_Demands):[];
@@ -117,10 +117,18 @@ RequestList.prototype.columns = (self)=>[
         fixed: self.props.editable ? 'left': false,
         width: 150,
     },{
+        title: '文件',
+        dataIndex: 'files',
+        render: (text, record) => {
+            var url = api.opts.baseURI+"/attachfile/download?fileName="+text;
+            return <div>
+                <a href={url}>{text}</a>
+            </div>
+        }
+    },{
         title: '类型',
         dataIndex: 'types',
         width: 70,
-
     },{
         title: '里程碑',
         dataIndex: 'milestone_name',
@@ -159,9 +167,6 @@ RequestList.prototype.columns = (self)=>[
     },{
         title: 'iimp子工单号',
         dataIndex: 'iimp_sub_id',
-    },{
-        title: '文件',
-        dataIndex: 'files',
     },{
         title: '操作',
         dataIndex: 'key',

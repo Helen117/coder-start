@@ -76,6 +76,13 @@ export default function issue(state = {}, action = {}) {
         case 'GET_DEMAND_ERROR':
             return {...state,demands:null,errors: action.payload.errorMsg};
 
+        case 'REVERT_BUG_PENDING':
+            return {...state,revertBugPending:true,revertBug:null};
+        case 'REVERT_BUG_SUCCESS':
+            return {...state,revertBug: action.payload,revertBugError: null,revertBugPending:false};
+        case 'REVERT_BUG_ERROR':
+            return {...state,revertBug:null,revertBugError: action.payload.errorMsg,revertBugPending:false};
+
         default:
             return state;
     }
