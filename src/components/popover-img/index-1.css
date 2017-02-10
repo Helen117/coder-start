@@ -24,7 +24,7 @@
 .tooltip_div{
     background-color: white;
     position: relative;
-    min-width: 200px;
+   /* min-width: 200px;*/
     border:1px solid #EEEEEE;
     border-radius:5px;
     box-shadow: -1px 2px 5px #EEEEEE;
