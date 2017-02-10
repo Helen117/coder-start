@@ -14,7 +14,8 @@ class FileTree extends React.Component {
         super();
         this.state = {
             dataSource:[],
-            filePath:""
+            filePath:"",
+            current:1
         }
     }
 
@@ -36,11 +37,13 @@ class FileTree extends React.Component {
     refreshFilePath(msg,data){
         if(msg == "evtClickTreePath"){
             this.setState({
-                filePath:data
+                filePath:data,
+                current:1
             })
         }else if(msg == "evtClickBrand"){
             this.setState({
-                filePath:data.filePath
+                filePath:data.filePath,
+                current:1
             })
         }
     }
@@ -55,6 +58,9 @@ class FileTree extends React.Component {
             for(var i=0; i<codeFile.length; i++){
                 this.state.dataSource.push(codeFile[i]);
             }
+            this.setState({
+                current:1
+            })
         }
     }
 
@@ -77,7 +83,8 @@ class FileTree extends React.Component {
             }
         }
         this.setState({
-            filePath:filePath
+            filePath:filePath,
+            current:1
         })
         if(type == "blob"){
             this.props.getCodeContent(projectInfo.id,filePath,brand);
@@ -97,10 +104,18 @@ class FileTree extends React.Component {
         }
     }
 
+    onChange(page) {//分页切换
+        this.setState({
+            current: page,
+        });
+    }
+
     render(){
         const { codeFile,visible } = this.props;
         const pagination = {
-            pageSize:20
+            pageSize:20,
+            current:this.state.current,
+            onChange:this.onChange.bind(this)
         };
         const dataSource = [];
         if(codeFile){

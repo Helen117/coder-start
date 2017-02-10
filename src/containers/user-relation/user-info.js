@@ -22,7 +22,8 @@ class UserInfo extends React.Component {
             moreGroupVisible:false,
             source_user_id:null,
             dataSource:[],
-            filterKeys:[]
+            filterKeys:[],
+            current:1
         }
     }
 
@@ -63,7 +64,8 @@ class UserInfo extends React.Component {
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.setState({
-                dataSource:[]
+                dataSource:[],
+                current:1
             })
             this.props.getGroupsUsers(parseInt(node),busiType);
         }
@@ -214,6 +216,12 @@ class UserInfo extends React.Component {
         return is_leader;
     }
 
+    onChange(page) {//分页切换
+        this.setState({
+            current: page,
+        });
+    }
+
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
             moveUserInfo,busiType,selectedUsers,treeFilterState} = this.props;
@@ -242,7 +250,9 @@ class UserInfo extends React.Component {
             onChange:this.onSelectedChange.bind(this)
         };
         const pagination = {
-            pageSize:20
+            pageSize:20,
+            current:this.state.current,
+            onChange:this.onChange.bind(this)
         };
         const dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
