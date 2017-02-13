@@ -9,7 +9,7 @@ import {getUserInfo} from './actions/user-relation-actions';
 import {MoveUser,DeleteGroupUser,setSelectedRowKeys} from './actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
-import {findUserIdByEmail} from './utils';
+import {findUserIdByEmail, isAdmin} from './utils';
 
 const FormItem = Form.Item;
 
@@ -224,7 +224,7 @@ class UserInfo extends React.Component {
 
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,busiType,selectedUsers,treeFilterState} = this.props;
+            moveUserInfo,busiType,selectedUsers,treeFilterState,loginInfo} = this.props;
 
         const getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
@@ -243,6 +243,8 @@ class UserInfo extends React.Component {
         if (treeFilterState[more_group_type] && treeFilterState[more_group_type].selectedNodeKey){
             selectedMoreGroup = treeFilterState[more_group_type].selectedNodeKey;
         }
+
+        const is_admin = isAdmin(loginInfo.roleList);
 
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
@@ -266,7 +268,7 @@ class UserInfo extends React.Component {
                     <Row>
                         <Table style={{"paddingTop":10}}
                                columns={this.groupColumns(this,showOpt,this.data,
-                                   userInfoData,this.state.filterKeys)}
+                                   userInfoData,this.state.filterKeys,is_admin)}
                                dataSource={dataSource}
                                rowSelection={showOpt?null:rowSelection}
                                pagination={pagination}
@@ -302,7 +304,7 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys)=>{
+UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys,is_admin)=>{
     if(showOpt){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
@@ -323,10 +325,15 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
             {title: "邮箱", dataIndex: "email", key: "email"},
             {title:"操作",dataIndex:"operate",key:"operate",
                 render(text,record){
+                    const is_leader = self.isLeader(userInfoData,record);
                     return (
                         <div>
-                            <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>移除</Button>
-                            <Button type="ghost" onClick={self.editUser.bind(self, record)}>移动</Button>
+                            {is_admin?<div>
+                                <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>
+                                    移除</Button>
+                                <Button type="ghost" onClick={self.editUser.bind(self, record)}>
+                                    移动</Button>
+                            </div>:<div/>}
                         </div>
                     )
                 }
