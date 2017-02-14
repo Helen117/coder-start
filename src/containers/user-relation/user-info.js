@@ -9,7 +9,7 @@ import {getUserInfo} from './actions/user-relation-actions';
 import {MoveUser,DeleteGroupUser,setSelectedRowKeys} from './actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
 import MoreUserGroup from '../../components/more-user-group';
-import {findUserIdByEmail} from './utils';
+import {findUserIdByEmail, isAdmin} from './utils';
 
 const FormItem = Form.Item;
 
@@ -22,7 +22,8 @@ class UserInfo extends React.Component {
             moreGroupVisible:false,
             source_user_id:null,
             dataSource:[],
-            filterKeys:[]
+            filterKeys:[],
+            current:1
         }
     }
 
@@ -63,7 +64,8 @@ class UserInfo extends React.Component {
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.setState({
-                dataSource:[]
+                dataSource:[],
+                current:1
             })
             this.props.getGroupsUsers(parseInt(node),busiType);
         }
@@ -214,9 +216,15 @@ class UserInfo extends React.Component {
         return is_leader;
     }
 
+    onChange(page) {//分页切换
+        this.setState({
+            current: page,
+        });
+    }
+
     render(){
         const {userRelationState,deleteUserInfo,userRelationTree, showUserInfo,visible,
-            moveUserInfo,busiType,selectedUsers,treeFilterState} = this.props;
+            moveUserInfo,busiType,selectedUsers,treeFilterState,loginInfo} = this.props;
 
         const getUserLoading = userRelationState['getUserInfo_'+busiType]?
             userRelationState['getUserInfo_'+busiType].loading:false;
@@ -236,13 +244,17 @@ class UserInfo extends React.Component {
             selectedMoreGroup = treeFilterState[more_group_type].selectedNodeKey;
         }
 
+        const is_admin = isAdmin(loginInfo.roleList);
+
         const {getFieldDecorator} = this.props.form;
         const rowSelection = {
             selectedRowKeys,
             onChange:this.onSelectedChange.bind(this)
         };
         const pagination = {
-            pageSize:20
+            pageSize:20,
+            current:this.state.current,
+            onChange:this.onChange.bind(this)
         };
         const dataSource = this.getDataSource(this.state.dataSource);
         const reasonProps = getFieldDecorator('reason',
@@ -256,7 +268,7 @@ class UserInfo extends React.Component {
                     <Row>
                         <Table style={{"paddingTop":10}}
                                columns={this.groupColumns(this,showOpt,this.data,
-                                   userInfoData,this.state.filterKeys)}
+                                   userInfoData,this.state.filterKeys,is_admin)}
                                dataSource={dataSource}
                                rowSelection={showOpt?null:rowSelection}
                                pagination={pagination}
@@ -292,7 +304,7 @@ UserInfo.contextTypes = {
     store: PropTypes.object.isRequired
 };
 
-UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys)=>{
+UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKeys,is_admin)=>{
     if(showOpt){
         return [
             {title: (<TableFilterTitle id="name" title="员工姓名"
@@ -313,10 +325,15 @@ UserInfo.prototype.groupColumns = (self,showOpt,dataSource,userInfoData,filterKe
             {title: "邮箱", dataIndex: "email", key: "email"},
             {title:"操作",dataIndex:"operate",key:"operate",
                 render(text,record){
+                    const is_leader = self.isLeader(userInfoData,record);
                     return (
                         <div>
-                            <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>移除</Button>
-                            <Button type="ghost" onClick={self.editUser.bind(self, record)}>移动</Button>
+                            {is_admin?<div>
+                                <Button type="ghost" onClick={self.moveOutUser.bind(self, 'delete', record)}>
+                                    移除</Button>
+                                <Button type="ghost" onClick={self.editUser.bind(self, record)}>
+                                    移动</Button>
+                            </div>:<div/>}
                         </div>
                     )
                 }

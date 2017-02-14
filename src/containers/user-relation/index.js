@@ -10,7 +10,7 @@ import {getUserRelationTree} from './actions/user-relation-actions';
 import {getSelectNode} from './actions/user-relation-actions';
 import PopoverImg from '../../components/popover-img/popoverimg';
 import 'pubsub-js';
-import {findUserGroupById} from './utils';
+import {findUserGroupById, isAdmin} from './utils';
 import {setUserGroupDelete} from './actions/user-relation-actions';
 import UserInfo from './user-info';
 import {getLeader} from '../register/actions/register-action';
@@ -156,12 +156,14 @@ class UserRelation extends React.Component{
     }
 
     render(){
-        const {userRelationTree,selectNode,deleteUserGroup,visible,treeFilterState} = this.props;
+        const {userRelationTree,selectNode,deleteUserGroup,visible,treeFilterState,loginInfo} = this.props;
         const selectedUserGroup = selectNode?selectNode.selectedUserGroup:'';
         const loadingTree = userRelationTree?userRelationTree.loading:false;
         const userTreeData = userRelationTree?(
             userRelationTree.userTreeData?userRelationTree.userTreeData:[]):[];
         const deleteGroupLoading = deleteUserGroup?deleteUserGroup.deleteLoading:false;
+
+        const is_admin = isAdmin(loginInfo.roleList);
 
         const content = (
             <div>
@@ -193,11 +195,11 @@ class UserRelation extends React.Component{
                 </Col>
                 <Col span={18}>
                     {
-                        visible=='true'?<div></div>:(
+                        visible=='true'?<div></div>:(is_admin?(
                             <Row style={{textAlign:'right'}}>
                                 <PopoverImg content={content}/>
                             </Row>
-                        )
+                        ):<div/>)
                     }
                     <Row>
                         <UserInfo showUserInfo={this.state.showUserInfo}

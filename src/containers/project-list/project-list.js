@@ -8,7 +8,7 @@ import React,{
     PropTypes,
     Component
 } from 'react';
-import {Icon, Row,Col, Button, Modal, notification, Form,message} from 'antd';
+import {Icon, Row,Col, Button, Modal, notification, Form,message,Table} from 'antd';
 import 'pubsub-js';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -23,7 +23,8 @@ class ProjectList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalVisible:false
+            modalVisible:false,
+            current:1
         };
     }
 
@@ -40,6 +41,17 @@ class ProjectList extends Component {
     componentWillReceiveProps(nextProps) {
         const { project, treeData } = nextProps;
         const {projectGroup} = this.props;
+
+        const next_projectGroup = nextProps.projectGroup;
+        const this_node = projectGroup.getGroupInfo?projectGroup.getGroupInfo.node:'';
+        const next_node = next_projectGroup.getGroupInfo?next_projectGroup.getGroupInfo.node:'';
+        const this_nodeId = this_node.id;
+        const next_nodeId = next_node.id;
+        //点击不同项目，重新加载数据
+        if(this_nodeId != next_nodeId && next_nodeId){
+            this.setState({current:1})
+        }
+
         //删除返回信息
         if(this.props.project.deleteProject && project.deleteProject
         && this.props.project.deleteProject.result != project.deleteProject.result
@@ -120,6 +132,12 @@ class ProjectList extends Component {
         return true;
     }
 
+    onChange(page) {//分页切换
+        this.setState({
+            current: page,
+        });
+    }
+
     render() {
         const {visible,projectGroup,treeData, project} = this.props;
         let listType = false;
@@ -146,6 +164,11 @@ class ProjectList extends Component {
             ):(<div></div>);
         }
         const deleteLoading = project.deleteProject?project.deleteProject.loading:false;
+        const pagination = {
+            pageSize:10,
+            current:this.state.current,
+            onChange:this.onChange.bind(this)
+        };
 
         if(listType){//展示项目组信息
             return (
@@ -153,9 +176,10 @@ class ProjectList extends Component {
                     <Row>
                         <div className ={styles.project_list_div}>
                             {groupDesc}
-                            <TableView columns={this.groupColumns(this)}
+                            <Table columns={this.groupColumns(this)}
                                        dataSource={dataSource}
-                            ></TableView>
+                                   pagination={pagination}
+                            ></Table>
                         </div>
                         <Modal title="确认删除此项目吗?"
                                visible={this.state.modalVisible}

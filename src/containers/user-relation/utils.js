@@ -25,3 +25,13 @@ export function findUserIdByEmail(email,userInfoData) {
         }
     }
 }
+
+export function isAdmin(rolelist) {//查看登录人员的角色是否为管理员
+    let is_admin = false;
+    for(let i=0; i<rolelist.length; i++){
+        if(rolelist[i] == 'admin'){
+            is_admin = true;
+        }
+    }
+    return is_admin;
+}

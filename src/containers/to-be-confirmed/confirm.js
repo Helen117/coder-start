@@ -112,7 +112,7 @@ const FormItem = Form.Item;
      }
 
      beforeUpload(file){
-          // console.log(file);
+           //console.log(file);
          var len = file.name.length;
          if(this.props.confirmList&&this.props.confirmList[0].role=='tester'){
              // if (!(file.type === 'application/vnd.ms-excel')) {
