@@ -234,7 +234,7 @@ function mapStateToProps(state) {
         getConfirmListLoading: state.toBeConfirmedItem.getConfirmListLoading,
         confirmList: state.toBeConfirmedItem.confirmList,
         demandInfo: state.toBeConfirmedItem.demand,
-        getMyProjectLoading: state.toBeConfirmedItem.loading,
+        getMyProjectLoading: state.toBeConfirmedItem.getProjectInfoLoading,
         getMyProjectInfo: state.toBeConfirmedItem.projectInfo,
         confirmLoading: state.toBeConfirmedItem.confirmLoading,
         confirmResult: state.toBeConfirmedItem.confirmResult,
