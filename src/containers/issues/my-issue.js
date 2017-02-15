@@ -23,7 +23,7 @@ class MyIssueList extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={visible: false,bugVisible:false};
+        this.state ={visible: false,bugVisible:false, record:''};
     }
 
     componentWillMount() {
@@ -35,6 +35,7 @@ class MyIssueList extends Component {
             dataList = data;
         }else{
             dataList.assigned_id=loginInfo.userId;
+            dataList.state='opened';
         }
         actions.getMyIssue(dataList);
 
@@ -47,8 +48,20 @@ class MyIssueList extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {actions,loginInfo,myIssueError} = this.props;
+        const {mergeBranch} = nextProps;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
+        }
+
+        if(this.props.mergeBranch != mergeBranch && mergeBranch ){
+            if( mergeBranch.length >1){
+                this.context.router.push({
+                    pathname: '/CreateMergeRequest',
+                    state: {record:this.state.record, projectId: this.state.record.project_id}
+                });
+            }else{
+                message.warning('请先fork项目后再提交代码');
+            }
         }
 
         if(nextProps.closeBug&&nextProps.closeBug!=this.props.closeBug){
@@ -132,14 +145,15 @@ class MyIssueList extends Component {
         });
     }
 
+
     isPromiseMerge(result,record){
         if(result) {
             const {fetchMergeBranchData, loginInfo} = this.props;
             fetchMergeBranchData('', record.project_id, loginInfo.userId);
-            this.context.router.push({
-                pathname: '/CreateMergeRequest',
-                state: {record, projectId: record.project_id}
-            });
+            this.setState({
+                record: record
+            })
+
         }else{
             notification.error({
                         message: '不能提交合并申请',
@@ -528,6 +542,7 @@ MyIssueList = Form.create()(MyIssueList);
 
 function mapStateToProps(state) {
     return {
+        mergeBranch : state.mergeRequest.mergeBranch,
         issueList: state.issue.myIssueList,
         loading:state.issue.myIssueLoading,
         myIssueError:state.issue.myIssueError,
