@@ -107,10 +107,10 @@ class ProjectSetMilestonesEdit extends React.Component {
     }
 
     handleCheckDuedateResult(result,callback){
-        if(result){
+        if(result.result){
             callback();
         }else{
-            callback('计划完成时间超出允许设定范围');
+            callback(result.reason);
         }
     }
 
