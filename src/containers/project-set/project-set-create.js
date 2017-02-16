@@ -121,8 +121,12 @@ class ProjectSetCreate extends React.Component {
             callback();
         } else {
             setTimeout(() => {
-                if(this.trim(value) == ''){
-                    callback('名称除空格外应至少包含一个字符');
+
+                var pat=new RegExp("[^a-zA-Z0-9\_\u4e00-\u9fa5]","i");
+                if(pat.test(value)==true)
+                {
+                    callback("项目名称中含有非法字符");
+                    return false;
                 }else{
                     callback();
                 }
