@@ -38,7 +38,7 @@ class BranchMerge extends React.Component {
         const {selectedProjectSet,loginInfo} = this.props;
         const set_id = selectedProjectSet? selectedProjectSet.id.substring(0,selectedProjectSet.id.length-2):null;
         const user_id = loginInfo.userId;
-        if(selectedProjectSet && selectedProjectSet.id.indexOf('_g') >= 0) {
+        if(selectedProjectSet && selectedProjectSet.id.indexOf('_p') < 0) {
             return(
                 <div style={{textAlign:"right"}}>
                     <Button type="primary" loading={this.props.codeToReleaseLoading} onClick={this.pushCodeToRelease.bind(this,user_id,set_id)}>dev->release</Button>

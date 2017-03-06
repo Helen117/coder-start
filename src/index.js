@@ -63,7 +63,8 @@ import ProjectCompile from './containers/project-compile';
 import ProjectBuildHistory from './containers/project-compile/build-history';
 import ProjectCompile2 from './containers/project-compile/index2';
 import DeployHostConfig from './containers/project-compile/deploy-host-config';
-import {BranchMerge} from './containers/branchMerge'
+import {BranchMerge} from './containers/branchMerge';
+import ProjectScanner from './containers/project-scanner/index';
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -140,6 +141,7 @@ ReactDOM.render(
                             <Route name="projectBuildHistory" path="project-build-history" component={ProjectBuildHistory}/>
                             <Route name="projectCompile2" path="project-compile2" component={ProjectCompile2}/>
 
+                            <Route name="ProjectScanner" breadcrumbName="质量扫描" path="projectScanner" component={ProjectScanner}/>
                         </Route>
                         <Route name="deployHostConfig" path="config-sshserver" component={DeployHostConfig}/>
 
