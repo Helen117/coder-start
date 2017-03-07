@@ -83,10 +83,14 @@ const validate = function (next, replace, callback) {
     if (!isLoggedIn && next.location.pathname != '/login') {
         replace('/login');
     }
-    callback();
+callback();
 };
 const root = document.createElement('div');
 //root.style = "min-height:100%";
+const loading = document.getElementById('loading');
+if (loading){
+    document.body.removeChild(loading);
+}
 document.body.appendChild(root);
 
 // console.log = (function(oriLogFunc){
