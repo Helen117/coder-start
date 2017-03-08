@@ -10,17 +10,31 @@ var HTMLWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
     debug: false,
     devtool: false,
-    entry: './src/index',
+    //entry: './src/index',
+    entry: {
+        app: "./src/index",
+        vendor: ["antd"],
+//        vendor: ["antd","echarts-for-react","react-syntax-highlighter","react-codemirror"],
+    },
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'bundle.js',
+//        filename: 'bundle.js',
+        filename: 'bundle-[name].js',
         publicPath: '/'
     },
     plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+             names: ["vendor"],
+        //     //filename: '[name].js',
+             minChunks: Infinity
+         }),
+        //new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"),
         //生成html文件
         new HTMLWebpackPlugin({
             //title: '上海移动开发管理系统',
-            template: './index.html'
+            //template: './index.html',
+            template: './index-prod.html',
+            // chunks:['app','vendor1']
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
         //new webpack.HotModuleReplacementPlugin(),
