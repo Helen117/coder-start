@@ -25,12 +25,11 @@ class ScannerItem extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        //调scannerItem接口
         const this_node = this.props.node;
         const next_node = nextProps.node;
         const this_branch = this.props.branch;
         const next_branch = nextProps.branch;
-
+        //检查该项目是否被扫描过
         if((this_node.id != next_node.id && next_node.id) || (this_branch != next_branch && next_branch)){
             const componentKey = next_node.name+'-'+next_node.id.substring(0,next_node.id.length-2)+'_'+next_branch;
             this.props.projectsHasScaned(componentKey);
@@ -40,7 +39,7 @@ class ScannerItem extends React.Component{
         const next_hasScanedInfo = nextProps.hasScanedInfo;
         const this_hasScaned = this_hasScanedInfo?(this_hasScanedInfo.result?this_hasScanedInfo.result:false):false;
         const next_hasScaned = next_hasScanedInfo?(next_hasScanedInfo.result?next_hasScanedInfo.result:false):false;
-
+        //获取扫描结果
         if(next_hasScaned && !next_hasScaned==this_hasScaned){
             const componentKey = next_node.name+'-'+next_node.id.substring(0,next_node.id.length-2)+'_'+next_branch;
             const metricKeys = "alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines";
@@ -106,9 +105,10 @@ class ScannerItem extends React.Component{
     }
 
     render(){
-        const {hasScanedInfo} = this.props;
+        const {hasScanedInfo,scannerItemInfo} = this.props;
         const hasScaned = hasScanedInfo?(hasScanedInfo.result?hasScanedInfo.result:false):false;
         const data = this.getDataSource();
+        const loading = scannerItemInfo?scannerItemInfo.loading:false;
 
         return(
             <div>
@@ -118,6 +118,7 @@ class ScannerItem extends React.Component{
                            bordered
                            style={{paddingTop:'10px'}}
                            pagination={false}
+                           loading={loading}
                     ></Table>
                 ):<Alert
                     message={
