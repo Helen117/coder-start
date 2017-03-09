@@ -39,7 +39,9 @@ module.exports.menu ={
                 {"id":37,"parentId":33,"cLevel":2,"name":"管理统计视角查看报表","link":"/projectSetTree/manageViewDemandRank","description":"","icon":null,"subMenu":[]},
                 {"id":39,"parentId":33,"cLevel":2,"name":"个人视角查看报表","link":"/projectSetTree/personal","description":"","icon":null,"subMenu":[]}
                 ]
-        }
+        },
+        {"id":40,"parentId":0,"cLevel":1,"name":"代码质量扫描","link":"/projectScanner","description":"","icon":"message",
+            "subMenu":[{"id":41,"parentId":40,"cLevel":2,"name":"扫描结果","link":"/project-mgr/projectScanner","description":"","icon":null,"subMenu":[]}]},
     ]
 };
 
