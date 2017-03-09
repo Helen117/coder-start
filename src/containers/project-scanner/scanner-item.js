@@ -105,9 +105,10 @@ class ScannerItem extends React.Component{
     }
 
     render(){
-        const {hasScanedInfo} = this.props;
+        const {hasScanedInfo,scannerItemInfo} = this.props;
         const hasScaned = hasScanedInfo?(hasScanedInfo.result?hasScanedInfo.result:false):false;
         const data = this.getDataSource();
+        const loading = scannerItemInfo?scannerItemInfo.loading:false;
 
         return(
             <div>
@@ -117,6 +118,7 @@ class ScannerItem extends React.Component{
                            bordered
                            style={{paddingTop:'10px'}}
                            pagination={false}
+                           loading={loading}
                     ></Table>
                 ):<Alert
                     message={

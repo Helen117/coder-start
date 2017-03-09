@@ -141,9 +141,10 @@ class ScannerList extends React.Component{
     }
 
     render(){
-        const {scannerKeysInfo} = this.props;
+        const {scannerKeysInfo,scannerListInfo} = this.props;
         const data = this.getDataSource();
         const projectsKeys = scannerKeysInfo?(scannerKeysInfo.result?scannerKeysInfo.result:""):"";
+        const loading = scannerListInfo?scannerListInfo.loading:false;
 
         return(
             <div>
@@ -152,6 +153,7 @@ class ScannerList extends React.Component{
                            dataSource={data}
                            bordered
                            style={{paddingTop:'10px'}}
+                           loading={loading}
                     ></Table>
                 ):<Alert
                     message={
