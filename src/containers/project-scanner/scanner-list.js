@@ -4,15 +4,17 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Table,Icon} from 'antd';
-import {getScannerList} from './actions/project-scanner-actions';
+import {Table,Icon,Alert,Row} from 'antd';
+import {getScannerList,getProjectsKeys} from './actions/project-scanner-actions';
 import styles from './index.css';
 import BackgroundCircle from '../../components/backgroung-circle';
 
 class ScannerList extends React.Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+
+        };
     }
 
     getProjectsIdName(projectGroup,branch){
@@ -30,24 +32,31 @@ class ScannerList extends React.Component{
     }
 
     componentWillMount(){
-        //调scannerList接口
+        //获取已扫描项目的key
         const {projectGroup,branch} = this.props;
         let projectsIdName = this.getProjectsIdName(projectGroup,branch);
-        let metricKeys = 'alert_status,reliability_rating,security_rating,sqale_rating,duplicated_lines_density,coverage,ncloc,ncloc_language_distribution';
-        this.props.getScannerList(projectsIdName,metricKeys);
+        this.props.getProjectsKeys(projectsIdName);
     }
 
     componentWillReceiveProps(nextProps){
-        //调scannerList接口
         const {projectGroup} = nextProps;
         const this_node = this.props.node;
         const next_node = nextProps.node;
         const this_branch = this.props.branch;
         const next_branch = nextProps.branch;
+        //获取已扫描项目的key
         if((this_node.id != next_node.id && next_node.id) || (this_branch != next_branch && next_branch)){
             let projectsIdName = this.getProjectsIdName(projectGroup,next_branch);
+            this.props.getProjectsKeys(projectsIdName);
+        }
+        //调scannerList接口
+        const this_scannerKeysInfo = this.props.scannerKeysInfo;
+        const next_scannerKeysInfo = nextProps.scannerKeysInfo;
+        const this_projectsKeys = this_scannerKeysInfo?(this_scannerKeysInfo.result?this_scannerKeysInfo.result:""):"";
+        const next_projectsKeys = next_scannerKeysInfo?(next_scannerKeysInfo.result?next_scannerKeysInfo.result:""):"";
+        if(next_projectsKeys && !next_projectsKeys==this_projectsKeys){
             let metricKeys = 'alert_status,reliability_rating,security_rating,sqale_rating,duplicated_lines_density,coverage,ncloc,ncloc_language_distribution';
-            this.props.getScannerList(projectsIdName,metricKeys);
+            this.props.getScannerList(next_projectsKeys,metricKeys);
         }
     }
 
@@ -114,9 +123,7 @@ class ScannerList extends React.Component{
         if(scannerListInfo && scannerListInfo.result){
             let measures = scannerListInfo.result.measures;
             let keys = this.findKeys(measures);
-            console.log("keys:",keys)
             let keyMeasures = this.getMeasuresData(keys,measures);
-            console.log("keyMeasures:",keyMeasures)
             for(let i=0;i<keyMeasures.length;i++){
                 dataSource.push({
                     key:i+1,
@@ -134,16 +141,27 @@ class ScannerList extends React.Component{
     }
 
     render(){
-
+        const {scannerKeysInfo} = this.props;
         const data = this.getDataSource();
+        const projectsKeys = scannerKeysInfo?(scannerKeysInfo.result?scannerKeysInfo.result:""):"";
 
         return(
             <div>
-                <Table columns={this.groupColumns(this)}
-                       dataSource={data}
-                       bordered
-                       style={{paddingTop:'10px'}}
-                ></Table>
+                {projectsKeys?(
+                    <Table columns={this.groupColumns(this)}
+                           dataSource={data}
+                           bordered
+                           style={{paddingTop:'10px'}}
+                    ></Table>
+                ):<Alert
+                    message={
+                        <Row>
+                            <span>该项目组或分支下没有已扫描项目！</span>
+                        </Row>
+                    }
+                    description=""
+                    type="info"
+                    showIcon/>}
             </div>
         )
     }
@@ -190,12 +208,14 @@ function mapStateToProps(state) {
     return {
         scannerListInfo:state.projectScanner.scannerListInfo,
         projectGroup:state.projectGroup,
+        scannerKeysInfo:state.projectScanner.scannerKeysInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getScannerList:bindActionCreators(getScannerList, dispatch),
+        getProjectsKeys:bindActionCreators(getProjectsKeys, dispatch),
     }
 }
 

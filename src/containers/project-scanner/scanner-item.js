@@ -4,8 +4,8 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Table,Icon} from 'antd';
-import {getScannerItem} from './actions/project-scanner-actions';
+import {Table,Icon,Alert,Row} from 'antd';
+import {getScannerItem,projectsHasScaned} from './actions/project-scanner-actions';
 import styles from './index.css';
 import BackgroundCircle from '../../components/backgroung-circle';
 
@@ -16,15 +16,12 @@ class ScannerItem extends React.Component{
     }
 
     componentWillMount(){
-        //调scannerItem接口
+        //检查项目是否被扫描过
         const {node,branch} = this.props;
-    /*传递参数：
-    * 1、componentKey：node.node+'-'+node.id+'_dev'
-        * 2、additionalFields：metrics,periods
-        * 3、metricKeys：alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines*/
         const componentKey = node.name+'-'+node.id.substring(0,node.id.length-2)+'_'+branch;
-        const metricKeys = "alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines";
-        this.props.getScannerItem(componentKey,metricKeys);
+        this.props.projectsHasScaned(componentKey);
+        /*const metricKeys = "alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines";
+        this.props.getScannerItem(componentKey,metricKeys);*/
     }
 
     componentWillReceiveProps(nextProps){
@@ -33,11 +30,18 @@ class ScannerItem extends React.Component{
         const next_node = nextProps.node;
         const this_branch = this.props.branch;
         const next_branch = nextProps.branch;
+
         if((this_node.id != next_node.id && next_node.id) || (this_branch != next_branch && next_branch)){
-            /*传递参数：
-             * 1、componentKey：next_node.node+'-'+next_node.id+'_dev'
-             * 2、additionalFields：metrics,periods
-             * 3、metricKeys：alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines*/
+            const componentKey = next_node.name+'-'+next_node.id.substring(0,next_node.id.length-2)+'_'+next_branch;
+            this.props.projectsHasScaned(componentKey);
+        }
+
+        const this_hasScanedInfo = this.props.hasScanedInfo;
+        const next_hasScanedInfo = nextProps.hasScanedInfo;
+        const this_hasScaned = this_hasScanedInfo?(this_hasScanedInfo.result?this_hasScanedInfo.result:false):false;
+        const next_hasScaned = next_hasScanedInfo?(next_hasScanedInfo.result?next_hasScanedInfo.result:false):false;
+
+        if(next_hasScaned && !next_hasScaned==this_hasScaned){
             const componentKey = next_node.name+'-'+next_node.id.substring(0,next_node.id.length-2)+'_'+next_branch;
             const metricKeys = "alert_status,quality_gate_details,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,code_smells,new_code_smells,sqale_rating,sqale_index,new_technical_debt,coverage,new_coverage,new_lines_to_cover,tests,duplicated_lines_density,new_duplicated_lines_density,duplicated_blocks,ncloc,ncloc_language_distribution,new_lines";
             this.props.getScannerItem(componentKey,metricKeys);
@@ -102,18 +106,28 @@ class ScannerItem extends React.Component{
     }
 
     render(){
-        const {node} = this.props;
-
+        const {hasScanedInfo} = this.props;
+        const hasScaned = hasScanedInfo?(hasScanedInfo.result?hasScanedInfo.result:false):false;
         const data = this.getDataSource();
 
         return(
             <div>
-                <Table columns={this.groupColumns(this)}
-                       dataSource={data}
-                       bordered
-                       style={{paddingTop:'10px'}}
-                       pagination={false}
-                ></Table>
+                {hasScaned?(
+                    <Table columns={this.groupColumns(this)}
+                           dataSource={data}
+                           bordered
+                           style={{paddingTop:'10px'}}
+                           pagination={false}
+                    ></Table>
+                ):<Alert
+                    message={
+                        <Row>
+                            <span>该项目组或分支下没有已扫描项目！</span>
+                        </Row>
+                    }
+                    description=""
+                    type="info"
+                    showIcon/>}
             </div>
         )
     }
@@ -179,12 +193,14 @@ ScannerItem.prototype.groupColumns = (self)=>[
 function mapStateToProps(state) {
     return {
         scannerItemInfo:state.projectScanner.scannerItemInfo,
+        hasScanedInfo:state.projectScanner.hasScanedInfo,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getScannerItem:bindActionCreators(getScannerItem, dispatch),
+        projectsHasScaned:bindActionCreators(projectsHasScaned, dispatch),
     }
 }
 

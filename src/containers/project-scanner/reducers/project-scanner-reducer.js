@@ -7,7 +7,13 @@ import {
     SCANNER_LIST_ERROR,
     SCANNER_ITEM_PENDING,
     SCANNER_ITEM_SUCCESS,
-    SCANNER_ITEM_ERROR
+    SCANNER_ITEM_ERROR,
+    PROJECTS_KEYS_PENDING,
+    PROJECTS_KEYS_SUCCESS,
+    PROJECTS_KEYS_ERROR,
+    PROJECT_HAS_SCANED_PENDING,
+    PROJECT_HAS_SCANED_SUCCESS,
+    PROJECT_HAS_SCANED_ERROR
 }from '../constants/scanner-action-types';
 
 const initialState = {
@@ -34,6 +40,20 @@ export default function projectScanner(state = initialState, action = {}) {
             return {...state,scannerItemInfo:{result:itemResponseObject,loading:false,disabled:false}};
         case SCANNER_ITEM_ERROR:
             return {...state,scannerItemInfo:{loading:false, disabled:false}};
+        //获取扫描过的项目key
+        case PROJECTS_KEYS_PENDING:
+            return {...state,scannerKeysInfo:{loading:true,disabled:true}};
+        case PROJECTS_KEYS_SUCCESS:
+            return {...state,scannerKeysInfo:{result:action.payload,loading:false,disabled:false}};
+        case PROJECTS_KEYS_ERROR:
+            return {...state,scannerKeysInfo:{loading:false, disabled:false}};
+        //检查项目是否被扫描过
+        case PROJECT_HAS_SCANED_PENDING:
+            return {...state,hasScanedInfo:{loading:true,disabled:true}};
+        case PROJECT_HAS_SCANED_SUCCESS:
+            return {...state,hasScanedInfo:{result:action.payload,loading:false,disabled:false}};
+        case PROJECT_HAS_SCANED_ERROR:
+            return {...state,hasScanedInfo:{loading:false, disabled:false}};
         default:
             return state;
     }
