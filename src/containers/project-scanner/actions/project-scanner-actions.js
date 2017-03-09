@@ -7,14 +7,15 @@ import {
     SCANNER_ITEM
 } from '../constants/scanner-action-types';
 
-export function getScannerList(groupId) {
+export function getScannerList(projectsIdName,metricKeys) {
     var path = '/sonar/list';
     return {
         type: SCANNER_LIST,
         payload: {
             promise: api.post(path, {
                 params: {
-                    groupId: groupId
+                    projectsIdName: projectsIdName,
+                    metricKeys:metricKeys
                 }
             })
         }

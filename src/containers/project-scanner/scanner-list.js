@@ -15,58 +15,125 @@ class ScannerList extends React.Component{
         this.state = {};
     }
 
+    getProjectsIdName(projectGroup,branch){
+        const groupInfo = projectGroup.getGroupInfo?(
+            projectGroup.getGroupInfo.groupInfo?projectGroup.getGroupInfo.groupInfo:''):'';
+        let projectsIdName = [];
+        if(groupInfo.children){
+            for(let i=0; i<groupInfo.children.length; i++){
+                let project = groupInfo.children[i];
+                projectsIdName[i] = project.name+'-'+project.id.substring(0,project.id.length-2)+'_'+branch;
+            }
+        }
+
+        return projectsIdName;
+    }
+
     componentWillMount(){
         //调scannerList接口
-        const {scannerList} = this.props;
-        /*if(!scannerList){
-            this.props.getScannerList();
-        }*/
+        const {projectGroup,branch} = this.props;
+        let projectsIdName = this.getProjectsIdName(projectGroup,branch);
+        let metricKeys = 'alert_status,reliability_rating,security_rating,sqale_rating,duplicated_lines_density,coverage,ncloc,ncloc_language_distribution';
+        this.props.getScannerList(projectsIdName,metricKeys);
     }
 
     componentWillReceiveProps(nextProps){
         //调scannerList接口
+        const {projectGroup} = nextProps;
         const this_node = this.props.node;
         const next_node = nextProps.node;
-        /*if(this_node.id != next_node.id && next_node.id){
-            this.props.getScannerList();
-        }*/
+        const this_branch = this.props.branch;
+        const next_branch = nextProps.branch;
+        if((this_node.id != next_node.id && next_node.id) || (this_branch != next_branch && next_branch)){
+            let projectsIdName = this.getProjectsIdName(projectGroup,next_branch);
+            let metricKeys = 'alert_status,reliability_rating,security_rating,sqale_rating,duplicated_lines_density,coverage,ncloc,ncloc_language_distribution';
+            this.props.getScannerList(projectsIdName,metricKeys);
+        }
     }
 
+    findKeys(measures){
+        let keys = [],dataKeys = [];
+        for(let i=0;i<measures.length;i++){
+            if(i==0){
+                keys[0]=measures[i].component;
+                continue;
+            }
+            let count = 0;
+            for(let j=0;j<keys.length;j++){
+                if(measures[i].component == keys[j]){
+                    break;
+                }else{
+                    count++;
+                }
+            }
+            if(count == keys.length){
+                keys[keys.length] = measures[i].component;
+            }
+        }
+        for(let i=0;i<keys.length;i++){
+            let keyObject = {};
+            keyObject.component = keys[i];
+            dataKeys[i] = keyObject;
+        }
+        return dataKeys;
+    }
+
+    getMeasuresData(keys,measures) {
+        let keyMeasures = keys;
+        for (let i = 0; i < keyMeasures.length; i++) {
+            for (let j = 0; j < measures.length; j++) {
+                if (keyMeasures[i].component == measures[j].component) {
+                    if (measures[j].metric == 'reliability_rating') {
+                        keyMeasures[i].reliability = measures[j].value;
+                    }
+                    if (measures[j].metric == 'security_rating') {
+                        keyMeasures[i].safety = measures[j].value;
+                    }
+                    if (measures[j].metric == 'sqale_rating') {
+                        keyMeasures[i].maintainability = measures[j].value;
+                    }
+                    if (measures[j].metric == 'ncloc') {
+                        keyMeasures[i].codeNum = measures[j].value;
+                    }
+                    if (measures[j].metric == 'duplicated_lines_density') {
+                        keyMeasures[i].repetition = measures[j].value + "%";
+                    }
+                    if (measures[j].metric == 'coverage') {
+                        keyMeasures[i].coverage = measures[j].value;
+                    }
+                }
+            }
+        }
+        return keyMeasures;
+    }
+
+
     getDataSource(){
-        const {scannerList} = this.props;
-        const dataSource_bak = [];
-        if(scannerList){
-            for(let i=0; i<scannerList.length; i++){
-                dataSource_bak.push({
+        const {scannerListInfo} = this.props;
+        const dataSource = [];
+        if(scannerListInfo && scannerListInfo.result){
+            let measures = scannerListInfo.result.measures;
+            let keys = this.findKeys(measures);
+            console.log("keys:",keys)
+            let keyMeasures = this.getMeasuresData(keys,measures);
+            console.log("keyMeasures:",keyMeasures)
+            for(let i=0;i<keyMeasures.length;i++){
+                dataSource.push({
                     key:i+1,
-                    projectName:"devops-scm",
-                    reliability:"E",
-                    safety:"B",
-                    maintainability:"A",
-                    coverage:"--",
-                    repetition:"4%",
-                    codeNum:"18k"
+                    projectName:keyMeasures[i].component,
+                    reliability:keyMeasures[i].reliability,
+                    safety:keyMeasures[i].safety,
+                    maintainability:keyMeasures[i].maintainability,
+                    coverage:keyMeasures[i].coverage,
+                    repetition:keyMeasures[i].repetition,
+                    codeNum:keyMeasures[i].codeNum
                 })
             }
         }
-
-        const dataSource = [
-            {
-                key:1,
-                projectName:"devops-scm",
-                reliability:"5",
-                safety:"2",
-                maintainability:"1",
-                coverage:"--",
-                repetition:"4%",
-                codeNum:"18k"
-            }
-        ];
         return dataSource;
     }
 
     render(){
-        const {node} = this.props;
 
         const data = this.getDataSource();
 
@@ -121,7 +188,8 @@ ScannerList.prototype.groupColumns = (self)=>[
 
 function mapStateToProps(state) {
     return {
-        //scannerList:state.projectScanner.scannerListInfo.result,
+        scannerListInfo:state.projectScanner.scannerListInfo,
+        projectGroup:state.projectGroup,
     }
 }
 

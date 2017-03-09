@@ -19,7 +19,9 @@ export default function projectScanner(state = initialState, action = {}) {
         case SCANNER_LIST_PENDING:
             return {...state,scannerListInfo:{loading:true,disabled:true}};
         case SCANNER_LIST_SUCCESS:
-            return {...state,scannerListInfo:{result: action.payload,loading:false,disabled:false}};
+            let listResponseString = action.payload;
+            let listResponseObject = JSON.parse(listResponseString);
+            return {...state,scannerListInfo:{result: listResponseObject,loading:false,disabled:false}};
         case SCANNER_LIST_ERROR:
             return {...state,scannerListInfo:{loading:false, disabled:false}};
 
@@ -27,9 +29,9 @@ export default function projectScanner(state = initialState, action = {}) {
         case SCANNER_ITEM_PENDING:
             return {...state,scannerItemInfo:{loading:true,disabled:true}};
         case SCANNER_ITEM_SUCCESS:
-            let responseString = action.payload;          
-            let responseObject = JSON.parse(responseString);            
-            return {...state,scannerItemInfo:{result:responseObject,loading:false,disabled:false}};
+            let itemResponseString = action.payload;
+            let itemResponseObject = JSON.parse(itemResponseString);
+            return {...state,scannerItemInfo:{result:itemResponseObject,loading:false,disabled:false}};
         case SCANNER_ITEM_ERROR:
             return {...state,scannerItemInfo:{loading:false, disabled:false}};
         default:
