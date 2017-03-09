@@ -85,6 +85,7 @@ class ProjectCompile2 extends React.Component{
                 gitUrl: pipelineJobInfo.gitUrl,
                 buildScript: pipelineJobInfo.buildScript,
                 packageScript: pipelineJobInfo.packageScript,
+                sonarScanSourcePath: pipelineJobInfo.sonarScanSourcePath,
                 deployConfigs: deployConfigsArray,
                 deployConfigShouldRender: pipelineJobInfo.jobName?true:false
             });
@@ -359,6 +360,15 @@ class ProjectCompile2 extends React.Component{
                                                             {rules:[
                                                                 {required:true, message:'请输入编译脚本'}
                                                             ]})(<Input type="textarea" rows={3} placeholder="请输入编译脚本"/>)}
+                                                    </FormItem>
+                                                } />
+                                            case 120:
+                                                return <Step key={value.id} title={value.name} description={
+                                                    <FormItem {...formItemLayout} label="扫描文件目录:">
+                                                        {getFieldDecorator('sonarScanSourcePath',
+                                                            {rules:[
+                                                                {required:true, message:'请输入扫描源文件目录，多个目录使用逗号分隔'}
+                                                            ]})(<Input type="text" placeholder="请输入扫描源文件目录，多个目录使用逗号分隔"/>)}
                                                     </FormItem>
                                                 } />
                                             case 140:
