@@ -1,0 +1,5 @@
+projectKey=devops-web-37
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/devops-web-37
+ceTaskId=AVqI8EpB_UbCGszTfe7L
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVqI8EpB_UbCGszTfe7L

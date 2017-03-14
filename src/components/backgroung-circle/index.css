@@ -1,0 +1,43 @@
+.span_style{
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    color: #FFF;
+    text-align: center;
+}
+.div_basic{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #e00;
+}
+.E_level{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #e00;
+}
+.D_level{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #f77700;
+}
+.C_level{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #fe0;
+}
+.B_level{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #80cc00;
+}
+.A_level{
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #0a0;
+}

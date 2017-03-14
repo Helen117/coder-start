@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上海移动开发管理系统</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        #loading{
+            position:absolute;
+            left:40%;
+            top:30%;
+            padding:2px;
+            z-index:20001;
+            height:auto;
+        }
+        #loading .loading-indicator{
+            background:white;
+            color:#666;
+            font:bold 18px Microsoft YaHei,SimSun,sans-serif;
+            padding:10px;
+            margin:0;
+            height:auto;
+        }
+    </style>
+    <!--<script src="/assets/require.js"></script>-->
+    <script>
+        window.onload = function() {
+            //对于动态插入的SCRIPT文件，会非阻塞加载并立即执行，所以多个脚本之间的运行顺序是无法保证的（除了Firefox和Opera），
+            // 静态加载能顺序执行，以下实现顺序加载顺序执行，可以通过LABjs或requireJS实现并行加载与顺序执行
+            var loadJS = function(url, needCache, success) {
+                var domScript = document.createElement('script');
+                domScript.type = "text/javascript";
+                domScript.src = url;
+                if (!needCache){
+                    domScript.src += "?t=" + new Date().getTime();
+                }
+                success = success || function(){};
+                domScript.onload = domScript.onreadystatechange = function() {
+                    if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
+                        success();
+                        this.onload = this.onreadystatechange = null;
+                        this.parentNode.removeChild(this);
+                    }
+                }
+                document.getElementsByTagName('body')[0].appendChild(domScript);
+            }
+            var userAgent = navigator.userAgent;
+            if (window.applicationCache && (userAgent.indexOf("Firefox") > -1 || userAgent.indexOf("Chrome") > -1 || userAgent.indexOf("Safari") > -1 || userAgent.indexOf("Edge") > -1)) {
+                //document.write("<script src='/bundle.js'><\/script>");
+//                loadJS('/bundle-vendor1.js', true, function () {
+//                    loadJS('/bundle-app.js', false);
+//                });
+                //以下调用偶尔会出问题：webpackJsonp is not defined
+//                require(['/bundle-vendor1.js', '/bundle-vendor2.js'], function (){
+//                    loadJS('/bundle-app.js', false);
+//                });
+            }else{
+                alert("请使用支持HTML5的Firefox,Chrome,Safari,Edge浏览器");
+            }
+        }
+
+    </script>
+</head>
+<body style="background: #ECECEC">
+<div id="loading">
+    <div class="loading-indicator">
+        <img src="/assets/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
+        <span id="loading-msg">系统正在加载，请稍候...</span>
+    </div>
+</div>
+<script src="/bundle-vendor.js"></script>
+<script src="/bundle-app.js"></script>
+</body>
+</html>
