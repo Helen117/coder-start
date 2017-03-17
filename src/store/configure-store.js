@@ -31,6 +31,7 @@ import UpdateUserInfo from '../containers/update-user-info/reducer/update-user-i
 import treeFilter from '../components/tree-filter/reducer';
 import report from '../containers/report/report-reducer';
 import branchMerge from '../containers/branchMerge/reducers';
+import projectScanner from '../containers/project-scanner/reducers/project-scanner-reducer';
 const reducer = combineReducers({
     login,
     menu,
@@ -59,6 +60,7 @@ const reducer = combineReducers({
     treeFilter,
     report,
     branchMerge,
+    projectScanner
 })
 
 
