@@ -5,8 +5,9 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Tree, Input, Icon, Form } from 'antd';
-import {getAsyncProjectSet, getAsyncProjectMilestone,saveAsyncTreeData} from './actions/leangoo-actions';
+import {getAsyncProjectSet,saveAsyncTreeData} from './actions/leangoo-actions';
 import fetchData from '../../utils/fetch';
+import styles from './index.css';
 
 const TreeNode = Tree.TreeNode;
 
@@ -14,8 +15,7 @@ class AsyncTree extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            treeData:[],
-            treeNodeLoadKey:""
+            loadSetNode:""
         }
     }
 
@@ -24,22 +24,7 @@ class AsyncTree extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {getProjectMilestone, getProjectSet} = this.props;
 
-        if(nextProps.getProjectSet && nextProps.getProjectSet.result
-            && nextProps.getProjectSet.result != getProjectSet.result){
-            const tree_projectset = nextProps.getProjectSet.result?nextProps.getProjectSet.result:[];
-            this.setState({
-                treeData:tree_projectset
-            })
-        }
-
-        /*if(nextProps.getProjectMilestone && nextProps.getProjectMilestone.result
-            && nextProps.getProjectMilestone.result != getProjectMilestone.result){
-            let treeData = [...this.state.treeData];
-            let milestoneData = nextProps.getProjectMilestone.result?nextProps.getProjectMilestone.result:[];
-            this.getNewTreeData(treeData, this.state.treeNodeLoadKey, milestoneData, 2);
-        }*/
     }
 
     setLeaf(treeData, curKey) {
@@ -76,20 +61,30 @@ class AsyncTree extends React.Component {
 
     onSelect(info){
         console.log('selected', info);
+        const {onSelect} = this.props;
+        if(onSelect){
+            onSelect(info);
+        }
     }
 
     onLoadData(treeNode){
-        this.setState({
-            treeNodeLoadKey:treeNode.props.eventKey
-        })
         return new Promise((resolve, reject)=> {
-            fetchData('/devops/story/milestone', treeNode.props.eventKey, null, (result)=> {
-                let treeData = [...this.state.treeData];
+            fetchData('/story/milestone', {set_id:treeNode.props.eventKey}, null, (result)=> {
+                let treeData = this.getTreeData();
                 this.getNewTreeData(treeData,treeNode.props.eventKey,result);
-                this.setState({treeData:treeData});
+                this.setState({
+                    loadSetNode:treeNode.props.eventKey
+                })
                 resolve();
             });
         });
+    }
+
+    getTitleElement(item){
+        console.log('item:',item)
+        let title = item.setId?(<span><Icon type="plus-circle-o" className={styles.color} />
+            <span>{item.name}</span></span>):<span>{item.name}</span>;
+        return title;
     }
 
     getTreeNodes(data) {
@@ -97,25 +92,43 @@ class AsyncTree extends React.Component {
             if (item.children && item.children.length>0) {
                 return (
                     <TreeNode key={item.id} isLeaf={item.isLeaf}
-                              title={<span><Icon type={item.icon} /><span>{item.name}</span></span>}>
+                              title={this.getTitleElement(item)}>
                         {this.getTreeNodes(item.children)}
                     </TreeNode>
                 );
             }
             return <TreeNode key={item.id} isLeaf={item.isLeaf}
-                             title={<span><Icon type={item.icon} /><span>{item.name}</span></span>} />;
+                             title={this.getTitleElement(item)} />;
         });
     }
 
-    render(){
+    getTreeData(){
+        const { getProjectSet} = this.props;
+        let treeData = getProjectSet?(getProjectSet.result?getProjectSet.result:[]):[];
+        return treeData;
+    }
 
-        let nodes = this.getTreeNodes(this.state.treeData);
+    render(){
+        const { getProjectSet} = this.props;
+        let treeData = this.getTreeData();
+        let nodes = this.getTreeNodes(treeData);
+        const loading = getProjectSet?getProjectSet.loading:false;
 
         return(
             <div style={{border: "1px solid #D9D9D9", padding:10}}>
-                <Tree onSelect={this.onSelect.bind(this)} loadData={this.onLoadData.bind(this)}>
-                    {nodes}
-                </Tree>
+                {loading?(
+                    <span className="filter-not-found">
+                        <i className="anticon anticon-loading"><span style={{paddingLeft:5}}>正在加载数据...</span></i>
+                    </span>
+                ):(
+                    nodes.length==0?(
+                        <span className="filter-not-found">没有找到数据</span>
+                    ):(
+                        <Tree onSelect={this.onSelect.bind(this)} loadData={this.onLoadData.bind(this)}>
+                            {nodes}
+                        </Tree>
+                    )
+                )}
             </div>
         )
     }
@@ -140,7 +153,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getAsyncProjectSet : bindActionCreators(getAsyncProjectSet, dispatch),
-        getAsyncProjectMilestone : bindActionCreators(getAsyncProjectMilestone, dispatch),
         saveAsyncTreeData : bindActionCreators(saveAsyncTreeData, dispatch)
     }
 }

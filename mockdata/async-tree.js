@@ -34,14 +34,20 @@ module.exports.blockbordProjectMilestone ={
         {
             "id":"M_1",
             "name":"里程碑1",
+            "setId":"2",
+            "isLeaf":true,
         },
         {
             "id":"M_2",
             "name":"里程碑2",
+            "setId":"2",
+            "isLeaf":true,
         },
         {
             "id":"M_3",
             "name":"里程碑3",
+            "setId":"2",
+            "isLeaf":true,
         }
     ]
 }

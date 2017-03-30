@@ -7,27 +7,14 @@ import {ASYNC_TREE_PROJECTSET,
     SAVE_ASYNC_TREE_DATA} from '../constants/leangoo-action-types';
 
 export function getAsyncProjectSet() {
-    var path = '/devops/story/sets';
+    var path = '/story/sets';
+    //var path = '/async-tree/projectSet';
     return {
         type: ASYNC_TREE_PROJECTSET,
         payload: {
             promise: api.post(path, {
                 params: {
 
-                }
-            })
-        }
-    }
-}
-
-export function getAsyncProjectMilestone(projectSetId) {
-    var path = '/async-tree/mileStone';
-    return {
-        type: ASYNC_TREE_PROJECTMILESTONE,
-        payload: {
-            promise: api.post(path, {
-                params: {
-                    //projectSetId:projectSetId
                 }
             })
         }
