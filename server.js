@@ -28,6 +28,7 @@ const performance = require('./mockdata/performance.json');
 const group = require('./mockdata/group.json');
 
 const demand = require('./mockdata/demand.json');
+const task = require('./mockdata/taskInfo.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
 const setsMilestone = milstone_.milstone;
@@ -69,6 +70,10 @@ const projectInfo = require('./mockdata/projectInfo.json');
 
 const projectMembers = require('./mockdata/projectMembers.json');
 
+const asyncTree = require('./mockdata/async-tree.js');
+const blockbordProjectSet = asyncTree.blockbordProjectSet;
+const blockbordProjectMilestone = asyncTree.blockbordProjectMilestone;
+
 const app = express();
 
 // Webpack developer
@@ -99,6 +104,10 @@ app.post('/gitlab/login', function (req, res) {
     } else {
         res.json({success: false, errorMsg:'用户名或者密码错误！'});
     }
+});
+
+app.post('/gitlab/getTask', function (req, res) {
+    res.json(task);
 });
 
 app.post('/gitlab/user/add', function (req, res) {
@@ -229,6 +238,14 @@ app.post('/gitlab/report/labels', function (req, res) {
 
 app.post('/gitlab/groups/user', function (req, res) {
     res.json(groupTree);
+});
+
+app.post('/gitlab/async-tree/projectSet', function (req, res) {
+    res.json(blockbordProjectSet);
+});
+
+app.post('/gitlab/async-tree/mileStone', function (req, res) {
+    res.json(blockbordProjectMilestone);
 });
 
 app.post('/gitlab/project-mgr/createProject', function (req, res) {
