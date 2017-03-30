@@ -74,6 +74,9 @@ import DevTools from "./tools/ReduxDevTools";
 import MainPageComponent from './components/echarts-demo/MainPageComponent.jsx';
 import EchartsComponent from './components/echarts-demo/EchartsComponent.jsx';
 
+import TaskCard from './containers/task-card/index';
+import EditTask from './containers/task-card/edit-task';
+
 const history = useRouterHistory(createHistory)({basename: ''});
 //const history = syncHistoryWithStore(hashHistory, store);
 const store = configureStore();
@@ -209,6 +212,9 @@ ReactDOM.render(
                     <Route path="/echarts" component={MainPageComponent}>
                         <Route path="/echarts/:type" component={EchartsComponent}/>
                     </Route>
+
+                    <Route path="/task" component={TaskCard}/>
+                    <Route path="/editTask" component={EditTask}/>
 
                     <Route path="*" component={NotFound}/>
                 </Route>

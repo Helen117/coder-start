@@ -33,6 +33,7 @@ import report from '../containers/report/report-reducer';
 import branchMerge from '../containers/branchMerge/reducers';
 import projectScanner from '../containers/project-scanner/reducers/project-scanner-reducer';
 import leangooReducer from '../containers/leangoo/reducers/leangoo-reducers';
+import taskCard from '../containers/task-card/reducer';
 const reducer = combineReducers({
     login,
     menu,
@@ -62,7 +63,9 @@ const reducer = combineReducers({
     report,
     branchMerge,
     projectScanner,
-    leangooReducer
+    leangooReducer,
+    taskCard
+
 })
 
 
