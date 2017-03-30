@@ -60,29 +60,45 @@ class AsyncTree extends React.Component {
     }
 
     onSelect(info){
-        console.log('selected', info);
+        //console.log('selected', info);
         const {onSelect} = this.props;
         if(onSelect){
             onSelect(info);
         }
     }
 
+    hasChildren(parentId){
+        const treeData = this.getTreeData();
+        let has = false;
+        for(let i=0; i<treeData.length; i++){
+            if(parentId == treeData[i].id && treeData[i].children){
+                has = true;
+            }
+        }
+        return has;
+    }
+
     onLoadData(treeNode){
         return new Promise((resolve, reject)=> {
-            fetchData('/story/milestone', {set_id:treeNode.props.eventKey}, null, (result)=> {
-                let treeData = this.getTreeData();
-                this.getNewTreeData(treeData,treeNode.props.eventKey,result);
-                this.setState({
-                    loadSetNode:treeNode.props.eventKey
-                })
+            let has = this.hasChildren(treeNode.props.eventKey);
+            if(has){
                 resolve();
-            });
+            }else {
+                fetchData('/story/milestone', {set_id:treeNode.props.eventKey}, null, (result)=> {
+                    let treeData = this.getTreeData();
+                    this.getNewTreeData(treeData,treeNode.props.eventKey,result);
+                    this.setState({
+                        loadSetNode:treeNode.props.eventKey
+                    })
+                    resolve();
+                });
+            }
         });
     }
 
     addStory(e){
         e.stopPropagation();
-        console.log("1111")
+        //console.log("1111")
     }
 
     getTitleElement(item){
