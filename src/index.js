@@ -65,6 +65,7 @@ import ProjectCompile2 from './containers/project-compile/index2';
 import DeployHostConfig from './containers/project-compile/deploy-host-config';
 import {BranchMerge} from './containers/branchMerge';
 import ProjectScanner from './containers/project-scanner/index';
+import Leangoo from './containers/leangoo/index';
 //import authUtils from './utils/auth';
 //import {getCookie} from './utils';
 import * as Cookies from "js-cookie";
@@ -200,6 +201,7 @@ ReactDOM.render(
 
                         <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
                         <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
+                        <Route name="Leangoo" breadcrumbName="看板" path="leangoo" component={Leangoo}/>
                     </Route>
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>

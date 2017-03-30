@@ -65,6 +65,10 @@ const projectInfo = require('./mockdata/projectInfo.json');
 
 const projectMembers = require('./mockdata/projectMembers.json');
 
+const asyncTree = require('./mockdata/async-tree.js');
+const blockbordProjectSet = asyncTree.blockbordProjectSet;
+const blockbordProjectMilestone = asyncTree.blockbordProjectMilestone;
+
 const app = express();
 
 // Webpack developer
@@ -225,6 +229,14 @@ app.post('/gitlab/report/labels', function (req, res) {
 
 app.post('/gitlab/groups/user', function (req, res) {
     res.json(groupTree);
+});
+
+app.post('/gitlab/async-tree/projectSet', function (req, res) {
+    res.json(blockbordProjectSet);
+});
+
+app.post('/gitlab/async-tree/mileStone', function (req, res) {
+    res.json(blockbordProjectMilestone);
 });
 
 app.post('/gitlab/project-mgr/createProject', function (req, res) {
