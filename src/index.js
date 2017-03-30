@@ -72,7 +72,7 @@ import DevTools from "./tools/ReduxDevTools";
 
 import MainPageComponent from './components/echarts-demo/MainPageComponent.jsx';
 import EchartsComponent from './components/echarts-demo/EchartsComponent.jsx';
-
+import  {Story,EditStory} from './containers/story'
 const history = useRouterHistory(createHistory)({basename: ''});
 //const history = syncHistoryWithStore(hashHistory, store);
 const store = configureStore();
@@ -201,6 +201,10 @@ ReactDOM.render(
                         <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
                         <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
                     </Route>
+
+                    <Route name="story" breadcrumbName="story" path="story" component={Story}/>
+                    <Route name="editStory" breadcrumbName="editStory" path="editStory" component={EditStory}/>
+
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
 
