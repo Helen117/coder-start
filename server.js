@@ -10,6 +10,10 @@ const config = require('./webpack.config');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDeveloping = !isProduction;
 
+const story_ = require('./mockdata/story');
+var story = story_.story;
+var task = story_.task;
+
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 
@@ -251,6 +255,16 @@ app.post('/gitlab/project-mgr/createProject', function (req, res) {
 app.post('/gitlab/project-mgr/createGroup', function (req, res) {
     res.json({success: true,errorCode: null,errorMsg: null,result:1});
 });
+
+
+app.get('/gitlab/getStory', function (req, res) {
+    res.json(story);
+});
+
+app.get('/gitlab/getTask', function (req, res) {
+    res.json(task);
+});
+
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))

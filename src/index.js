@@ -73,7 +73,7 @@ import DevTools from "./tools/ReduxDevTools";
 
 import MainPageComponent from './components/echarts-demo/MainPageComponent.jsx';
 import EchartsComponent from './components/echarts-demo/EchartsComponent.jsx';
-
+import  {Story,EditStory} from './containers/story';
 import TaskCard from './containers/task-card/index';
 import EditTask from './containers/task-card/edit-task';
 
@@ -204,8 +204,13 @@ ReactDOM.render(
 
                         <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
                         <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
-                        <Route name="Leangoo" breadcrumbName="看板" path="leangoo" component={Leangoo}/>
-                    </Route>
+                        <Route name="Leangoo" breadcrumbName="看板" path="leangoo" component={Leangoo}>
+                            <Route name="story" breadcrumbName="story" path="story" component={Story}/>
+                        </Route>
+                        </Route>
+
+                    <Route name="editStory" breadcrumbName="editStory" path="editStory" component={EditStory}/>
+
                     <Route path="register" component={Register}/>
                     <Route path="login" component={Login}/>
 
