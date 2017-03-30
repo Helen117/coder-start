@@ -80,11 +80,17 @@ class AsyncTree extends React.Component {
         });
     }
 
+    addStory(e){
+        e.stopPropagation();
+        console.log("1111")
+    }
+
     getTitleElement(item){
-        console.log('item:',item)
-        let title = item.setId?(<span><Icon type="plus-circle-o" className={styles.color} />
-            <span>{item.name}</span></span>):<span>{item.name}</span>;
-        return title;
+        return (item.set_id?( <span><Icon type="plus-circle-o"
+                                          className={styles.title_icon}
+                                          onClick={this.addStory.bind(this)}/>
+        <span>{item.name}</span></span> )
+            :<span>{item.name}</span>)
     }
 
     getTreeNodes(data) {
@@ -98,7 +104,7 @@ class AsyncTree extends React.Component {
                 );
             }
             return <TreeNode key={item.id} isLeaf={item.isLeaf}
-                             title={this.getTitleElement(item)} />;
+                             title={this.getTitleElement(item)} />
         });
     }
 
