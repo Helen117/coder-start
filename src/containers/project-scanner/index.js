@@ -57,7 +57,7 @@ class ProjectScanner extends React.Component{
                                 }
                                 description=""
                                 type="info"
-                                showIcon/>
+                                showIcon/>                            
                         </div>
                     ):<div className={styles.padding_position}>
                         <Row>
