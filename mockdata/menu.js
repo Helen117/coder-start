@@ -42,6 +42,8 @@ module.exports.menu ={
         },
         {"id":40,"parentId":0,"cLevel":1,"name":"代码质量扫描","link":"/projectScanner","description":"","icon":"message",
             "subMenu":[{"id":41,"parentId":40,"cLevel":2,"name":"扫描结果","link":"/project-mgr/projectScanner","description":"","icon":null,"subMenu":[]}]},
+        {"id":42,"parentId":0,"cLevel":1,"name":"看板","link":"","description":"","icon":"message",
+            "subMenu":[{"id":43,"parentId":42,"cLevel":2,"name":"看板","link":"/leangoo","description":"","icon":null,"subMenu":[]}]},
     ]
 };
 
