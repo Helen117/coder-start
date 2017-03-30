@@ -21,7 +21,7 @@ class Leangoo extends React.Component{
     }
 
     selectedNode(node){
-
+        console.log('node:',node)
     }
 
 

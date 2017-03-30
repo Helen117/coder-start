@@ -59,7 +59,7 @@ class AsyncTree extends React.Component {
          //this.setLeaf(treeData, curKey, level);
     }
 
-    onSelect(info){
+    onSelect(info,e){
         //console.log('selected', info);
         const {onSelect} = this.props;
         if(onSelect){
