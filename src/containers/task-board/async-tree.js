@@ -98,7 +98,10 @@ class AsyncTree extends React.Component {
 
     addStory(e){
         e.stopPropagation();
-        //console.log("1111")
+        const {clickAdd} = this.props;
+        if(clickAdd){
+            clickAdd(true);
+        }
     }
 
     getTitleElement(item){
