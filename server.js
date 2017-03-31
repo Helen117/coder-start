@@ -12,7 +12,7 @@ const isDeveloping = !isProduction;
 
 const story_ = require('./mockdata/story');
 var story = story_.story;
-var task = story_.task;
+//var task = story_.task;
 
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
@@ -259,10 +259,6 @@ app.post('/gitlab/project-mgr/createGroup', function (req, res) {
 
 app.get('/gitlab/getStory', function (req, res) {
     res.json(story);
-});
-
-app.get('/gitlab/getTask', function (req, res) {
-    res.json(task);
 });
 
 

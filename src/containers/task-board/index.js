@@ -8,7 +8,7 @@ import { Button, Row, Col } from 'antd';
 import 'pubsub-js';
 import AsyncTree from './async-tree';
 
-class Leangoo extends React.Component{
+class TaskBoard extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -19,9 +19,12 @@ class Leangoo extends React.Component{
     componentDidMount() {
 
     }
-
+//state:{"storyId": storyId}
     selectedNode(node){
         console.log('node:',node)
+        this.context.router.push({
+            pathname: "/taskBoard/story"
+        });
     }
 
 
@@ -33,9 +36,7 @@ class Leangoo extends React.Component{
                     <AsyncTree onSelect={this.selectedNode.bind(this)}/>
                 </Col>
                 <Col span={18}>
-                    <Row>
-                        {this.props.children}
-                    </Row>
+                    {this.props.children}
                 </Col>
             </Row>
         );
@@ -43,7 +44,7 @@ class Leangoo extends React.Component{
 
 }
 
-Leangoo.contextTypes = {
+TaskBoard.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
@@ -61,4 +62,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Leangoo);
+export default connect(mapStateToProps, mapDispatchToProps)(TaskBoard);

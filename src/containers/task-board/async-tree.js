@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Tree, Input, Icon, Form } from 'antd';
-import {getAsyncProjectSet,saveAsyncTreeData} from './actions/leangoo-actions';
+import {getAsyncProjectSet,saveAsyncTreeData} from './actions/task-board-actions';
 import fetchData from '../../utils/fetch';
 import styles from './index.css';
 
@@ -84,7 +84,7 @@ class AsyncTree extends React.Component {
             if(has){
                 resolve();
             }else {
-                fetchData('/story/milestone', {set_id:treeNode.props.eventKey}, null, (result)=> {
+                fetchData('/taskboard/milestone', {set_id:treeNode.props.eventKey}, null, (result)=> {
                     let treeData = this.getTreeData();
                     this.getNewTreeData(treeData,treeNode.props.eventKey,result);
                     this.setState({
@@ -166,9 +166,9 @@ AsyncTree.defaultProps = {
 
 function mapStateToProps(state) {
     return {
-        getProjectSet : state.leangooReducer.getProjectSet,
-        getProjectMilestone : state.leangooReducer.getProjectMilestone,
-        getTreeData:state.leangooReducer.saveTreeData,
+        getProjectSet : state.taskBoardReducer.getProjectSet,
+        getProjectMilestone : state.taskBoardReducer.getProjectMilestone,
+        getTreeData:state.taskBoardReducer.saveTreeData,
     }
 }
 
