@@ -11,11 +11,11 @@ import {
     ASYNC_TREE_PROJECTMILESTONE_ERROR,
 
     SAVE_ASYNC_TREE_DATA
-} from '../constants/leangoo-action-types';
+} from '../constants/task-board-action-types';
 
 const initialState = {};
 
-export default function leangooReducer(state = initialState, action = {}) {
+export default function taskBoardReducer(state = initialState, action = {}) {
     switch (action.type) {
         //获取看板项目集
         case ASYNC_TREE_PROJECTSET_PENDING:
