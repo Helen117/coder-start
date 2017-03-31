@@ -10,6 +10,10 @@ const config = require('./webpack.config');
 const isProduction = process.env.NODE_ENV === 'production';
 const isDeveloping = !isProduction;
 
+const story_ = require('./mockdata/story');
+var story = story_.story;
+var task = story_.task;
+
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
 
@@ -24,6 +28,7 @@ const performance = require('./mockdata/performance.json');
 const group = require('./mockdata/group.json');
 
 const demand = require('./mockdata/demand.json');
+const task = require('./mockdata/taskInfo.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
 const setsMilestone = milstone_.milstone;
@@ -99,6 +104,10 @@ app.post('/gitlab/login', function (req, res) {
     } else {
         res.json({success: false, errorMsg:'用户名或者密码错误！'});
     }
+});
+
+app.post('/gitlab/getTask', function (req, res) {
+    res.json(task);
 });
 
 app.post('/gitlab/user/add', function (req, res) {
@@ -246,6 +255,16 @@ app.post('/gitlab/project-mgr/createProject', function (req, res) {
 app.post('/gitlab/project-mgr/createGroup', function (req, res) {
     res.json({success: true,errorCode: null,errorMsg: null,result:1});
 });
+
+
+app.get('/gitlab/getStory', function (req, res) {
+    res.json(story);
+});
+
+app.get('/gitlab/getTask', function (req, res) {
+    res.json(task);
+});
+
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))

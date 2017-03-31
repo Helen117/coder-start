@@ -6,7 +6,6 @@ const api = new Api({
     //baseURI: 'http://10.10.167.36:11000/gitlab',
     //baseURI: '/gitlab',
 
-
     headers: {
         //'Accept': 'application/json',
         'Accept': '*/*',
