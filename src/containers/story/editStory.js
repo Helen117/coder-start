@@ -4,30 +4,36 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Input,Select,Button } from 'antd';
+import { Form,Input,Select,Button,Modal,  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 
+const confirm = Modal.confirm;
 const createForm = Form.create;
 const FormItem = Form.Item;
 const Option = Select.Option;
 class EditStory extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            activeKey: []
+    }
+
+    componentWillReceiveProps(nextProps){
+        const {setFieldsValue} = this.props.form;
+        const {story,editType} = nextProps;
+        if(story && editType=='update' && !this.props.visible){
+            setFieldsValue(story);
         }
     }
 
     handleCancel() {
-        const {form} = this.props;
-        const {router} = this.context;
+        const {form,story} = this.props;
+        const setVisible = this.props.setVisible;
         confirm({
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                //router.goBack();
                 form.resetFields();
+                setVisible(false,story);
             },
             onCancel() {
                 //do nothing
@@ -37,16 +43,22 @@ class EditStory extends React.Component {
 
     handleSubmit(e) {
         const {loginInfo} = this.props;
-        const {form} = this.props;
-        console.log('handleSubmit')
-
+        const {form,story,editType} = this.props;
+        const setVisible = this.props.setVisible;
         form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.creater = loginInfo.username;
-                console.log('提交表单',data)
+                data.creater = {"name": this.props.loginInfo.userName,"id":this.props.loginInfo.userId};
+                if(editType=='add'){
+                    data.milestone_id = this.props.milestone_id
+                    this.props.actions.editStory(data);
+                }else{
+                    this.props.actions.editStory(data);
+                }
+                e;
+                setVisible(false,story);
             }
         })
 
@@ -59,7 +71,10 @@ class EditStory extends React.Component {
             wrapperCol: { span: 14 },
         };
         return(
-            <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
+        <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
+               onOk={this.handleSubmit.bind(this)}  onCancel={this.handleCancel.bind(this)}
+        >
+            <Form horizontal >
 
                 <FormItem {...formItemLayout}  label="名称" >
                     {getFieldDecorator('title')(<Input placeholder="请输入名称" />)}
@@ -74,20 +89,16 @@ class EditStory extends React.Component {
                 </FormItem>
 
                 <FormItem {...formItemLayout}  label="测试人员" >
-                    {getFieldDecorator('tester')( <Select
-                 multiple
-                 style={{ width: '100%' }}
-                 placeholder="请选择测试人员"
-                 >
+                    {getFieldDecorator('testers')( <Select
+                        multiple
+                        style={{ width: '100%' }}
+                        placeholder="请选择测试人员"
+                    >
                         <Option key={1}>bips</Option>
-                 </Select>)}
-                </FormItem>
-
-                <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                    <Button type="primary" htmlType="submit" loading={this.props.createLoading}>确定</Button>
-                    <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
+                    </Select>)}
                 </FormItem>
             </Form>
+        </Modal>
         )
     }
 }

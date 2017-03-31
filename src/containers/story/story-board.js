@@ -10,15 +10,18 @@ import {connect} from 'react-redux';
 import { Collapse,Tooltip,Row,Col } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
+import EditStory from './editStory'
 const Panel = Collapse.Panel;
+
 class Story extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            activeKey:[]
-        }
+            activeKey:[],
+            visible: false
+        };
+        this.storyData = null;
     }
-    //this.props.action.getTask(this.props.stories);
 
     componentWillMount(){
         this.props.action.getStory(134)
@@ -35,7 +38,6 @@ class Story extends React.Component{
 
     handleChange(key){
         if(this.state.activeKey.length< key.length){
-            console.log('调用接口查询card',key[key.length-1]);
             this.props.action.getTask(key[key.length-1]);
         }
         this.setState({
@@ -44,37 +46,37 @@ class Story extends React.Component{
 
     }
 
-    editStory(e,storyId){
-        e.stopPropagation();
-        this.context.router.push({
-            pathName: '/editStory',
-            state:{"storyId": storyId}
-        })
-        //console.log('edit story')
+    setVisible(flag,story,e){
+        if(e){
+            e.stopPropagation();
+        }
+        this.storyData = story;
+        this.setState({visible:flag});
     }
+
 
     createPanels(stories){
         return stories.map((story, index)=> {
-            const header = <Row style={{"margin": '3px'}} type="flex" align="middle">
+
+            const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
                 <Col span="18">
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "15px"}}
-                           onClick={this.editStory.bind(this, story.id)}>{story.title}</a><br/>
+                        <a style={{"fontSize": "14px"}}
+                           onClick={this.setVisible.bind(this, true,story)}>{story.title}</a><br/>
                     </Tooltip>
                     <span>{story.description}</span>
                 </Col>
                 <Col span="6">
-                    <Col span="22">
+                    <Col span="23">
                         状态：{story.story_status}
                     </Col>
-                    <Col span="2">
-                        <div style={{minHeight: '100%'}}>
-                            222
+                    <Col span="1">
+                        <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
                         </div>
                     </Col>
                 </Col>
             </Row>
-            return <Panel header={header} key={story.id} style={{"height": "200"}}>
+            return <Panel header={header} key={story.id} style={{"borderRadius":"4" ,"marginBottom":"24"}}>
                 {story.taskData ? <p>{story.taskData.story_id}</p> : <p>未建立task</p>}
             </Panel>
         })
@@ -82,15 +84,28 @@ class Story extends React.Component{
 
     render(){
         const {stories,getTaskLoading,loadingMsg } = this.props;
-        const defaultActiveKey = [stories&&stories.length>0? stories[0].id: '31'];
-            if(stories) {
-                const panels = this.createPanels(stories)
-                return (<Collapse defaultActiveKey={defaultActiveKey} onChange={this.handleChange.bind(this)}>
-                    {panels}
-                </Collapse>)
-            }else {return (<div>未建立story</div>)}
+        const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
+        if(stories) {
+            const panels = this.createPanels(stories)
+            return (
+                <div id='story' style={{margin:'10px'}}>
+                    <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                        {panels}
+                    </Collapse>
+                    <EditStory story={this.storyData} visible={this.state.visible} editType='update' setVisible={this.setVisible.bind(this)}/>
+                </div>
+            )
+        }else {
+            return (<div>未建立story</div>)
+        }
     }
 }
+
+Story.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {

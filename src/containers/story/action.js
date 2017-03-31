@@ -4,7 +4,7 @@
 import api from '../../api';
 export function getStory(milestoneId) {
     console.log('调用action')
-    const path = '/leangoo/list-story';
+    const path = '/taskboard/list-story';
     return {
         type: 'GET_STORY',
         payload: {
@@ -17,8 +17,34 @@ export function getStory(milestoneId) {
     }
 }
 
+export function addStory(data) {
+    console.log('调用action')
+    const path = '/taskboard/add-story';
+    return {
+        type: 'GET_STORY',
+        payload: {
+            promise: api.post(path, {
+                data : data
+            })
+        }
+    }
+}
+
+export function updateStory(data) {
+    console.log('调用action')
+    const path = '/taskboard/update-story';
+    return {
+        type: 'GET_STORY',
+        payload: {
+            promise: api.post(path, {
+                data : data
+            })
+        }
+    }
+}
+
 export function getTask(story_id) {
-    const path = '/leangoo/list-card'
+    const path = '/taskboard/list-card'
     return {
         type: 'GET_TASK',
         payload: {

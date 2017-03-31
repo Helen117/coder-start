@@ -12,7 +12,7 @@ const isDeveloping = !isProduction;
 
 const story_ = require('./mockdata/story');
 var story = story_.story;
-var task = story_.task;
+//var task = story_.task;
 
 const menu_ = require('./mockdata/menu');
 var menu = menu_.menu;
@@ -28,7 +28,7 @@ const performance = require('./mockdata/performance.json');
 const group = require('./mockdata/group.json');
 
 const demand = require('./mockdata/demand.json');
-const task = require('./mockdata/taskInfo.json');
+//const task = require('./mockdata/taskInfo.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
 const setsMilestone = milstone_.milstone;
@@ -257,14 +257,9 @@ app.post('/gitlab/project-mgr/createGroup', function (req, res) {
 });
 
 
-app.get('/gitlab/getStory', function (req, res) {
+app.post('/gitlab/getStory', function (req, res) {
     res.json(story);
 });
-
-app.get('/gitlab/getTask', function (req, res) {
-    res.json(task);
-});
-
 
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
