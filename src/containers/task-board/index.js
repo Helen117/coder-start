@@ -23,7 +23,8 @@ class TaskBoard extends React.Component{
     selectedNode(node){
         console.log('node:',node)
         this.context.router.push({
-            pathname: "/taskBoard/story"
+            pathname: "/taskBoard/story",
+            state:{milestoneId: node}
         });
     }
 
