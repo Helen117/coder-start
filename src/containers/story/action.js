@@ -3,7 +3,7 @@
  */
 import api from '../../api';
 export function getStory(milestoneId) {
-    console.log('调用action')
+    console.log('调用getStory')
     const path = '/taskboard/list-story';
     return {
         type: 'GET_STORY',
@@ -12,6 +12,32 @@ export function getStory(milestoneId) {
                 params: {
                     milestone_id : milestoneId
                 }
+            })
+        }
+    }
+}
+
+export function addStory(data) {
+    console.log('调用addStory')
+    const path = '/taskboard/add-story';
+    return {
+        type: 'ADD_STORY',
+        payload: {
+            promise: api.post(path, {
+                data : data
+            })
+        }
+    }
+}
+
+export function updateStory(data) {
+    console.log('调用updateStory')
+    const path = '/taskboard/update-story';
+    return {
+        type: 'UPDATE_STORY',
+        payload: {
+            promise: api.post(path, {
+                data : data
             })
         }
     }

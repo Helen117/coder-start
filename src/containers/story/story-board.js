@@ -7,35 +7,70 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
+import EditStory from './editStory'
 const Panel = Collapse.Panel;
+
 class Story extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            activeKey:[]
-        }
+            activeKey:[],
+            visible: false,
+            editType: 'add',
+            currentMilestoneMsg: {"name":null,"description":null}
+        };
+        this.storyData = null;
     }
-    //this.props.action.getTask(this.props.stories);
 
     componentWillMount(){
-        this.props.action.getStory(134)
+        if(this.props.location.state){
+            const {milestone_id, milestoneId} = this.props.location.state;
+            if(milestoneId){
+                this.getMilestoneMsg(milestone_id);
+                this.props.action.getStory(milestoneId);
+            }
+        }
+
     }
 
-    componentWillReceiveProps(nextProps){
-        const {stories} = nextProps;
-        if(stories && stories!=this.props.stories){
-            if(this.state.activeKey.length==0){
-                this.props.action.getTask(stories[0].id);
+    getMilestoneMsg(currentMilestoneId){
+        const projectSet= this.props.getProjectSet?this.props.getProjectSet.result?this.props.getProjectSet.result:[]:[];
+        console.log('projectSet',projectSet)
+        for(let i=0; i<projectSet.length; i++){
+            if(projectSet[i].children){
+                for(let j=0; j<projectSet[i].children.length; j++){
+                    if(currentMilestoneId == projectSet[i].children[j].id){
+                        this.setState({
+                            currentMilestoneMsg : projectSet[i].children[j]
+                        })
+                        break;
+                    }
+                }
             }
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        const {stories} = nextProps;
+        const thisMilestoneId = this.props.location.state?this.props.location.state.milestoneId:null;
+        const nextMilestoneId = nextProps.location.state? nextProps.location.state.milestoneId: null;
+        const nextMilestone_id = nextProps.location.state? nextProps.location.state.milestone_id: null
+        if( nextMilestoneId && nextMilestoneId!=thisMilestoneId){
+             this.getMilestoneMsg(nextMilestone_id);
+             this.props.action.getStory(nextMilestoneId);
+         }
+        if(stories && stories.length>0 && stories!=this.props.stories){
+            this.props.action.getTask(stories[0].id);
+        }
+        //点击不同项目集，重新加载数据
+
+    }
+
     handleChange(key){
         if(this.state.activeKey.length< key.length){
-            console.log('调用接口查询card',key[key.length-1]);
             this.props.action.getTask(key[key.length-1]);
         }
         this.setState({
@@ -44,53 +79,97 @@ class Story extends React.Component{
 
     }
 
-    editStory(e,storyId){
-        e.stopPropagation();
-        this.context.router.push({
-            pathName: '/editStory',
-            state:{"storyId": storyId}
-        })
-        //console.log('edit story')
+    setVisible(flag,story,editType,e){
+        if(e){
+            e.stopPropagation();
+        }
+        this.storyData = story;
+        this.setState({
+            visible:flag,
+            editType:editType
+        });
     }
+
 
     createPanels(stories){
         return stories.map((story, index)=> {
-            const header = <Row style={{"margin": '3px'}} type="flex" align="middle">
+
+            const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
                 <Col span="18">
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "15px"}}
-                           onClick={this.editStory.bind(this, story.id)}>{story.title}</a><br/>
+                        <a style={{"fontSize": "14px"}}
+                           onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a><br/>
                     </Tooltip>
                     <span>{story.description}</span>
                 </Col>
                 <Col span="6">
-                    <Col span="22">
+                    <Col span="23">
                         状态：{story.story_status}
                     </Col>
-                    <Col span="2">
-                        <div style={{minHeight: '100%'}}>
-                            222
+                    <Col span="1">
+                        <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
                         </div>
                     </Col>
                 </Col>
             </Row>
-            return <Panel header={header} key={story.id} style={{"height": "200"}}>
-                {story.taskData ? <p>{story.taskData.story_id}</p> : <p>未建立task</p>}
+            return <Panel header={header} key={story.id} style={{"borderRadius":"4" ,"marginBottom":"24"}}>
+                {story.taskData ? <p>{story.taskData.story_id}</p> : <p></p>}
             </Panel>
         })
     }
 
     render(){
         const {stories,getTaskLoading,loadingMsg } = this.props;
-        const defaultActiveKey = [stories&&stories.length>0? stories[0].id: '31'];
+        const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
+        const milestoneId = this.props.location.state? this.props.location.state.milestoneId:null;
+        const milestoneContent = <div id="milestone">
+            <div className="block">
+                <div style={{"float":"left"}}>
+                    <h2>{this.state.currentMilestoneMsg.name}</h2>
+                    <p>{this.state.currentMilestoneMsg.description}</p>
+                </div>
+                <div style={{"float":"right"}}>
+                    <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
+                </div>
+            </div>
+        </div>
+        console.log('milestoneId',this.props.location.state.milestoneId,milestoneId)
+        if(milestoneId){
             if(stories) {
                 const panels = this.createPanels(stories)
-                return (<Collapse defaultActiveKey={defaultActiveKey} onChange={this.handleChange.bind(this)}>
-                    {panels}
-                </Collapse>)
-            }else {return (<div>未建立story</div>)}
+                return (
+                    <div id='story' style={{margin:'10px'}}>
+                        {milestoneContent}
+                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                            {panels}
+                        </Collapse>
+                        <EditStory story={this.storyData}
+                                   visible={this.state.visible}
+                                   editType={this.state.editType}
+                                   setVisible={this.setVisible.bind(this)}
+                                   milestoneId = {milestoneId}/>
+                    </div>
+                )
+            }else {
+                return milestoneContent
+            }
+        }else{
+            return <Alert style={{margin:10}}
+                          message="请从左边的项目树中选择一个历程碑"
+                          description=""
+                          type="warning"
+                          showIcon
+            />
+        }
+
     }
 }
+
+Story.contextTypes = {
+    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {
@@ -98,7 +177,8 @@ function mapStateToProps(state) {
         //jointTaskData : state.story.jointTaskData,
         getTaskLoading : state.story.getTaskLoading,
         getStoryLoading : state.story.getStoryLoading,
-        stories : state.story.story
+        stories : state.story.story,
+        getProjectSet : state.taskBoardReducer.getProjectSet,
     };
 }
 
