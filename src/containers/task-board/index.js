@@ -22,13 +22,8 @@ class TaskBoard extends React.Component{
     }
 
     selectedNode(node){
-        console.log('node:',node)
-        const milestoneId = node?node.toString().substring(0,node.length-2):null;
         this.context.router.push({
             pathname: "/taskBoard/story",
-            state:{
-                milestoneId: milestoneId,
-                milestone_id:node}
         });
     }
 
@@ -46,8 +41,6 @@ class TaskBoard extends React.Component{
 
 
     render(){
-
-        console.log('this.state.editStoryVisible:',this.state.editStoryVisible)
 
         return (
             <Row className="ant-layout-content" style={{minHeight:300}}>
