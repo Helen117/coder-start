@@ -112,7 +112,7 @@ class Story extends React.Component{
                     </Col>
                 </Col>
             </Row>
-            return <Panel header={header} key={story.id} style={{"borderRadius":"4" ,"marginBottom":"24"}}>
+            return <Panel header={header} key={story.id}>
                 {story.taskData ? <p>{story.taskData.story_id}</p> : <p></p>}
             </Panel>
         })
@@ -133,7 +133,7 @@ class Story extends React.Component{
                 </div>
             </div>
         </div>
-        console.log('milestoneId',this.props.location.state.milestoneId,milestoneId)
+        //console.log('milestoneId',this.props.location.state.milestoneId,milestoneId)
         if(milestoneId){
             if(stories) {
                 const panels = this.createPanels(stories)
@@ -155,7 +155,7 @@ class Story extends React.Component{
             }
         }else{
             return <Alert style={{margin:10}}
-                          message="请从左边的项目树中选择一个历程碑"
+                          message="请从左边的项目树中选择一个里程碑"
                           description=""
                           type="warning"
                           showIcon

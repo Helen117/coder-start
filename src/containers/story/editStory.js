@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Form,Input,Select,Button,Modal,  } from 'antd';
-import {addStory,updateStory,getStory} from './action'
+import {addStory,updateStory,getStory,getProjectSetStaff} from './action'
 import './index.less';
 
 const confirm = Modal.confirm;
@@ -15,6 +15,10 @@ const Option = Select.Option;
 class EditStory extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    componentWillMount(){
+        this.props.actions.getProjectSetStaff();
     }
 
     componentWillReceiveProps(nextProps){
@@ -122,7 +126,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        actions : bindActionCreators({addStory,updateStory,getStory},dispatch),
+        actions : bindActionCreators({addStory,updateStory,getStory,getProjectSetStaff},dispatch),
     }
 }
 
