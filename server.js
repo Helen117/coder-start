@@ -261,6 +261,7 @@ app.post('/gitlab/getStory', function (req, res) {
     res.json(story);
 });
 
+
 app.get('*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '', 'index.html'))
 });

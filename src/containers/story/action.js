@@ -21,7 +21,7 @@ export function addStory(data) {
     console.log('调用action')
     const path = '/taskboard/add-story';
     return {
-        type: 'GET_STORY',
+        type: 'ADD_STORY',
         payload: {
             promise: api.post(path, {
                 data : data
@@ -34,7 +34,7 @@ export function updateStory(data) {
     console.log('调用action')
     const path = '/taskboard/update-story';
     return {
-        type: 'GET_STORY',
+        type: 'UPDATE_STORY',
         payload: {
             promise: api.post(path, {
                 data : data

@@ -4,10 +4,10 @@
 import api from '../../../api';
 import {ASYNC_TREE_PROJECTSET,
     ASYNC_TREE_PROJECTMILESTONE,
-    SAVE_ASYNC_TREE_DATA} from '../constants/leangoo-action-types';
+    SAVE_ASYNC_TREE_DATA} from '../constants/task-board-action-types';
 
 export function getAsyncProjectSet() {
-    var path = '/story/sets';
+    var path = '/taskboard/sets';
     //var path = '/async-tree/projectSet';
     return {
         type: ASYNC_TREE_PROJECTSET,

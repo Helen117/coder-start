@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Form,Input,Select,Button,Modal,  } from 'antd';
-import {getTask,getStory} from './action'
+import {addStory,updateStory,getStory} from './action'
 import './index.less';
 
 const confirm = Modal.confirm;
@@ -19,9 +19,12 @@ class EditStory extends React.Component {
 
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {story,editType} = nextProps;
+        const {story,editType,addStory,updateStory} = nextProps;
         if(story && editType=='update' && !this.props.visible){
             setFieldsValue(story);
+        }
+        if(addStory && addStory!= this.props.addStory || updateStory && updateStory!= this.props.updateStory){
+            this.props.actions.getStory(this.props.milestoneId);
         }
     }
 
@@ -42,26 +45,25 @@ class EditStory extends React.Component {
     }
 
     handleSubmit(e) {
-        const {loginInfo} = this.props;
-        const {form,story,editType} = this.props;
+        const {form,story,editType,loginInfo,milestoneId} = this.props;
         const setVisible = this.props.setVisible;
         form.validateFields((errors) => {
             if (!!errors) {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.creater = {"name": this.props.loginInfo.userName,"id":this.props.loginInfo.userId};
+                data.creater = {"name": loginInfo.username,"id":loginInfo.userId};
                 if(editType=='add'){
-                    data.milestone_id = this.props.milestone_id
-                    this.props.actions.editStory(data);
+                    data.milestone_id = milestoneId;
+                    this.props.actions.addStory(data);
                 }else{
-                    this.props.actions.editStory(data);
+                    data.id = story.id;
+                    this.props.actions.updateStory(data);
                 }
-                e;
                 setVisible(false,story);
+                form.resetFields();
             }
         })
-
     }
 
     render(){
@@ -107,7 +109,8 @@ function mapStateToProps(state) {
     return {
 
         //jointTaskData : state.story.jointTaskData,
-        getTaskLoading : state.story.getTaskLoading,
+        addStory: state.story.getStoryLoading,
+        updateStory: state.story.updateStoryLoading,
         getStoryLoading : state.story.getStoryLoading,
         stories : state.story.story,
         loginInfo:state.login.profile,
@@ -116,8 +119,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        action : bindActionCreators({getStory,getTask},dispatch),
+        actions : bindActionCreators({addStory,updateStory,getStory},dispatch),
     }
 }
 
-export default (createForm()(EditStory));
+export default connect(mapStateToProps,mapDispatchToProps)(createForm()(EditStory));
