@@ -44,8 +44,8 @@ class TaskCard extends Component{
 
 
     modifyTaskDeveloper(taskId){
-        const {loginInfo} = this.props;
-
+        const {loginInfo,actions} = this.props;
+        actions.setTaskDeveloper(loginInfo.userId,taskId);
     }
 
     deleteTask(){

@@ -34,12 +34,12 @@ class EditTask extends Component {
         }
 
         if ( addResult &&addResult!=this.props.addResult) {
-            this.prop.getTaskInfo(this.props.story_id);
+            this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
 
         if ( updateTask &&updateTask!=this.props.updateTask) {
-            this.prop.getTaskInfo(this.props.story_id);
+            this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
     }

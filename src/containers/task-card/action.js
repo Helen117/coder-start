@@ -31,10 +31,26 @@ export function getTaskInfo(storyId) {
     var path = '/taskboard/list-card';
     return {
         type: 'GET_TASK_INFO',
+        meta: storyId,
         payload: {
             promise: api.post(path, {
                 params: {
                     story_id: storyId
+                }
+            })
+        }
+    }
+}
+
+export function setTaskDeveloper(userId,taskId) {
+    var path = '/taskboard/receive-card';
+    return {
+        type: 'SET_TASK_DEVELOPER',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    user_id: userId,
+                    task_id:taskId
                 }
             })
         }

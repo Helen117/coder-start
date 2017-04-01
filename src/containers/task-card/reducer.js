@@ -27,11 +27,27 @@ export default function taskCard(state = {}, action = {}) {
                 updateTaskLoading:false
             };
 
+        case 'SET_TASK_DEVELOPER_PENDING':
+            return {...state, setTaskDeveloper:null,setTaskDeveloperLoading:true};
+        case 'SET_TASK_DEVELOPER_SUCCESS':
+            return {...state, setTaskDeveloper:action.payload, setTaskDeveloperLoading:false};
+        case 'SET_TASK_DEVELOPER_ERROR':
+            return {
+                ...state,
+                setTaskDeveloperErrors: action.payload.errorMsg,
+                setTaskDeveloper:null,
+                setTaskDeveloperLoading:false
+            };
+
 
         case 'GET_TASK_INFO_PENDING':
             return {...state, taskInfo:{loading:true}};
         case 'GET_TASK_INFO_SUCCESS':
-            return {...state, taskInfo: {...action.payload, loading:false}};
+            // var taskInfo = Object.assign({}, state.taskInfo);
+            // taskInfo[action.mete] = {...action.payload, loading:false};
+            //
+            // return {...state, ...taskInfo };
+            return {...state,taskInfo:{...action.payload,loading:false}};
         case 'GET_TASK_INFO_ERROR':
             return {
                 ...state,
