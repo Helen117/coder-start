@@ -6,11 +6,12 @@ import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notifi
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getDeveloperInfo} from '../request/actions/request-action';
+import {getTaskDeveloper,addTask,getTaskInfo,updateTask} from './action';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 class EditTask extends Component {
     constructor(props) {
@@ -21,31 +22,77 @@ class EditTask extends Component {
     }
 
     componentWillMount() {
-        this.props.getDeveloperInfo(2,'set',30);
+        this.props.getTaskDeveloper(37);
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        const {form, loginInfo} = this.props;
+    componentWillReceiveProps(nextProps) {
+        const {setFieldsValue} = this.props.form;
+        const {taskData,editType,addResult,updateTask} = nextProps;
+
+        if(taskData && editType=='modify' && !this.props.visible){
+            setFieldsValue(taskData);
+        }
+
+        if ( addResult &&addResult!=this.props.addResult) {
+            this.props.getTaskInfo(this.props.story_id);
+            message.success('提交成功');
+        }
+
+        if ( updateTask &&updateTask!=this.props.updateTask) {
+            this.props.getTaskInfo(this.props.story_id);
+            message.success('提交成功');
+        }
+    }
+
+    handleSubmit() {
+        const {form,taskData,loginInfo,addTaskAction,editType,story_id} = this.props;
+        const setModifyTask = this.props.setModifyTask;
+
         form.validateFields((errors) => {
                 if (!!errors) {
                     return;
                 } else {
+                    const data =form.getFieldsValue();
+                    var developer={};
+                    if(data.developer){
+                        developer.id=data.developer;
+                    }
+                    const taskInfo ={
+                        title:data.title,
+                        description:data.description,
+                        check_items:data.check_items,
+                        creater:{
+                            id:loginInfo.userId
+                        },
+                        developer:developer,
+                        type:'demand',
+                        due_date:data.due_date,
+                        story_id:story_id
+                    };
+                    if(editType==='add'){
+                        addTaskAction(taskInfo);
+                    }else{
+                        taskInfo.id=taskData.id;
+                        taskInfo.operator_id = loginInfo.userId;
+                        updateTask(taskInfo);
+                    }
 
+                    setModifyTask(false,taskData);
+                    form.resetFields();
                 }
             }
         )
     }
 
     handleCancel() {
-        const {form} = this.props;
-        const {router} = this.context;
+        const {form,taskData} = this.props;
+        const setModifyTask = this.props.setModifyTask;
 
         confirm({
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.goBack();
+                setModifyTask(false,taskData);
                 form.resetFields();
             },
             onCancel() {
@@ -86,7 +133,7 @@ class EditTask extends Component {
     }
     
     render() {
-        const {getFieldDecorator, getFieldError} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 12},
@@ -94,56 +141,57 @@ class EditTask extends Component {
 
         const {developerInfo} = this.props;
 
-        const {editType} = this.props.location.state;
+        // const {editType} = this.props.location.state;
         const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         return (
-                <Box title={editType == 'add' ? '新增' : '修改'}>
-                    <Form horizontal onSubmit={this.handleSubmit.bind(this)}>
-                        <FormItem {...formItemLayout} label="任务名称">
-                            {getFieldDecorator('title',{rules:[{required:true,message:'不能为空'}]})(<Input placeholder=""  />)}
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="任务描述">
-                            {getFieldDecorator('description')(<Input type="textarea" placeholder="" rows="5" />)}
-                        </FormItem>
+            <Modal title={this.props.editType == 'add' ? '新增' : '修改'}
+                   visible={this.props.visible}
+                   onOk={this.handleSubmit.bind(this)}
+                //confirmLoading={this.props.deleteLoading}
+                   onCancel={this.handleCancel.bind(this)}
+            >
+                <Form horizontal >
+                    <FormItem {...formItemLayout} label="任务名称">
+                        {getFieldDecorator('title',{rules:[{required:true,message:'不能为空'}]})(<Input placeholder=""  />)}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="任务描述">
+                        {getFieldDecorator('description')(<Input type="textarea" placeholder="" rows="3" />)}
+                    </FormItem>
 
-                        <FormItem {...formItemLayout} label="开发人员">
-                            {getFieldDecorator('assignee_develop_id')(
-                                <Select showSearch
-                                        showArrow={false}
-                                        placeholder="请选择开发人员"
-                                        optionFilterProp="children"
-                                        notFoundContent="无法找到"
-                                        style={{width: 300}}
-                                >
-                                    {developer}
-                                </Select>)}
-                        </FormItem>
-                        
-                        <FormItem {...formItemLayout} label="检查项">
-                            {getFieldDecorator('checkRule')(<Input type="textarea" placeholder="输入检查项" rows="5" />)}
-                        </FormItem>
-                        
-                        <FormItem {...formItemLayout} label="计划完成时间">
-                            {getFieldDecorator('expect_due_date')(
-                                <DatePicker style={{width: 300}}/>)
-                            }
-                        </FormItem>
+                    <FormItem {...formItemLayout} label="开发人员">
+                        {getFieldDecorator('developer')(
+                            <Select showSearch
+                                    showArrow={false}
+                                    placeholder="请选择开发人员"
+                                    optionFilterProp="children"
+                                    notFoundContent="无法找到"
+                                    allowClear={true}
+                                    style={{width: 300}}
+                            >
+                                {developer}
+                            </Select>)}
+                    </FormItem>
 
-                        <FormItem {...formItemLayout}  label="文档上传" >
-                            {getFieldDecorator('files')(
-                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
-                                    <Button type="ghost">
-                                        <Icon type="upload" /> 点击上传
-                                    </Button>
-                                </Upload>)}
-                        </FormItem>
-                        
-                        <FormItem wrapperCol={{span: 16, offset: 6}} style={{marginTop: 24}}>
-                            <Button type="primary" htmlType="submit" >提交</Button>
-                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>取消</Button>
-                        </FormItem>
-                    </Form>
-                </Box>
+                    <FormItem {...formItemLayout} label="检查项">
+                        {getFieldDecorator('check_items')(<Input type="textarea" placeholder="输入检查项" rows="3" />)}
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="计划完成时间">
+                        {getFieldDecorator('due_date')(
+                            <DatePicker style={{width: 300}}/>)
+                        }
+                    </FormItem>
+
+                    <FormItem {...formItemLayout}  label="文档上传" >
+                        {getFieldDecorator('files')(
+                            <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
+                                <Button type="ghost">
+                                    <Icon type="upload" /> 点击上传
+                                </Button>
+                            </Upload>)}
+                    </FormItem>
+                </Form>
+            </Modal>
         );
     }
 }
@@ -161,13 +209,18 @@ EditTask = Form.create()(EditTask);
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        taskInfo: state.request.taskInfo,
+        developerInfo:state.taskCard.userInfo,
+        addResult:state.taskCard.result,
+        updateTask:state.taskCard.updateTask,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        getDeveloperInfo:bindActionCreators(getDeveloperInfo,dispatch),
+        getTaskDeveloper:bindActionCreators(getTaskDeveloper,dispatch),
+        addTaskAction:bindActionCreators(addTask,dispatch),
+        getTaskInfo:bindActionCreators(getTaskInfo,dispatch),
+        updateTask:bindActionCreators(updateTask,dispatch),
     }
 }
 
