@@ -13,11 +13,9 @@ const createForm = Form.create;
 const FormItem = Form.Item;
 const Option = Select.Option;
 class EditStory extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentWillReceiveProps(nextProps){
+        console.log('componentWillReceiveProps')
         const {setFieldsValue} = this.props.form;
         const {story,editType,addStory,updateStory,visible} = nextProps;
         if(visible && visible != this.props.visible){
@@ -26,6 +24,11 @@ class EditStory extends React.Component {
         }
         if(story && editType=='update' && !this.props.visible){
             setFieldsValue(story);
+            let staffList = [];
+            for(let i=0; i<story.testers.length; i++){
+                staffList.push(story.testers[i].id.toString())
+            }
+            setFieldsValue({'testers_id':staffList});
         }
         if( updateStory && updateStory!= this.props.updateStory && this.props.milestoneId){
             this.props.actions.getStory(this.props.milestoneId);
@@ -33,6 +36,8 @@ class EditStory extends React.Component {
         if(addStory && addStory!= this.props.addStory && this.props.milestoneId){
             this.props.actions.getStory(this.props.milestoneId);
         }
+        console.log('componentWillReceiveProps22')
+
     }
 
     handleCancel() {
@@ -80,8 +85,9 @@ class EditStory extends React.Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):null;
-        console.log('测试人员',this.props.testers)
+        console.log('render')
+
+        const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
                onOk={this.handleSubmit.bind(this)}  onCancel={this.handleCancel.bind(this)}
@@ -101,13 +107,13 @@ class EditStory extends React.Component {
                 </FormItem>
 
                 <FormItem {...formItemLayout}  label="测试人员" >
-                    {getFieldDecorator('testers_id')( <Select
-                        multiple
-                        style={{ width: '100%' }}
-                        placeholder="请选择测试人员"
-                    >
-                            {testersOptions}
-                    </Select>)}
+                    {getFieldDecorator('testers_id')(
+                        <Select
+                            multiple
+                            style={{ width: '100%' }}
+                            placeholder="请选择测试人员"
+                        >{testersOptions}</Select>)
+                    }
                 </FormItem>
             </Form>
         </Modal>
