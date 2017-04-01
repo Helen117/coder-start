@@ -11,6 +11,8 @@ import { Collapse,Tooltip,Row,Col,Button,Alert  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
+import TaskCard from '../task-card'
+
 const Panel = Collapse.Panel;
 
 class Story extends React.Component{
@@ -111,8 +113,8 @@ class Story extends React.Component{
                     </Col>
                 </Col>
             </Row>
-            return <Panel header={header} key={story.id} style={{"borderRadius":"4" ,"marginBottom":"24"}}>
-                {story.taskData ? <p>{story.taskData.story_id}</p> : <p></p>}
+            return <Panel header={header} key={story.id}>
+                {story.taskData ? <TaskCard storyId={story.id}></TaskCard> : <p></p>}
             </Panel>
         })
     }
@@ -140,7 +142,6 @@ class Story extends React.Component{
                 </div>
             </div>
         </div>
-
         if(milestoneId){
             if(stories) {
                 const panels = this.createPanels(stories)
@@ -154,7 +155,8 @@ class Story extends React.Component{
                                    visible={this.state.visible}
                                    editType={this.state.editType}
                                    setVisible={this.setVisible.bind(this)}
-                                   milestoneId = {milestoneId}/>
+                                   milestoneId = {milestoneId}
+                                   currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
                     </div>
                 )
             }else {
@@ -162,7 +164,7 @@ class Story extends React.Component{
             }
         }else{
             return <Alert style={{margin:10}}
-                          message="请从左边的项目树中选择一个历程碑"
+                          message="请从左边的项目树中选择一个里程碑"
                           description=""
                           type="warning"
                           showIcon

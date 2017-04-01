@@ -16,7 +16,7 @@ export function addTask(data) {
 }
 
 export function getTaskInfo(storyId) {
-    var path = '/leangoo/list-card';
+    var path = '/taskboard/list-card';
     return {
         type: 'GET_TASK_INFO',
         payload: {

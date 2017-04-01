@@ -56,3 +56,18 @@ export function getTask(story_id) {
         }
     }
 }
+
+export function getProjectSetStaff(id,type,role) {
+    return {
+        type: 'GET_PROJECT_SET_STAFF',
+        payload: {
+            promise: api.post('/project/assign-list', {
+                params: {
+                    id: id,
+                    type:type,
+                    role:role
+                }
+            })
+        }
+    }
+}

@@ -32,18 +32,26 @@ export default function story(state = initialState, action = {}) {
             return {...state, getStoryLoading: false};
 
         case 'ADD_STORY_PENDING':
-            return {...state, addStoryLoading: true};
+            return {...state, addStory:null, addStoryLoading: true};
         case 'ADD_STORY_SUCCESS':
             return {...state, addStory:action.payload, addStoryLoading: false};
         case 'ADD_STORY_ERROR':
-            return {...state, addStoryLoading: false};
+            return {...state, addStory:null, addStoryLoading: false};
 
         case 'UPDATE_STORY_PENDING':
-            return {...state, updateStoryLoading: true};
+            return {...state, updateStory:null, updateStoryLoading: true};
         case 'UPDATE_STORY_SUCCESS':
             return {...state,updateStory:action.payload, updateStoryLoading: false};
         case 'UPDATE_STORY_ERROR':
-            return {...state, updateStoryLoading: false};
+            return {...state,updateStory:null, updateStoryLoading: false};
+
+
+        case 'GET_PROJECT_SET_STAFF_PENDING':
+            return {...state, getStaff:null, getStaffLoading: true};
+        case 'GET_PROJECT_SET_STAFF_SUCCESS':
+            return {...state,getStaff:action.payload, getStaffLoading: false};
+        case 'GET_PROJECT_SET_STAFF_ERROR':
+            return {...state, getStaff:null,getStaffLoading: false};
             
         default:
             return state;
