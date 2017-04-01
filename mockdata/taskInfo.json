@@ -6,12 +6,16 @@
     "todo_cards":[
       {"id":1,
         "title" : "task1",
+        "description":"XXX",
         "story_id" : 2,
         "type" : "demand",
         "check_items" : "xx",
         "due_date" : "2017-3-4",
-        "developer_id" :  7, "developer_name":"孙磊",
-        "creater_id" : 4,
+        "developer" :null,
+        "creater":{
+          "id":7,
+          "name":"孙磊"
+        },
         "files" :{
           "name" : "xx文件",
           "status" : "xxx",
@@ -25,9 +29,12 @@
         "type" : "demand",
         "check_items" : "xx",
         "due_date" : "2017-3-4",
-        "developer_id" :  7, "developer_name":"孙磊",
-        "creater_id" : 4,
-        "files" :{
+        "developer" :null,
+        "creater":{
+        "id":7,
+        "name":"孙磊"
+      },
+      "files" :{
           "name" : "xx文件",
           "status" : "xxx",
           "uid"     :   "xx",
@@ -41,8 +48,14 @@
       "type" : "demand",
       "check_items" : "xx",
       "due_date" : "2017-3-4",
-      "developer_id" :  7, "developer_name":"孙磊",
-      "creater_id" : 4,
+      "developer" :{
+        "id":7,
+        "name":"孙磊"
+      },
+        "creater":{
+          "id":7,
+          "name":"孙磊"
+        },
       "files" :{
           "name" : "xx文件",
           "status" : "xxx",
@@ -56,8 +69,14 @@
       "type" : "demand",
       "check_items" : "xx",
       "due_date" : "2017-3-4",
-      "developer_id" :  7, "developer_name":"孙磊",
-      "creater_id" : 4,
+      "developer" :{
+        "id":7,
+        "name":"孙磊"
+      },
+      "creater":{
+        "id":7,
+        "name":"孙磊"
+      },
       "files" :{
         "name" : "xx文件",
         "status" : "xxx",

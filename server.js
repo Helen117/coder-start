@@ -28,7 +28,7 @@ const performance = require('./mockdata/performance.json');
 const group = require('./mockdata/group.json');
 
 const demand = require('./mockdata/demand.json');
-const task = require('./mockdata/taskInfo.json');
+const taskInfo = require('./mockdata/taskInfo.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
 const setsMilestone = milstone_.milstone;
@@ -106,8 +106,8 @@ app.post('/gitlab/login', function (req, res) {
     }
 });
 
-app.post('/gitlab/getTask', function (req, res) {
-    res.json(task);
+app.post('/gitlab/leangoo/list-card', function (req, res) {
+    res.json(taskInfo);
 });
 
 app.post('/gitlab/user/add', function (req, res) {
