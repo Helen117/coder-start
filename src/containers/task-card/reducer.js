@@ -15,6 +15,18 @@ export default function taskCard(state = {}, action = {}) {
                 result:{getLoading:false}
             };
 
+        case 'UPDATE_TASK_PENDING':
+            return {...state, updateTask:null,updateTaskLoading:true};
+        case 'UPDATE_TASK_SUCCESS':
+            return {...state, updateTask:action.payload, updateTaskLoading:false};
+        case 'UPDATE_TASK_ERROR':
+            return {
+                ...state,
+                updateTaskErrors: action.payload.errorMsg,
+                updateTask:null,
+                updateTaskLoading:false
+            };
+
 
         case 'GET_TASK_INFO_PENDING':
             return {...state, taskInfo:{loading:true}};

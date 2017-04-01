@@ -3,8 +3,7 @@
  */
 import api from '../../../api';
 import {ASYNC_TREE_PROJECTSET,
-    ASYNC_TREE_PROJECTMILESTONE,
-    SAVE_ASYNC_TREE_DATA} from '../constants/task-board-action-types';
+    SAVE_TREE_STATE} from '../constants/task-board-action-types';
 
 export function getAsyncProjectSet() {
     var path = '/taskboard/sets';
@@ -21,9 +20,10 @@ export function getAsyncProjectSet() {
     }
 }
 
-export function saveAsyncTreeData(treeData) {
+export function saveAsyncTreeState(milestone_id,milestoneId) {
     return {
-        type: SAVE_ASYNC_TREE_DATA,
-        treeData:treeData
+        type: SAVE_TREE_STATE,
+        milestone_id:milestone_id,
+        milestoneId:milestoneId
     }
 }

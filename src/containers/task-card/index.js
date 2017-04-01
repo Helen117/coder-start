@@ -43,7 +43,8 @@ class TaskCard extends Component{
     }
 
 
-    modifyTaskDeveloper(){
+    modifyTaskDeveloper(taskId){
+        const {loginInfo} = this.props;
 
     }
 
@@ -148,7 +149,7 @@ class TaskCard extends Component{
                 data =><Card style={{marginBottom:"5px"}} key={data.id}>
                         <Row>
                             <Col span={22}>
-                                {data.developer?<Tag>{data.developer.name}</Tag>:<Button type="primary" size="default" onClick={this.modifyTaskDeveloper.bind(this)}>领取</Button>}
+                                {data.developer?<Tag>{data.developer.name}</Tag>:<Button type="primary" size="default" onClick={this.modifyTaskDeveloper.bind(this,data.id)}>领取</Button>}
                                <a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a>
                             </Col>
                             <Col span={2}>
@@ -220,7 +221,7 @@ class TaskCard extends Component{
                 <EditTask  taskData={this.state.taskData}
                           editType={this.state.editType}
                           visible={this.state.visible}
-                           story_id="37"
+                           story_id={this.props.storyId}
                           setModifyTask={this.setModifyTask.bind(this)}
                 />
 

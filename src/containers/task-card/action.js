@@ -4,9 +4,21 @@
 import api from '../../api';
 
 export function addTask(data) {
-    var path = '/taskboard/add-story';
+    var path = '/taskboard/add-card';
     return {
         type: 'ADD_TASK',
+        payload: {
+            promise: api.post(path, {
+                data: data
+            })
+        }
+    }
+}
+
+export function updateTask(data) {
+    var path = '/taskboard/update-card';
+    return {
+        type: 'UPDATE_TASK',
         payload: {
             promise: api.post(path, {
                 data: data

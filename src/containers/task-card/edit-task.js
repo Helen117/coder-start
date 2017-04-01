@@ -6,7 +6,7 @@ import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notifi
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getTaskDeveloper,addTask} from './action';
+import {getTaskDeveloper,addTask,getTaskInfo,updateTask} from './action';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
@@ -27,21 +27,25 @@ class EditTask extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
-        const {taskData,editType,addResult} = nextProps;
-
-        console.log(addResult);
+        const {taskData,editType,addResult,updateTask} = nextProps;
 
         if(taskData && editType=='modify' && !this.props.visible){
             setFieldsValue(taskData);
         }
 
         if ( addResult &&addResult!=this.props.addResult) {
+            this.prop.getTaskInfo(this.props.story_id);
+            message.success('提交成功');
+        }
+
+        if ( updateTask &&updateTask!=this.props.updateTask) {
+            this.prop.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
     }
 
     handleSubmit() {
-        const {form,taskData,loginInfo,addTaskAction} = this.props;
+        const {form,taskData,loginInfo,addTaskAction,editType,story_id} = this.props;
         const setModifyTask = this.props.setModifyTask;
 
         form.validateFields((errors) => {
@@ -58,13 +62,20 @@ class EditTask extends Component {
                         description:data.description,
                         check_items:data.check_items,
                         creater:{
-                            id:7,//loginInfo.userId
+                            id:loginInfo.userId
                         },
-                        developer:developer
+                        developer:developer,
+                        type:'demand',
+                        due_date:data.due_date,
+                        story_id:story_id
                     };
-                    addTaskAction(taskInfo);
-
-                    console.log(taskInfo);
+                    if(editType==='add'){
+                        addTaskAction(taskInfo);
+                    }else{
+                        taskInfo.id=taskData.id;
+                        taskInfo.operator_id = loginInfo.userId;
+                        updateTask(taskInfo);
+                    }
 
                     setModifyTask(false,taskData);
                     form.resetFields();
@@ -200,6 +211,7 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         developerInfo:state.taskCard.userInfo,
         addResult:state.taskCard.result,
+        updateTask:state.taskCard.updateTask,
     };
 }
 
@@ -207,6 +219,8 @@ function mapDispatchToProps(dispatch){
     return{
         getTaskDeveloper:bindActionCreators(getTaskDeveloper,dispatch),
         addTaskAction:bindActionCreators(addTask,dispatch),
+        getTaskInfo:bindActionCreators(getTaskInfo,dispatch),
+        updateTask:bindActionCreators(updateTask,dispatch),
     }
 }
 
