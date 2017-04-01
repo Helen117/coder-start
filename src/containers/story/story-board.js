@@ -71,12 +71,12 @@ class Story extends React.Component{
     }
 
     handleChange(key){
-        if(this.state.activeKey.length< key.length){
+        /*if(this.state.activeKey.length< key.length){
             this.props.action.getTask(key[key.length-1]);
         }
         this.setState({
             activeKey:key
-        })
+        })*/
 
     }
 
@@ -99,8 +99,9 @@ class Story extends React.Component{
                 <Col span="18">
                     <Tooltip placement="top" title='点击编辑'>
                         <a style={{"fontSize": "14px"}}
-                           onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a><br/>
+                           onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a>
                     </Tooltip>
+                    <br/>
                     <span>{story.description}</span>
                 </Col>
                 <Col span="6">
@@ -114,7 +115,7 @@ class Story extends React.Component{
                 </Col>
             </Row>
             return <Panel header={header} key={story.id}>
-                {story.taskData ? <TaskCard storyId={story.id}></TaskCard> : <p></p>}
+                <TaskCard storyId={story.id}></TaskCard>
             </Panel>
         })
     }
