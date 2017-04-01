@@ -80,8 +80,8 @@ class EditStory extends React.Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        const staffOptions = this.props.staff? this.props.staff.map(staff=>(<Option key={staff.id}>{staff.name}</Option>)):null;
-        console.log('测试人员',this.props.staff)
+        const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):null;
+        console.log('测试人员',this.props.testers)
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
                onOk={this.handleSubmit.bind(this)}  onCancel={this.handleCancel.bind(this)}
@@ -106,7 +106,7 @@ class EditStory extends React.Component {
                         style={{ width: '100%' }}
                         placeholder="请选择测试人员"
                     >
-                            {staffOptions}
+                            {testersOptions}
                     </Select>)}
                 </FormItem>
             </Form>
@@ -124,7 +124,7 @@ function mapStateToProps(state) {
         getStoryLoading : state.story.getStoryLoading,
         stories : state.story.story,
         loginInfo:state.login.profile,
-        staff : state.story.getStaff,
+        testers : state.story.getStaff,
     };
 }
 
