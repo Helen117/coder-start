@@ -26,19 +26,18 @@ class Story extends React.Component{
     }
 
     componentWillMount(){
-        if(this.props.location.state){
-            const {milestone_id, milestoneId} = this.props.location.state;
-            if(milestoneId){
-                this.getMilestoneMsg(milestone_id);
-                this.props.action.getStory(milestoneId);
-            }
+        const {getTreeState} = this.props;
+        const milestone_id = getTreeState?getTreeState.milestone_id:null;
+        const milestoneId =  getTreeState?getTreeState.milestoneId:null;
+        if(milestone_id && milestoneId){
+            this.getMilestoneMsg(milestone_id);
+            this.props.action.getStory(milestoneId);
         }
 
     }
 
     getMilestoneMsg(currentMilestoneId){
         const projectSet= this.props.getProjectSet?this.props.getProjectSet.result?this.props.getProjectSet.result:[]:[];
-        console.log('projectSet',projectSet)
         for(let i=0; i<projectSet.length; i++){
             if(projectSet[i].children){
                 for(let j=0; j<projectSet[i].children.length; j++){
@@ -55,9 +54,9 @@ class Story extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {stories} = nextProps;
-        const thisMilestoneId = this.props.location.state?this.props.location.state.milestoneId:null;
-        const nextMilestoneId = nextProps.location.state? nextProps.location.state.milestoneId: null;
-        const nextMilestone_id = nextProps.location.state? nextProps.location.state.milestone_id: null
+        const thisMilestoneId = this.props.getTreeState?this.props.getTreeState.milestoneId:null;
+        const nextMilestoneId = nextProps.getTreeState? nextProps.getTreeState.milestoneId: null;
+        const nextMilestone_id = nextProps.getTreeState? nextProps.getTreeState.milestone_id: null;
         if( nextMilestoneId && nextMilestoneId!=thisMilestoneId){
              this.getMilestoneMsg(nextMilestone_id);
              this.props.action.getStory(nextMilestoneId);
@@ -118,10 +117,18 @@ class Story extends React.Component{
         })
     }
 
+/*<div style={{"display":"inline-block","float":"left"}}>
+ <h2>{this.state.currentMilestoneMsg.name}</h2>
+ <p>{this.state.currentMilestoneMsg.description}</p>
+ </div>
+ <div style={{"display":"inline-block","float":"right"}}>
+ <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
+ </div>*/
+
     render(){
         const {stories,getTaskLoading,loadingMsg } = this.props;
         const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
-        const milestoneId = this.props.location.state? this.props.location.state.milestoneId:null;
+        const milestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
         const milestoneContent = <div id="milestone">
             <div className="block">
                 <div style={{"float":"left"}}>
@@ -133,7 +140,7 @@ class Story extends React.Component{
                 </div>
             </div>
         </div>
-        console.log('milestoneId',this.props.location.state.milestoneId,milestoneId)
+
         if(milestoneId){
             if(stories) {
                 const panels = this.createPanels(stories)
@@ -179,6 +186,7 @@ function mapStateToProps(state) {
         getStoryLoading : state.story.getStoryLoading,
         stories : state.story.story,
         getProjectSet : state.taskBoardReducer.getProjectSet,
+        getTreeState:state.taskBoardReducer.saveTreeState,
     };
 }
 

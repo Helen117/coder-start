@@ -20,8 +20,17 @@
 
 #milestone .block{
   width:95%;
+  height:100%;
   display:inline-block;
   text-align:left;
   background-color:#ffffff;
-  padding:5px;
+  padding:0px 5px;
+  margin-bottom: -4px;
+}
+
+#milestone .block:after{
+  content:"";
+  visibility: hidden;
+  display: block;
+  clear: both;
 }

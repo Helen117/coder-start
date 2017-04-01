@@ -5,7 +5,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Tree, Input, Icon, Form,message } from 'antd';
-import {getAsyncProjectSet,saveAsyncTreeData} from './actions/task-board-actions';
+import {getAsyncProjectSet,saveAsyncTreeState} from './actions/task-board-actions';
 import fetchData from '../../utils/fetch';
 import styles from './index.css';
 
@@ -65,6 +65,12 @@ class AsyncTree extends React.Component {
         if(onSelect){
             onSelect(info[0]);
         }
+        if(info[0].indexOf('_m')>=0){
+            let milestoneId = info[0].toString().substring(0,info[0].length-2);
+            this.props.saveAsyncTreeState(info[0],milestoneId);
+        }else {
+            this.props.saveAsyncTreeState(null,null);
+        }
     }
 
     hasChildren(parentId){
@@ -110,26 +116,18 @@ class AsyncTree extends React.Component {
         });
     }
 
-    getTitleElement(item){
-        return (item.set_id?( <span><Icon type="plus-circle-o"
-                                          className={styles.title_icon}
-                                          onClick={this.addStory.bind(this)}/>
-        <span>{item.name}</span></span> )
-            :<span>{item.name}</span>)
-    }
-
     getTreeNodes(data) {
         return data.map((item) => {
             if (item.children && item.children.length>0) {
                 return (
                     <TreeNode key={item.id} isLeaf={item.isLeaf}
-                              title={this.getTitleElement(item)}>
+                              title={<span>{item.name}</span>}>
                         {this.getTreeNodes(item.children)}
                     </TreeNode>
                 );
             }
             return <TreeNode key={item.id} isLeaf={item.isLeaf}
-                             title={this.getTitleElement(item)} />
+                             title={<span>{item.name}</span>} />
         });
     }
 
@@ -177,14 +175,13 @@ function mapStateToProps(state) {
     return {
         getProjectSet : state.taskBoardReducer.getProjectSet,
         getProjectMilestone : state.taskBoardReducer.getProjectMilestone,
-        getTreeData:state.taskBoardReducer.saveTreeData,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getAsyncProjectSet : bindActionCreators(getAsyncProjectSet, dispatch),
-        saveAsyncTreeData : bindActionCreators(saveAsyncTreeData, dispatch)
+        saveAsyncTreeState : bindActionCreators(saveAsyncTreeState, dispatch)
     }
 }
 
