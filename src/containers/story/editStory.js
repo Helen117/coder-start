@@ -17,13 +17,13 @@ class EditStory extends React.Component {
         super(props);
     }
 
-    componentWillMount(){
-        this.props.actions.getProjectSetStaff();
-    }
-
     componentWillReceiveProps(nextProps){
         const {setFieldsValue} = this.props.form;
-        const {story,editType,addStory,updateStory} = nextProps;
+        const {story,editType,addStory,updateStory,visible} = nextProps;
+        if(visible && visible != this.props.visible){
+            const currentMilestoneMsg = this.props.currentMilestoneMsg;
+            this.props.actions.getProjectSetStaff(currentMilestoneMsg.set_id, 'set', 20);
+        }
         if(story && editType=='update' && !this.props.visible){
             setFieldsValue(story);
         }
@@ -59,12 +59,13 @@ class EditStory extends React.Component {
                 return;
             } else {
                 const data = form.getFieldsValue();
-                data.creater = {"name": loginInfo.username,"id":loginInfo.userId};
                 if(editType=='add'){
+                    data.creater = {"name": loginInfo.username,"id":loginInfo.userId};
                     data.milestone_id = milestoneId;
                     this.props.actions.addStory(data);
                 }else{
                     data.id = story.id;
+                    data.opreator_id = loginInfo.userId;
                     this.props.actions.updateStory(data);
                 }
                 setVisible(false,story);
@@ -79,6 +80,8 @@ class EditStory extends React.Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
+        const staffOptions = this.props.staff? this.props.staff.map(staff=>(<Option key={staff.id}>{staff.name}</Option>)):null;
+        console.log('测试人员',this.props.staff)
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
                onOk={this.handleSubmit.bind(this)}  onCancel={this.handleCancel.bind(this)}
@@ -98,12 +101,12 @@ class EditStory extends React.Component {
                 </FormItem>
 
                 <FormItem {...formItemLayout}  label="测试人员" >
-                    {getFieldDecorator('testers')( <Select
+                    {getFieldDecorator('testers_id')( <Select
                         multiple
                         style={{ width: '100%' }}
                         placeholder="请选择测试人员"
                     >
-                        <Option key={1}>bips</Option>
+                            {staffOptions}
                     </Select>)}
                 </FormItem>
             </Form>
@@ -121,6 +124,7 @@ function mapStateToProps(state) {
         getStoryLoading : state.story.getStoryLoading,
         stories : state.story.story,
         loginInfo:state.login.profile,
+        staff : state.story.getStaff,
     };
 }
 
