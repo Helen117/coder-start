@@ -8,9 +8,8 @@ import {Form, Input, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DateP
 import Box from '../../components/box';
 import * as actions from './action';
 import EditTask from './edit-task';
-import TransferFilter from '../../components/transfer-filter';
+import ProjectConfirm from './project-confirm';
 
-import {getDemandList} from '../to-be-confirmed/action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -20,31 +19,29 @@ class TaskCard extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            modalVisible: false,
+            visible: false,
             uploadVisible:false,
             projectVisible:false,
+            taskData:''
         };
     }
 
     componentWillMount() {
-        this.props.actions.getTaskInfo(26);
+        this.props.actions.getTaskInfo(this.props.storyId);
     }
 
-    addTask(){
+    setModifyTask(flag,task,editType,e){
+        if(e){
+            e.stopPropagation();
+        }
+
         this.setState({
-            modalVisible: true,
-            editType:'add',
-            taskData:'',
+            visible:flag,
+            editType:editType,
+            taskData:task
         });
     }
 
-    modifyTask(data){
-        this.setState({
-            modalVisible: true,
-            editType:'modify',
-            taskData:data,
-        });
-    }
 
     modifyTaskDeveloper(){
 
@@ -88,15 +85,14 @@ class TaskCard extends Component{
         this.props.form.resetFields();
     }
 
-    handleProject(){
 
-    }
-
-    cancelProject(){
+    setProjectVisible(flag,e){
+        if(e){
+            e.stopPropagation();
+        }
         this.setState({
-            projectVisible: false,
+            projectVisible: flag,
         });
-        this.props.form.resetFields();
     }
 
     beforeUpload(file){
@@ -137,15 +133,13 @@ class TaskCard extends Component{
                 uploadVisible: true,
             });
         }else if(item.key == 'setting:3'){
-            this.setState({
-                projectVisible: true,
-            });
+            this.setProjectVisible(true);
         }
     }
     render(){
-        console.log('taskInfo:',this.props.taskInfo);
-
-        console.log('form:',this.props.form);
+        // console.log('taskInfo:',this.props.taskInfo);
+        //
+        // console.log('form:',this.props.form);
 
         const {taskInfo,developerInfo} = this.props;
 
@@ -155,7 +149,7 @@ class TaskCard extends Component{
                         <Row>
                             <Col span={22}>
                                 {data.developer?<Tag>{data.developer.name}</Tag>:<Button type="primary" size="default" onClick={this.modifyTaskDeveloper.bind(this)}>领取</Button>}
-                               <a onClick={this.modifyTask.bind(this,data)}>{data.title}</a>
+                               <a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a>
                             </Col>
                             <Col span={2}>
                                 <Icon type="delete"  onClick={this.deleteTask.bind(this)}/>
@@ -193,7 +187,7 @@ class TaskCard extends Component{
                     <Tag>{data.developer.name}</Tag> {data.title}
                     </Card> )):"";
 
-        const action = (<Button type="primary" size="default" onClick={this.addTask.bind(this)}>新建Task</Button>);
+        const action = (<Button type="primary" size="default" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建Task</Button>);
 
         const {getFieldDecorator, getFieldError} = this.props.form;
         const formItemLayout = {
@@ -223,10 +217,17 @@ class TaskCard extends Component{
                     </Col>
                 </Row>
 
-                <EditTask editType={this.state.editType}
-                          visible={this.state.modalVisible}
+                <EditTask  taskData={this.state.taskData}
+                          editType={this.state.editType}
+                          visible={this.state.visible}
+                           story_id="37"
+                          setModifyTask={this.setModifyTask.bind(this)}
                 />
 
+                <ProjectConfirm
+                    projectVisible={this.state.projectVisible}
+                    setProjectVisible={this.setProjectVisible.bind(this)}
+                    />
 
                 <Modal title='上传文档'
                        visible={this.state.uploadVisible}
@@ -249,34 +250,7 @@ class TaskCard extends Component{
                 </Modal>
 
 
-                <Modal title='选择项目'
-                       width="90%"
-                       visible={this.state.projectVisible}
-                       onOk={this.handleProject.bind(this)}
-                    //confirmLoading={this.props.deleteLoading}
-                       onCancel={this.cancelProject.bind(this)}
-                >
-                    <Form horizontal >
-                        <FormItem   {...formItemLayout} label="涉及项目">
-                            {getFieldDecorator('projects',{rules:[{required:true,type:"array",message:'请选择项目'}]})(
-                                <TransferFilter
-                                     dataSource = ''
-                                    // onChange={this.handleChange.bind(this)}
-                                    loadingProMsg="false"
-                                     targetKeys = ''
-                                />)}
-                        </FormItem>
 
-                        <FormItem {...formItemLayout}  label="文档上传" >
-                            {getFieldDecorator('files')(
-                                <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
-                                    <Button type="ghost">
-                                        <Icon type="upload" /> 点击上传
-                                    </Button>
-                                </Upload>)}
-                        </FormItem>
-                    </Form>
-                </Modal>
             </div>
         )
     }

@@ -27,6 +27,17 @@ export default function taskCard(state = {}, action = {}) {
                 taskInfo:{loading:false}
             };
 
+        case 'GET_SET_USER_PENDING':
+            return {...state, getUserLoading:true};
+        case 'GET_SET_USER_SUCCESS':
+            return {...state, userInfo: action.payload, getUserLoading:false};
+        case 'GET_SET_USER_ERROR':
+            return {
+                ...state,
+                getUserError: action.payload.errorMsg,
+                getUserLoading:false
+            };
+
 
         default:
             return state;

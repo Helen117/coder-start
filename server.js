@@ -28,6 +28,7 @@ const performance = require('./mockdata/performance.json');
 const group = require('./mockdata/group.json');
 
 const demand = require('./mockdata/demand.json');
+
 const taskInfo = require('./mockdata/taskInfo.json');
 
 const milstone_ = require('./mockdata/setsMilestone');
@@ -257,7 +258,7 @@ app.post('/gitlab/project-mgr/createGroup', function (req, res) {
 });
 
 
-app.get('/gitlab/getStory', function (req, res) {
+app.post('/gitlab/getStory', function (req, res) {
     res.json(story);
 });
 

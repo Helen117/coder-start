@@ -6,11 +6,12 @@ import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notifi
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {getDeveloperInfo} from '../request/actions/request-action';
+import {getTaskDeveloper,addTask} from './action';
 import Box from '../../components/box';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 class EditTask extends Component {
     constructor(props) {
@@ -21,39 +22,51 @@ class EditTask extends Component {
     }
 
     componentWillMount() {
-        // console.log(this.props.visible);
-        // if(this.props.taskData){
-        //     const {setFieldsValue} = this.props.form;
-        //     setFieldsValue(this.props.taskData);
-        // }
-        // this.setState({
-        //     visible: this.props.visible,
-        // });
+        this.props.getTaskDeveloper(37);
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(this.props.visible);
-        console.log(nextProps.visible);
-        if(nextProps.visible&&nextProps.visible!=this.props.visible){
-            this.setState({
-                    visible: nextProps.visible,
-                });
+        const {setFieldsValue} = this.props.form;
+        const {taskData,editType,addResult} = nextProps;
+
+        console.log(addResult);
+
+        if(taskData && editType=='modify' && !this.props.visible){
+            setFieldsValue(taskData);
         }
-        if(nextProps.taskData&&nextProps.taskData!=this.props.taskData){
-            const {setFieldsValue} = this.props.form;
-            setFieldsValue(nextProps.taskData);
+
+        if ( addResult &&addResult!=this.props.addResult) {
+            message.success('提交成功');
         }
     }
 
     handleSubmit() {
-        const {form, loginInfo} = this.props;
+        const {form,taskData,loginInfo,addTaskAction} = this.props;
+        const setModifyTask = this.props.setModifyTask;
+
         form.validateFields((errors) => {
                 if (!!errors) {
                     return;
                 } else {
-                    this.setState({
-                        visible: false,
-                    });
+                    const data =form.getFieldsValue();
+                    var developer={};
+                    if(data.developer){
+                        developer.id=data.developer;
+                    }
+                    const taskInfo ={
+                        title:data.title,
+                        description:data.description,
+                        check_items:data.check_items,
+                        creater:{
+                            id:7,//loginInfo.userId
+                        },
+                        developer:developer
+                    };
+                    addTaskAction(taskInfo);
+
+                    console.log(taskInfo);
+
+                    setModifyTask(false,taskData);
                     form.resetFields();
                 }
             }
@@ -61,15 +74,14 @@ class EditTask extends Component {
     }
 
     handleCancel() {
-        const {form} = this.props;
+        const {form,taskData} = this.props;
+        const setModifyTask = this.props.setModifyTask;
 
         confirm({
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                this.setState({
-                    visible: false,
-                });
+                setModifyTask(false,taskData);
                 form.resetFields();
             },
             onCancel() {
@@ -116,15 +128,13 @@ class EditTask extends Component {
             wrapperCol: {span: 12},
         };
 
-        console.log(this.state.visible);
-
         const {developerInfo} = this.props;
 
         // const {editType} = this.props.location.state;
-        // const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
         return (
             <Modal title={this.props.editType == 'add' ? '新增' : '修改'}
-                   visible={this.state.visible}
+                   visible={this.props.visible}
                    onOk={this.handleSubmit.bind(this)}
                 //confirmLoading={this.props.deleteLoading}
                    onCancel={this.handleCancel.bind(this)}
@@ -134,28 +144,29 @@ class EditTask extends Component {
                         {getFieldDecorator('title',{rules:[{required:true,message:'不能为空'}]})(<Input placeholder=""  />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="任务描述">
-                        {getFieldDecorator('description')(<Input type="textarea" placeholder="" rows="5" />)}
+                        {getFieldDecorator('description')(<Input type="textarea" placeholder="" rows="3" />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="开发人员">
-                        {getFieldDecorator('assignee_develop_id')(
+                        {getFieldDecorator('developer')(
                             <Select showSearch
                                     showArrow={false}
                                     placeholder="请选择开发人员"
                                     optionFilterProp="children"
                                     notFoundContent="无法找到"
+                                    allowClear={true}
                                     style={{width: 300}}
                             >
-                                {/*{developer}*/}
+                                {developer}
                             </Select>)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="检查项">
-                        {getFieldDecorator('checkRule')(<Input type="textarea" placeholder="输入检查项" rows="5" />)}
+                        {getFieldDecorator('check_items')(<Input type="textarea" placeholder="输入检查项" rows="3" />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="计划完成时间">
-                        {getFieldDecorator('expect_due_date')(
+                        {getFieldDecorator('due_date')(
                             <DatePicker style={{width: 300}}/>)
                         }
                     </FormItem>
@@ -187,13 +198,15 @@ EditTask = Form.create()(EditTask);
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        taskInfo: state.request.taskInfo,
+        developerInfo:state.taskCard.userInfo,
+        addResult:state.taskCard.result,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        getDeveloperInfo:bindActionCreators(getDeveloperInfo,dispatch),
+        getTaskDeveloper:bindActionCreators(getTaskDeveloper,dispatch),
+        addTaskAction:bindActionCreators(addTask,dispatch),
     }
 }
 

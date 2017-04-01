@@ -4,7 +4,7 @@
 import api from '../../api';
 
 export function addTask(data) {
-    var path = '/addTask';
+    var path = '/taskboard/add-story';
     return {
         type: 'ADD_TASK',
         payload: {
@@ -16,7 +16,7 @@ export function addTask(data) {
 }
 
 export function getTaskInfo(storyId) {
-    var path = '/leangoo/list-card';
+    var path = '/taskboard/list-card';
     return {
         type: 'GET_TASK_INFO',
         payload: {
@@ -30,14 +30,13 @@ export function getTaskInfo(storyId) {
 }
 
 
-export function getTaskDeveloper(setsId,storyId) {
-    var path = '/getTask';
+export function getTaskDeveloper(storyId) {
+    var path = '/taskboard/story-users';
     return {
-        type: 'GET_TASK_INFO',
+        type: 'GET_SET_USER',
         payload: {
             promise: api.post(path, {
                 params: {
-                    setsId:setsId,
                     story_id: storyId
                 }
             })
