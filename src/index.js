@@ -206,6 +206,7 @@ ReactDOM.render(
                         <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
                         <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
                         <Route name="TaskBoard" breadcrumbName="看板" path="taskBoard" component={TaskBoard}>
+
                             <Route name="story" breadcrumbName="story" path="story" component={Story}/>
                         </Route>
                         </Route>
