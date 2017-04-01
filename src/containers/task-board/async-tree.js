@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Tree, Input, Icon, Form } from 'antd';
+import { Tree, Input, Icon, Form,message } from 'antd';
 import {getAsyncProjectSet,saveAsyncTreeData} from './actions/task-board-actions';
 import fetchData from '../../utils/fetch';
 import styles from './index.css';
@@ -99,9 +99,15 @@ class AsyncTree extends React.Component {
     addStory(e){
         e.stopPropagation();
         const {clickAdd} = this.props;
-        if(clickAdd){
-            clickAdd(true);
-        }
+        fetchData('/taskboard/milestone', {}, null, (result)=> {
+            if(result == true){
+                if(clickAdd){
+                    clickAdd(true);
+                }
+            }else {
+                message.warning('您没有权限在此里程碑下创建故事！',10);
+            }
+        });
     }
 
     getTitleElement(item){
