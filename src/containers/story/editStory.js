@@ -23,7 +23,10 @@ class EditStory extends React.Component {
         if(story && editType=='update' && !this.props.visible){
             setFieldsValue(story);
         }
-        if(addStory && addStory!= this.props.addStory || updateStory && updateStory!= this.props.updateStory){
+        if( updateStory && updateStory!= this.props.updateStory && this.props.milestoneId){
+            this.props.actions.getStory(this.props.milestoneId);
+        }
+        if(addStory && addStory!= this.props.addStory && this.props.milestoneId){
             this.props.actions.getStory(this.props.milestoneId);
         }
     }
@@ -109,8 +112,8 @@ function mapStateToProps(state) {
     return {
 
         //jointTaskData : state.story.jointTaskData,
-        addStory: state.story.getStoryLoading,
-        updateStory: state.story.updateStoryLoading,
+        addStory: state.story.addStory,
+        updateStory: state.story.updateStory,
         getStoryLoading : state.story.getStoryLoading,
         stories : state.story.story,
         loginInfo:state.login.profile,

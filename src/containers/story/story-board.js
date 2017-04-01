@@ -7,7 +7,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col,Button  } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
@@ -20,21 +20,25 @@ class Story extends React.Component{
             activeKey:[],
             visible: false,
             editType: 'add',
-            currentMilestoneMsg: null
+            currentMilestoneMsg: {"name":null,"description":null}
         };
         this.storyData = null;
     }
 
     componentWillMount(){
-        const {milestone_id, milestoneId} = this.props.location.state;
-        this.getMilestoneMsg(milestone_id);
-        if(milestoneId){
-            this.props.action.getStory(milestoneId);
+        if(this.props.location.state){
+            const {milestone_id, milestoneId} = this.props.location.state;
+            if(milestoneId){
+                this.getMilestoneMsg(milestone_id);
+                this.props.action.getStory(milestoneId);
+            }
         }
+
     }
 
     getMilestoneMsg(currentMilestoneId){
-        const projectSet= this.props.getProjectSet?this.props.getProjectSet.result:[];
+        const projectSet= this.props.getProjectSet?this.props.getProjectSet.result?this.props.getProjectSet.result:[]:[];
+        console.log('projectSet',projectSet)
         for(let i=0; i<projectSet.length; i++){
             if(projectSet[i].children){
                 for(let j=0; j<projectSet[i].children.length; j++){
@@ -51,16 +55,15 @@ class Story extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {stories} = nextProps;
-        const thisMilestoneId = this.props.location.state.milestoneId;
-        const nextMilestoneId = nextProps.location.state.milestoneId;
-        const nextMilestone_id = nextProps.location.state.milestone_id
+        const thisMilestoneId = this.props.location.state?this.props.location.state.milestoneId:null;
+        const nextMilestoneId = nextProps.location.state? nextProps.location.state.milestoneId: null;
+        const nextMilestone_id = nextProps.location.state? nextProps.location.state.milestone_id: null
         if( nextMilestoneId && nextMilestoneId!=thisMilestoneId){
              this.getMilestoneMsg(nextMilestone_id);
              this.props.action.getStory(nextMilestoneId);
          }
         if(stories && stories.length>0 && stories!=this.props.stories){
             this.props.action.getTask(stories[0].id);
-
         }
         //点击不同项目集，重新加载数据
 
@@ -118,36 +121,47 @@ class Story extends React.Component{
     render(){
         const {stories,getTaskLoading,loadingMsg } = this.props;
         const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
-        console.log('defaultActiveKey',defaultActiveKey)
-        const milestoneId = this.props.location.state.milestoneId;
-        if(stories) {
-            const panels = this.createPanels(stories)
-            return (
-                <div id='story' style={{margin:'10px'}}>
-                    <div id="milestone">
-                        <div className="block">
-                            <div style={{"float":"left"}}>
-                                <h2>{this.state.currentMilestoneMsg.name}</h2>
-                                <p>{this.state.currentMilestoneMsg.description}</p>
-                            </div>
-                            <div style={{"float":"right"}}>
-                                <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
-                            </div>
-                        </div>
-                    </div>
-                    <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
-                        {panels}
-                    </Collapse>
-                    <EditStory story={this.storyData}
-                               visible={this.state.visible}
-                               editType={this.state.editType}
-                               setVisible={this.setVisible.bind(this)}
-                               milestoneId = {milestoneId}/>
+        const milestoneId = this.props.location.state? this.props.location.state.milestoneId:null;
+        const milestoneContent = <div id="milestone">
+            <div className="block">
+                <div style={{"float":"left"}}>
+                    <h2>{this.state.currentMilestoneMsg.name}</h2>
+                    <p>{this.state.currentMilestoneMsg.description}</p>
                 </div>
-            )
-        }else {
-            return (<div></div>)
+                <div style={{"float":"right"}}>
+                    <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
+                </div>
+            </div>
+        </div>
+        console.log('milestoneId',this.props.location.state.milestoneId,milestoneId)
+        if(milestoneId){
+            if(stories) {
+                const panels = this.createPanels(stories)
+                return (
+                    <div id='story' style={{margin:'10px'}}>
+                        {milestoneContent}
+                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                            {panels}
+                        </Collapse>
+                        <EditStory story={this.storyData}
+                                   visible={this.state.visible}
+                                   editType={this.state.editType}
+                                   setVisible={this.setVisible.bind(this)}
+                                   milestoneId = {milestoneId}/>
+                    </div>
+                )
+            }else {
+                return milestoneContent
+            }
+        }else{
+            return <Alert style={{margin:10}}
+                          message="请从左边的项目树中选择一个历程碑"
+                          description=""
+                          type="warning"
+                          showIcon
+            />
         }
+
     }
 }
 
