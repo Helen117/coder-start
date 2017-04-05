@@ -4,7 +4,7 @@
 import React, {PropTypes,Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, Input, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DatePicker,Menu} from 'antd';
+import {Form, message, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DatePicker,Menu} from 'antd';
 import Box from '../../components/box';
 import * as actions from './action';
 import EditTask from './edit-task';
@@ -28,6 +28,15 @@ class TaskCard extends Component{
 
     componentWillMount() {
         this.props.actions.getTaskInfo(this.props.storyId);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {taskInfo} = nextProps;
+
+        if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('领取成功');
+        }
     }
 
     setModifyTask(flag,task,editType,e){
@@ -138,11 +147,13 @@ class TaskCard extends Component{
         }
     }
     render(){
-        // console.log('taskInfo:',this.props.taskInfo);
-        //
-        // console.log('form:',this.props.form);
 
-        const {taskInfo,developerInfo} = this.props;
+
+        const story = this.props.storyId;
+
+        const taskInfo = this.props.taskInfo[story];
+
+        console.log('taskInfo:',taskInfo);
 
         const todoTask = taskInfo&&taskInfo.todo_cards&&taskInfo.todo_cards.length?(
             taskInfo.todo_cards.map(
@@ -163,10 +174,10 @@ class TaskCard extends Component{
                 data =>
                     <div style={{padding:"5px", border:'1px solid #e9e9e9'}} key={data.id}>
                     <Row>
-                        <Col span={20}>
-                            <Tag>{data.developer.name}</Tag> {data.title}
+                        <Col span={18}>
+                            {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
                         </Col>
-                        <Col span={4}>
+                        <Col span={6}>
                             <Menu onClick={this.handleClick.bind(this)}
                                   mode="horizontal"
                                  >
@@ -185,12 +196,12 @@ class TaskCard extends Component{
         const doneTask = taskInfo&&taskInfo.done_cards&&taskInfo.done_cards.length?(
             taskInfo.done_cards.map(
                 data =><Card style={{marginBottom:"5px"}} key={data.id}>
-                    <Tag>{data.developer.name}</Tag> {data.title}
+                    {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
                     </Card> )):"";
 
         const action = (<Button type="primary" size="default" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建Task</Button>);
 
-        const {getFieldDecorator, getFieldError} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 6},
             wrapperCol: {span: 12},
@@ -201,17 +212,17 @@ class TaskCard extends Component{
         return (
             <div>
                 <Row>
-                    <Col span="8">
+                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
                         <Box title="todo" action={action}>
                             {todoTask}
                         </Box>
                     </Col>
-                    <Col span="8">
+                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
                         <Box title="doing">
                             {doingTask}
                         </Box>
                     </Col>
-                    <Col span="8">
+                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
                         <Box title="done">
                             {doneTask}
                         </Box>
@@ -268,7 +279,7 @@ TaskCard = Form.create()(TaskCard);
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        taskInfo: state.taskCard.taskInfo,
+        taskInfo: state.taskCard,
     };
 }
 

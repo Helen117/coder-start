@@ -1,6 +1,8 @@
 /**
  * Created by helen on 2017/3/30.
  */
+// import {cloneObject}  from '../../utils/common';
+
 export default function taskCard(state = {}, action = {}) {
     switch (action.type) {
 
@@ -43,11 +45,9 @@ export default function taskCard(state = {}, action = {}) {
         case 'GET_TASK_INFO_PENDING':
             return {...state, taskInfo:{loading:true}};
         case 'GET_TASK_INFO_SUCCESS':
-            // var taskInfo = Object.assign({}, state.taskInfo);
-            // taskInfo[action.mete] = {...action.payload, loading:false};
-            //
-            // return {...state, ...taskInfo };
-            return {...state,taskInfo:{...action.payload,loading:false}};
+            var taskInfo = cloneObject(state.taskInfo);
+            taskInfo[action.meta] = {...action.payload, loading:false};
+            return {...state, ...taskInfo };
         case 'GET_TASK_INFO_ERROR':
             return {
                 ...state,
@@ -70,4 +70,25 @@ export default function taskCard(state = {}, action = {}) {
         default:
             return state;
     }
+}
+
+ function cloneObject(object) {
+    var bak;
+    if (object instanceof(Array)) {
+        bak = [];
+        for (var i =0; i< object.length; i++) {
+            if (typeof object[i] == "object") arguments.callee(object[i]);
+            else bak[i] = object[i];
+        }
+    } else {
+        bak = {};
+        for (var key in object) {
+            if (typeof bak[key] == "object") {
+                arguments.callee(bak[key]);
+            } else { // 包括函数在内 直接赋值了
+                bak[key] = object[key];
+            }
+        }
+    }
+    return bak;
 }
