@@ -268,7 +268,7 @@ class UserInfo extends React.Component {
                     <Row>
                         <Table style={{"paddingTop":10}}
                                columns={this.groupColumns(this,showOpt,this.data,
-                                   userInfoData,this.state.filterKeys,is_admin)}
+                            userInfoData,this.state.filterKeys,is_admin)}
                                dataSource={dataSource}
                                rowSelection={showOpt?null:rowSelection}
                                pagination={pagination}

@@ -17,6 +17,7 @@ import {comfirmRoleId} from './util';
 import 'pubsub-js';
 import {getProjectInfo} from '../project-mgr/actions/create-project-action';
 import {setSelectedRowKeys} from '../user-relation/actions/user-relation-actions';
+import TableFilterTitle from '../../components/table-filter-title';
 
 
 const Option = Select.Option;
@@ -26,16 +27,29 @@ const FormItem = Form.Item;
 class ProjectMember extends Component {
     constructor(props) {
         super(props);
+        this.data = [];
         this.state = {
             addProjectMember:false,
             accessLevel:40,
             selectedRowKeys:[],
-            selectedUserIds:[]
+            selectedUserIds:[],
+
+            filterKeys:[],
+            dataSource:[],
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const {projectMember} = nextProps;
+        //设置this.state.dataSource等初始值
+        if(this.props.projectMember.getProjectMembers && projectMember.getProjectMembers
+            && projectMember.getProjectMembers.projectMembers &&
+            this.props.projectMember.getProjectMembers.projectMembers != projectMember.getProjectMembers.projectMembers ){
+            this.data = this.getDataSource(projectMember.getProjectMembers.projectMembers);
+            this.setState({
+                dataSource:projectMember.getProjectMembers.projectMembers
+            })
+        }
         //添加返回信息
         if(this.props.projectMember.addProjectMember && projectMember.addProjectMember
         && this.props.projectMember.addProjectMember.result !=
@@ -169,6 +183,83 @@ class ProjectMember extends Component {
         this.setState({selectedRowKeys,selectedUserIds:user_ids})
     }
 
+    filterChange(filterData,filterKeys,ifFiled){
+        if(ifFiled){
+            let countKey = 0;
+            for(let i=0; i<this.state.filterKeys.length; i++){
+                if(filterKeys[0].filterKey == this.state.filterKeys[i].filterKey){
+                    countKey++;
+                    this.state.filterKeys[i].formData = filterKeys[0].formData;
+                }
+            }
+            if(countKey == 0){
+                this.state.filterKeys.push(filterKeys[0]);
+            }
+            this.setState({
+                dataSource:filterData,
+            })
+        }else{
+            this.setState({
+                dataSource:filterData,
+                filterKeys:filterKeys
+            })
+        }
+    }
+
+    transformRole(role){
+        let role_temp = '';
+        if(role == 40){
+            role_temp = '管理员';
+        }else if(role == 30){
+            role_temp = '开发者';
+        } else if(role == 20){
+            role_temp = '测试';
+        }else if(role == 50){
+            role_temp = '创建者';
+        }
+
+        return role_temp;
+    }
+
+    transformData(data){
+        let data_temp = [];
+        if(data.length > 0){
+            for(var i=0;i<data.length;i++){
+                if(data[i].created_at){
+                    let temp = {};
+                    temp.name = data[i].name;
+                    temp.role = this.transformRole(data[i].role);
+                    temp.email = data[i].email;
+                    temp.join_time = this.transformDate(data[i].created_at);
+                    temp.state = data[i].state;
+
+                    data_temp.push(temp);
+                }else {
+                    data_temp = data;
+                }
+            }
+        }
+
+        return data_temp;
+    }
+
+    getDataSource(userInfoData){
+        const dataSource = [];
+        const data = this.transformData(userInfoData);
+        for(let i=0;i<data.length;i++){
+            dataSource.push({
+                key:i+1,
+                name:data[i].name,
+                role:data[i].role,
+                email:data[i].email,
+                join_time:data[i].join_time,
+                state:data[i].state
+            });
+        }
+
+        return dataSource;
+    }
+
     render(){
         const {projectMember,project,loginInfo} = this.props;
         const { getFieldDecorator } = this.props.form;
@@ -182,36 +273,8 @@ class ProjectMember extends Component {
         const projectMembers = projectMember.getProjectMembers?(
             projectMember.getProjectMembers.projectMembers?projectMember.getProjectMembers.projectMembers:[]
         ):[];
-        const columns = [
-            {title: "项目人员", dataIndex: "name", key: "name"},
-            {title: "角色", dataIndex: "role", key: "role"},
-            {title: "邮箱", dataIndex: "email", key: "email"},
-            {title: "进入项目时间", dataIndex: "join_time", key: "join_time"},
-            {title: "人员状态", dataIndex: "state", key: "state"}
-        ];
-        const dataSource = [];
-        if(projectMembers.length > 0){
-            for(var i=0;i<projectMembers.length;i++){
-                let role = '';
-                if(projectMembers[i].role == 40){
-                    role = '管理员';
-                }else if(projectMembers[i].role == 30){
-                    role = '开发者';
-                } else if(projectMembers[i].role == 20){
-                    role = '测试';
-                }else if(projectMembers[i].role == 50){
-                    role = '创建者';
-                }
-                dataSource.push({
-                    key:i+1,
-                    name:projectMembers[i].name,
-                    role:role,
-                    email:projectMembers[i].email,
-                    join_time:this.transformDate(projectMembers[i].created_at),
-                    state:projectMembers[i].state
-                });
-            }
-        }
+
+        const dataSource = this.getDataSource(this.state.dataSource);
         const rowSelection = {
             selectedRowKeys,
             onChange:this.onSelectedChange.bind(this)
@@ -231,7 +294,8 @@ class ProjectMember extends Component {
         return (
             <div className={styles.project_list_div}>
                 {projectDesc}
-                <Table columns={columns} dataSource={dataSource}
+                <Table columns={this.groupColumns(this,this.data,this.state.filterKeys)}
+                       dataSource={dataSource}
                        rowSelection={rowSelection}
                        loading={membersLoading}
                        style={{paddingTop:"10px"}}></Table>
@@ -274,6 +338,24 @@ ProjectMember.contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
+};
+
+ProjectMember.prototype.groupColumns = (self,dataSource,filterKeys)=>{
+    return [
+        {title: (<TableFilterTitle id="name" title="项目人员"
+                                   filterKey="name"
+                                   filterKeys={filterKeys}
+                                   dataSource={dataSource}
+                                   filterChange={self.filterChange.bind(self)}/>), dataIndex: "name", key: "name"},
+        {title: (<TableFilterTitle id="role" title="角色"
+                                   filterKey="role"
+                                   filterKeys={filterKeys}
+                                   dataSource={dataSource}
+                                   filterChange={self.filterChange.bind(self)}/>), dataIndex: "role", key: "role"},
+        {title: "邮箱", dataIndex: "email", key: "email"},
+        {title: "进入项目时间", dataIndex: "join_time", key: "join_time"},
+        {title: "人员状态", dataIndex: "state", key: "state"}
+    ]
 };
 
 ProjectMember = Form.create()(ProjectMember);
