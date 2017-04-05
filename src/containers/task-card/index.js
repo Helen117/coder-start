@@ -30,6 +30,15 @@ class TaskCard extends Component{
         this.props.actions.getTaskInfo(this.props.storyId);
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log('this.props.storyId:',this.props.storyId)
+        const {rollBackInfo} = this.props;
+        if(nextProps.rollBackInfo && nextProps.rollBackInfo.result != rollBackInfo.result){
+            console.log('111111')
+            this.props.actions.getTaskInfo(this.props.storyId);
+        }
+    }
+
     setModifyTask(flag,task,editType,e){
         if(e){
             e.stopPropagation();
@@ -128,13 +137,18 @@ class TaskCard extends Component{
     }
 
 
-    handleClick(item) {
+    handleClick(taskId,item) {
+        const {loginInfo} = this.props;
+        console.log('loginInfo:',loginInfo)
         if (item.key == 'setting:2') {
             this.setState({
                 uploadVisible: true,
             });
         }else if(item.key == 'setting:3'){
             this.setProjectVisible(true);
+        }else if(item.key == 'setting:1'){
+            //回退卡片
+            this.props.actions.rollBackCard(loginInfo.userId,taskId)
         }
     }
     render(){
@@ -164,10 +178,10 @@ class TaskCard extends Component{
                     <div style={{padding:"5px", border:'1px solid #e9e9e9'}} key={data.id}>
                     <Row>
                         <Col span={20}>
-                            <Tag>{data.developer.name}</Tag> {data.title}
+                            {data.developer?<Tag>{data.developer.name}</Tag>:""}{data.title}
                         </Col>
                         <Col span={4}>
-                            <Menu onClick={this.handleClick.bind(this)}
+                            <Menu onClick={this.handleClick.bind(this,data.id)}
                                   mode="horizontal"
                                  >
                                 <SubMenu title={<Icon type="bars"/>}>
@@ -269,6 +283,7 @@ function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
         taskInfo: state.taskCard.taskInfo,
+        rollBackInfo: state.taskCard.rollBackInfo,
     };
 }
 

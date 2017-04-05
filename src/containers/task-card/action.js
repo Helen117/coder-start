@@ -72,14 +72,15 @@ export function getTaskDeveloper(storyId) {
     }
 }
 //回退卡片
-export function rollBackCard(cardId) {
-    var path = '/taskboard/story-users';
+export function rollBackCard(userId,taskId) {
+    var path = '/taskboard/return-card';
     return {
         type: 'ROLL_BACK_CARD',
         payload: {
             promise: api.post(path, {
                 params: {
-                    cardId: cardId
+                    user_id:userId,
+                    task_id:taskId
                 }
             })
         }
