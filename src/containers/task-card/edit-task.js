@@ -29,7 +29,6 @@ class EditTask extends Component {
         const {setFieldsValue} = this.props.form;
         const {taskData,editType,addResult,updateTask} = nextProps;
 
-        console.log('taskData:',taskData)
         if(taskData && editType=='modify' && !this.props.visible){
             setFieldsValue(taskData);
         }

@@ -33,8 +33,7 @@ class TaskCard extends Component{
     componentWillReceiveProps(nextProps) {
         //回退任务
         const {rollBackInfo} = this.props;
-        if(nextProps.rollBackInfo && nextProps.rollBackInfo.result != rollBackInfo.result) {
-            console.log('111111')
+        if(nextProps.rollBackInfo && rollBackInfo && nextProps.rollBackInfo.result != rollBackInfo.result) {
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('回退成功');
         }
@@ -187,7 +186,7 @@ class TaskCard extends Component{
                             {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
                         </Col>
                         <Col span={6}>
-                            <Menu onClick={this.handleClick.bind(this)}
+                            <Menu onClick={this.handleClick.bind(this,data.id)}
                                   mode="horizontal"
                                  >
                                 <SubMenu title={<Icon type="bars"/>}>
