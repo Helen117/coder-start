@@ -142,7 +142,7 @@ class EditTask extends Component {
         const {developerInfo} = this.props;
 
         // const {editType} = this.props.location.state;
-        const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const developer = developerInfo?developerInfo.map(data => <Option key={data.userId}>{data.name}</Option>):[];
         return (
             <Modal title={this.props.editType == 'add' ? '新增' : '修改'}
                    visible={this.props.visible}

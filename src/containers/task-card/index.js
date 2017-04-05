@@ -42,6 +42,16 @@ class TaskCard extends Component{
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('领取成功');
         }
+
+        if (taskInfo.uploadTaskFile && !taskInfo.uploadTaskFileLoading && taskInfo.uploadTaskFile!=this.props.taskInfo.uploadTaskFile) {
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('上传成功');
+        }
+
+        if (taskInfo.deleteTask && !taskInfo.deleteTaskLoading && taskInfo.deleteTask!=this.props.taskInfo.deleteTask) {
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('删除成功');
+        }
     }
 
     setModifyTask(flag,task,editType,e){
@@ -62,8 +72,9 @@ class TaskCard extends Component{
         actions.setTaskDeveloper(loginInfo.userId,taskId);
     }
 
-    deleteTask(){
+    deleteTask(taskId){
         console.log("delete");
+        this.props.actions.deleteTask(this.props.loginInfo.userId,taskId);
     }
 
     handleSubmit(e) {
@@ -90,12 +101,31 @@ class TaskCard extends Component{
 
 
     handleUpload() {
+        const {actions,form,loginInfo} = this.props;
+        form.setFieldsValue({'files':this.state.fileList});
+        form.validateFields((errors, values) => {
+            if (!!errors) {
+                return;
+            } else {
+                const data = form.getFieldsValue();
+                data.operator_id=loginInfo.userId;
+                data.id = this.state.taskId;
+                console.log(data);
+                actions.submitTaskFile(data);
+                this.setState({
+                    uploadVisible: false,
+                    fileList:'',
+                });
 
+                form.resetFields();
+            }
+        })
     }
 
     cancelUpload(){
         this.setState({
             uploadVisible: false,
+            fileList:'',
         });
         this.props.form.resetFields();
     }
@@ -148,6 +178,7 @@ class TaskCard extends Component{
         if (item.key == 'setting:2') {
             this.setState({
                 uploadVisible: true,
+                taskId:taskId
             });
         }else if(item.key == 'setting:3'){
             this.setProjectVisible(true);
@@ -172,7 +203,7 @@ class TaskCard extends Component{
                                <a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a>
                             </Col>
                             <Col span={2}>
-                                <Icon type="delete"  onClick={this.deleteTask.bind(this)}/>
+                                <Icon type="delete"  onClick={this.deleteTask.bind(this,data.id)}/>
                             </Col>
                         </Row>
                 </Card> )):"";
@@ -259,7 +290,7 @@ class TaskCard extends Component{
 
                     <Form horizontal >
                         <FormItem {...formItemLayout}  label="文档上传" >
-                            {getFieldDecorator('files')(
+                            {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
                                 <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
                                     <Button type="ghost">
                                         <Icon type="upload" /> 点击上传
