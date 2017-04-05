@@ -71,3 +71,18 @@ export function getTaskDeveloper(storyId) {
         }
     }
 }
+//回退卡片
+export function rollBackCard(userId,taskId) {
+    var path = '/taskboard/return-card';
+    return {
+        type: 'ROLL_BACK_CARD',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    user_id:userId,
+                    task_id:taskId
+                }
+            })
+        }
+    }
+}

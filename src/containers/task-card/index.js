@@ -31,8 +31,13 @@ class TaskCard extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
+        //回退任务
+        const {rollBackInfo} = this.props;
+        if(nextProps.rollBackInfo && rollBackInfo && nextProps.rollBackInfo.result != rollBackInfo.result) {
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('回退成功');
+        }
         const {taskInfo} = nextProps;
-
         if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('领取成功');
@@ -137,13 +142,18 @@ class TaskCard extends Component{
     }
 
 
-    handleClick(item) {
+    handleClick(taskId,item) {
+        const {loginInfo} = this.props;
+        console.log('loginInfo:',loginInfo)
         if (item.key == 'setting:2') {
             this.setState({
                 uploadVisible: true,
             });
         }else if(item.key == 'setting:3'){
             this.setProjectVisible(true);
+        }else if(item.key == 'setting:1'){
+            //回退卡片
+            this.props.actions.rollBackCard(loginInfo.userId,taskId)
         }
     }
     render(){
@@ -152,8 +162,6 @@ class TaskCard extends Component{
         const story = this.props.storyId;
 
         const taskInfo = this.props.taskInfo[story];
-
-        console.log('taskInfo:',taskInfo);
 
         const todoTask = taskInfo&&taskInfo.todo_cards&&taskInfo.todo_cards.length?(
             taskInfo.todo_cards.map(
@@ -178,7 +186,7 @@ class TaskCard extends Component{
                             {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
                         </Col>
                         <Col span={6}>
-                            <Menu onClick={this.handleClick.bind(this)}
+                            <Menu onClick={this.handleClick.bind(this,data.id)}
                                   mode="horizontal"
                                  >
                                 <SubMenu title={<Icon type="bars"/>}>
@@ -279,6 +287,7 @@ TaskCard = Form.create()(TaskCard);
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
+        rollBackInfo: state.taskCard.rollBackInfo,
         taskInfo: state.taskCard,
     };
 }
