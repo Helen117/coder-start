@@ -15,7 +15,6 @@ const Option = Select.Option;
 class EditStory extends React.Component {
 
     componentWillReceiveProps(nextProps){
-        console.log('componentWillReceiveProps')
         const {setFieldsValue} = this.props.form;
         const {story,editType,addStory,updateStory,visible} = nextProps;
         if(visible && visible != this.props.visible){
@@ -36,8 +35,6 @@ class EditStory extends React.Component {
         if(addStory && addStory!= this.props.addStory && this.props.milestoneId){
             this.props.actions.getStory(this.props.milestoneId);
         }
-        console.log('componentWillReceiveProps22')
-
     }
 
     handleCancel() {
@@ -85,8 +82,6 @@ class EditStory extends React.Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        console.log('render')
-
         const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
