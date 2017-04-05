@@ -23,7 +23,8 @@ class UserInfo extends React.Component {
             source_user_id:null,
             dataSource:[],
             filterKeys:[],
-            current:1
+            current:1,
+            changeNode:false
         }
     }
 
@@ -61,18 +62,21 @@ class UserInfo extends React.Component {
         const userInfoData = userRelationState['getUserInfo_'+busiType]?(
             userRelationState['getUserInfo_'+busiType].userInfoData
                 ?userRelationState['getUserInfo_'+busiType].userInfoData:[]):[];
+
         const node = nextProps.selectedNode;
         if(node != this.props.selectedNode && node){
             this.setState({
                 dataSource:[],
-                current:1
+                current:1,
+                changeNode:true
             })
             this.props.getGroupsUsers(parseInt(node),busiType);
         }
-        if(userInfoData && this.state.dataSource.length==0){
+        if(userInfoData.length>0 && this.state.dataSource.length==0 && this.state.changeNode ){
             this.data = this.getDataSource(userInfoData);
             this.setState({
-                dataSource:userInfoData
+                dataSource:userInfoData,
+                changeNode:false
             })
         }
         //移除返回信息
