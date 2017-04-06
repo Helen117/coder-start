@@ -5,10 +5,12 @@ import React, { PropTypes, Component } from 'react';
 import { Form, Input, Button, Select,message,Modal,Upload,Icon,notification,Spin,Row, Col} from 'antd';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+
+import {getDemandProjectInfo,getProjectInfo} from '../to-be-confirmed/action'
+import {taskDesignProject} from './action';
 
 import TransferFilter from '../../components/transfer-filter';
-
-import {connect} from 'react-redux';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -20,14 +22,31 @@ class ProjectConfirm extends Component {
 
     }
 
+    componentWillReceiveProps(nextProps){
+        const {projectVisible} =nextProps;
+        if(projectVisible&&projectVisible!=this.props.projectVisible){
+            // this.props.getDemandProjectInfoAction(this.props.taskId);
+            this.props.getProjectInfoAction(this.props.currentMilestoneMsg.set_id, this.props.loginInfo.userId);
+        }
+
+    }
+
     handleSubmit() {
         const {form, loginInfo} = this.props;
         const setProjectVisible = this.props.setProjectVisible;
-
+        form.setFieldsValue({'files':this.state.fileList});
         form.validateFields((errors) => {
                 if (!!errors) {
                     return;
                 } else {
+                    const data = form.getFieldsValue();
+                    data.operator_id=loginInfo.userId;
+                    data.task_id = this.props.taskId;
+                    this.props.designProjectAction(data);
+                    console.log('data:',data);
+                    this.setState({
+                        fileList:'',
+                    });
                     setProjectVisible(false);
                     form.resetFields();
                 }
@@ -50,6 +69,10 @@ class ProjectConfirm extends Component {
                 //do nothing
             }
         })
+    }
+
+    handleChange(targetKeys){
+        this.targetKeys = targetKeys;
     }
 
     beforeUpload(file) {
@@ -80,6 +103,7 @@ class ProjectConfirm extends Component {
             });
         }.bind(this);
         reader.readAsDataURL(file);
+        this.props.form.setFieldsValue({'files':this.state.fileList});
         return false;
     }
 
@@ -89,6 +113,10 @@ class ProjectConfirm extends Component {
             labelCol: {span: 4},
             wrapperCol: {span: 18},
         };
+
+        const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
+        let targetKeys = [];
+            // this.props.getDemandProjectInfo?this.props.getDemandProjectInfo.map(data => data.id):[];
         const loading=false;
 
         return (
@@ -101,17 +129,17 @@ class ProjectConfirm extends Component {
             >
                 <Form horizontal>
                     <FormItem   {...formItemLayout} label="涉及项目">
-                        {getFieldDecorator('projects', {rules: [{required: true, type: "array", message: '请选择项目'}]})(
+                        {getFieldDecorator('projects_id', {rules: [{required: true, type: "array", message: '请选择项目'}]})(
                             <TransferFilter
-                                dataSource=''
-                                // onChange={this.handleChange.bind(this)}
+                                dataSource={projectInfo}
+                                onChange={this.handleChange.bind(this)}
                                 loadingProMsg={loading}
-                                targetKeys=''
+                                targetKeys={targetKeys}
                             />)}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="文档上传">
-                        {getFieldDecorator('files')(
+                        {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
                             <Upload beforeUpload={this.beforeUpload.bind(this)} fileList={this.state.fileList}>
                                 <Button type="ghost">
                                     <Icon type="upload"/> 点击上传
@@ -138,12 +166,16 @@ ProjectConfirm = Form.create()(ProjectConfirm);
 function mapStateToProps(state) {
     return {
         loginInfo: state.login.profile,
-        
+        getMyProjectInfo: state.toBeConfirmedItem.projectInfo,
+        getDemandProjectInfo: state.toBeConfirmedItem.demandProjectInfo,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
+        // getDemandProjectInfoAction: bindActionCreators(getDemandProjectInfo, dispatch),
+        getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
+        designProjectAction: bindActionCreators(taskDesignProject, dispatch),
     }
 }
 

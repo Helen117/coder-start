@@ -1,7 +1,6 @@
 /**
  * Created by helen on 2017/3/30.
  */
-// import {cloneObject}  from '../../utils/common';
 
 export default function taskCard(state = {}, action = {}) {
     switch (action.type) {
@@ -86,6 +85,18 @@ export default function taskCard(state = {}, action = {}) {
                 getUserError: action.payload.errorMsg,
                 getUserLoading:false
             };
+
+        case 'DESIGN_PROJECT_PENDING':
+            return {...state, designProject:null,designProjectLoading:true};
+        case 'DESIGN_PROJECT_SUCCESS':
+            return {...state, designProject: action.payload, designProjectLoading:false};
+        case 'DESIGN_PROJECT_ERROR':
+            return {
+                ...state,
+                designProject: null,
+                designProjectLoading:false
+            };
+
         //回退卡片
         case 'ROLL_BACK_CARD_PENDING':
             return {...state, rollBackInfo:{loading:true}};
