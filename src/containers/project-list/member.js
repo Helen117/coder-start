@@ -263,11 +263,31 @@ class ProjectMember extends Component {
         return dataSource;
     }
 
+    canUpdateMember(){
+        let flag = false;
+        const {loginInfo,projectMember} = this.props;
+        const projectMembers = projectMember.getProjectMembers?(
+            projectMember.getProjectMembers.projectMembers?projectMember.getProjectMembers.projectMembers:[]
+        ):[];
+        for(let i=0; i<projectMembers.length; i++){
+            if(loginInfo.userId == projectMembers[i].id
+                && (projectMembers[i].role == '40' || projectMembers[i].role == '50')){
+                     flag = true;
+            }
+        }
+        return flag;
+    }
+
     editMember(record){
-        this.editMemberRecord = record;
-        this.setState({
-            showEditMember:true
-        });
+        let flag = this.canUpdateMember();
+        if(flag){
+            this.editMemberRecord = record;
+            this.setState({
+                showEditMember:true
+            });
+        }else {
+            message.error('您不是创建人或者管理员，不能修改成员角色！');
+        }
     }
 
     setVisible(flag){

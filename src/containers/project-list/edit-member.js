@@ -8,6 +8,7 @@ import React,{
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Form,Button,Modal,Select,notification,Table,message,Row,Col,Input} from 'antd';
+import {updateProjectMember,getProjectMembers} from './actions/project-member-action';
 
 
 const Option = Select.Option;
@@ -25,8 +26,17 @@ class EditProjectMember extends Component {
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
         const {visible,record} = nextProps;
+        const {updateMemberInfo,projectInfo} = this.props;
+
         if(visible && visible!=this.props.visible){
             setFieldsValue(record);
+        }
+
+        let project = projectInfo?(projectInfo.projectInfo?projectInfo.projectInfo:""):"";
+        if(nextProps.updateMemberInfo && updateMemberInfo
+            && nextProps.updateMemberInfo.result!=updateMemberInfo.result){
+            this.props.getProjectMembers(project.id);
+            message.success('修改成功');
         }
     }
 
@@ -40,11 +50,32 @@ class EditProjectMember extends Component {
         })
     }
 
-    handleOk(){
-        const {setVisible} = this.props;
-        if(setVisible){
-            setVisible(false)
+    getUserIdByemail(email,members){
+        for(let i=0; i<members.length; i++){
+            if(email == members[i].email){
+                return members[i].id;
+            }
         }
+        return "";
+    }
+
+    handleOk(){
+        const {form,projectMembers,setVisible,projectInfo} = this.props;
+        form.validateFields((errors) => {
+            if (!!errors) {
+                return;
+            } else {
+                let members = projectMembers?
+                    (projectMembers.projectMembers?projectMembers.projectMembers:[]):[];
+                let project = projectInfo?(projectInfo.projectInfo?projectInfo.projectInfo:""):"";
+                const data = form.getFieldsValue();
+                let id = this.getUserIdByemail(data.email,members);
+                this.props.updateProjectMember(project.id,id,data.role);
+                if(setVisible){
+                    setVisible(false)
+                }
+            }
+        })
     }
 
     handleCancel(){
@@ -112,12 +143,16 @@ EditProjectMember = Form.create()(EditProjectMember);
 function mapStateToProps(state) {
     return {
         loginInfo:state.login.profile,
+        updateMemberInfo:state.projectMember.updateProjectMember,
+        projectMembers:state.projectMember.getProjectMembers,
+        projectInfo:state.project.getProjectInfo
     }
 }
 
 function mapDispatchToProps(dispatch){
     return{
-
+        updateProjectMember:bindActionCreators(updateProjectMember, dispatch),
+        getProjectMembers:bindActionCreators(getProjectMembers, dispatch),
     }
 }
 
