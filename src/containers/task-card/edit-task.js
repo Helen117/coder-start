@@ -22,30 +22,35 @@ class EditTask extends Component {
     }
 
     componentWillMount() {
-        this.props.getTaskDeveloper(37);
     }
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
-        const {taskData,editType,addResult,updateTask} = nextProps;
+        const {taskData,editType,addResult,updateTaskResult,story_id} = nextProps;
 
         if(taskData && editType=='modify' && !this.props.visible){
+            taskData.due_date = taskData.due_date? moment(taskData.due_date):null;
+            const developer = taskData.developer? taskData.developer.id.toString():null;
             setFieldsValue(taskData);
+            setFieldsValue({"developer":developer});
+        }
+        if(story_id && story_id != this.props.story_id){
+            this.props.getTaskDeveloper(story_id);
         }
 
         if ( addResult &&addResult!=this.props.addResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
-
-        if ( updateTask &&updateTask!=this.props.updateTask) {
+console.log('updateTaskResult',updateTaskResult,this.props.updateTaskResult)
+        if ( updateTaskResult && updateTaskResult!=this.props.updateTaskResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
     }
 
     handleSubmit() {
-        const {form,taskData,loginInfo,addTaskAction,editType,story_id} = this.props;
+        const {form,taskData,loginInfo,addTaskAction,editType,story_id,updateTask} = this.props;
         const setModifyTask = this.props.setModifyTask;
 
         form.validateFields((errors) => {
@@ -61,17 +66,18 @@ class EditTask extends Component {
                         title:data.title,
                         description:data.description,
                         check_items:data.check_items,
-                        creater:{
-                            id:loginInfo.userId
-                        },
                         developer:developer,
                         type:'demand',
-                        due_date:data.due_date,
+                        due_date:data.due_date? data.due_date.valueOf: null,
                         story_id:story_id
                     };
-                    if(editType==='add'){
+                    if(editType=='add'){
+                        taskInfo.creater={
+                            id:loginInfo.userId
+                        };
                         addTaskAction(taskInfo);
                     }else{
+                        console.log('update')
                         taskInfo.id=taskData.id;
                         taskInfo.operator_id = loginInfo.userId;
                         updateTask(taskInfo);
@@ -211,7 +217,7 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         developerInfo:state.taskCard.userInfo,
         addResult:state.taskCard.result,
-        updateTask:state.taskCard.updateTask,
+        updateTaskResult:state.taskCard.updateTask,
     };
 }
 

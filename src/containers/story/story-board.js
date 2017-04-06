@@ -132,17 +132,17 @@ class Story extends React.Component{
         const {stories,getTaskLoading,loadingMsg } = this.props;
         const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
         const milestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
-        const milestoneContent = <div id="milestone">
+        const milestoneContent = this.state.currentMilestoneMsg? <div id="milestone">
             <div className="block">
                 <div style={{"float":"left"}}>
                     <h2>{this.state.currentMilestoneMsg.name}</h2>
                     <p>{this.state.currentMilestoneMsg.description}</p>
                 </div>
-                <div style={{"float":"right"}}>
+                <div style={{"float":"right",  "marginTop": "9px"}}>
                     <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
                 </div>
             </div>
-        </div>
+        </div>:<div/>
         if(milestoneId){
             if(stories) {
                 const panels = this.createPanels(stories)
