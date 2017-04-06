@@ -59,17 +59,19 @@ class AsyncTree extends React.Component {
          //this.setLeaf(treeData, curKey, level);
     }
 
-    onSelect(info,e){
-        //console.log('selected', info);
-        const {onSelect} = this.props;
-        if(onSelect){
-            onSelect(info[0]);
-        }
-        if(info[0].indexOf('_m')>=0){
-            let milestoneId = info[0].toString().substring(0,info[0].length-2);
-            this.props.saveAsyncTreeState(info[0],milestoneId);
-        }else {
-            this.props.saveAsyncTreeState(null,null);
+    onSelect(selectedKeys,e){
+        const selectedNode = selectedKeys[0];
+        if(selectedNode){
+            const {onSelect} = this.props;
+            if(onSelect){
+                onSelect(selectedNode);
+            }
+            if(selectedNode.indexOf('_m')>=0){
+                let milestoneId = selectedNode.toString().substring(0,selectedNode.length-2);
+                this.props.saveAsyncTreeState(selectedKeys,selectedNode,milestoneId);
+            }else {
+                this.props.saveAsyncTreeState(selectedKeys,null,null);
+            }
         }
     }
 
@@ -138,10 +140,15 @@ class AsyncTree extends React.Component {
     }
 
     render(){
-        const { getProjectSet} = this.props;
+        const { getProjectSet,saveTreeState} = this.props;
         let treeData = this.getTreeData();
         let nodes = this.getTreeNodes(treeData);
         const loading = getProjectSet?getProjectSet.loading:false;
+
+        const trProps = {};
+        if(saveTreeState){
+            trProps.selectedKeys = saveTreeState.selectedKeys;
+        }
 
         return(
             <div style={{border: "1px solid #D9D9D9", padding:10}}>
@@ -153,7 +160,8 @@ class AsyncTree extends React.Component {
                     nodes.length==0?(
                         <span className="filter-not-found">没有找到数据</span>
                     ):(
-                        <Tree onSelect={this.onSelect.bind(this)} loadData={this.onLoadData.bind(this)}>
+                        <Tree {...trProps}
+                              onSelect={this.onSelect.bind(this)} loadData={this.onLoadData.bind(this)}>
                             {nodes}
                         </Tree>
                     )
@@ -175,6 +183,7 @@ function mapStateToProps(state) {
     return {
         getProjectSet : state.taskBoardReducer.getProjectSet,
         getProjectMilestone : state.taskBoardReducer.getProjectMilestone,
+        saveTreeState:state.taskBoardReducer.saveTreeState,
     }
 }
 

@@ -7,7 +7,7 @@ import React,{
 } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Form,Button,Modal,Select,notification,Table,message,Row,Col} from 'antd';
+import {Form,Button,Modal,Select,notification,Table,message,Row,Col,Input} from 'antd';
 import styles from './index.css';
 import UserRelation from '../user-relation';
 import {addProjectMember,deleteProjectMember,
@@ -18,6 +18,7 @@ import 'pubsub-js';
 import {getProjectInfo} from '../project-mgr/actions/create-project-action';
 import {setSelectedRowKeys} from '../user-relation/actions/user-relation-actions';
 import TableFilterTitle from '../../components/table-filter-title';
+import EditProjectMember from './edit-member';
 
 
 const Option = Select.Option;
@@ -28,8 +29,10 @@ class ProjectMember extends Component {
     constructor(props) {
         super(props);
         this.data = [];
+        this.editMemberRecord = {};
         this.state = {
             addProjectMember:false,
+            showEditMember:false,
             accessLevel:40,
             selectedRowKeys:[],
             selectedUserIds:[],
@@ -260,6 +263,39 @@ class ProjectMember extends Component {
         return dataSource;
     }
 
+    canUpdateMember(){
+        let flag = false;
+        const {loginInfo,projectMember} = this.props;
+        const projectMembers = projectMember.getProjectMembers?(
+            projectMember.getProjectMembers.projectMembers?projectMember.getProjectMembers.projectMembers:[]
+        ):[];
+        for(let i=0; i<projectMembers.length; i++){
+            if(loginInfo.userId == projectMembers[i].id
+                && (projectMembers[i].role == '40' || projectMembers[i].role == '50')){
+                     flag = true;
+            }
+        }
+        return flag;
+    }
+
+    editMember(record){
+        let flag = this.canUpdateMember();
+        if(flag){
+            this.editMemberRecord = record;
+            this.setState({
+                showEditMember:true
+            });
+        }else {
+            message.error('您不是创建人或者管理员，不能修改成员角色！');
+        }
+    }
+
+    setVisible(flag){
+        this.setState({
+            showEditMember:flag
+        })
+    }
+
     render(){
         const {projectMember,project,loginInfo} = this.props;
         const { getFieldDecorator } = this.props.form;
@@ -296,6 +332,7 @@ class ProjectMember extends Component {
                 {projectDesc}
                 <Table columns={this.groupColumns(this,this.data,this.state.filterKeys)}
                        dataSource={dataSource}
+                       onRowClick={this.editMember.bind(this)}
                        rowSelection={rowSelection}
                        loading={membersLoading}
                        style={{paddingTop:"10px"}}></Table>
@@ -324,6 +361,9 @@ class ProjectMember extends Component {
                         )}
                     </FormItem>
                 </Modal>
+                <EditProjectMember visible={this.state.showEditMember}
+                                   setVisible={this.setVisible.bind(this)}
+                                    record = {this.editMemberRecord}/>
                 {comfirmRoleId(loginInfo.userId,projectMembers)?(
                     <div style={{paddingTop:'10px'}}>
                         <Button type="primary" onClick={this.addMember.bind(this)}>添加人员</Button>
