@@ -138,7 +138,7 @@ class Story extends React.Component{
                     <h2>{this.state.currentMilestoneMsg.name}</h2>
                     <p>{this.state.currentMilestoneMsg.description}</p>
                 </div>
-                <div style={{"float":"right",  "lineHeight": "normal"}}>
+                <div style={{"float":"right",  "marginTop": "9px"}}>
                     <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
                 </div>
             </div>

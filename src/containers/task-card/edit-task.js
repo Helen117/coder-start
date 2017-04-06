@@ -27,7 +27,7 @@ class EditTask extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
-        const {taskData,editType,addResult,updateTask} = nextProps;
+        const {taskData,editType,addResult,updateTaskResult} = nextProps;
 
         if(taskData && editType=='modify' && !this.props.visible){
             setFieldsValue(taskData);
@@ -38,7 +38,7 @@ class EditTask extends Component {
             message.success('提交成功');
         }
 
-        if ( updateTask &&updateTask!=this.props.updateTask) {
+        if ( updateTaskResult && updateTaskResult!=this.props.updateTaskResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
@@ -54,6 +54,7 @@ class EditTask extends Component {
                 } else {
                     const data =form.getFieldsValue();
                     var developer={};
+                    console.log('data',data)
                     if(data.developer){
                         developer.id=data.developer;
                     }
@@ -61,19 +62,20 @@ class EditTask extends Component {
                         title:data.title,
                         description:data.description,
                         check_items:data.check_items,
-                        creater:{
-                            id:loginInfo.userId
-                        },
                         developer:developer,
                         type:'demand',
                         due_date:data.due_date,
                         story_id:story_id
                     };
-                    if(editType==='add'){
+                    if(editType=='add'){
+                        taskInfo.creater={
+                            id:loginInfo.userId
+                        };
                         addTaskAction(taskInfo);
                     }else{
                         taskInfo.id=taskData.id;
                         taskInfo.operator_id = loginInfo.userId;
+                        console.log('taskInfo',taskInfo)
                         updateTask(taskInfo);
                     }
 
@@ -142,7 +144,7 @@ class EditTask extends Component {
         const {developerInfo} = this.props;
 
         // const {editType} = this.props.location.state;
-        const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
+        const developer = developerInfo?developerInfo.map(data => <Option key={data.userId}>{data.name}</Option>):[];
         return (
             <Modal title={this.props.editType == 'add' ? '新增' : '修改'}
                    visible={this.props.visible}
@@ -211,7 +213,7 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         developerInfo:state.taskCard.userInfo,
         addResult:state.taskCard.result,
-        updateTask:state.taskCard.updateTask,
+        updateTaskResult:state.taskCard.updateTask,
     };
 }
 
