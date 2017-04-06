@@ -116,3 +116,16 @@ export function rollBackCard(userId,taskId) {
         }
     }
 }
+
+//项目设计
+export function taskDesignProject(data) {
+    var path = '/taskboard/design-project';
+    return {
+        type: 'DESIGN_PROJECT',
+        payload: {
+            promise: api.post(path, {
+                data:data
+            })
+        }
+    }
+}

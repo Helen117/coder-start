@@ -115,7 +115,7 @@ class Story extends React.Component{
                 </Col>
             </Row>
             return <Panel header={header} key={story.id}>
-                <TaskCard storyId={story.id}></TaskCard>
+                <TaskCard storyId={story.id} currentMilestoneMsg = {this.state.currentMilestoneMsg}></TaskCard>
             </Panel>
         })
     }

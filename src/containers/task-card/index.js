@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Form, message, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DatePicker,Menu} from 'antd';
 import Box from '../../components/box';
-import * as actions from './action';
+import * as action from './action';
 import EditTask from './edit-task';
 import ProjectConfirm from './project-confirm';
 
@@ -37,6 +37,8 @@ class TaskCard extends Component{
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('回退成功');
         }
+
+
         const {taskInfo} = nextProps;
         if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
             this.props.actions.getTaskInfo(this.props.storyId);
@@ -52,6 +54,13 @@ class TaskCard extends Component{
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('删除成功');
         }
+
+
+        if(taskInfo.designProject&&taskInfo.designProject!=this.props.taskInfo.designProject){
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('操作成功');
+        }
+
     }
 
     setModifyTask(flag,task,editType,e){
@@ -131,12 +140,13 @@ class TaskCard extends Component{
     }
 
 
-    setProjectVisible(flag,e){
+    setProjectVisible(flag,taskId,e){
         if(e){
             e.stopPropagation();
         }
         this.setState({
             projectVisible: flag,
+            taskId:taskId
         });
     }
 
@@ -168,20 +178,20 @@ class TaskCard extends Component{
             });
         }.bind(this);
         reader.readAsDataURL(file);
+        this.props.form.setFieldsValue({'files':this.state.fileList});
         return false;
     }
 
 
     handleClick(taskId,item) {
         const {loginInfo} = this.props;
-        console.log('loginInfo:',loginInfo)
         if (item.key == 'setting:2') {
             this.setState({
                 uploadVisible: true,
                 taskId:taskId
             });
         }else if(item.key == 'setting:3'){
-            this.setProjectVisible(true);
+            this.setProjectVisible(true,taskId);
         }else if(item.key == 'setting:1'){
             //回退卡片
             this.props.actions.rollBackCard(loginInfo.userId,taskId)
@@ -277,6 +287,8 @@ class TaskCard extends Component{
 
                 <ProjectConfirm
                     projectVisible={this.state.projectVisible}
+                    taskId={this.state.taskId}
+                    currentMilestoneMsg = {this.props.currentMilestoneMsg}
                     setProjectVisible={this.setProjectVisible.bind(this)}
                     />
 
@@ -320,12 +332,13 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         rollBackInfo: state.taskCard.rollBackInfo,
         taskInfo: state.taskCard,
+        designProject: state.taskCard.designProject,
     };
 }
 
 function mapDispatchToProps(dispatch){
     return{
-        actions:bindActionCreators(actions,dispatch),
+        actions:bindActionCreators(action,dispatch),
     }
 }
 
