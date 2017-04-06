@@ -42,6 +42,23 @@ export function getTaskInfo(storyId) {
     }
 }
 
+//删除task
+export function deleteTask(userId,taskId) {
+    var path = '/taskboard/delete-card';
+    return {
+        type: 'DELETE_TASK',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    user_id: userId,
+                    task_id:taskId
+                }
+            })
+        }
+    }
+}
+
+//领取Task
 export function setTaskDeveloper(userId,taskId) {
     var path = '/taskboard/receive-card';
     return {
@@ -57,6 +74,19 @@ export function setTaskDeveloper(userId,taskId) {
     }
 }
 
+//文档上传
+export function submitTaskFile(data) {
+    var path = '/taskboard/submit-card-files';
+    return {
+        type: 'UPLOAD_TASK_FILE',
+        payload: {
+            promise: api.post(path, {
+                data:data
+            })
+        }
+    }
+}
+
 
 export function getTaskDeveloper(storyId) {
     var path = '/taskboard/story-users';
@@ -66,6 +96,21 @@ export function getTaskDeveloper(storyId) {
             promise: api.post(path, {
                 params: {
                     story_id: storyId
+                }
+            })
+        }
+    }
+}
+//回退卡片
+export function rollBackCard(userId,taskId) {
+    var path = '/taskboard/return-card';
+    return {
+        type: 'ROLL_BACK_CARD',
+        payload: {
+            promise: api.post(path, {
+                params: {
+                    user_id:userId,
+                    task_id:taskId
                 }
             })
         }

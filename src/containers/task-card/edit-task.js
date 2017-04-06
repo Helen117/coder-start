@@ -22,22 +22,27 @@ class EditTask extends Component {
     }
 
     componentWillMount() {
-        this.props.getTaskDeveloper(37);
     }
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
-        const {taskData,editType,addResult,updateTaskResult} = nextProps;
+        const {taskData,editType,addResult,updateTaskResult,story_id} = nextProps;
 
         if(taskData && editType=='modify' && !this.props.visible){
+            taskData.due_date = taskData.due_date? moment(taskData.due_date):null;
+            const developer = taskData.developer? taskData.developer.id.toString():null;
             setFieldsValue(taskData);
+            setFieldsValue({"developer":developer});
+        }
+        if(story_id && story_id != this.props.story_id){
+            this.props.getTaskDeveloper(story_id);
         }
 
         if ( addResult &&addResult!=this.props.addResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
-
+console.log('updateTaskResult',updateTaskResult,this.props.updateTaskResult)
         if ( updateTaskResult && updateTaskResult!=this.props.updateTaskResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
@@ -45,7 +50,7 @@ class EditTask extends Component {
     }
 
     handleSubmit() {
-        const {form,taskData,loginInfo,addTaskAction,editType,story_id} = this.props;
+        const {form,taskData,loginInfo,addTaskAction,editType,story_id,updateTask} = this.props;
         const setModifyTask = this.props.setModifyTask;
 
         form.validateFields((errors) => {
@@ -54,7 +59,6 @@ class EditTask extends Component {
                 } else {
                     const data =form.getFieldsValue();
                     var developer={};
-                    console.log('data',data)
                     if(data.developer){
                         developer.id=data.developer;
                     }
@@ -64,7 +68,7 @@ class EditTask extends Component {
                         check_items:data.check_items,
                         developer:developer,
                         type:'demand',
-                        due_date:data.due_date,
+                        due_date:data.due_date? data.due_date.valueOf: null,
                         story_id:story_id
                     };
                     if(editType=='add'){
@@ -73,9 +77,9 @@ class EditTask extends Component {
                         };
                         addTaskAction(taskInfo);
                     }else{
+                        console.log('update')
                         taskInfo.id=taskData.id;
                         taskInfo.operator_id = loginInfo.userId;
-                        console.log('taskInfo',taskInfo)
                         updateTask(taskInfo);
                     }
 
