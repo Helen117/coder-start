@@ -211,7 +211,7 @@ class TaskCard extends Component{
         const doingTask = taskInfo&&taskInfo.doing_cards&&taskInfo.doing_cards.length?(
             taskInfo.doing_cards.map(
                 data =>
-                    <div style={{padding:"5px", border:'1px solid #e9e9e9'}} key={data.id}>
+                    <div style={{padding:"5px", border:'1px solid #e9e9e9',marginBottom:5}} key={data.id}>
                     <Row>
                         <Col span={18}>
                             {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
@@ -251,18 +251,18 @@ class TaskCard extends Component{
         return (
             <div>
                 <Row>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="todo" action={action}>
+                    <Col span="8">
+                        <Box title="TODO" action={action} classType="bg">
                             {todoTask}
                         </Box>
                     </Col>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="doing">
+                    <Col span="8">
+                        <Box title="DOING" classType="bg">
                             {doingTask}
                         </Box>
                     </Col>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="done">
+                    <Col span="8">
+                        <Box title="DONE" classType="bg">
                             {doneTask}
                         </Box>
                     </Col>
