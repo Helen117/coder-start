@@ -204,12 +204,26 @@ class TaskCard extends Component{
     }
 
     moveTask(from, to){
+        const taskInfo = this.props.taskInfo[to.storyId];
         if (to.type == 'DOING'){
+            for (var i in taskInfo.todo_cards){
+                if (taskInfo.todo_cards[i].id == from.id){
+                    taskInfo.doing_cards.splice(taskInfo.doing_cards.length,0,taskInfo.todo_cards[i]);
+                    taskInfo.todo_cards.splice(i, 1);
+                    break;
+                }
+            }
             this.modifyTaskDeveloper(from.id);
         }else if (to.type == 'TODO'){
+            for (var i in taskInfo.doing_cards){
+                if (taskInfo.doing_cards[i].id == from.id){
+                    taskInfo.todo_cards.splice(taskInfo.todo_cards.length,0,taskInfo.doing_cards[i]);
+                    taskInfo.doing_cards.splice(i, 1);
+                    break;
+                }
+            }
             this.props.actions.rollBackCard(this.props.loginInfo.userId, from.id);
         }
-        console.log(this, from, to);
     }
 
     render(){
