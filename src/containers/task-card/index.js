@@ -10,6 +10,11 @@ import * as actions from './action';
 import EditTask from './edit-task';
 import ProjectConfirm from './project-confirm';
 import './index.less';
+import TaskGroup from './task-group';
+import Task from './task';
+import {DragDropContext, DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -197,6 +202,16 @@ class TaskCard extends Component{
             this.deleteTask(taskId);
         }
     }
+
+    moveTask(from, to){
+        if (to.type == 'DOING'){
+            this.modifyTaskDeveloper(from.id);
+        }else if (to.type == 'TODO'){
+            this.props.actions.rollBackCard(this.props.loginInfo.userId, from.id);
+        }
+        console.log(this, from, to);
+    }
+
     render(){
 
         const story = this.props.storyId;
@@ -217,7 +232,7 @@ class TaskCard extends Component{
         const doingAction = function(self, taskId){
             return (
                 <Menu onClick={self.handleClick.bind(self, taskId)} mode="horizontal">
-                    <Menu.Item key="setting:1">任务回退</Menu.Item>
+                    <Menu.Item key="setting:1">回退任务</Menu.Item>
                     <Menu.Divider />
                     <Menu.Item key="setting:2">提交文档</Menu.Item>
                     <Menu.Divider />
@@ -228,7 +243,7 @@ class TaskCard extends Component{
 
         const todoTask = taskInfo&&taskInfo.todo_cards&&taskInfo.todo_cards.length?(
                 taskInfo.todo_cards.map(
-                    data =><Card style={{marginBottom:"5px"}} key={data.id}>
+                    data =><Task key={data.id} id={data.id} storyId={story} type="TODO" moveTask={this.moveTask.bind(this)}>
                         <Row>
                             <Col span={22}>
                                 <p><code className="todo"> {data.title} </code></p>
@@ -242,12 +257,12 @@ class TaskCard extends Component{
                                 </Dropdown>
                             </Col>
                         </Row>
-                    </Card> )):"";
+                    </Task> )):"";
 
         const doingTask = taskInfo&&taskInfo.doing_cards&&taskInfo.doing_cards.length?(
                 taskInfo.doing_cards.map(
                     data =>
-                        <Card style={{marginBottom:"5px"}} key={data.id}>
+                        <Task key={data.id} id={data.id} storyId={story} type="DOING" moveTask={this.moveTask.bind(this)}>
                             <Row>
                                 <Col span={22}>
                                     <p><code className="doing"> {data.title} </code></p>
@@ -261,14 +276,14 @@ class TaskCard extends Component{
                                     </Dropdown>
                                 </Col>
                             </Row>
-                        </Card>)):"";
+                        </Task>)):"";
 
         const doneTask = taskInfo&&taskInfo.done_cards&&taskInfo.done_cards.length?(
                 taskInfo.done_cards.map(
-                    data =><Card style={{marginBottom:"5px"}} key={data.id}>
+                    data =><Task key={data.id} id={data.id} storyId={story} type="DONE" moveTask={this.moveTask.bind(this)}>
                         <p><code className="done"> {data.title} </code></p>
                         {data.developer?<Tag>{data.developer.name}</Tag>:''}
-                    </Card> )):"";
+                    </Task> )):"";
 
         const action = (<Button size="small" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建任务</Button>);
 
@@ -284,19 +299,19 @@ class TaskCard extends Component{
             <div id="tasks">
                 <Row>
                     <Col span="8">
-                        <Box title={`待处理（${todoTask.length}）`} action={action} classType="bg" headerStyle={{backgroundColor:'#f7f7f7'}}>
+                        <TaskGroup title={`待处理（${todoTask.length}）`} action={action} classType="bg" headerStyle={{backgroundColor:'#f7f7f7'}} storyId={story} type="TODO">
                             {todoTask}
-                        </Box>
+                        </TaskGroup>
                     </Col>
                     <Col span="8">
-                        <Box title={`进行中（${doingTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#d2eafb'}}>
+                        <TaskGroup title={`进行中（${doingTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#d2eafb'}} storyId={story} type="DOING">
                             {doingTask}
-                        </Box>
+                        </TaskGroup>
                     </Col>
                     <Col span="8">
-                        <Box title={`已完成（${doneTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#cfefdf'}}>
+                        <TaskGroup title={`已完成（${doneTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#cfefdf'}} storyId={story} type="DONE">
                             {doneTask}
-                        </Box>
+                        </TaskGroup>
                     </Col>
                 </Row>
 
@@ -364,4 +379,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(TaskCard);
+export default connect(mapStateToProps,mapDispatchToProps)(DragDropContext(HTML5Backend)(TaskCard));
