@@ -2,7 +2,7 @@
  * Created by helen on 2017/3/29.
  */
 import React, { PropTypes, Component } from 'react';
-import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin,Row, Col} from 'antd';
+import { Form, Input, Button, Select,message,Modal,Upload,DatePicker,Icon,notification,Spin,Row, Col,Radio } from 'antd';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -12,7 +12,7 @@ import Box from '../../components/box';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
-
+const RadioGroup = Radio.Group;
 class EditTask extends Component {
     constructor(props) {
         super(props);
@@ -165,6 +165,8 @@ class EditTask extends Component {
                         {getFieldDecorator('description')(<Input type="textarea" placeholder="" rows="3" />)}
                     </FormItem>
 
+
+
                     <FormItem {...formItemLayout} label="开发人员">
                         {getFieldDecorator('developer')(
                             <Select showSearch
@@ -177,6 +179,15 @@ class EditTask extends Component {
                             >
                                 {developer}
                             </Select>)}
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="类型">
+                        {getFieldDecorator('is_active',{initialValue:true})(
+                            <RadioGroup>
+                                <Radio value={true}>主动领取</Radio>
+                                <Radio value={false}>被动指派</Radio>
+                            </RadioGroup>
+                        )}
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="检查项">

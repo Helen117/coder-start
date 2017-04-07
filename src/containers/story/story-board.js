@@ -7,7 +7,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col,Button,Alert  } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert,Tag, Spin  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
@@ -55,10 +55,10 @@ class Story extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        const {stories} = nextProps;
-        const thisMilestoneId = this.props.getTreeState?this.props.getTreeState.milestoneId:null;
-        const nextMilestoneId = nextProps.getTreeState? nextProps.getTreeState.milestoneId: null;
-        const nextMilestone_id = nextProps.getTreeState? nextProps.getTreeState.milestone_id: null;
+        const {stories,getTreeState} = nextProps;
+        const thisMilestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
+        const nextMilestoneId = getTreeState? getTreeState.milestoneId: null;
+        const nextMilestone_id = getTreeState? getTreeState.milestone_id: null;
         if( nextMilestoneId && nextMilestoneId!=thisMilestoneId){
              this.getMilestoneMsg(nextMilestone_id);
              this.props.action.getStory(nextMilestoneId);
@@ -96,17 +96,17 @@ class Story extends React.Component{
         return stories.map((story, index)=> {
 
             const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
-                <Col span="18">
+                <Col span="18" >
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "14px"}}
-                           onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a>
+                        <a style={{"fontSize": "15px"}}
+                           onClick={this.setVisible.bind(this,true,story,'update')}>{story.title}</a>
                     </Tooltip>
-                    <br/>
-                    <span>{story.description}</span>
+                    <p style={{"marginLeft":"10px"}}>{story.description}</p>
+                    {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
                 </Col>
                 <Col span="6">
                     <Col span="23">
-                        状态：{story.story_status}
+                        <div>状态：{story.story_status}</div>
                     </Col>
                     <Col span="1">
                         <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
@@ -120,23 +120,17 @@ class Story extends React.Component{
         })
     }
 
-/*<div style={{"display":"inline-block","float":"left"}}>
- <h2>{this.state.currentMilestoneMsg.name}</h2>
- <p>{this.state.currentMilestoneMsg.description}</p>
- </div>
- <div style={{"display":"inline-block","float":"right"}}>
- <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
- </div>*/
 
     render(){
-        const {stories,getTaskLoading,loadingMsg } = this.props;
+        const {stories,getStoryLoading,getTreeState } = this.props;
+        const isLoading = getStoryLoading? true: false;
         const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
-        const milestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
+        const milestoneId = getTreeState? getTreeState.milestoneId:null;
         const milestoneContent = this.state.currentMilestoneMsg? <div id="milestone">
             <div className="block">
                 <div style={{"float":"left"}}>
                     <h2>{this.state.currentMilestoneMsg.name}</h2>
-                    <p>{this.state.currentMilestoneMsg.description}</p>
+                    <p><span style={{"marginRight":'10px'}}>{this.state.currentMilestoneMsg.due_date}</span><span>{this.state.currentMilestoneMsg.description}</span></p>
                 </div>
                 <div style={{"float":"right",  "marginTop": "9px"}}>
                     <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
@@ -147,18 +141,20 @@ class Story extends React.Component{
             if(stories) {
                 const panels = this.createPanels(stories)
                 return (
-                    <div id='story' style={{margin:'10px'}}>
-                        {milestoneContent}
-                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
-                            {panels}
-                        </Collapse>
-                        <EditStory story={this.storyData}
-                                   visible={this.state.visible}
-                                   editType={this.state.editType}
-                                   setVisible={this.setVisible.bind(this)}
-                                   milestoneId = {milestoneId}
-                                   currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
-                    </div>
+                    <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
+                        <div id='story' style={{margin:'10px'}}>
+                            {milestoneContent}
+                            <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                                {panels}
+                            </Collapse>
+                            <EditStory  story={this.storyData}
+                                       visible={this.state.visible}
+                                       editType={this.state.editType}
+                                       setVisible={this.setVisible.bind(this)}
+                                       milestoneId = {milestoneId}
+                                       currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
+                        </div>
+                    </Spin>
                 )
             }else {
                 return milestoneContent
