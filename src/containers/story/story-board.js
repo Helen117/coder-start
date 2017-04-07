@@ -7,7 +7,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col,Button,Alert,Tag  } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert,Tag, Spin  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
@@ -55,10 +55,10 @@ class Story extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        const {stories} = nextProps;
-        const thisMilestoneId = this.props.getTreeState?this.props.getTreeState.milestoneId:null;
-        const nextMilestoneId = nextProps.getTreeState? nextProps.getTreeState.milestoneId: null;
-        const nextMilestone_id = nextProps.getTreeState? nextProps.getTreeState.milestone_id: null;
+        const {stories,getTreeState} = nextProps;
+        const thisMilestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
+        const nextMilestoneId = getTreeState? getTreeState.milestoneId: null;
+        const nextMilestone_id = getTreeState? getTreeState.milestone_id: null;
         if( nextMilestoneId && nextMilestoneId!=thisMilestoneId){
              this.getMilestoneMsg(nextMilestone_id);
              this.props.action.getStory(nextMilestoneId);
@@ -96,18 +96,17 @@ class Story extends React.Component{
         return stories.map((story, index)=> {
 
             const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
-                <Col span="18">
+                <Col span="18" >
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "14px","marginRight":"20px"}}
+                        <a style={{"fontSize": "15px"}}
                            onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a>
                     </Tooltip>
+                    <p style={{"marginLeft":"10px"}}>{story.description}</p>
                     {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
-                    <br/>
-                    <span>{story.description}</span>
                 </Col>
                 <Col span="6">
                     <Col span="23">
-                        状态：{story.story_status}
+                        <div>状态：{story.story_status}</div>
                     </Col>
                     <Col span="1">
                         <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
@@ -116,7 +115,7 @@ class Story extends React.Component{
                 </Col>
             </Row>
             return <Panel header={header} key={story.id}>
-                <TaskCard storyId={story.id}></TaskCard>
+                <TaskCard storyId={story.id} currentMilestoneMsg = {this.state.currentMilestoneMsg}></TaskCard>
             </Panel>
         })
     }
@@ -130,9 +129,10 @@ class Story extends React.Component{
  </div>*/
 
     render(){
-        const {stories,getTaskLoading,loadingMsg } = this.props;
+        const {stories,getStoryLoading,getTreeState } = this.props;
+        const isLoading = getStoryLoading? true: false;
         const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
-        const milestoneId = this.props.getTreeState? this.props.getTreeState.milestoneId:null;
+        const milestoneId = getTreeState? getTreeState.milestoneId:null;
         const milestoneContent = this.state.currentMilestoneMsg? <div id="milestone">
             <div className="block">
                 <div style={{"float":"left"}}>
@@ -146,20 +146,25 @@ class Story extends React.Component{
         </div>:<div/>
         if(milestoneId){
             if(stories) {
+                const story0 = stories[0];
+                const arrya = ['taskData','todo_cards']
+                console.log(story0["arrya"])
                 const panels = this.createPanels(stories)
                 return (
-                    <div id='story' style={{margin:'10px'}}>
-                        {milestoneContent}
-                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
-                            {panels}
-                        </Collapse>
-                        <EditStory story={this.storyData}
-                                   visible={this.state.visible}
-                                   editType={this.state.editType}
-                                   setVisible={this.setVisible.bind(this)}
-                                   milestoneId = {milestoneId}
-                                   currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
-                    </div>
+                    <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
+                        <div id='story' style={{margin:'10px'}}>
+                            {milestoneContent}
+                            <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                                {panels}
+                            </Collapse>
+                            <EditStory  story={this.storyData}
+                                       visible={this.state.visible}
+                                       editType={this.state.editType}
+                                       setVisible={this.setVisible.bind(this)}
+                                       milestoneId = {milestoneId}
+                                       currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
+                        </div>
+                    </Spin>
                 )
             }else {
                 return milestoneContent

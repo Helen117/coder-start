@@ -17,14 +17,14 @@ export default class MyBox extends React.Component{
     }
 
     render(){
-        const {title, action} = this.props;
+        const {title, action, headerStyle} = this.props;
         let {classType} = this.props;
         if (!classType){
             classType = 'bd';
         }
         return (
             <div className="ant-layout-content">
-                <div className={`ant-layout-content-header ${classType}`}>
+                <div className={`ant-layout-content-header ${classType}`} style={headerStyle}>
                     <Row>
                         <Col span={16}>
                             <span className="title">{title}</span>

@@ -90,7 +90,7 @@ class EditStory extends React.Component {
             <Form horizontal >
 
                 <FormItem {...formItemLayout}  label="名称" >
-                    {getFieldDecorator('title')(<Input placeholder="请输入名称" />)}
+                    {getFieldDecorator('title',{rules:[{ required: true,message: '请输入故事名称'}]})(<Input placeholder="请输入名称" />)}
                 </FormItem>
 
                 <FormItem {...formItemLayout}  label="描述" >

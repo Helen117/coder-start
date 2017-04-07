@@ -26,7 +26,7 @@ export default function taskBoardReducer(state = initialState, action = {}) {
         //保存动态树拼接数据
         case SAVE_TREE_STATE:
             return {...state,saveTreeState:{milestone_id:action.milestone_id,
-                milestoneId:action.milestoneId}};
+                milestoneId:action.milestoneId,selectedKeys:action.selectedKeys}};
 
         default:
             return state;

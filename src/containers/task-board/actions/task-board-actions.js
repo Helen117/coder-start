@@ -20,10 +20,11 @@ export function getAsyncProjectSet() {
     }
 }
 
-export function saveAsyncTreeState(milestone_id,milestoneId) {
+export function saveAsyncTreeState(selectedKeys,milestone_id,milestoneId) {
     return {
         type: SAVE_TREE_STATE,
         milestone_id:milestone_id,
-        milestoneId:milestoneId
+        milestoneId:milestoneId,
+        selectedKeys:selectedKeys
     }
 }

@@ -4,12 +4,12 @@
 import React, {PropTypes,Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Form, message, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DatePicker,Menu} from 'antd';
+import {Form, message, Button, Tag, Card, Row, Col, Icon,Modal,Select,Upload,DatePicker,Menu,Dropdown} from 'antd';
 import Box from '../../components/box';
 import * as actions from './action';
 import EditTask from './edit-task';
 import ProjectConfirm from './project-confirm';
-
+import './index.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -51,6 +51,11 @@ class TaskCard extends Component{
         if (taskInfo.deleteTask && !taskInfo.deleteTaskLoading && taskInfo.deleteTask!=this.props.taskInfo.deleteTask) {
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('删除成功');
+        }
+
+        if(taskInfo.designProject&&taskInfo.designProject!=this.props.taskInfo.designProject){
+            this.props.actions.getTaskInfo(this.props.storyId);
+            message.success('操作成功');
         }
     }
 
@@ -131,12 +136,13 @@ class TaskCard extends Component{
     }
 
 
-    setProjectVisible(flag,e){
+    setProjectVisible(flag,taskId, e){
         if(e){
             e.stopPropagation();
         }
         this.setState({
             projectVisible: flag,
+            taskId:taskId
         });
     }
 
@@ -181,64 +187,90 @@ class TaskCard extends Component{
                 taskId:taskId
             });
         }else if(item.key == 'setting:3'){
-            this.setProjectVisible(true);
+            this.setProjectVisible(true, taskId);
         }else if(item.key == 'setting:1'){
             //回退卡片
             this.props.actions.rollBackCard(loginInfo.userId,taskId)
+        }else if (item.key == 'pickupTask'){
+            this.modifyTaskDeveloper(taskId);
+        }else if (item.key == 'deleteTask'){
+            this.deleteTask(taskId);
         }
     }
     render(){
-
 
         const story = this.props.storyId;
 
         const taskInfo = this.props.taskInfo[story];
 
+        const todoAction = function(self, taskId){
+            return (
+                <Menu onClick={self.handleClick.bind(self, taskId)}>
+                    <Menu.Item key="pickupTask">领取任务</Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item key="deleteTask">删除任务</Menu.Item>
+                </Menu>
+            );
+
+        }
+
+        const doingAction = function(self, taskId){
+            return (
+                <Menu onClick={self.handleClick.bind(self, taskId)} mode="horizontal">
+                    <Menu.Item key="setting:1">任务回退</Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item key="setting:2">提交文档</Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item key="setting:3">选择项目</Menu.Item>
+                </Menu>
+            );
+        }
+
         const todoTask = taskInfo&&taskInfo.todo_cards&&taskInfo.todo_cards.length?(
-            taskInfo.todo_cards.map(
-                data =><Card style={{marginBottom:"5px"}} key={data.id}>
+                taskInfo.todo_cards.map(
+                    data =><Card style={{marginBottom:"5px"}} key={data.id}>
                         <Row>
                             <Col span={22}>
-                                {data.developer?<Tag>{data.developer.name}</Tag>:<Button type="primary" size="default" onClick={this.modifyTaskDeveloper.bind(this,data.id)}>领取</Button>}
-                               <a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a>
+                                <p><code className="todo"> {data.title} </code></p>
+                                {data.developer?<Tag>{data.developer.name}</Tag>:''}
                             </Col>
                             <Col span={2}>
-                                <Icon type="delete"  onClick={this.deleteTask.bind(this,data.id)}/>
+                                <Dropdown overlay={todoAction(this, data.id)}>
+                                    <a className="ant-dropdown-link" href="#">
+                                        <Icon type="bars" />
+                                    </a>
+                                </Dropdown>
                             </Col>
                         </Row>
-                </Card> )):"";
-
-        const doingTask = taskInfo&&taskInfo.doing_cards&&taskInfo.doing_cards.length?(
-            taskInfo.doing_cards.map(
-                data =>
-                    <div style={{padding:"5px", border:'1px solid #e9e9e9'}} key={data.id}>
-                    <Row>
-                        <Col span={18}>
-                            {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
-                        </Col>
-                        <Col span={6}>
-                            <Menu onClick={this.handleClick.bind(this,data.id)}
-                                  mode="horizontal"
-                                 >
-                                <SubMenu title={<Icon type="bars"/>}>
-                                    <Menu.Item key="setting:1">回退</Menu.Item>
-                                    <Menu.Divider />
-                                    <Menu.Item key="setting:2">提交文档</Menu.Item>
-                                    <Menu.Divider />
-                                    <Menu.Item key="setting:3">选择项目</Menu.Item>
-                                </SubMenu>
-                            </Menu>
-                        </Col>
-                    </Row>
-                </div>)):"";
-
-        const doneTask = taskInfo&&taskInfo.done_cards&&taskInfo.done_cards.length?(
-            taskInfo.done_cards.map(
-                data =><Card style={{marginBottom:"5px"}} key={data.id}>
-                    {data.developer?<Tag>{data.developer.name}</Tag>:''} {data.title}
                     </Card> )):"";
 
-        const action = (<Button type="primary" size="default" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建Task</Button>);
+        const doingTask = taskInfo&&taskInfo.doing_cards&&taskInfo.doing_cards.length?(
+                taskInfo.doing_cards.map(
+                    data =>
+                        <Card style={{marginBottom:"5px"}} key={data.id}>
+                            <Row>
+                                <Col span={22}>
+                                    <p><code className="doing"> {data.title} </code></p>
+                                    {data.developer?<Tag>{data.developer.name}</Tag>:''}
+                                </Col>
+                                <Col span={2}>
+                                    <Dropdown overlay={doingAction(this, data.id)}>
+                                        <a className="ant-dropdown-link" href="#">
+                                            <Icon type="bars" />
+                                        </a>
+                                    </Dropdown>
+                                </Col>
+                            </Row>
+                        </Card>)):"";
+
+        const doneTask = taskInfo&&taskInfo.done_cards&&taskInfo.done_cards.length?(
+                taskInfo.done_cards.map(
+                    data =><Card style={{marginBottom:"5px"}} key={data.id}>
+                        <p><code className="done"> {data.title} </code></p>
+                        {data.developer?<Tag>{data.developer.name}</Tag>:''}
+                    </Card> )):"";
+
+        const action = (<Button size="small" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建任务</Button>);
 
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -249,36 +281,38 @@ class TaskCard extends Component{
         // const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
-            <div>
+            <div id="tasks">
                 <Row>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="todo" action={action}>
+                    <Col span="8">
+                        <Box title={`待处理（${todoTask.length}）`} action={action} classType="bg" headerStyle={{backgroundColor:'#f7f7f7'}}>
                             {todoTask}
                         </Box>
                     </Col>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="doing">
+                    <Col span="8">
+                        <Box title={`进行中（${doingTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#d2eafb'}}>
                             {doingTask}
                         </Box>
                     </Col>
-                    <Col span="8" style={{border:'1px solid #e9e9e9'}}>
-                        <Box title="done">
+                    <Col span="8">
+                        <Box title={`已完成（${doneTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#cfefdf'}}>
                             {doneTask}
                         </Box>
                     </Col>
                 </Row>
 
                 <EditTask  taskData={this.state.taskData}
-                          editType={this.state.editType}
-                          visible={this.state.visible}
+                           editType={this.state.editType}
+                           visible={this.state.visible}
                            story_id={this.props.storyId}
-                          setModifyTask={this.setModifyTask.bind(this)}
+                           setModifyTask={this.setModifyTask.bind(this)}
                 />
 
                 <ProjectConfirm
                     projectVisible={this.state.projectVisible}
+                    taskId={this.state.taskId}
+                    currentMilestoneMsg = {this.props.currentMilestoneMsg}
                     setProjectVisible={this.setProjectVisible.bind(this)}
-                    />
+                />
 
                 <Modal title='上传文档'
                        visible={this.state.uploadVisible}
@@ -320,6 +354,7 @@ function mapStateToProps(state) {
         loginInfo: state.login.profile,
         rollBackInfo: state.taskCard.rollBackInfo,
         taskInfo: state.taskCard,
+        designProject: state.taskCard.designProject,
     };
 }
 
