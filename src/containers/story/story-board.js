@@ -7,7 +7,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col,Button,Alert  } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert,Tag  } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
@@ -98,9 +98,10 @@ class Story extends React.Component{
             const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
                 <Col span="18">
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "14px"}}
+                        <a style={{"fontSize": "14px","marginRight":"20px"}}
                            onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a>
                     </Tooltip>
+                    {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
                     <br/>
                     <span>{story.description}</span>
                 </Col>
@@ -136,7 +137,7 @@ class Story extends React.Component{
             <div className="block">
                 <div style={{"float":"left"}}>
                     <h2>{this.state.currentMilestoneMsg.name}</h2>
-                    <p>{this.state.currentMilestoneMsg.description}</p>
+                    <p><span style={{"marginRight":'10px'}}>{this.state.currentMilestoneMsg.due_date}</span><span>{this.state.currentMilestoneMsg.description}</span></p>
                 </div>
                 <div style={{"float":"right",  "marginTop": "9px"}}>
                     <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
