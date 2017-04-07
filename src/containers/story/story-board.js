@@ -99,7 +99,7 @@ class Story extends React.Component{
                 <Col span="18" >
                     <Tooltip placement="top" title='点击编辑'>
                         <a style={{"fontSize": "15px"}}
-                           onClick={this.setVisible.bind(this, true,story,'update')}>{story.title}</a>
+                           onClick={this.setVisible.bind(this,true,story,'update')}>{story.title}</a>
                     </Tooltip>
                     <p style={{"marginLeft":"10px"}}>{story.description}</p>
                     {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
@@ -120,13 +120,6 @@ class Story extends React.Component{
         })
     }
 
-/*<div style={{"display":"inline-block","float":"left"}}>
- <h2>{this.state.currentMilestoneMsg.name}</h2>
- <p>{this.state.currentMilestoneMsg.description}</p>
- </div>
- <div style={{"display":"inline-block","float":"right"}}>
- <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
- </div>*/
 
     render(){
         const {stories,getStoryLoading,getTreeState } = this.props;
@@ -146,9 +139,6 @@ class Story extends React.Component{
         </div>:<div/>
         if(milestoneId){
             if(stories) {
-                const story0 = stories[0];
-                const arrya = ['taskData','todo_cards']
-                console.log(story0["arrya"])
                 const panels = this.createPanels(stories)
                 return (
                     <Spin spinning={isLoading} tip="正在加载数据,请稍候...">

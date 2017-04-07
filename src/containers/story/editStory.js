@@ -4,7 +4,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Form,Input,Select,Button,Modal,  } from 'antd';
+import { Form,Input,Select,Button,Modal, Radio } from 'antd';
 import {addStory,updateStory,getStory,getProjectSetStaff} from './action'
 import './index.less';
 
@@ -12,22 +12,29 @@ const confirm = Modal.confirm;
 const createForm = Form.create;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+
 class EditStory extends React.Component {
 
     componentWillReceiveProps(nextProps){
-        const {setFieldsValue} = this.props.form;
+        const {setFieldsValue,getFieldsValue} = this.props.form;
         const {story,editType,addStory,updateStory,visible} = nextProps;
         if(visible && visible != this.props.visible){
             const currentMilestoneMsg = this.props.currentMilestoneMsg;
             this.props.actions.getProjectSetStaff(currentMilestoneMsg.set_id, 'set', 20);
         }
-        if(story && editType=='update' && !this.props.visible){
+        if(story && editType=='update' && this.props.visible != visible){
             setFieldsValue(story);
             let staffList = [];
-            for(let i=0; i<story.testers.length; i++){
-                staffList.push(story.testers[i].id.toString())
+            if(story.testers){
+                for(let i=0; i<story.testers.length; i++){
+                    staffList.push(story.testers[i].id.toString())
+                }
             }
+            //console.log('staffList',staffList)
             setFieldsValue({'testers_id':staffList});
+
+
         }
         if( updateStory && updateStory!= this.props.updateStory && this.props.milestoneId){
             this.props.actions.getStory(this.props.milestoneId);
@@ -82,6 +89,9 @@ class EditStory extends React.Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
+        const {story} = this.props;
+        console.log('story',story)
+        const initialIsActive = story? story.is_active: true;
         const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
@@ -110,6 +120,16 @@ class EditStory extends React.Component {
                         >{testersOptions}</Select>)
                     }
                 </FormItem>
+
+                <FormItem {...formItemLayout} label="类型">
+                    {getFieldDecorator('is_active',{initialValue:initialIsActive})(
+                        <RadioGroup>
+                            <Radio value={true}>主动领取</Radio>
+                            <Radio value={false}>被动指派</Radio>
+                        </RadioGroup>
+                    )}
+                </FormItem>
+                
             </Form>
         </Modal>
         )
