@@ -265,7 +265,7 @@ class TaskCard extends Component{
                             </Col>
                             <Col span={2}>
                                 <Dropdown overlay={todoAction(this, data.id)}>
-                                    <a className="ant-dropdown-link" href="#">
+                                    <a className="ant-dropdown-link">
                                         <Icon type="bars" />
                                     </a>
                                 </Dropdown>
@@ -284,7 +284,7 @@ class TaskCard extends Component{
                                 </Col>
                                 <Col span={2}>
                                     <Dropdown overlay={doingAction(this, data.id)}>
-                                        <a className="ant-dropdown-link" href="#">
+                                        <a className="ant-dropdown-link">
                                             <Icon type="bars" />
                                         </a>
                                     </Dropdown>
