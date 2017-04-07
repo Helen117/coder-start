@@ -26,7 +26,7 @@ class EditTask extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {setFieldsValue} = this.props.form;
-        const {taskData,editType,addResult,updateTaskResult,story_id} = nextProps;
+        const {taskData,editType,addResult,updateTaskResult,story_id,visible} = nextProps;
 
         if(taskData && editType=='modify' && !this.props.visible){
             taskData.due_date = taskData.due_date? moment(taskData.due_date):null;
@@ -34,7 +34,8 @@ class EditTask extends Component {
             setFieldsValue(taskData);
             setFieldsValue({"developer":developer});
         }
-        if(story_id && story_id != this.props.story_id){
+
+        if(visible && visible != this.props.visible){
             this.props.getTaskDeveloper(story_id);
         }
 
@@ -42,7 +43,7 @@ class EditTask extends Component {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
         }
-console.log('updateTaskResult',updateTaskResult,this.props.updateTaskResult)
+
         if ( updateTaskResult && updateTaskResult!=this.props.updateTaskResult) {
             this.props.getTaskInfo(this.props.story_id);
             message.success('提交成功');
