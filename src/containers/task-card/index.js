@@ -260,7 +260,7 @@ class TaskCard extends Component{
                     data =><Task key={data.id} id={data.id} storyId={story} type="TODO" moveTask={this.moveTask.bind(this)}>
                         <Row>
                             <Col span={22}>
-                                <p><code className="todo"> {data.title} </code></p>
+                                <p><code className="todo"><a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a></code></p>
                                 {data.developer?<Tag>{data.developer.name}</Tag>:''}
                             </Col>
                             <Col span={2}>
