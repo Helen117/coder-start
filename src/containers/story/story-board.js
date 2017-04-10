@@ -7,7 +7,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Collapse,Tooltip,Row,Col,Button,Alert,Tag, Spin  } from 'antd';
+import { Collapse,Tooltip,Row,Col,Button,Alert,Tag, Spin,Badge   } from 'antd';
 import {getTask,getStory} from './action'
 import './index.less';
 import EditStory from './editStory'
@@ -91,22 +91,36 @@ class Story extends React.Component{
         });
     }
 
+    translateStatus( status ){
+        if(status == 'new'){
+            return{"status":'新建', "flag": "default"}
+        }else if(status == 'running' ){
+            return {"status":'开发中', "flag": "processing"}
+        }else if(status == 'testing' ){
+            return {"status":'测试中', "flag": "processing"}
+        }else if(status == 'done' ){
+            return {"status":'完成', "flag": "success"}
+        }else {
+            return {"status":'超时', "flag": "error"}
+        }
+    }
+
 
     createPanels(stories){
         return stories.map((story, index)=> {
-
+            const state = this.translateStatus(story.story_status);
             const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
-                <Col span="18" >
+                <Col span="20" >
                     <Tooltip placement="top" title='点击编辑'>
                         <a style={{"fontSize": "15px"}}
                            onClick={this.setVisible.bind(this,true,story,'update')}>{story.title}</a>
                     </Tooltip>
-                    <p style={{"marginLeft":"10px"}}>{story.description}</p>
+                    <p >{story.description}</p>
                     {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
                 </Col>
-                <Col span="6">
+                <Col span="4">
                     <Col span="23">
-                        <div>状态：{story.story_status}</div>
+                        <Badge status={state.flag} text={state.status} />
                     </Col>
                     <Col span="1">
                         <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
@@ -124,13 +138,13 @@ class Story extends React.Component{
     render(){
         const {stories,getStoryLoading,getTreeState } = this.props;
         const isLoading = getStoryLoading? true: false;
-        const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
+        const defaultActiveKey = stories&&stories.length>0? [stories[0].id.toString()]: [];
         const milestoneId = getTreeState? getTreeState.milestoneId:null;
         const milestoneContent = this.state.currentMilestoneMsg? <div id="milestone">
             <div className="block">
                 <div style={{"float":"left"}}>
                     <h2>{this.state.currentMilestoneMsg.name}</h2>
-                    <p><span style={{"marginRight":'10px'}}>{this.state.currentMilestoneMsg.due_date}</span><span>{this.state.currentMilestoneMsg.description}</span></p>
+                    <p><span>{this.state.currentMilestoneMsg.due_date}</span><span>{this.state.currentMilestoneMsg.description}</span></p>
                 </div>
                 <div style={{"float":"right",  "marginTop": "9px"}}>
                     <Button onClick={this.setVisible.bind(this,true,null,'add')}>创建故事</Button>
@@ -138,12 +152,12 @@ class Story extends React.Component{
             </div>
         </div>:<div/>
         if(milestoneId){
-            const panels = stories?this.createPanels(stories):<Panel ></Panel>;
+            const panels = stories?this.createPanels(stories):<Panel key="0">''</Panel>;
             return (
                 <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
                     <div id='story' style={{margin:'10px'}}>
                         {milestoneContent}
-                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                        <Collapse  defaultActiveKey={defaultActiveKey}  onChange={this.handleChange.bind(this)}>
                             {panels}
                         </Collapse>
                         <EditStory  story={this.storyData}

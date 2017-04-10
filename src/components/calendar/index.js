@@ -8,7 +8,7 @@ import './index.less';
 import moment from 'moment';
 import ReactDOM from 'react-dom'
 
-let setMode = 'month'
+let setMode = 'month';
 export default class MilestonesCalendar extends React.Component{
     constructor (props) {
         super(props);
