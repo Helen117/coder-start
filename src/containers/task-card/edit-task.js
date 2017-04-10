@@ -50,10 +50,7 @@ class EditTask extends Component {
             this.props.getTaskDeveloper(story_id);
         }
 
-        if ( addResult &&addResult!=this.props.addResult) {
-            this.props.getTaskInfo(this.props.story_id);
-            message.success('提交成功');
-        }
+
 
         if ( updateTaskResult && updateTaskResult!=this.props.updateTaskResult) {
             this.props.getTaskInfo(this.props.story_id);
@@ -90,6 +87,10 @@ class EditTask extends Component {
                         taskInfo.creater={
                             id:loginInfo.userId
                         };
+                        if(this.props.type){
+                            taskInfo.type=this.props.type;
+                        }
+                        console.log('taskInfo:',taskInfo);
                         addTaskAction(taskInfo);
                     }else{
                         taskInfo.id=taskData.id;

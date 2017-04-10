@@ -39,6 +39,8 @@ class TaskCard extends Component{
         //回退任务
         const {rollBackInfo} = this.props;
 
+        const {taskInfo,addResult} = nextProps;
+
         if(nextProps.rollBackInfo && rollBackInfo && !nextProps.rollBackInfo.loading && nextProps.rollBackInfo.result != rollBackInfo.result) {
                 this.props.actions.getTaskInfo(this.props.storyId);
                 message.success('回退成功');
@@ -49,7 +51,7 @@ class TaskCard extends Component{
             this.props.actions.getTaskInfo(this.props.storyId);
         }
 
-        const {taskInfo} = nextProps;
+
         if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('领取成功');
@@ -68,6 +70,11 @@ class TaskCard extends Component{
         if(taskInfo.designProject&&taskInfo.designProject!=this.props.taskInfo.designProject){
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('操作成功');
+        }
+
+        if ( addResult &&addResult!=this.props.addResult) {
+            this.props.getTaskInfo(this.props.storyId);
+            message.success('提交成功');
         }
     }
 
@@ -305,7 +312,7 @@ class TaskCard extends Component{
                     data =><Task key={data.id} id={data.id} storyId={story} type="DONE" moveTask={this.moveTask.bind(this)}>
                         <p><code className="done"> {data.title} </code></p>
                         {data.developer?<Tag>{data.developer.name}</Tag>:''}
-                        {data.code_submit_date?data.code_submit_date:''}
+                        {data.code_submit_date?new Date(parseInt(data.code_submit_date)).toLocaleDateString():''}
                     </Task> )):"";
 
         const action = (<Button size="small" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建任务</Button>);
@@ -392,6 +399,7 @@ function mapStateToProps(state) {
         rollBackInfo: state.taskCard.rollBackInfo,
         taskInfo: state.taskCard,
         designProject: state.taskCard.designProject,
+        addResult:state.taskCard.result,
     };
 }
 
