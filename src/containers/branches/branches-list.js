@@ -94,11 +94,10 @@ class BranchesList extends React.Component {
     }
 
     handleCancel() {
+        this.props.form.resetFields();
         this.setState({
             modalVisible: false,
         });
-        this.props.form.resetFields();
-
     }
 
 

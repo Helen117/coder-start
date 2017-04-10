@@ -77,8 +77,8 @@ class EditStory extends React.Component {
                     data.opreator_id = loginInfo.userId;
                     this.props.actions.updateStory(data);
                 }
-                setVisible(false,story);
                 form.resetFields();
+                setVisible(false,story);
             }
         })
     }
@@ -91,7 +91,7 @@ class EditStory extends React.Component {
         };
         const {story} = this.props;
         console.log('story',story)
-        const initialIsActive = story? story.is_active: true;
+        const initialIsActive = story? story.is_active: "true";
         const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
@@ -124,8 +124,8 @@ class EditStory extends React.Component {
                 <FormItem {...formItemLayout} label="类型">
                     {getFieldDecorator('is_active',{initialValue:initialIsActive})(
                         <RadioGroup>
-                            <Radio value={true}>主动领取</Radio>
-                            <Radio value={false}>被动指派</Radio>
+                            <Radio value="true">主动领取</Radio>
+                            <Radio value="false">被动指派</Radio>
                         </RadioGroup>
                     )}
                 </FormItem>

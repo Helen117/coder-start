@@ -222,8 +222,8 @@ class AddIssue extends Component{
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                router.goBack();
                 form.resetFields();
+                router.goBack();
             },
             onCancel() {
             }
@@ -262,11 +262,10 @@ class AddIssue extends Component{
                 };
                 actions.updateIssue(data);
 
+                form.resetFields(['delete_reason']);
                 this.setState({
                     visible: false,
                 });
-
-                form.resetFields(['delete_reason']);
             }
         })
     }
