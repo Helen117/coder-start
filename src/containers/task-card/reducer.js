@@ -51,6 +51,17 @@ export default function taskCard(state = {}, action = {}) {
                 uploadTaskFileLoading:false
             };
 
+
+        case 'TASK_PASS_TEST_PENDING':
+            return {...state, taskPass:{result:null,loading:true}};
+        case 'TASK_PASS_TEST_SUCCESS':
+            return {...state, taskPass:{result:action.payload, loading:false}};
+        case 'TASK_PASS_TEST_ERROR':
+            return {
+                ...state,
+                taskPass:{result:null, loading:false}
+            };
+
         case 'DELETE_TASK_PENDING':
             return {...state, deleteTask:null,deleteTaskLoading:true};
         case 'DELETE_TASK_SUCCESS':

@@ -129,3 +129,16 @@ export function taskDesignProject(data) {
         }
     }
 }
+
+//文档上传
+export function taskPassTest(data) {
+    var path = '/taskboard/submit-test-files';
+    return {
+        type: 'TASK_PASS_TEST',
+        payload: {
+            promise: api.post(path, {
+                data:data
+            })
+        }
+    }
+}
