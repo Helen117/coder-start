@@ -139,10 +139,10 @@ RequestList.prototype.columns = (self)=>[
         render: (text, record) => (
             <ul>
                 <li>
-                    开发：{record.assignee_develop_name}
+                    {record.assignee_develop_name? ("开发："+record.assignee_develop_name): ''}
                 </li>
                 <li>
-                    测试：{record.assignee_test_name}
+                    {record.assignee_test_name? ('测试：'+record.assignee_test_name): ''}
                 </li>
             </ul>
         )
@@ -174,7 +174,7 @@ RequestList.prototype.columns = (self)=>[
         width: self.props.editable ? 100:'0%',
         render: (text, record) => {
             return (<div>
-                {record.state=='已完成'?<div/>:
+                {   (record.state=='已完成' || record.story_id) ? <div/>:
                     record.state=='待确认'?<span> <a onClick={self.editRequest.bind(self, 'modify', record)}>修改</a>
                         <span style={{marginRight: 5, marginLeft: 5}} className="ant-divider"/>
                         <a onClick={self.deleteRequest.bind(self, record)}>删除</a>
