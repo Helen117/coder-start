@@ -120,7 +120,7 @@ class TaskCard extends Component{
                 const data = form.getFieldsValue();
                 data.operator_id=loginInfo.userId;
                 data.id = this.state.taskId;
-                console.log(data);
+                //console.log(data);
                 actions.submitTaskFile(data);
                 this.setState({
                     uploadVisible: false,
