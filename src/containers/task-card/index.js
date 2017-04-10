@@ -38,9 +38,10 @@ class TaskCard extends Component{
     componentWillReceiveProps(nextProps) {
         //回退任务
         const {rollBackInfo} = this.props;
-        if(nextProps.rollBackInfo && rollBackInfo && nextProps.rollBackInfo.result != rollBackInfo.result) {
-            this.props.actions.getTaskInfo(this.props.storyId);
-            message.success('回退成功');
+
+        if(nextProps.rollBackInfo && rollBackInfo && !nextProps.rollBackInfo.loading && nextProps.rollBackInfo.result != rollBackInfo.result) {
+                this.props.actions.getTaskInfo(this.props.storyId);
+                message.success('回退成功');
         }
         const {taskInfo} = nextProps;
         if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
@@ -83,7 +84,6 @@ class TaskCard extends Component{
     }
 
     deleteTask(taskId){
-        console.log("delete");
         this.props.actions.deleteTask(this.props.loginInfo.userId,taskId);
     }
 
@@ -142,6 +142,7 @@ class TaskCard extends Component{
 
 
     setProjectVisible(flag,taskId, e){
+
         if(e){
             e.stopPropagation();
         }
@@ -179,13 +180,14 @@ class TaskCard extends Component{
             });
         }.bind(this);
         reader.readAsDataURL(file);
+        this.props.form.setFieldsValue({'files':this.state.fileList});
         return false;
     }
 
 
     handleClick(taskId,item) {
         const {loginInfo} = this.props;
-        console.log('loginInfo:',loginInfo)
+
         if (item.key == 'setting:2') {
             this.setState({
                 uploadVisible: true,
@@ -260,12 +262,12 @@ class TaskCard extends Component{
                     data =><Task key={data.id} id={data.id} storyId={story} type="TODO" moveTask={this.moveTask.bind(this)}>
                         <Row>
                             <Col span={22}>
-                                <p><code className="todo"> {data.title} </code></p>
+                                <p><code className="todo"><a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a></code></p>
                                 {data.developer?<Tag>{data.developer.name}</Tag>:''}
                             </Col>
                             <Col span={2}>
                                 <Dropdown overlay={todoAction(this, data.id)}>
-                                    <a className="ant-dropdown-link" href="#">
+                                    <a className="ant-dropdown-link">
                                         <Icon type="bars" />
                                     </a>
                                 </Dropdown>
@@ -279,12 +281,12 @@ class TaskCard extends Component{
                         <Task key={data.id} id={data.id} storyId={story} type="DOING" moveTask={this.moveTask.bind(this)}>
                             <Row>
                                 <Col span={22}>
-                                    <p><code className="doing"> {data.title} </code></p>
+                                    <p><code className="doing"> <a onClick={this.setModifyTask.bind(this,true,data,'modify')}>{data.title}</a> </code></p>
                                     {data.developer?<Tag>{data.developer.name}</Tag>:''}
                                 </Col>
                                 <Col span={2}>
                                     <Dropdown overlay={doingAction(this, data.id)}>
-                                        <a className="ant-dropdown-link" href="#">
+                                        <a className="ant-dropdown-link">
                                             <Icon type="bars" />
                                         </a>
                                     </Dropdown>
@@ -307,7 +309,6 @@ class TaskCard extends Component{
             wrapperCol: {span: 12},
         };
 
-        // const developer = developerInfo?developerInfo.map(data => <Option key={data.id}>{data.name}</Option>):[];
 
         return (
             <div id="tasks">

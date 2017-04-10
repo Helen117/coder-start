@@ -23,10 +23,27 @@ class ProjectConfirm extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        const {projectVisible} =nextProps;
+        const {projectVisible,taskId,getDemandProjectInfo} =nextProps;
+
         if(projectVisible&&projectVisible!=this.props.projectVisible){
-            // this.props.getDemandProjectInfoAction(this.props.taskId);
+            this.props.getDemandProjectInfoAction(taskId);
             this.props.getProjectInfoAction(this.props.currentMilestoneMsg.set_id, this.props.loginInfo.userId);
+        }
+
+        if(getDemandProjectInfo&&getDemandProjectInfo!=this.props.getDemandProjectInfo) {
+
+            if (getDemandProjectInfo.length > 0) {
+                this.setState({
+                    fileList: [{
+                        uid: -1,
+                        name: getDemandProjectInfo[0].file_name,
+                        status: 'done',
+                        url: ''
+                    }]
+                });
+                this.props.form.setFieldsValue({'files': this.state.fileList});
+                this.props.form.setFieldsValue({'projects_id': getDemandProjectInfo.map(data => data.id)});
+            }
         }
 
     }
@@ -42,8 +59,13 @@ class ProjectConfirm extends Component {
                     const data = form.getFieldsValue();
                     data.operator_id=loginInfo.userId;
                     data.task_id = this.props.taskId;
-                    this.props.designProjectAction(data);
+                    if(this.props.getDemandProjectInfo&&this.props.getDemandProjectInfo.length){
+                        data.operate_type ='update';
+                    }else{
+                        data.operate_type ='new';
+                    }
                     console.log('data:',data);
+                    this.props.designProjectAction(data);
                     this.setState({
                         fileList:'',
                     });
@@ -115,8 +137,7 @@ class ProjectConfirm extends Component {
         };
 
         const projectInfo = this.props.getMyProjectInfo?this.props.getMyProjectInfo:[];
-        let targetKeys = [];
-            // this.props.getDemandProjectInfo?this.props.getDemandProjectInfo.map(data => data.id):[];
+        let targetKeys = this.props.getDemandProjectInfo?this.props.getDemandProjectInfo.map(data => data.id):[];
         const loading=false;
 
         return (
@@ -173,7 +194,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch){
     return{
-        // getDemandProjectInfoAction: bindActionCreators(getDemandProjectInfo, dispatch),
+        getDemandProjectInfoAction: bindActionCreators(getDemandProjectInfo, dispatch),
         getProjectInfoAction: bindActionCreators(getProjectInfo, dispatch),
         designProjectAction: bindActionCreators(taskDesignProject, dispatch),
     }
