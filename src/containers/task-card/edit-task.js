@@ -79,7 +79,7 @@ class EditTask extends Component {
                         };
                         addTaskAction(taskInfo);
                     }else{
-                        console.log('update')
+                        //console.log('update')
                         taskInfo.id=taskData.id;
                         taskInfo.operator_id = loginInfo.userId;
                         updateTask(taskInfo);

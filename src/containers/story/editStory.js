@@ -90,7 +90,7 @@ class EditStory extends React.Component {
             wrapperCol: { span: 14 },
         };
         const {story} = this.props;
-        console.log('story',story)
+        //console.log('story',story)
         const initialIsActive = story? story.is_active: "true";
         const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
