@@ -31,7 +31,6 @@ class EditStory extends React.Component {
                     staffList.push(story.testers[i].id.toString())
                 }
             }
-            //console.log('staffList',staffList)
             setFieldsValue({'testers_id':staffList});
 
 
@@ -83,15 +82,22 @@ class EditStory extends React.Component {
         })
     }
 
+    handleChange(value){
+        if(value.length > 0){
+            this.props.form.setFieldsValue({"is_active": "true"})
+        }else{
+            this.props.form.setFieldsValue({"is_active": null})
+        }
+    }
+
     render(){
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         };
-        const {story} = this.props;
-        //console.log('story',story)
-        const initialIsActive = story? story.is_active: "true";
+        const {story,form} = this.props;
+        const initialIsActive = story?story.is_active: null;
         const testersOptions = this.props.testers? this.props.testers.map(testers=>(<Option key={testers.id}>{testers.name}</Option>)):[];
         return(
         <Modal title={this.props.editType=='add'?'添加故事':'修改故事'} visible={this.props.visible}
@@ -117,6 +123,7 @@ class EditStory extends React.Component {
                             multiple
                             style={{ width: '100%' }}
                             placeholder="请选择测试人员"
+                            onChange = {this.handleChange.bind(this)}
                         >{testersOptions}</Select>)
                     }
                 </FormItem>
