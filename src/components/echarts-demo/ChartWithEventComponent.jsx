@@ -46,15 +46,15 @@ const ChartWithEventComponent = React.createClass({
         return option;
     },
     onChartClick: function(param, echart) {
-        console.log(param, echart);
+        //console.log(param, echart);
         alert('chart click');
     },
     onChartLegendselectchanged: function(param, echart) {
-        console.log(param, echart);
+        //console.log(param, echart);
         alert('chart legendselectchanged');
     },
     onChartReady: function(echart) {
-        console.log('echart is ready', echart);
+        //console.log('echart is ready', echart);
     },
     render: function() {
         let onEvents = {

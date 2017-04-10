@@ -42,8 +42,8 @@ import './index.less';
 
 
      codeChange(text,record){
-         console.log("text:",text);
-         console.log("record:",record);
+         //console.log("text:",text);
+         //console.log("record:",record);
 
          this.context.router.push({
              pathname: '/jenkins/codeChange',
@@ -221,7 +221,7 @@ import './index.less';
              "total": 3
          };
 
-         console.log("workflowStage:",this.props.workflowStage);
+         //console.log("workflowStage:",this.props.workflowStage);
              
              return (
                  <Box title="编译发布过程一览">

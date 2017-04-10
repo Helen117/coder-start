@@ -70,12 +70,10 @@ class EditStory extends React.Component {
                 if(editType=='add'){
                     data.creater = {"name": loginInfo.username,"id":loginInfo.userId};
                     data.milestone_id = milestoneId;
-                    console.log('add',data)
                     this.props.actions.addStory(data);
                 }else{
                     data.id = story.id;
                     data.opreator_id = loginInfo.userId;
-                    console.log('update',data)
                     this.props.actions.updateStory(data);
                 }
                 form.resetFields();

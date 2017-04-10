@@ -138,27 +138,23 @@ class Story extends React.Component{
             </div>
         </div>:<div/>
         if(milestoneId){
-            if(stories) {
-                const panels = this.createPanels(stories)
-                return (
-                    <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
-                        <div id='story' style={{margin:'10px'}}>
-                            {milestoneContent}
-                            <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
-                                {panels}
-                            </Collapse>
-                            <EditStory  story={this.storyData}
-                                       visible={this.state.visible}
-                                       editType={this.state.editType}
-                                       setVisible={this.setVisible.bind(this)}
-                                       milestoneId = {milestoneId}
-                                       currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
-                        </div>
-                    </Spin>
-                )
-            }else {
-                return milestoneContent
-            }
+            const panels = stories?this.createPanels(stories):<Panel ></Panel>;
+            return (
+                <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
+                    <div id='story' style={{margin:'10px'}}>
+                        {milestoneContent}
+                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                            {panels}
+                        </Collapse>
+                        <EditStory  story={this.storyData}
+                                   visible={this.state.visible}
+                                   editType={this.state.editType}
+                                   setVisible={this.setVisible.bind(this)}
+                                   milestoneId = {milestoneId}
+                                   currentMilestoneMsg = {this.state.currentMilestoneMsg}/>
+                    </div>
+                </Spin>
+            )
         }else{
             return <Alert style={{margin:10}}
                           message="请从左边的项目树中选择一个里程碑"

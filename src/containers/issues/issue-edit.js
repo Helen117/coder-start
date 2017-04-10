@@ -236,7 +236,7 @@ class AddIssue extends Component{
         const {project} = this.props;
         const projectInfo = project.getProjectInfo?project.getProjectInfo.projectInfo:{};
         const projectId = projectInfo.id;
-        console.log(value,selectedRow,projectId);
+        //console.log(value,selectedRow,projectId);
         if (value && projectId){
             this.props.actions.getIssueDemand(projectId,value);
         }else if(value && selectedRow){

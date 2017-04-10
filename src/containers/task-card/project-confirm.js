@@ -64,7 +64,7 @@ class ProjectConfirm extends Component {
                     }else{
                         data.operate_type ='new';
                     }
-                    console.log('data:',data);
+                    //console.log('data:',data);
                     this.props.designProjectAction(data);
                     this.setState({
                         fileList:'',

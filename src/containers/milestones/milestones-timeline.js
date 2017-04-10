@@ -52,7 +52,7 @@ class Milestones extends React.Component {
     }
 
     refresh(){
-        console.log(this.props.projectId,defaultDate, setMode)
+        //console.log(this.props.projectId,defaultDate, setMode)
         this.props.getProjectSetMilestonesAction(this.props.projectId,defaultDate.valueOf(),setMode);
     }
 
