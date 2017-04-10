@@ -108,7 +108,7 @@ export default function taskCard(state = {}, action = {}) {
             return {...state,rollBackInfo:{result:action.payload,loading:false}};
         case 'ROLL_BACK_CARD_ERROR':
             return {
-                ...state, rollBackInfo:{loading:false}
+                ...state, rollBackInfo:{error:action.payload.errorMsg,loading:false,result:null}
             };
 
         default:

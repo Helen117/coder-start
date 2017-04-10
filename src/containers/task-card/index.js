@@ -43,6 +43,12 @@ class TaskCard extends Component{
                 this.props.actions.getTaskInfo(this.props.storyId);
                 message.success('回退成功');
         }
+
+        //回退失败刷新
+        if(nextProps.rollBackInfo && rollBackInfo && !nextProps.rollBackInfo.loading && nextProps.rollBackInfo.error != rollBackInfo.error) {
+            this.props.actions.getTaskInfo(this.props.storyId);
+        }
+
         const {taskInfo} = nextProps;
         if (taskInfo.setTaskDeveloper && !taskInfo.setTaskDeveloperLoading && taskInfo.setTaskDeveloper!=this.props.taskInfo.setTaskDeveloper) {
             this.props.actions.getTaskInfo(this.props.storyId);
@@ -299,6 +305,7 @@ class TaskCard extends Component{
                     data =><Task key={data.id} id={data.id} storyId={story} type="DONE" moveTask={this.moveTask.bind(this)}>
                         <p><code className="done"> {data.title} </code></p>
                         {data.developer?<Tag>{data.developer.name}</Tag>:''}
+                        {data.code_submit_date?data.code_submit_date:''}
                     </Task> )):"";
 
         const action = (<Button size="small" onClick={this.setModifyTask.bind(this,true,null,'add')}>新建任务</Button>);
