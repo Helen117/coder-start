@@ -157,9 +157,11 @@ class Story extends React.Component{
                 <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
                     <div id='story' style={{margin:'10px'}}>
                         {milestoneContent}
-                        <Collapse  defaultActiveKey={defaultActiveKey}  onChange={this.handleChange.bind(this)}>
-                            {panels}
-                        </Collapse>
+                        {stories?(
+                            <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                                {panels}
+                            </Collapse>
+                        ):<div></div>}
                         <EditStory  story={this.storyData}
                                    visible={this.state.visible}
                                    editType={this.state.editType}
