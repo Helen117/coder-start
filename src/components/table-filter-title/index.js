@@ -136,7 +136,7 @@ class TableFilterTitle extends React.Component {
                     {this.props.title}
                 </div>
                 <div style={{display:'inline',float:'left',width:'90px',paddingLeft:'10px'}}>
-                    {getFieldDecorator('searchContext')(
+                        {getFieldDecorator('searchContext')(
                         <Input size="small"
                                style={{borderRadius:"5px"}}
                                prefix={<Icon type="search" />}

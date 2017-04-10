@@ -70,7 +70,8 @@ class EditTask extends Component {
                         developer:developer,
                         type:'demand',
                         due_date:data.due_date? data.due_date.valueOf: null,
-                        story_id:story_id
+                        story_id:story_id,
+                        is_active:data.is_active
                     };
                     if(editType=='add'){
                         taskInfo.creater={
@@ -84,8 +85,8 @@ class EditTask extends Component {
                         updateTask(taskInfo);
                     }
 
-                    setModifyTask(false,taskData);
                     form.resetFields();
+                    setModifyTask(false,taskData);
                 }
             }
         )
@@ -99,8 +100,8 @@ class EditTask extends Component {
             title: '您是否确定要取消表单的编辑',
             content: '取消之后表单内未提交的修改将会被丢弃',
             onOk() {
-                setModifyTask(false,taskData);
                 form.resetFields();
+                setModifyTask(false,taskData);
             },
             onCancel() {
                 //do nothing
@@ -182,10 +183,10 @@ class EditTask extends Component {
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="类型">
-                        {getFieldDecorator('is_active',{initialValue:true})(
+                        {getFieldDecorator('is_active',{initialValue:"true"})(
                             <RadioGroup>
-                                <Radio value={true}>主动领取</Radio>
-                                <Radio value={false}>被动指派</Radio>
+                                <Radio value="true">主动领取</Radio>
+                                <Radio value="false">被动指派</Radio>
                             </RadioGroup>
                         )}
                     </FormItem>
