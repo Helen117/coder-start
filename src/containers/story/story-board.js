@@ -124,7 +124,7 @@ class Story extends React.Component{
     render(){
         const {stories,getStoryLoading,getTreeState } = this.props;
         const isLoading = getStoryLoading? true: false;
-        const defaultActiveKey = stories&&stories.length>0? stories[0].id: '0';
+        const defaultActiveKey = stories&&stories.length>0? stories[0].id: "0";
         const milestoneId = getTreeState? getTreeState.milestoneId:null;
         const milestoneContent = this.state.currentMilestoneMsg? <div id="milestone">
             <div className="block">
@@ -143,9 +143,11 @@ class Story extends React.Component{
                 <Spin spinning={isLoading} tip="正在加载数据,请稍候...">
                     <div id='story' style={{margin:'10px'}}>
                         {milestoneContent}
-                        <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
-                            {panels}
-                        </Collapse>
+                        {stories?(
+                            <Collapse  defaultActiveKey={[defaultActiveKey.toString()]}  onChange={this.handleChange.bind(this)}>
+                                {panels}
+                            </Collapse>
+                        ):<div></div>}
                         <EditStory  story={this.storyData}
                                    visible={this.state.visible}
                                    editType={this.state.editType}
