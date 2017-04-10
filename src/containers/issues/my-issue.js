@@ -508,11 +508,18 @@ MyIssueList.prototype.issueListColumns = (self)=>[
         render: (text, record, index)=> {
             if(record.state.indexOf('open')!=-1){
                 if(record.project_id){
-                    return <div>
-                        <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
-                        <br/>
-                        <a onClick={self.modifyConfirm.bind(self, record)}>修改设计内容</a>
-                    </div>;
+                    if(record.story_id){
+                        return <div>
+                            <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
+                        </div>;
+                    }else{
+                        return <div>
+                            <a onClick={self.mergeRequest.bind(self, record)}>申请合并代码</a>
+                            <br/>
+                            <a onClick={self.modifyConfirm.bind(self, record)}>修改设计内容</a>
+                        </div>;
+                    }
+
                 }else{
                     if (record.type == 'bug') {
                         if(record.is_sets_Issue_finished) {

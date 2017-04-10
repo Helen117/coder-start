@@ -33,6 +33,17 @@ class EditTask extends Component {
             const developer = taskData.developer? taskData.developer.id.toString():null;
             setFieldsValue(taskData);
             setFieldsValue({"developer":developer});
+            this.setState({
+                fileList: [{
+                    uid: -1,
+                    name: taskData.file,
+                    status: 'done',
+                    url: ''
+                }]
+            });
+            if(taskData.file) {
+                setFieldsValue({'files': this.state.fileList});
+            }
         }
 
         if(visible && visible != this.props.visible){
@@ -53,6 +64,7 @@ class EditTask extends Component {
     handleSubmit() {
         const {form,taskData,loginInfo,addTaskAction,editType,story_id,updateTask} = this.props;
         const setModifyTask = this.props.setModifyTask;
+        form.setFieldsValue({'files':this.state.fileList});
 
         form.validateFields((errors) => {
                 if (!!errors) {
@@ -71,7 +83,8 @@ class EditTask extends Component {
                         type:'demand',
                         due_date:data.due_date? data.due_date.valueOf: null,
                         story_id:story_id,
-                        is_active:data.is_active
+                        is_active:data.is_active,
+                        files:data.files
                     };
                     if(editType=='add'){
                         taskInfo.creater={
@@ -79,11 +92,14 @@ class EditTask extends Component {
                         };
                         addTaskAction(taskInfo);
                     }else{
-                        //console.log('update')
                         taskInfo.id=taskData.id;
                         taskInfo.operator_id = loginInfo.userId;
                         updateTask(taskInfo);
                     }
+
+                    this.setState({
+                        fileList:'',
+                    });
 
                     form.resetFields();
                     setModifyTask(false,taskData);
@@ -137,6 +153,7 @@ class EditTask extends Component {
             });
         }.bind(this);
         reader.readAsDataURL(file);
+        this.props.form.setFieldsValue({'files':this.state.fileList});
         return false;
     }
     
