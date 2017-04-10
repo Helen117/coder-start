@@ -13,6 +13,8 @@ import IssueList from '../../components/issues-list';
 import styles from './index.css';
 import Box from '../../components/box';
 import fetchData from '../../utils/fetch'
+import EditTask from '../task-card/edit-task';
+import {taskPassTest} from '../task-card/action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,7 +25,7 @@ class MyIssueList extends Component {
 
     constructor(props) {
         super(props);
-        this.state ={visible: false,bugVisible:false, record:''};
+        this.state ={visible: false,bugVisible:false, record:'',taskVisible: false,workTime:true};
     }
 
     componentWillMount() {
@@ -48,7 +50,7 @@ class MyIssueList extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {actions,loginInfo,myIssueError} = this.props;
-        const {mergeBranch} = nextProps;
+        const {mergeBranch,addResult,taskPass} = nextProps;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
         }
@@ -65,24 +67,21 @@ class MyIssueList extends Component {
         }
 
         if(nextProps.closeBug&&nextProps.closeBug!=this.props.closeBug){
-            message.success('操作成功');
-            var data ={
-                        state:'opened',
-                        assigned_id:loginInfo.userId,
-                    };
-            this.props.home.getNotifyItems(this.props.loginInfo.userId);
-            actions.getMyIssue(data);
+            this.refresh();
         }
 
         if(nextProps.revertBug&&nextProps.revertBug!=this.props.revertBug){
-            message.success('操作成功');
-            var data ={
-                state:'opened',
-                assigned_id:loginInfo.userId,
-            };
-            this.props.home.getNotifyItems(this.props.loginInfo.userId);
-            actions.getMyIssue(data);
+            this.refresh();
         }
+
+        if(addResult&&addResult!=this.props.addResult&&!addResult.getLoading){
+            this.refresh();
+        }
+
+        if(taskPass&&taskPass!=this.props.taskPass&&!taskPass.loading){
+            this.refresh();
+        }
+
         // const thisProId = projectInfo?projectInfo.id:'';
         // const nextProId = nextProps.projectInfo?nextProps.projectInfo.id:'';
         //点击不同项目，重新加载数据
@@ -107,6 +106,17 @@ class MyIssueList extends Component {
     //         duration:null,
     //     });
     // }
+
+    refresh(){
+        const {actions,loginInfo,home} = this.props;
+        message.success('操作成功');
+        var data ={
+            state:'opened',
+            assigned_id:loginInfo.userId,
+        };
+        home.getNotifyItems(loginInfo.userId);
+        actions.getMyIssue(data);
+    }
 
     handleReset(e) {
         this.props.form.resetFields();
@@ -188,10 +198,19 @@ class MyIssueList extends Component {
     }
 
     testPass(record){
+        console.log('record:',record.story_id);
+        //task测试完成不需要填工时
+        if(record.story_id){
+            this.setState({
+                workTime:false,
+            });
+        }
+
         this.setState({
             visible: true,
             record:record,
         });
+
     }
 
     revertBug(){
@@ -219,24 +238,48 @@ class MyIssueList extends Component {
     }
 
     handleOk() {
-        const {actions,form,loginInfo} = this.props;
+        const {actions,form,loginInfo,taskPassTestAction} = this.props;
         form.setFieldsValue({'files':this.state.fileList});
-        form.validateFields(['design_work_time','files'],(errors, values) => {
-            if (!!errors) {
-                return;
-            } else {
-                const data = form.getFieldsValue();
-                // data.demand_id=this.state.record.sets_issue_id;
-                data.devops_issues_key = this.state.record.devops_issues_key;
-                actions.testPass(data);
-                this.setState({
-                    visible: false,
-                    fileList:'',
-                });
+        if(this.state.workTime) {
+            form.validateFields(['design_work_time', 'files'], (errors, values) => {
+                if (!!errors) {
+                    return;
+                } else {
+                    const data = form.getFieldsValue();
+                    // data.demand_id=this.state.record.sets_issue_id;
+                    data.devops_issues_key = this.state.record.devops_issues_key;
+                    actions.testPass(data);
+                    this.setState({
+                        visible: false,
+                        fileList: '',
+                    });
 
-                form.resetFields();
-            }
-        })
+                    form.resetFields();
+                }
+            })
+        }else{
+            form.validateFields(['files'], (errors, values) => {
+                if (!!errors) {
+                    return;
+                } else {
+                    const data = form.getFieldsValue();
+                    const taskInfo ={
+                        operator_id:loginInfo.userId,
+                        id:this.state.record.story_id,
+                        test_report_files:this.state.fileList
+                    };
+console.log('taskInfo:',taskInfo);
+                    taskPassTestAction(taskInfo);
+
+                    this.setState({
+                        visible: false,
+                        fileList: '',
+                    });
+
+                    form.resetFields();
+                }
+            })
+        }
     }
 
     cancel(e) {
@@ -308,6 +351,8 @@ class MyIssueList extends Component {
             message.error('上传的测试报告限制为excel2003版本的文件(IIMP暂时不支持EXCEL2007版本的文件)！',5);
             return false;
         }
+
+
         if(file.size/ 1024 / 1024 >10){
             message.error('文件大小不能超过10M',3);
             return false;
@@ -329,7 +374,24 @@ class MyIssueList extends Component {
             // console.log(reader.result);
         }.bind(this);
         reader.readAsDataURL(file);
+        this.props.form.setFieldsValue({'files':this.state.fileList});
+
         return false;
+    }
+
+    setModifyTask(flag,record,editType,e){
+
+        if(e){
+            e.stopPropagation();
+        }
+
+        this.setState({
+            taskVisible:flag,
+            editType:editType,
+            taskData:'',
+            storyId:record.story_id,
+            type:'bug'
+        });
     }
 
 
@@ -341,6 +403,10 @@ class MyIssueList extends Component {
         };
         const userInfo = this.props.user?this.props.user.map(data => <Option key={data.id}>{data.name}</Option>):[];
         let loading =this.props.updateIssueLoading?true:false;
+
+        var workTime = this.state.workTime?<FormItem {...formItemLayout} label="工时" >
+            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
+        </FormItem>:'';
 
         return (
             <Spin spinning={loading}>
@@ -414,9 +480,7 @@ class MyIssueList extends Component {
                            confirmLoading={this.props.updateIssueLoading}
                            onOk={this.handleOk.bind(this)} onCancel={this.cancel.bind(this)}
                     >
-                        <FormItem {...formItemLayout} label="工时" >
-                            {getFieldDecorator('design_work_time',{rules:[{required:true,type:"number",message:'请填写设计工时'}]})(<InputNumber min={1} max={100}/>)}
-                        </FormItem>
+                        {workTime}
 
                         <FormItem {...formItemLayout}  label="文档上传" >
                             {getFieldDecorator('files',{rules:[{required:true,type:"array",message:'请上传文档'}]})(
@@ -437,6 +501,14 @@ class MyIssueList extends Component {
                             {getFieldDecorator('reason',{rules:[{required:true,message:'不能为空'}]})(<Input type="textarea" placeholder="reason" rows="5"  />)}
                         </FormItem>
                     </Modal>
+
+                    <EditTask  taskData={this.state.taskData}
+                               editType={this.state.editType}
+                               visible={this.state.taskVisible}
+                               type={this.state.type}
+                               story_id={this.state.storyId}
+                               setModifyTask={this.setModifyTask.bind(this)}
+                    />
                 </Box>
             </div>
             </Spin>
@@ -539,6 +611,12 @@ MyIssueList.prototype.issueListColumns = (self)=>[
                             <br/>
                             <a onClick={self.testPass.bind(self, record)}>测试完成确认</a>
                         </div>;
+                    }else if(record.story_id){
+                        return <div>
+                            <a onClick={self.setModifyTask.bind(self,true,record,'add')}>开Bug</a>
+                            <br/>
+                            <a onClick={self.testPass.bind(self, record)}>测试完成确认</a>
+                        </div>;
                     }
                 }
             }
@@ -559,6 +637,8 @@ function mapStateToProps(state) {
         user:state.register.users,
         revertBug:state.issue.revertBug,
         revertBugLoading:state.issue.revertBugPending,
+        addResult:state.taskCard.result,
+        taskPass:state.taskCard.taskPass,
     };
 }
 
@@ -568,6 +648,7 @@ function mapDispatchToProps(dispatch) {
         getUserAction : bindActionCreators(getAllUser, dispatch),
         home:bindActionCreators(home, dispatch),
         fetchMergeBranchData : bindActionCreators(fetchMergeBranchData,dispatch),
+        taskPassTestAction : bindActionCreators(taskPassTest,dispatch),
     }
 }
 
