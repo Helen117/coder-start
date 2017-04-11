@@ -67,12 +67,12 @@ class TaskCard extends Component{
             message.success('删除成功');
         }
 
-        if(taskInfo.designProject&&taskInfo.designProject!=this.props.taskInfo.designProject){
+        if(taskInfo.designProject&&taskInfo.designProject!=this.props.taskInfo.designProject&&!taskInfo.designProjectLoading){
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('操作成功');
         }
 
-        if ( addResult &&addResult!=this.props.addResult) {
+        if ( addResult &&addResult!=this.props.addResult&&!addResult.getLoading&&!taskInfo.errors) {
             this.props.actions.getTaskInfo(this.props.storyId);
             message.success('提交成功');
         }
