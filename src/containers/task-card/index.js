@@ -328,17 +328,17 @@ class TaskCard extends Component{
             <div id="tasks">
                 <Row>
                     <Col span="8">
-                        <TaskGroup title={`待处理（${todoTask.length}）`} action={action} classType="bg" headerStyle={{backgroundColor:'#f7f7f7'}} storyId={story} type="TODO">
+                        <TaskGroup title={`待处理（${todoTask.length}）`} action={action} classType="bg" headerStyle={{backgroundColor:'#6AAAEA',color:'white'}} storyId={story} type="TODO">
                             {todoTask}
                         </TaskGroup>
                     </Col>
                     <Col span="8">
-                        <TaskGroup title={`进行中（${doingTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#d2eafb'}} storyId={story} type="DOING">
+                        <TaskGroup title={`进行中（${doingTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#6AAAEA',color:'white'}} storyId={story} type="DOING">
                             {doingTask}
                         </TaskGroup>
                     </Col>
                     <Col span="8">
-                        <TaskGroup title={`已完成（${doneTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#cfefdf'}} storyId={story} type="DONE">
+                        <TaskGroup title={`已完成（${doneTask.length}）`} classType="bg" headerStyle={{backgroundColor:'#6AAAEA',color:'white'}} storyId={story} type="DONE">
                             {doneTask}
                         </TaskGroup>
                     </Col>
