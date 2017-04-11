@@ -74,11 +74,11 @@ class Home extends React.Component {
                             <MyProjectStatus state={1}/>
                         </Col>
                     </Row>*/}
-                    <Row style={{padding: 10}}>
                         <Col span={24}>
                             <MyProjectRank rank={rank}/>
                         </Col>
                     </Row>
+                    <Row style={{padding: 10}}>
                     <Row style={{padding: 10}}>
                         <Col span={9} offset={3}>
                             <MyProjectProgress label="我在当前里程碑未完成工作的百分比" percent={unfinished}/>

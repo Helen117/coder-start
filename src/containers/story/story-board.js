@@ -118,22 +118,18 @@ class Story extends React.Component{
             const header = <Row style={{"margin": '5px'}} type="flex" align="middle">
                 <Col span="20" >
                     <Tooltip placement="top" title='点击编辑'>
-                        <a style={{"fontSize": "15px"}}
+                        <a style={{"fontSize": "15px", fontWeight: "bold"}}
                            onClick={this.setVisible.bind(this,true,story,'update')}>{story.title}</a>
                     </Tooltip>
-                    <p >{story.description}</p>
-                    {story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div></div>}
+                    <p >{story.description?story.description:story.title}</p>
+                    <label>测试人员：</label>{story.testers? story.testers.map((tester)=><Tag key ={tester.id} >{tester.name}</Tag>):<div style={{height:22,display: "inline-block"}}></div>}
                 </Col>
                 <Col span="4">
-                    <Col span="13">
+                    <Col span="12">
                         <Badge status={state.flag} text={state.status} />
                     </Col>
-                    <Col span="10">
+                    <Col span="12">
                         <Button size="small" onClick={this.refreshTask.bind(this,story.id)}>刷新</Button>
-                    </Col>
-                    <Col span="1">
-                        <div style={{minHeight: '30px',backgroundColor: '#108EE9'}}>
-                        </div>
                     </Col>
                 </Col>
             </Row>
