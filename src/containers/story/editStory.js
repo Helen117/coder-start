@@ -73,7 +73,7 @@ class EditStory extends React.Component {
                     this.props.actions.addStory(data);
                 }else{
                     data.id = story.id;
-                    data.opreator_id = loginInfo.userId;
+                    data.operator_id = loginInfo.userId;
                     this.props.actions.updateStory(data);
                 }
                 form.resetFields();

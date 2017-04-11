@@ -106,7 +106,8 @@ class Story extends React.Component{
         }
     }
 
-    refreshTask(storyId){
+    refreshTask(storyId,e){
+        e.stopPropagation();
         this.props.getTaskInfoAction(storyId);
     }
 
