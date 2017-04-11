@@ -73,7 +73,7 @@ class TaskCard extends Component{
         }
 
         if ( addResult &&addResult!=this.props.addResult) {
-            this.props.getTaskInfo(this.props.storyId);
+            this.props.actions.getTaskInfo(this.props.storyId);
             message.success('提交成功');
         }
     }
