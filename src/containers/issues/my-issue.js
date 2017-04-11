@@ -274,6 +274,7 @@ console.log('taskInfo:',taskInfo);
                     this.setState({
                         visible: false,
                         fileList: '',
+                        workTime:true,
                     });
 
                     form.resetFields();
