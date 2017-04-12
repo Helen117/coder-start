@@ -20,7 +20,8 @@ class AsyncTree extends React.Component {
     }
 
     componentWillMount(){
-        this.props.getAsyncProjectSet();
+        const {loginInfo} = this.props;
+        this.props.getAsyncProjectSet(loginInfo.userId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -184,6 +185,7 @@ function mapStateToProps(state) {
         getProjectSet : state.taskBoardReducer.getProjectSet,
         getProjectMilestone : state.taskBoardReducer.getProjectMilestone,
         saveTreeState:state.taskBoardReducer.saveTreeState,
+        loginInfo:state.login.profile,
     }
 }
 

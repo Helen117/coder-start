@@ -5,7 +5,7 @@ import api from '../../../api';
 import {ASYNC_TREE_PROJECTSET,
     SAVE_TREE_STATE} from '../constants/task-board-action-types';
 
-export function getAsyncProjectSet() {
+export function getAsyncProjectSet(user_id) {
     var path = '/taskboard/sets';
     //var path = '/async-tree/projectSet';
     return {
@@ -13,7 +13,7 @@ export function getAsyncProjectSet() {
         payload: {
             promise: api.post(path, {
                 params: {
-
+                    user_id:user_id
                 }
             })
         }
