@@ -50,7 +50,7 @@ class MyIssueList extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {actions,loginInfo,myIssueError} = this.props;
-        const {mergeBranch,addResult,taskPass} = nextProps;
+        const {mergeBranch,addResult,taskPass,taskInfo} = nextProps;
         if(nextProps.location.state && this.props.location.state!=nextProps.location.state){
             actions.getMyIssue(nextProps.location.state.data);
         }
@@ -74,7 +74,7 @@ class MyIssueList extends Component {
             this.refresh();
         }
 
-        if(addResult&&addResult!=this.props.addResult&&!addResult.getLoading){
+        if(addResult&&addResult!=this.props.addResult&&!addResult.getLoading&&!taskInfo.errors){
             this.refresh();
         }
 
@@ -274,6 +274,7 @@ console.log('taskInfo:',taskInfo);
                     this.setState({
                         visible: false,
                         fileList: '',
+                        workTime:true,
                     });
 
                     form.resetFields();
@@ -639,6 +640,7 @@ function mapStateToProps(state) {
         revertBugLoading:state.issue.revertBugPending,
         addResult:state.taskCard.result,
         taskPass:state.taskCard.taskPass,
+        taskInfo:state.taskCard,
     };
 }
 
