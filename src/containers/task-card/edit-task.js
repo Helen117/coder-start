@@ -99,7 +99,7 @@ class EditTask extends Component {
                     }
 
                     this.setState({
-                        fileList:'',
+                        fileList:null,
                     });
 
                     form.resetFields();

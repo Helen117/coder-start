@@ -67,7 +67,7 @@ class ProjectConfirm extends Component {
                     //console.log('data:',data);
                     this.props.designProjectAction(data);
                     this.setState({
-                        fileList:'',
+                        fileList:null,
                     });
                     setProjectVisible(false);
                     form.resetFields();
