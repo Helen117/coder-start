@@ -11,6 +11,7 @@ import createG2 from 'g2-react';
 
 let selectNode = null;
 
+G2.track(false);//关闭 G2 的体验改进计划打点请求
 const G2Chart = createG2(chart => {
 
     var drawNode = function(cfg, group, collapsed, isLeaf) {
@@ -306,5 +307,5 @@ export default class RelationMap extends React.Component{
 
 
 RelationMap.propTypes = {
-    data: PropTypes.string.isRequired
+    data: PropTypes.array.isRequired
 };
