@@ -78,6 +78,8 @@ import  {Story,EditStory} from './containers/story';
 import TaskCard from './containers/task-card/index';
 import EditTask from './containers/task-card/edit-task';
 
+import Backlog from './containers/backlog';
+
 const history = useRouterHistory(createHistory)({basename: ''});
 //const history = syncHistoryWithStore(hashHistory, store);
 const store = configureStore();
@@ -206,10 +208,12 @@ ReactDOM.render(
                         <Route name="report" breadcrumbName="团队成员当前工作情况" path="memberCurrentWork" component={MemberCurrentWork}/>
                         <Route name="report" breadcrumbName="多个团队当前工作情况比较" path="teamCurrentWork" component={TeamCurrentWork}/>
                         <Route name="TaskBoard" breadcrumbName="看板" path="taskBoard" component={TaskBoard}>
-
                             <Route name="story" breadcrumbName="story" path="story" component={Story}/>
                         </Route>
-                        </Route>
+
+                        <Route path="/backlog" component={Backlog}/>
+
+                    </Route>
 
                     <Route name="editStory" breadcrumbName="editStory" path="editStory" component={EditStory}/>
 
