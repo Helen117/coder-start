@@ -137,7 +137,7 @@ class TaskCard extends Component{
                 actions.submitTaskFile(data);
                 this.setState({
                     uploadVisible: false,
-                    fileList:'',
+                    fileList:null,
                 });
 
                 form.resetFields();
@@ -148,7 +148,7 @@ class TaskCard extends Component{
     cancelUpload(){
         this.setState({
             uploadVisible: false,
-            fileList:'',
+            fileList:null,
         });
         this.props.form.resetFields();
     }
