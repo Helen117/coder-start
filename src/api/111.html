@@ -19,14 +19,14 @@
         border : 1px solid #efefef;
         background-color: white;
         opacity: .8;
-        padding: 5px 15px;
+        padding: 0px 0px;
         transition: top 200ms,left 200ms;
         -moz-transition:  top 200ms,left 200ms;  /* Firefox 4 */
         -webkit-transition:  top 200ms,left 200ms; /* Safari 和 Chrome */
         -o-transition:  top 200ms,left 200ms;
     }
     .custom-table {
-        margin: 10px;
+        margin: 0px;
     }
     .custom-table td{
         border: 1px solid #cdcdcd;
@@ -171,7 +171,7 @@
             custom: true,
             html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><table class="ac-list custom-table"></table></div>', // tooltip的外层模板
             itemTpl: '<tr><td style="color:{color}">新增</td><td style="color:{color}">修改</td><td style="color:{color}">删除</td></tr>', // 支持的字段 index,color,name,value
-            offset: 50
+            offset: 10
         });
         chart.legend('children', false);
         chart.legend('name', false);
