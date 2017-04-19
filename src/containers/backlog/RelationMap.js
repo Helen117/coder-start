@@ -145,7 +145,7 @@ const G2Chart = createG2(chart => {
 //                fill: '#FF0000',
 ////                stroke:'#FF0000'
 //            }
-        })//.tooltip('name*id');
+        }).tooltip('name');
         chart.render();
     }
 
@@ -181,16 +181,16 @@ const G2Chart = createG2(chart => {
 
     chart.animate(false);
     // 不显示title
-    //    chart.tooltip({
-    //        title: null
-    //    });
-    //    chart.tooltip(true, {
-    //        custom: true,
-    //        html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
-    //        itemTpl: '<tr><td><button>{value}</button></td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
-    //        offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
-    //        customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
-    //    });
+       /*chart.tooltip({
+            title: null
+       });*/
+        /*chart.tooltip(true, {
+            custom: true,
+           html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
+           itemTpl: '<tr><td><button>{value}</button></td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
+           offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
+           customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
+        });*/
     chart.legend('children', false);
     chart.legend('name', false);
 
@@ -306,5 +306,5 @@ export default class RelationMap extends React.Component{
 
 
 RelationMap.propTypes = {
-    data: PropTypes.string.isRequired
+    data: PropTypes.array.isRequired
 };
