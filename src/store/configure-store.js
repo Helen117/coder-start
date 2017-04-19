@@ -35,6 +35,7 @@ import projectScanner from '../containers/project-scanner/reducers/project-scann
 import story from '../containers/story/reducer';
 import taskBoardReducer from '../containers/task-board/reducers/task-board-reducers';
 import taskCard from '../containers/task-card/reducer';
+import backlogReducer from '../containers/backlog/reducers/backlog-reducer';
 
 const reducer = combineReducers({
     login,
@@ -67,7 +68,8 @@ const reducer = combineReducers({
     projectScanner,
     story,
     taskBoardReducer,
-    taskCard
+    taskCard,
+    backlogReducer
 })
 
 
