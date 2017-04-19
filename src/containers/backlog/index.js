@@ -81,6 +81,7 @@ class Backlog extends React.Component{
             data_temp.name = item.title;
             data_temp.description = item.description;
             data_temp.type = item.type;
+            data_temp.id = item.id;
             if(item.children_nodes.length != 0){
                 data_temp.children = this.generateNodes(item.children_nodes)
             }
