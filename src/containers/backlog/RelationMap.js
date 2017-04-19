@@ -291,6 +291,7 @@ export default class RelationMap extends React.Component{
                 margin: [10,50]
             }
         };
+        console.log('this.props.data:',this.props.data)
         return (
             <div>
                 <G2Chart
