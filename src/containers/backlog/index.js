@@ -31,7 +31,7 @@ class Backlog extends React.Component{
         if(isProject < 0){
             const set_id = node.id.substr(0,node.id.length-2);
             this.setState({
-                currentProjectSet:set_id
+                currentProjectSet:node
             })
             this.props.getBacklogNode(set_id,loginInfo.userId);
         }else{
@@ -81,6 +81,7 @@ class Backlog extends React.Component{
             data_temp.name = item.title;
             data_temp.description = item.description;
             data_temp.type = item.type;
+            data_temp.id = item.id;
             if(item.children_nodes.length != 0){
                 data_temp.children = this.generateNodes(item.children_nodes)
             }
@@ -91,9 +92,19 @@ class Backlog extends React.Component{
 
     getDataSource(){
         const {backlogNodes} = this.props;
-        const nodes = backlogNodes?(backlogNodes.result?backlogNodes.result.mindmap_nodes:[]):[];
-        const data = this.generateNodes(nodes);
-        return data;
+        const dataSource = [];
+        const nodes = backlogNodes?(backlogNodes.result?backlogNodes.result.mindmap_nodes:null):null;
+        if(this.state.currentProjectSet && nodes){
+            let dataSource_temp = {};
+            dataSource_temp.name=this.state.currentProjectSet.name;
+            dataSource_temp.description = '这是一个项目集';
+            dataSource_temp.type = 'projectSet';
+            dataSource_temp.id = this.state.currentProjectSet.id;
+            const data = this.generateNodes(nodes);
+            dataSource_temp.children = data;
+            dataSource.push(dataSource_temp);
+        }
+        return dataSource;
     }
 
     render(){
@@ -101,6 +112,7 @@ class Backlog extends React.Component{
 
         const data = this.getDataSource();
         console.log('data-----:',data)
+        console.log(this.state.currentProjectSet && data.length>0)
         //const data = [{name:"flare111",children:[{name:"analytics",children:[{name:"cluster",children:[{name:"AgglomerativeCluster"},{name:"CommunityStructure"},{name:"HierarchicalCluster"},{name:"MergeEdge"}]},{name:"graph",children:[{name:"BetweennessCentrality"},{name:"LinkDistance"},{name:"MaxFlowMinCut"},{name:"ShortestPaths"},{name:"SpanningTree"}]},{name:"optimization",children:[{name:"AspectRatioBanker"}]}]},{name:"animate",children:[{name:"Easing"},{name:"FunctionSequence"},{name:"interpolate",children:[{name:"ArrayInterpolator"},{name:"ColorInterpolator"},{name:"DateInterpolator"},{name:"Interpolator"},{name:"MatrixInterpolator"},{name:"NumberInterpolator"},{name:"ObjectInterpolator"},{name:"PointInterpolator"},{name:"RectangleInterpolator"}]},{name:"ISchedulable"},{name:"Parallel"},{name:"Pause"},{name:"Scheduler"},{name:"Sequence"},{name:"Transition"},{name:"Transitioner"},{name:"TransitionEvent"},{name:"Tween"}]}]}];
         const action = <div>
             <Button type="primary" size="default" onClick={this.deleteNode.bind(this)}>删除节点</Button>
@@ -109,7 +121,6 @@ class Backlog extends React.Component{
             <Button type="primary" size="default" onClick={this.refreshNodes.bind(this)}>刷新</Button>
         </div>;
 
-        console.log('this.state.currentProjectSet:',this.state.currentProjectSet)
         return (
             <div id="backlog">
                 <Row style={{padding:"10px"}}>
@@ -124,16 +135,10 @@ class Backlog extends React.Component{
                     </Col>
                     <Col span={20}>
                         {
-                            this.state.currentProjectSet?(
-                                    data.length>0?<Box title="backlog关系图" action={action}>
-                                            <RelationMap ref="relationMap" data={data}/>
-                                            </Box>:<div style={{paddingLeft:"10px"}}>
-                                            <Alert
-                                                message="尚未创建任何节点！"
-                                                description=""
-                                                type="info"
-                                                showIcon/>
-                                    </div>
+                            (this.state.currentProjectSet && data.length>0)?(
+                                <Box title="backlog关系图" action={action}>
+                                    <RelationMap ref="relationMap" data={data}/>
+                                </Box>
                             ):<div style={{paddingLeft:"10px"}}>
                                 <Alert
                                     message="请选择一个项目集！"
