@@ -90,7 +90,7 @@ class AddBacklogNode extends React.Component {
 
     getMilestoneInfo(value){
         var node = this.props.node;
-        if(node&&!node.milestone_id){
+        if(node&&!node.milestone_id&&value&&value==='sprint'){
             this.milestoneVisible=true;
             fetchData('/taskboard/milestone', {set_id:this.props.setId}, null, (result)=> {
                 this.setState({
