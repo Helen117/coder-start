@@ -105,14 +105,14 @@ const G2Chart = createG2(chart => {
         var nodeView = chart.createView();
         nodeView.coord('rect').transpose().scale(1, -1); //'polar'
         nodeView.axis(false);
-        nodeView.tooltip(false);
+        //nodeView.tooltip(false);
         // 节点的x,y范围是 0，1
         // 因为边的范围也是 0,1所以正好统一起来
         nodeView.source(nodes, {
             x: {min: 0,max:1},
             y: {min: 0, max:1},
             value: {min: 0}
-        },['id','x','y','name','children','collapsed', 'selected']); // 由于数据中没有 'collapsed' 字段，所以需要设置所有的字段名称
+        },['id','x','y','name','children','collapsed', 'selected','description']); // 由于数据中没有 'collapsed' 字段，所以需要设置所有的字段名称
         nodeView.point().position('x*y').color('steelblue').size('name', function(name) {
             var length = strLen(name);
             //return length * 7 + 25 * 2;
@@ -146,7 +146,7 @@ const G2Chart = createG2(chart => {
 //                fill: '#FF0000',
 ////                stroke:'#FF0000'
 //            }
-        }).tooltip('name');
+        }).tooltip('name*description');
         chart.render();
     }
 
