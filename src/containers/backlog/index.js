@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Button, Row, Col, Affix,Alert } from 'antd';
+import { Button, Row, Col, Affix,Alert,message } from 'antd';
 import RelationMap from './RelationMap';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
@@ -43,11 +43,15 @@ class Backlog extends React.Component{
 
     addChildNode(type){
         const node = this.refs.relationMap.getSelectNode();
-        if(node){
+        console.log('节点：',node);
+        if(node&&node.type!='story'){
             this.setState({
                 showAddNode:true,
-                addOrModify:type
+                addOrModify:type,
+                node:node
             })
+        }else{
+            message.info('请选择节点且非叶子节点',3);
         }
     }
     deleteNode(){
@@ -81,6 +85,8 @@ class Backlog extends React.Component{
             data_temp.name = item.title;
             data_temp.description = item.description;
             data_temp.type = item.type;
+            data_temp.id = item.id;
+            data_temp.milestone_id = item.milestone_id;
             if(item.children_nodes.length != 0){
                 data_temp.children = this.generateNodes(item.children_nodes)
             }
@@ -101,7 +107,7 @@ class Backlog extends React.Component{
 
         const data = this.getDataSource();
         console.log('data-----:',data)
-        //const data = [{name:"flare111",children:[{name:"analytics",children:[{name:"cluster",children:[{name:"AgglomerativeCluster"},{name:"CommunityStructure"},{name:"HierarchicalCluster"},{name:"MergeEdge"}]},{name:"graph",children:[{name:"BetweennessCentrality"},{name:"LinkDistance"},{name:"MaxFlowMinCut"},{name:"ShortestPaths"},{name:"SpanningTree"}]},{name:"optimization",children:[{name:"AspectRatioBanker"}]}]},{name:"animate",children:[{name:"Easing"},{name:"FunctionSequence"},{name:"interpolate",children:[{name:"ArrayInterpolator"},{name:"ColorInterpolator"},{name:"DateInterpolator"},{name:"Interpolator"},{name:"MatrixInterpolator"},{name:"NumberInterpolator"},{name:"ObjectInterpolator"},{name:"PointInterpolator"},{name:"RectangleInterpolator"}]},{name:"ISchedulable"},{name:"Parallel"},{name:"Pause"},{name:"Scheduler"},{name:"Sequence"},{name:"Transition"},{name:"Transitioner"},{name:"TransitionEvent"},{name:"Tween"}]}]}];
+        // const data = [{name:"flare111",children:[{name:"analytics",children:[{name:"cluster",children:[{name:"AgglomerativeCluster"},{name:"CommunityStructure"},{name:"HierarchicalCluster"},{name:"MergeEdge"}]},{name:"graph",children:[{name:"BetweennessCentrality"},{name:"LinkDistance"},{name:"MaxFlowMinCut"},{name:"ShortestPaths"},{name:"SpanningTree"}]},{name:"optimization",children:[{name:"AspectRatioBanker"}]}]},{name:"animate",children:[{name:"Easing"},{name:"FunctionSequence"},{name:"interpolate",children:[{name:"ArrayInterpolator"},{name:"ColorInterpolator"},{name:"DateInterpolator"},{name:"Interpolator"},{name:"MatrixInterpolator"},{name:"NumberInterpolator"},{name:"ObjectInterpolator"},{name:"PointInterpolator"},{name:"RectangleInterpolator"}]},{name:"ISchedulable"},{name:"Parallel"},{name:"Pause"},{name:"Scheduler"},{name:"Sequence"},{name:"Transition"},{name:"Transitioner"},{name:"TransitionEvent"},{name:"Tween"}]}]}];
         const action = <div>
             <Button type="primary" size="default" onClick={this.deleteNode.bind(this)}>删除节点</Button>
             <Button type="primary" size="default" onClick={this.addChildNode.bind(this,"add")}>添加子节点</Button>
@@ -144,7 +150,9 @@ class Backlog extends React.Component{
                         }
                         <AddBacklogNode visible={this.state.showAddNode}
                                         editType={this.state.addOrModify}
-                                        setVisible={this.setAddNodeVisible.bind(this)}/>
+                                        setVisible={this.setAddNodeVisible.bind(this)}
+                                        setId={this.state.currentProjectSet}
+                                        node={this.state.node}/>
                     </Col>
                 </Row>
             </div>
