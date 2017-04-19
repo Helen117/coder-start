@@ -17,6 +17,7 @@ const G2Chart = createG2(chart => {
     var drawNode = function(cfg, group, collapsed, isLeaf) {
         var x = cfg.x;
         var y = cfg.y;
+        //var y = window.innerHeight;
         var pointSize = 5;
         var width = cfg.size;
         var height = 28;
@@ -291,7 +292,6 @@ export default class RelationMap extends React.Component{
                 margin: [10,50]
             }
         };
-        console.log('this.props.data:',this.props.data)
         return (
             <div>
                 <G2Chart
