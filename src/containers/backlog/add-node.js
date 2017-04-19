@@ -26,7 +26,7 @@ class AddBacklogNode extends React.Component {
     componentWillReceiveProps(nextProps) {
         const {addResult,setVisible} = this.props;
         if(nextProps.addResult && addResult && nextProps.addResult.result
-            && nextProps.addResult.result !=addResult){
+            && nextProps.addResult.result !=addResult.result){
             this.insertCallback("添加节点成功！");
             if(setVisible){
                 setVisible(false);
