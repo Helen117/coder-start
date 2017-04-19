@@ -70,11 +70,15 @@ class Backlog extends React.Component{
 
     addChildNode(type){
         const node = this.refs.relationMap.getSelectNode();
-        if(node){
+        console.log('节点：',node);
+        if(node&&node.type!='story'){
             this.setState({
                 showAddNode:true,
-                addOrModify:type
+                addOrModify:type,
+                node:node
             })
+        }else{
+            message.info('请选择节点且非叶子节点',3);
         }
     }
     deleteNode(){
@@ -160,6 +164,10 @@ class Backlog extends React.Component{
         const {projectSet,backlogNodes,deleteResult} = this.props;
 
         const data = this.getDataSource();
+
+        console.log('data-----:',data)
+        // const data = [{name:"flare111",children:[{name:"analytics",children:[{name:"cluster",children:[{name:"AgglomerativeCluster"},{name:"CommunityStructure"},{name:"HierarchicalCluster"},{name:"MergeEdge"}]},{name:"graph",children:[{name:"BetweennessCentrality"},{name:"LinkDistance"},{name:"MaxFlowMinCut"},{name:"ShortestPaths"},{name:"SpanningTree"}]},{name:"optimization",children:[{name:"AspectRatioBanker"}]}]},{name:"animate",children:[{name:"Easing"},{name:"FunctionSequence"},{name:"interpolate",children:[{name:"ArrayInterpolator"},{name:"ColorInterpolator"},{name:"DateInterpolator"},{name:"Interpolator"},{name:"MatrixInterpolator"},{name:"NumberInterpolator"},{name:"ObjectInterpolator"},{name:"PointInterpolator"},{name:"RectangleInterpolator"}]},{name:"ISchedulable"},{name:"Parallel"},{name:"Pause"},{name:"Scheduler"},{name:"Sequence"},{name:"Transition"},{name:"Transitioner"},{name:"TransitionEvent"},{name:"Tween"}]}]}];
+
         const getLoading = backlogNodes?backlogNodes.loading:false;
         const deleteLoading = deleteResult?deleteResult.loading:false;
         const deleteDisabled = deleteResult?deleteResult.disabled:false;
@@ -206,7 +214,9 @@ class Backlog extends React.Component{
                         }
                         <AddBacklogNode visible={this.state.showAddNode}
                                         editType={this.state.addOrModify}
-                                        setVisible={this.setAddNodeVisible.bind(this)}/>
+                                        setVisible={this.setAddNodeVisible.bind(this)}
+                                        setId={this.state.currentProjectSet}
+                                        node={this.state.node}/>
                     </Col>
                 </Row>
             </div>

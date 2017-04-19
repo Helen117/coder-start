@@ -106,7 +106,7 @@ const G2Chart = createG2(chart => {
         var nodeView = chart.createView();
         nodeView.coord('rect').transpose().scale(1, -1); //'polar'
         nodeView.axis(false);
-        //nodeView.tooltip(false);
+        // nodeView.tooltip(false);
         // 节点的x,y范围是 0，1
         // 因为边的范围也是 0,1所以正好统一起来
         nodeView.source(nodes, {
@@ -183,9 +183,9 @@ const G2Chart = createG2(chart => {
 
     chart.animate(false);
     // 不显示title
-       chart.tooltip({
+       /*chart.tooltip({
             title: null
-       });
+       });*/
         /*chart.tooltip(true, {
             custom: true,
            html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
