@@ -39,13 +39,26 @@ class Backlog extends React.Component{
         }
     }
 
+    generateProjectSet(projectSet_id,projectSet){
+        for(let i=0; i<projectSet.length; i++){
+            if(projectSet_id == projectSet[i].id){
+                return projectSet[i];
+            }else if(projectSet[i].children.length>0){
+                this.generateProjectSet(projectSet_id,projectSet[i].children);
+            }
+        }
+    }
+
     onSelectNode(node){
-        const {loginInfo} = this.props;
+        const {loginInfo,projectSet} = this.props;
         const isProject = node.id.indexOf("_p");
         if(isProject < 0){
             const set_id = node.id.substr(0,node.id.length-2);
+            const projectSetInfo = this.generateProjectSet(node.id,projectSet);
+            let projectSet_temp = node;
+            projectSet_temp.description = projectSetInfo.description;
             this.setState({
-                currentProjectSet:node
+                currentProjectSet:projectSet_temp
             })
             this.props.getBacklogNode(set_id,loginInfo.userId);
         }else{
@@ -70,6 +83,7 @@ class Backlog extends React.Component{
     }
     deleteNode(){
         const node = this.refs.relationMap.getSelectNode();
+        console.log('node:',node)
         const {loginInfo} = this.props;
         if (node){
             let data = {
@@ -118,7 +132,6 @@ class Backlog extends React.Component{
             data_temp.type = item.type;
             data_temp.id = item.id;
             data_temp.milestone_id = item.milestone_id;
-
             if(item.children_nodes.length != 0){
                 data_temp.children = this.generateNodes(item.children_nodes)
             }
@@ -134,11 +147,14 @@ class Backlog extends React.Component{
         if(this.state.currentProjectSet && nodes){
             let dataSource_temp = {};
             dataSource_temp.name=this.state.currentProjectSet.name;
-            dataSource_temp.description = '这是一个项目集';
+            dataSource_temp.description = this.state.currentProjectSet.description?this.state.currentProjectSet.description:"无";
             dataSource_temp.type = 'projectSet';
             dataSource_temp.id = this.state.currentProjectSet.id;
+            dataSource_temp.milestone_id = null;
             const data = this.generateNodes(nodes);
-            dataSource_temp.children = data;
+            if(data.length>0){
+                dataSource_temp.children = data;
+            }
             dataSource.push(dataSource_temp);
         }
         return dataSource;
