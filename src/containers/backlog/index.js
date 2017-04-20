@@ -2,13 +2,14 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, Affix,Alert,message,Spin,Modal } from 'antd';
-import RelationMap from './RelationMap';
+import RelationMap from './RelationMap-1';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
 import './index.less';
 import AddBacklogNode from './add-node';
 import {getBacklogNode,deleteBacklogNode} from './actions/backlog-actions';
+import {getTaskMilestone} from '../task-board/actions/task-board-actions';
 
 const confirm = Modal.confirm;
 
@@ -61,6 +62,7 @@ class Backlog extends React.Component{
                 currentProjectSet:projectSet_temp
             })
             this.props.getBacklogNode(set_id,loginInfo.userId);
+            this.props.getTaskMilestone(set_id);
         }else{
             this.setState({
                 currentProjectSet:''
@@ -70,20 +72,20 @@ class Backlog extends React.Component{
 
     addChildNode(type){
         const node = this.refs.relationMap.getSelectNode();
-        console.log('节点：',node);
         if(node&&node.type!='story'){
             this.setState({
                 showAddNode:true,
                 addOrModify:type,
                 node:node
             })
-        }else{
-            message.info('请选择节点且非叶子节点',3);
+        }else if(!node){
+            message.info('请选择一个节点作为父节点！',3);
+        }else if(node && node.type=='story'){
+            message.info('该父节点已经是一个story，不能再建子节点！',3);
         }
     }
     deleteNode(){
         const node = this.refs.relationMap.getSelectNode();
-        console.log('node:',node)
         const {loginInfo} = this.props;
         if (node){
             let data = {
@@ -112,10 +114,16 @@ class Backlog extends React.Component{
     }
 
     modifyNode(type){
-        this.setState({
-            showAddNode:true,
-            addOrModify:type
-        })
+        const node = this.refs.relationMap.getSelectNode();
+        if(node){
+            this.setState({
+                showAddNode:true,
+                addOrModify:type,
+                node:node
+            })
+        }else{
+            message.info('请选择要修改的节点',3);
+        }
     }
 
     setAddNodeVisible(flag){
@@ -164,9 +172,6 @@ class Backlog extends React.Component{
         const {projectSet,backlogNodes,deleteResult} = this.props;
 
         const data = this.getDataSource();
-
-        console.log('data-----:',data)
-        // const data = [{name:"flare111",children:[{name:"analytics",children:[{name:"cluster",children:[{name:"AgglomerativeCluster"},{name:"CommunityStructure"},{name:"HierarchicalCluster"},{name:"MergeEdge"}]},{name:"graph",children:[{name:"BetweennessCentrality"},{name:"LinkDistance"},{name:"MaxFlowMinCut"},{name:"ShortestPaths"},{name:"SpanningTree"}]},{name:"optimization",children:[{name:"AspectRatioBanker"}]}]},{name:"animate",children:[{name:"Easing"},{name:"FunctionSequence"},{name:"interpolate",children:[{name:"ArrayInterpolator"},{name:"ColorInterpolator"},{name:"DateInterpolator"},{name:"Interpolator"},{name:"MatrixInterpolator"},{name:"NumberInterpolator"},{name:"ObjectInterpolator"},{name:"PointInterpolator"},{name:"RectangleInterpolator"}]},{name:"ISchedulable"},{name:"Parallel"},{name:"Pause"},{name:"Scheduler"},{name:"Sequence"},{name:"Transition"},{name:"Transitioner"},{name:"TransitionEvent"},{name:"Tween"}]}]}];
 
         const getLoading = backlogNodes?backlogNodes.loading:false;
         const deleteLoading = deleteResult?deleteResult.loading:false;
@@ -239,6 +244,7 @@ function mapDispatchToProps(dispatch) {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         getBacklogNode: bindActionCreators(getBacklogNode, dispatch),
         deleteBacklogNode: bindActionCreators(deleteBacklogNode, dispatch),
+        getTaskMilestone: bindActionCreators(getTaskMilestone, dispatch),
     }
 }
 

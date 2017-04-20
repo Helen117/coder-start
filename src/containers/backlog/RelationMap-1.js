@@ -10,7 +10,6 @@ import G2 from 'g2';
 import createG2 from 'g2-react';
 
 let selectNode = null;
-let tooltip_node=null;
 
 G2.track(false);//关闭 G2 的体验改进计划打点请求
 const G2Chart = createG2(chart => {
@@ -107,7 +106,7 @@ const G2Chart = createG2(chart => {
         var nodeView = chart.createView();
         nodeView.coord('rect').transpose().scale(1, -1); //'polar'
         nodeView.axis(false);
-        // nodeView.tooltip(false);
+        //nodeView.tooltip(false);
         // 节点的x,y范围是 0，1
         // 因为边的范围也是 0,1所以正好统一起来
         nodeView.source(nodes, {
@@ -148,7 +147,7 @@ const G2Chart = createG2(chart => {
 //                fill: '#FF0000',
 ////                stroke:'#FF0000'
 //            }
-        })//.tooltip('name*description');
+        }).tooltip('name*description');
         chart.render();
     }
 
@@ -184,44 +183,16 @@ const G2Chart = createG2(chart => {
 
     chart.animate(false);
     // 不显示title
-    chart.tooltip({
-        title: null,
-    });
-    /*chart.tooltip(true, {
-     custom: true,
-     html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
-     itemTpl: '<tr><td>{description}</td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
-     offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
-     customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
-     });*/
-
-    chart.tooltip(true, {
-        offset: 50,
-        custom: true,
-        html: '#p1'
-    });
-
-    // 查找对应的数据
-    function findObj(name,data) {
-        for(let i=0; i<data.length; i++){
-            if (data[i].name === name) {
-                return data[i];
-            }else if(data[i].children){
-                findObj(name,data[i].children);
-            }
-        }
-    }
-
-    // 监听 tooltip 改变事件
-    chart.on('tooltipchange', function(ev) {
-        var item = ev.items[0]; // 获取tooltip要显示的内容
-        console.log('item:',item)
-        var name = item.name;
-        var obj = findObj(name,data);
-        console.log('obj:',obj)
-        //tooltip_node = obj;
-    });
-
+       chart.tooltip({
+            title: null,
+       });
+        /*chart.tooltip(true, {
+            custom: true,
+           html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
+           itemTpl: '<tr><td>{description}</td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
+           offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
+           customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
+        });*/
     chart.legend('children', false);
     chart.legend('name', false);
 
@@ -289,18 +260,7 @@ const G2Chart = createG2(chart => {
 
 
 
-const HiddenStyle = {
-    display: 'none'
-};
-const pieContainerStyle = {
-    position: 'absolute',
-    visibility: 'hidden',
-    border : '1px solid #efefef',
-    backgroundColor: 'white',
-    opacity: '.8',
-    padding: '5px',
-    transition: 'top 200ms,left 200ms',
-};
+
 
 export default class RelationMap extends React.Component{
     constructor(props){
@@ -334,17 +294,6 @@ export default class RelationMap extends React.Component{
         };
         return (
             <div>
-                <div style={HiddenStyle}>
-                    <div id="p1" className="ac-tooltip" style={pieContainerStyle}>
-                        <span>描述</span>
-                        <div id="c4">
-                            <p>
-                                {tooltip_node?tooltip_node.description:""}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 <G2Chart
                     data={this.props.data}
                     width={config.width}

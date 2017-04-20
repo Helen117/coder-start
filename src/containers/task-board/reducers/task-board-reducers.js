@@ -6,7 +6,11 @@ import {
     ASYNC_TREE_PROJECTSET_SUCCESS,
     ASYNC_TREE_PROJECTSET_ERROR,
 
-    SAVE_TREE_STATE
+    SAVE_TREE_STATE,
+
+    TASKBOARD_MILESTONE_PENDING,
+    TASKBOARD_MILESTONE_SUCCESS,
+    TASKBOARD_MILESTONE_ERROR
 } from '../constants/task-board-action-types';
 
 const initialState = {};
@@ -27,6 +31,17 @@ export default function taskBoardReducer(state = initialState, action = {}) {
         case SAVE_TREE_STATE:
             return {...state,saveTreeState:{milestone_id:action.milestone_id,
                 milestoneId:action.milestoneId,selectedKeys:action.selectedKeys}};
+
+        //获取项目集下里程碑
+        case TASKBOARD_MILESTONE_PENDING:
+            return {...state,projectSetMilestone:{loading:true,disabled:true}};
+        case TASKBOARD_MILESTONE_SUCCESS:
+            return {...state,projectSetMilestone:{result: action.payload,loading:false,
+                disabled:false}};
+        case TASKBOARD_MILESTONE_ERROR:
+            return {
+                ...state,projectSetMilestone:{loading:false, disabled:false}
+            };
 
         default:
             return state;
