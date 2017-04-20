@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, Affix,Alert,message,Spin,Modal } from 'antd';
-import RelationMap from './RelationMap';
+import RelationMap from './RelationMap-1';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
