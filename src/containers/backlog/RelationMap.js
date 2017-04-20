@@ -107,7 +107,7 @@ const G2Chart = createG2(chart => {
         var nodeView = chart.createView();
         nodeView.coord('rect').transpose().scale(1, -1); //'polar'
         nodeView.axis(false);
-        //nodeView.tooltip(false);
+        // nodeView.tooltip(false);
         // 节点的x,y范围是 0，1
         // 因为边的范围也是 0,1所以正好统一起来
         nodeView.source(nodes, {
@@ -221,7 +221,6 @@ const G2Chart = createG2(chart => {
         console.log('obj:',obj)
         //tooltip_node = obj;
     });
-
 
     chart.legend('children', false);
     chart.legend('name', false);

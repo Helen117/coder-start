@@ -9,6 +9,7 @@ import {fetchProjectSetTree} from '../project-set/project-set-action';
 import './index.less';
 import AddBacklogNode from './add-node';
 import {getBacklogNode,deleteBacklogNode} from './actions/backlog-actions';
+import {getTaskMilestone} from '../task-board/actions/task-board-actions';
 
 const confirm = Modal.confirm;
 
@@ -61,6 +62,7 @@ class Backlog extends React.Component{
                 currentProjectSet:projectSet_temp
             })
             this.props.getBacklogNode(set_id,loginInfo.userId);
+            this.props.getTaskMilestone(set_id);
         }else{
             this.setState({
                 currentProjectSet:''
@@ -70,16 +72,20 @@ class Backlog extends React.Component{
 
     addChildNode(type){
         const node = this.refs.relationMap.getSelectNode();
-        if(node){
+        if(node&&node.type!='story'){
             this.setState({
                 showAddNode:true,
-                addOrModify:type
+                addOrModify:type,
+                node:node
             })
+        }else if(!node){
+            message.info('请选择一个节点作为父节点！',3);
+        }else if(node && node.type=='story'){
+            message.info('该父节点已经是一个story，不能再建子节点！',3);
         }
     }
     deleteNode(){
         const node = this.refs.relationMap.getSelectNode();
-        console.log('node:',node)
         const {loginInfo} = this.props;
         if (node){
             let data = {
@@ -108,10 +114,16 @@ class Backlog extends React.Component{
     }
 
     modifyNode(type){
-        this.setState({
-            showAddNode:true,
-            addOrModify:type
-        })
+        const node = this.refs.relationMap.getSelectNode();
+        if(node){
+            this.setState({
+                showAddNode:true,
+                addOrModify:type,
+                node:node
+            })
+        }else{
+            message.info('请选择要修改的节点',3);
+        }
     }
 
     setAddNodeVisible(flag){
@@ -160,6 +172,7 @@ class Backlog extends React.Component{
         const {projectSet,backlogNodes,deleteResult} = this.props;
 
         const data = this.getDataSource();
+
         const getLoading = backlogNodes?backlogNodes.loading:false;
         const deleteLoading = deleteResult?deleteResult.loading:false;
         const deleteDisabled = deleteResult?deleteResult.disabled:false;
@@ -206,7 +219,9 @@ class Backlog extends React.Component{
                         }
                         <AddBacklogNode visible={this.state.showAddNode}
                                         editType={this.state.addOrModify}
-                                        setVisible={this.setAddNodeVisible.bind(this)}/>
+                                        setVisible={this.setAddNodeVisible.bind(this)}
+                                        setId={this.state.currentProjectSet}
+                                        node={this.state.node}/>
                     </Col>
                 </Row>
             </div>
@@ -229,6 +244,7 @@ function mapDispatchToProps(dispatch) {
         fetchProjectSetTree: bindActionCreators(fetchProjectSetTree, dispatch),
         getBacklogNode: bindActionCreators(getBacklogNode, dispatch),
         deleteBacklogNode: bindActionCreators(deleteBacklogNode, dispatch),
+        getTaskMilestone: bindActionCreators(getTaskMilestone, dispatch),
     }
 }
 
