@@ -96,6 +96,7 @@ class AddBacklogNode extends React.Component {
     handleSubmit(e) {
         const {form,logInfo ,setId,node,setVisible,editType} = this.props;
         var that =this;
+        const set_id = this.props.setId?this.props.setId.id.substr(0,this.props.setId.id.length-2):"";
         form.validateFields((errors) => {
             if (!!errors) {
                 return;
@@ -103,7 +104,7 @@ class AddBacklogNode extends React.Component {
                 const formData = form.getFieldsValue();
                 if(editType == 'add'){
                     formData.creater_id = logInfo.userId;
-                    formData.set_id = setId;
+                    formData.set_id = set_id;
                     formData.parent_id = node.id;
                     if(node&&node.milestone_id){
                         formData.milestone_id = node.milestone_id;
