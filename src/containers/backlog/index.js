@@ -10,6 +10,7 @@ import './index.less';
 import AddBacklogNode from './add-node';
 import {getBacklogNode,deleteBacklogNode} from './actions/backlog-actions';
 import {getTaskMilestone} from '../task-board/actions/task-board-actions';
+import BacklogLegend from '../../components/baccklog-legend/index.js';
 
 const confirm = Modal.confirm;
 
@@ -202,6 +203,7 @@ class Backlog extends React.Component{
                         {
                             (this.state.currentProjectSet )?(
                                 <Box title="backlog关系图" action={action}>
+                                    <BacklogLegend ></BacklogLegend>
                                     <Spin spinning={getLoading} tip="正在加载数据...">
                                         {
                                             data.length>0?

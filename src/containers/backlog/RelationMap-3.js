@@ -5,7 +5,7 @@
 import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Tooltip  } from 'antd';
+import { Button, Row, Col } from 'antd';
 import G2 from 'g2';
 import createG2 from 'g2-react';
 
@@ -19,28 +19,21 @@ const G2Chart = createG2(chart => {
         var y = cfg.y;
         //var y = window.innerHeight;
         var pointSize = 5;
-        var width = cfg.size;
-        var height = 28;
+        //var width = cfg.size;
+        var width = 200;
+        //var height = 28;
+        var height = 100;
         //var label = cfg.label;
         var node = cfg.origin._origin;
-        var type_color;
-        if(node.type == 'projectSet'){
-            type_color = '#E7F0D2'
-        }else if(node.type == 'backlog'){
-            type_color = '#FFEDB2'
-        }else if(node.type == 'sprint'){
-            type_color = '#83B271'
-        }else if(node.type == 'story'){
-            type_color = '#57D1C9'
-        }
         var selected = node.selected;
         var shape = group.addShape('rect', {
             attrs: {
                 x: x,
                 y: y - height / 2 ,
                 width: width,
+                //height: height,
                 height: height,
-                fill: selected? '#ffdd76': type_color,
+                fill: selected? '#ffdd76': '#7ec2f3',
                 cursor: isLeaf ? '' : 'pointer',
                 //stroke: cfg.color
                 stroke: '#ccc',
@@ -117,7 +110,7 @@ const G2Chart = createG2(chart => {
         var nodeView = chart.createView();
         nodeView.coord('rect').transpose().scale(1, -1); //'polar'
         nodeView.axis(false);
-        //nodeView.tooltip(false);
+        nodeView.tooltip(false);
         // 节点的x,y范围是 0，1
         // 因为边的范围也是 0,1所以正好统一起来
         nodeView.source(nodes, {
@@ -125,24 +118,20 @@ const G2Chart = createG2(chart => {
             y: {min: 0, max:1},
             value: {min: 0}
         },['id','x','y','name','children','collapsed', 'selected','description']); // 由于数据中没有 'collapsed' 字段，所以需要设置所有的字段名称
-        nodeView.point().position('x*y').color('steelblue').size('name', function(name) {
-            var length = strLen(name);
-            //return length * 7 + 25 * 2;
-            return length * 10;
-
-        }).label('name', {
+        nodeView.point().position('x*y').color('steelblue').size('200').label('name', {
             offset: 6,
             labelEmit: true,
             label:{
                 fontSize: 18,
                 fill: '#404040'
             },
-//            custom: true,
-//            renderer: function(text, item, index)  {
-//                console.log(text, item);
-//                var color = item.point.selected?'#00FF00':'#0000FF';
-//                return '<span style="font-weight: bold; color:'+color+'">'+text+'</span>';
-//            }
+            custom: true,
+            renderer: function(text, item, index)  {
+                //console.log(text, item);
+                var color = item.point.selected?'#00FF00':'#0000FF';
+                //return '<span >'+text+'</span>';
+                return '<div style="width:200px">'+item.point.description+'</div>'
+            }
         }).shape('children*collapsed*selected', function(children,collapsed,selected, name) {
             if (children) {
                 if (collapsed) {
@@ -158,7 +147,7 @@ const G2Chart = createG2(chart => {
 //                fill: '#FF0000',
 ////                stroke:'#FF0000'
 //            }
-        }).tooltip('description');
+        })//.tooltip('description');
         chart.render();
     }
 
@@ -186,6 +175,7 @@ const G2Chart = createG2(chart => {
     var layout = new Layout.Tree({
         nodes: data
     });
+    layout.dx = 0.03;
     var dx = layout.dx;
     var nodes = layout.getNodes();
     var edges = layout.getEdges();
@@ -194,16 +184,16 @@ const G2Chart = createG2(chart => {
 
     chart.animate(false);
     // 不显示title
-       chart.tooltip({
-            title: null,
-       });
-        /*chart.tooltip(true, {
-            custom: true,
-           html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
-           itemTpl: '<tr><td>{description}</td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
-           offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
-           customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
-        });*/
+    /*chart.tooltip({
+        title: null,
+    });*/
+    /*chart.tooltip(true, {
+     custom: true,
+     html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
+     itemTpl: '<tr><td>{description}</td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
+     offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
+     customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
+     });*/
     chart.legend('children', false);
     chart.legend('name', false);
 
@@ -228,6 +218,7 @@ const G2Chart = createG2(chart => {
                         }
                     }
                     edges = layout.getEdges();
+                    layout.dx = 0.03;
                     dx = layout.dx;
                     renderTree(nodes, edges, dx, chart);
                 }
@@ -258,6 +249,7 @@ const G2Chart = createG2(chart => {
                     }
                 }
                 edges = layout.getEdges();
+                layout.dx = 0.03;
                 dx = layout.dx;
                 // edgeView.changeData(edges);
                 renderTree(nodes, edges, dx, chart);
