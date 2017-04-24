@@ -17,13 +17,13 @@ const G2Chart = createG2(chart => {
     var drawNode = function(cfg, group, collapsed, isLeaf) {
         var x = cfg.x;
         var y = cfg.y;
-        //var y = window.innerHeight;
         var pointSize = 5;
         var width = cfg.size;
         var height = 28;
         //var label = cfg.label;
         var node = cfg.origin._origin;
         var selected = node.selected;
+
         var shape = group.addShape('rect', {
             attrs: {
                 x: x,
@@ -33,10 +33,12 @@ const G2Chart = createG2(chart => {
                 fill: selected? '#ffdd76': '#7ec2f3',
                 cursor: isLeaf ? '' : 'pointer',
                 //stroke: cfg.color
-                stroke: '#ccc'
+                stroke: '#ccc',
+                radius:5
             }
         });
-//        group.addShape('text', {//乱码，不能用
+
+//        group.addShape('text', {//乱码，不能用，是G6提供的功能
 //            attrs: {
 //                x: x+10,
 //                y: y+8,
@@ -46,6 +48,7 @@ const G2Chart = createG2(chart => {
 //                stroke: selected? '#FFFFFF': '#000000',
 //            }
 //        });
+
         if (!isLeaf) {
             x = x - pointSize;
             group.addShape('circle', {
@@ -70,7 +73,8 @@ const G2Chart = createG2(chart => {
                     stroke: cfg.color
                 }
             });
-        }
+         }
+
         return shape;
     }
 
@@ -87,6 +91,7 @@ const G2Chart = createG2(chart => {
         edgeView.axis(false);
         edgeView.tooltip(false);
         // Stat.link 方法会生成 ..x, ..y的字段类型，数值范围是 0-1
+        //console.log(edges);
         edgeView.edge()
             .position(Stat.link('source*target',nodes))
             .shape('smooth')
@@ -147,7 +152,7 @@ const G2Chart = createG2(chart => {
 //                fill: '#FF0000',
 ////                stroke:'#FF0000'
 //            }
-        }).tooltip('name*description');
+        })//.tooltip('description');
         chart.render();
     }
 
@@ -182,17 +187,47 @@ const G2Chart = createG2(chart => {
 
 
     chart.animate(false);
+    chart.col('name');
     // 不显示title
-       chart.tooltip({
-            title: null,
-       });
-        /*chart.tooltip(true, {
-            custom: true,
-           html:  '<div class="ac-tooltip" style="position:absolute;visibility: hidden;"><p class="ac-title"></p><table class="ac-list custom-table"></table></div>', // tooltip 的 html 外层模板，可支持类似 jquery 的使用，直接传入 dom id，如 "#c1"
-           itemTpl: '<tr><td>{description}</td></tr>', // 使用 html 时每一个显示项的模板，默认支持 index, color, name, value 这四个变量。
-           offset: 10, // 偏移量，设置tooltip 显示位置距离 x 轴方向上的偏移
-           customFollow: true // 设置 tooltip 是否跟随鼠标移动，默认为 true，跟随。
-        });*/
+    chart.tooltip({
+        title: null,
+    });
+    chart.tooltip(true, {
+        offset: 10,
+        custom: true,
+        html: '#p1'
+    });
+
+    // 查找对应的数据
+    function findObj(name,data) {
+        let result;
+        const data_temp = data.map((item)=>{
+            if(name == item.name){
+                return item;
+            }else if(item.children){
+                return findObj(name,item.children)
+            }
+        });
+        for(let i=0; i<data_temp.length; i++){
+            if(data_temp[i]){
+                result = data_temp[i];
+            }
+        }
+
+        return result;
+    }
+    // 监听 tooltip 改变事件
+    chart.on('tooltipchange', function(ev) {
+        //console.log('tooltipchange');
+        //console.log('ev:',ev)
+        var item = ev.items[0]; // 获取tooltip要显示的内容
+        //console.log('item:',item)
+        var name = item.name;
+        var obj = findObj(name,data);
+        let desc = document.getElementById('c4');
+        desc.innerHTML=obj.description?obj.description:"无";
+    });
+
     chart.legend('children', false);
     chart.legend('name', false);
 
@@ -260,7 +295,18 @@ const G2Chart = createG2(chart => {
 
 
 
-
+const HiddenStyle = {
+    display: 'none'
+};
+const pieContainerStyle = {
+    position: 'absolute',
+    visibility: 'hidden',
+    border : '1px solid #efefef',
+    backgroundColor: 'white',
+    opacity: '.8',
+    padding: '5px',
+    transition: 'top 200ms,left 200ms',
+};
 
 export default class RelationMap extends React.Component{
     constructor(props){
@@ -268,7 +314,7 @@ export default class RelationMap extends React.Component{
     }
 
     componentDidMount() {
-
+        selectNode=null;
     }
 
     getSelectNode(){
@@ -294,6 +340,13 @@ export default class RelationMap extends React.Component{
         };
         return (
             <div>
+                <div style={HiddenStyle}>
+                    <div id="p1" className="ac-tooltip" style={pieContainerStyle}>
+                        <span>描述</span>
+                        <div id="c4"></div>
+                    </div>
+                </div>
+
                 <G2Chart
                     data={this.props.data}
                     width={config.width}
