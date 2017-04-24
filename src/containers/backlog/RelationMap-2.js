@@ -94,7 +94,7 @@ const G2Chart = createG2(chart => {
         //console.log(edges);
         edgeView.edge()
             .position(Stat.link('source*target',nodes))
-            .shape('smooth')
+            .shape('vhv')
             .color('#ccc');
         function strLen(str) {
             var len = 0;
@@ -183,6 +183,7 @@ const G2Chart = createG2(chart => {
     var dx = layout.dx;
     var nodes = layout.getNodes();
     var edges = layout.getEdges();
+    console.log('edges:',edges)
     var Stat = G2.Stat;
 
 

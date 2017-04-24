@@ -1,0 +1,48 @@
+.containt{
+    text-align: center;
+}
+
+.backlog_bg{
+    display: inline-block;
+}
+
+.backlog_bg div{
+    background-color: #FFEDB2;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+}
+
+.backlog_bg span{
+    padding: 0px 50px 0px 10px;
+}
+
+.sprint_bg{
+    display: inline-block;
+}
+
+.sprint_bg div{
+    background-color: #83B271;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+}
+
+.sprint_bg span{
+    padding: 0px 50px 0px 10px;
+}
+
+.story_bg{
+    display: inline-block;
+}
+
+.story_bg div{
+    background-color: #57D1C9;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+}
+
+.story_bg span{
+    padding: 0px 50px 0px 10px;
+}
