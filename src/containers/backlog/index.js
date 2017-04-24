@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, Affix,Alert,message,Spin,Modal } from 'antd';
-import RelationMap from './RelationMap-1';
+import RelationMap from './RelationMap';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
@@ -86,7 +86,7 @@ class Backlog extends React.Component{
     }
     deleteNode(){
         const node = this.refs.relationMap.getSelectNode();
-        const {loginInfo} = this.props;
+        const {loginInfo,deleteBacklogNode} = this.props;
         if (node){
             let data = {
                 id:node.id,
@@ -94,9 +94,9 @@ class Backlog extends React.Component{
             };
             confirm({
                 title: '请确认是否删除',
-                content: node.children?"改节点下还存在子节点，确认要删除吗？":"确认删除该叶子节点吗？",
+                content: node.children?<span style={{color:"red"}}>改节点下还存在子节点，确认要删除吗？</span>:"确认删除该叶子节点吗？",
                 onOk() {
-                    this.props.deleteBacklogNode(data);
+                    deleteBacklogNode(data);
                 },
                 onCancel() {
                     //do nothing
@@ -142,6 +142,7 @@ class Backlog extends React.Component{
             data_temp.milestone_id = item.milestone_id;
             if(item.children_nodes.length != 0){
                 data_temp.children = this.generateNodes(item.children_nodes)
+
             }
             return data_temp;
         });
