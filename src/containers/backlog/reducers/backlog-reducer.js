@@ -16,7 +16,9 @@ import {
 
     DELETE_BACKLOG_NODE_PENDING,
     DELETE_BACKLOG_NODE_SUCCESS,
-    DELETE_BACKLOG_NODE_ERROR
+    DELETE_BACKLOG_NODE_ERROR,
+
+    SAVE_CURRENT_PROJECTSET
 } from '../constants/backlog-types';
 
 const initialState = {
@@ -53,6 +55,9 @@ export default function backlogReducer(state = initialState, action = {}) {
             return {...state,deleteBacklogNode:{result:action.payload,loading:false,disabled:false}};
         case DELETE_BACKLOG_NODE_ERROR:
             return {...state,deleteBacklogNode:{loading:false,disabled:false}};
+        //保存当前点击的项目集
+        case SAVE_CURRENT_PROJECTSET:
+            return {...state,currentProjectSet:{result:action.currentProjectSet}};
 
         default:
             return state;
