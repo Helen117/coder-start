@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, Affix,Alert,message,Spin,Modal } from 'antd';
-import RelationMap from './RelationMap';
+import RelationMap from './RelationMap-2';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
@@ -93,9 +93,18 @@ class Backlog extends React.Component{
                 id:node.id,
                 operator_id:loginInfo.userId
             };
+
+            let content_desc = "";
+            if(node.children && node.children[0].name==""){
+                content_desc = "确认删除该叶子节点吗？";
+            }else if(!node.children){
+                content_desc = "确认删除该叶子节点吗？";
+            }else if(node.children && node.children[0].name!=""){
+                content_desc = <span style={{color:"red"}}>改节点下还存在子节点，确认要删除吗？</span>;
+            }
             confirm({
                 title: '请确认是否删除',
-                content: node.children?<span style={{color:"red"}}>改节点下还存在子节点，确认要删除吗？</span>:"确认删除该叶子节点吗？",
+                content: content_desc,
                 onOk() {
                     deleteBacklogNode(data);
                 },
@@ -141,9 +150,13 @@ class Backlog extends React.Component{
             data_temp.type = item.type;
             data_temp.id = item.id;
             data_temp.milestone_id = item.milestone_id;
+            data_temp.trueLeaf = false;
             if(item.children_nodes.length != 0){
-                data_temp.children = this.generateNodes(item.children_nodes)
-
+                data_temp.children = this.generateNodes(item.children_nodes);
+            }else{
+                data_temp.children = [{name:""}];
+                data_temp.trueLeaf = true;
+                data_temp.collapsed = 1;
             }
             return data_temp;
         });

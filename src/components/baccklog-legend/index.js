@@ -31,6 +31,10 @@ export default class BacklogLegend extends React.Component{
                     <div ></div>
                     <span>故事</span>
                 </div>
+                <div className={styles.selected_bg}>
+                    <div ></div>
+                    <span>选中</span>
+                </div>
             </div>
         )
     }
