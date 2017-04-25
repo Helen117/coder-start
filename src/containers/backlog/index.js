@@ -8,7 +8,7 @@ import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
 import './index.less';
 import AddBacklogNode from './add-node';
-import {getBacklogNode,deleteBacklogNode} from './actions/backlog-actions';
+import {getBacklogNode,deleteBacklogNode,saveCurrentProjectset} from './actions/backlog-actions';
 import {getTaskMilestone} from '../task-board/actions/task-board-actions';
 import BacklogLegend from '../../components/baccklog-legend/index.js';
 
@@ -20,7 +20,6 @@ class Backlog extends React.Component{
         this.state = {
             showAddNode:false,
             addOrModify:'',
-            currentProjectSet:''
         };
     }
 
@@ -30,12 +29,14 @@ class Backlog extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        const {deleteResult,loginInfo} = this.props;
+        const {deleteResult,loginInfo,currentProjectSet} = this.props;
+
+        const currentProjectSetInfo = currentProjectSet?currentProjectSet.result:"";
 
         if(nextProps.deleteResult && deleteResult && nextProps.deleteResult.result
             && nextProps.deleteResult.result !=deleteResult.result){
             message.info('删除节点成功！',3);
-            const node_id = this.state.currentProjectSet.id;
+            const node_id = currentProjectSetInfo.id;
             const set_id = node_id.substr(0,node_id.length-2);
             this.props.getBacklogNode(set_id,loginInfo.userId);
         }
@@ -59,15 +60,11 @@ class Backlog extends React.Component{
             const projectSetInfo = this.generateProjectSet(node.id,projectSet);
             let projectSet_temp = node;
             projectSet_temp.description = projectSetInfo.description;
-            this.setState({
-                currentProjectSet:projectSet_temp
-            })
             this.props.getBacklogNode(set_id,loginInfo.userId);
             this.props.getTaskMilestone(set_id);
+            this.props.saveCurrentProjectset(projectSet_temp);
         }else{
-            this.setState({
-                currentProjectSet:''
-            })
+            this.props.saveCurrentProjectset('');
         }
     }
 
@@ -117,8 +114,9 @@ class Backlog extends React.Component{
         }
     }
     refreshNodes(){
-        const {loginInfo} = this.props;
-        const node_id = this.state.currentProjectSet.id;
+        const {loginInfo,currentProjectSet} = this.props;
+        const currentProjectSetInfo = currentProjectSet?currentProjectSet.result:"";
+        const node_id = currentProjectSetInfo.id;
         const set_id = node_id.substr(0,node_id.length-2);
         this.props.getBacklogNode(set_id,loginInfo.userId);
     }
@@ -164,15 +162,16 @@ class Backlog extends React.Component{
     }
 
     getDataSource(){
-        const {backlogNodes} = this.props;
+        const {backlogNodes,currentProjectSet} = this.props;
+        const currentProjectSetInfo = currentProjectSet?currentProjectSet.result:"";
         const dataSource = [];
         const nodes = backlogNodes?(backlogNodes.result?backlogNodes.result.mindmap_nodes:null):null;
-        if(this.state.currentProjectSet && nodes){
+        if(currentProjectSetInfo && nodes){
             let dataSource_temp = {};
-            dataSource_temp.name=this.state.currentProjectSet.name;
-            dataSource_temp.description = this.state.currentProjectSet.description?this.state.currentProjectSet.description:"无";
+            dataSource_temp.name=currentProjectSetInfo.name;
+            dataSource_temp.description = currentProjectSetInfo.description?currentProjectSetInfo.description:"无";
             dataSource_temp.type = 'projectSet';
-            dataSource_temp.id = this.state.currentProjectSet.id;
+            dataSource_temp.id = currentProjectSetInfo.id;
             dataSource_temp.milestone_id = null;
             const data = this.generateNodes(nodes);
             if(data.length>0){
@@ -184,8 +183,9 @@ class Backlog extends React.Component{
     }
 
     render(){
-        const {projectSet,backlogNodes,deleteResult} = this.props;
+        const {projectSet,backlogNodes,deleteResult,currentProjectSet} = this.props;
 
+        const currentProjectSetInfo = currentProjectSet?currentProjectSet.result:"";
         const data = this.getDataSource();
 
         const getLoading = backlogNodes?backlogNodes.loading:false;
@@ -214,7 +214,7 @@ class Backlog extends React.Component{
                     </Col>
                     <Col span={20}>
                         {
-                            (this.state.currentProjectSet )?(
+                            (currentProjectSetInfo )?(
                                 <Box title="backlog关系图" action={action}>
                                     <BacklogLegend ></BacklogLegend>
                                     <Spin spinning={getLoading} tip="正在加载数据...">
@@ -236,7 +236,7 @@ class Backlog extends React.Component{
                         <AddBacklogNode visible={this.state.showAddNode}
                                         editType={this.state.addOrModify}
                                         setVisible={this.setAddNodeVisible.bind(this)}
-                                        setId={this.state.currentProjectSet}
+                                        setId={currentProjectSetInfo}
                                         node={this.state.node}/>
                     </Col>
                 </Row>
@@ -252,6 +252,7 @@ function mapStateToProps(state) {
         projectSet: state.projectSet.projectSetTree,
         backlogNodes:state.backlogReducer.getBacklogNode,
         deleteResult:state.backlogReducer.deleteBacklogNode,
+        currentProjectSet:state.backlogReducer.currentProjectSet,
     }
 }
 
@@ -261,6 +262,7 @@ function mapDispatchToProps(dispatch) {
         getBacklogNode: bindActionCreators(getBacklogNode, dispatch),
         deleteBacklogNode: bindActionCreators(deleteBacklogNode, dispatch),
         getTaskMilestone: bindActionCreators(getTaskMilestone, dispatch),
+        saveCurrentProjectset: bindActionCreators(saveCurrentProjectset, dispatch),
     }
 }
 

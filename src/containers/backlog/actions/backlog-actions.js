@@ -6,7 +6,8 @@ import {
     GET_BACKLOG_NODE,
     ADD_BACKLOG_NODE,
     MODIFY_BACKLOG_NODE,
-    DELETE_BACKLOG_NODE
+    DELETE_BACKLOG_NODE,
+    SAVE_CURRENT_PROJECTSET
 } from '../constants/backlog-types';
 
 export function getBacklogNode(set_id,user_id) {
@@ -58,5 +59,12 @@ export function deleteBacklogNode(data) {
                 data:data
             })
         }
+    }
+}
+
+export function saveCurrentProjectset(currentProjectSet) {
+    return {
+        type: SAVE_CURRENT_PROJECTSET,
+        currentProjectSet:currentProjectSet
     }
 }
