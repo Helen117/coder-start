@@ -15,6 +15,7 @@ import {getGroupTree, setSelectNode} from './actions/group-tree-action';
 import {getProjectInfo} from './actions/create-project-action';
 import {getGroupInfo,clearGroupProjectInfo} from './actions/create-group-action';
 import 'pubsub-js';
+import {setSelectedNodeKey} from '../../components/tree-filter/action';
 
 export GroupDetail from './group-detail';
 export ProjectDetail from './project-detail';
@@ -56,6 +57,7 @@ class ProjectMgr extends React.Component{
 
     onSelectNode(node){
         const {treeData, currentOneInfo, currentTwoInfo,loginInfo} = this.props;
+        this.props.setSelectedNodeKey([],'add-members');
         if((node.id.indexOf("_") < 0 && node.id > 0) || (node.id.indexOf("_g") > 0)){//点击项目组节点
             const groupInfo = this.searchGroupByGroupId(node.id, treeData);
             this.props.getGroupInfo(groupInfo, node.id,node);
@@ -134,6 +136,7 @@ function mapDispatchToProps(dispatch) {
         getGroupInfo:bindActionCreators(getGroupInfo, dispatch),
         getProjectInfo:bindActionCreators(getProjectInfo, dispatch),
         clearGroupProjectInfo:bindActionCreators(clearGroupProjectInfo, dispatch),
+        setSelectedNodeKey:bindActionCreators(setSelectedNodeKey, dispatch),
     }
 }
 
