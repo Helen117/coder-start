@@ -24,13 +24,24 @@ const G2Chart = createG2(chart => {
         var node = cfg.origin._origin;
         var selected = node.selected;
 
+        var type_color;
+        if(node.type == 'projectSet'){
+            type_color = '#E7F0D2'
+        }else if(node.type == 'backlog'){
+            type_color = '#FFEDB2'
+        }else if(node.type == 'sprint'){
+            type_color = '#83B271'
+        }else if(node.type == 'story'){
+            type_color = '#57D1C9'
+        }
+
         var shape = group.addShape('rect', {
             attrs: {
                 x: x,
                 y: y - height / 2 ,
                 width: width,
                 height: height,
-                fill: selected? '#ffdd76': '#7ec2f3',
+                fill: selected? '#FF6F6F': type_color,
                 cursor: isLeaf ? '' : 'pointer',
                 //stroke: cfg.color
                 stroke: '#ccc',
@@ -118,7 +129,7 @@ const G2Chart = createG2(chart => {
             x: {min: 0,max:1},
             y: {min: 0, max:1},
             value: {min: 0}
-        },['id','x','y','name','children','collapsed', 'selected','description']); // 由于数据中没有 'collapsed' 字段，所以需要设置所有的字段名称
+        },['id','x','y','name','children','collapsed', 'selected','description','trueLeaf']); // 由于数据中没有 'collapsed' 字段，所以需要设置所有的字段名称
         nodeView.point().position('x*y').color('steelblue').size('name', function(name) {
             var length = strLen(name);
             //return length * 7 + 25 * 2;
@@ -137,9 +148,11 @@ const G2Chart = createG2(chart => {
 //                var color = item.point.selected?'#00FF00':'#0000FF';
 //                return '<span style="font-weight: bold; color:'+color+'">'+text+'</span>';
 //            }
-        }).shape('children*collapsed*selected', function(children,collapsed,selected, name) {
+        }).shape('children*collapsed*trueLeaf', function(children,collapsed,trueLeaf) {
             if (children) {
-                if (collapsed) {
+                if(trueLeaf){
+                    return 'leaf';
+                }else if (collapsed) {
                     return 'collapsed';
                 } else {
                     return 'expanded';
@@ -183,7 +196,6 @@ const G2Chart = createG2(chart => {
     var dx = layout.dx;
     var nodes = layout.getNodes();
     var edges = layout.getEdges();
-    console.log('edges:',edges)
     var Stat = G2.Stat;
 
 
@@ -274,7 +286,11 @@ const G2Chart = createG2(chart => {
             var node = layout.findNode(id);
             if (node && node.children) {
                 node.selected = true;
-                node.collapsed = !node.collapsed ? 1 : 0;
+                if(node.trueLeaf){
+                    node.collapsed = 1;
+                }else {
+                    node.collapsed = !node.collapsed ? 1 : 0;
+                }
                 layout.reset();
                 nodes = layout.getNodes();
                 for (var index in nodes){

@@ -56,7 +56,7 @@ class AddBacklogNode extends React.Component {
         if(nextProps.editType=='add' && this.props.visible != nextProps.visible){
             form.setFieldsValue({
                 'title':"",
-                //'description':"",
+                'description':"",
                 'type':"",
                 'milestone_id':""
             });
@@ -114,7 +114,7 @@ class AddBacklogNode extends React.Component {
                     let modifyData = {
                         id:node.id,
                         title:formData.title,
-                        //description:formData.description
+                        description:formData.description
                     };
                     this.props.modifyBacklogNode(modifyData);
                 }
@@ -179,9 +179,9 @@ class AddBacklogNode extends React.Component {
                         {getFieldDecorator('title',{rules:[{ required:true,message:'请填写节点名称'}]})(<Input placeholder="请输入名称" />)}
                     </FormItem>
 
-                    {/*<FormItem {...formItemLayout}  label="描述" >
+                    <FormItem {...formItemLayout}  label="描述" >
                         {getFieldDecorator('description')(<Input type="textarea" rows={4} placeholder="请输入描述" />)}
-                    </FormItem>*/}
+                    </FormItem>
 
                     <FormItem {...formItemLayout} label="类型" >
                         {getFieldDecorator('type',

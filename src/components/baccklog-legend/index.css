@@ -46,3 +46,20 @@
 .story_bg span{
     padding: 0px 50px 0px 10px;
 }
+
+.selected_bg{
+    display: inline-block;
+}
+
+.selected_bg div{
+    background-color: #FF6F6F;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+}
+
+.selected_bg span{
+    padding: 0px 50px 0px 10px;
+}
+
+
