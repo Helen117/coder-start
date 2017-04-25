@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Button, Row, Col, Affix,Alert,message,Spin,Modal } from 'antd';
-import RelationMap from './RelationMap-2';
+import RelationMap from './RelationMap';
 import Box from '../../components/box';
 import TreeFilter from '../../components/tree-filter';
 import {fetchProjectSetTree} from '../project-set/project-set-action';
@@ -203,7 +203,7 @@ class Backlog extends React.Component{
         return (
             <div id="backlog">
                 <Row style={{padding:"10px"}}>
-                    <Col span={4}>
+                    <Col span={4} >
                         <TreeFilter
                             inputPlaceholder="快速查询项目集"
                             loadingMsg="正在加载项目集合信息..."
